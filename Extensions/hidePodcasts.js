@@ -44,7 +44,7 @@ const FAKE_PLACEHOLDER_CLASS = 'searchInput-fakePlaceholder';
                 : main.querySelector('section');
 
             if (app) {
-                console.log(pathname, app);
+                // console.log(pathname, app);
                 apply();
                 observer.disconnect();
             }
@@ -127,7 +127,7 @@ function tagItems() {
 
         if (podcastCardLinks.length > 0) {
             const title = shelf.getAttribute('aria-label');
-            console.log(`Tagging carousel: ${title}`);
+            // console.log(`Tagging carousel: ${title}`);
             shelf.classList.add('podcast-item');
         }
     });
@@ -135,7 +135,7 @@ function tagItems() {
     // Remove podcast card from search/browse page
     const browsePodcastsCard = document.querySelector('.x-categoryCard-CategoryCard[href="/genre/podcasts-web"]');
     if (browsePodcastsCard) {
-        console.log(`Tagging browsePodcastsCard: ${browsePodcastsCard}`);
+        // console.log(`Tagging browsePodcastsCard: ${browsePodcastsCard}`);
         browsePodcastsCard.classList.add('podcast-item');
     }
 
@@ -152,7 +152,7 @@ function tagItems() {
     // Remove mention of podcasts from search entry placeholder
     const searchEntry = document.querySelector('.x-searchInput-searchInputInput.main-type-mesto');
     if (searchEntry) {
-        console.log('Updating search entry placeholder text');
+        // console.log('Updating search entry placeholder text');
         const foundPlaceholderEl = document.querySelector(`.x-searchInput-searchInputInput.main-type-mesto + .${FAKE_PLACEHOLDER_CLASS}`);
         if (!foundPlaceholderEl) {
             const fakePlaceholder = document.createElement('label');
