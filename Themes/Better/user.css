@@ -1,0 +1,188 @@
+:root {
+    --player-bar-height: 105px;
+}
+.main-entityTitle-subtitle.main-entityTitle-gray,.main-entityHeader-metaDataText,.main-duration-container{
+    color: #CCCCCC;
+}
+/* Hide Banner Ads and Upgrade button */
+.main-leaderboardComponent-container,
+.main-buttons-button._110dbc41d89af63f97cdd8b7cd7fea47-scss.main-topBar-UpgradeButton,
+#context-menu > div > ul > li:nth-child(4),
+.desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer.contentSpacing,
+.desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer,
+.desktoproutes-homepage-takeover-ad-hptoComponent-container,
+.main-topBar-UpgradeButton {
+    display: none !important;
+}
+/* Make Scrollbar thinner and rounded*/
+.os-scrollbar-handle{
+    border-radius: 3px !important;
+}
+.os-scrollbar-track{
+    width: 6px !important;
+    background-color: transparent !important;
+    border-radius: 3px !important;
+}
+/*Change context menu color*/
+.main-contextMenu-menu{
+    background-color: #14051F;
+}
+/*Change input styles to transparent*/
+input {
+    background-color: unset !important;
+    border-bottom: solid 1px var(--spice-text) !important;
+    border-radius: 0 !important;
+    padding: 6px 10px 6px 48px;
+    color: var(--spice-text) !important;
+}
+
+.x-searchInput-searchInputSearchIcon,
+.x-searchInput-searchInputClearButton {
+    color: var(--spice-text) !important;
+}
+/*Change connect to a device*/
+.connect-title, .connect-header {
+    display: none;
+}
+.main-entityHeader-shadow,
+.main-contextMenu-menu,
+.connect-device-list-container {
+    box-shadow: 0 4px 20px #21212130;
+}
+.main-trackList-playingIcon,.main-rootlist-statusIcons {
+    filter: hue-rotate(120deg) saturate(600%);
+}
+
+span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
+    fill: black;
+}
+
+/* Hightlight selected playlist */
+.main-rootlist-rootlistItemLink.main-rootlist-rootlistItemLinkActive {
+    background: var(--spice-button);
+    border-radius: 4px;
+    padding: 0 10px;
+    margin: 0 5px 0 -10px;
+}
+/*Colorize play button*/
+.main-playPauseButton-button {
+    background-color: var(--spice-button);
+    color: white;
+    --button-size: 40px !important;
+    box-shadow: #8e0eef 0 0 10px 2px;
+    margin-top: -4px;
+}
+/*
+.main-playPauseButton-button {
+    background-color: var(--spice-main);
+    box-shadow: var(--spice-shadow) 0 5px 9px 0px;
+    --button-size: 43px !important;
+    color: var(--spice-text);
+}*/
+
+
+/* Queue page header */
+.queue-queue-title,
+.queue-playHistory-title {
+    color: var(--spice-text) !important;
+}
+
+/* Cards */
+.main-cardImage-imageWrapper {
+    background-color: transparent;
+}
+
+.main-rootlist-rootlistDivider {
+    background-color: unset;
+}
+
+.main-nowPlayingBar-nowPlayingBar {
+    height: var(--player-bar-height);
+}
+
+[aria-label="Playing"] {
+    color: var(--spice-text);
+}
+/* Fix design fault */
+
+@media (min-width: 1024px) {
+    .main-trackList-trackListHeader {
+        margin: 0 -33px 16px;
+    }
+}
+
+.main-trackList-trackListHeaderStuck.main-trackList-trackListHeader {
+    background: var(--spice-main);
+    border: 0;
+}
+
+.main-trackList-trackListHeaderStuck .main-trackList-trackListHeaderRow {
+    border-bottom: 1px solid rgba(var(--spice-rgb-button-disabled),.8);
+}
+/* Topbar visibility bug */
+
+.main-topBar-topbarContent:not(.main-topBar-topbarContentFadeIn)>* {
+    opacity: unset !important;
+}
+
+.main-entityHeader-topbarContent:not(.main-entityHeader-topbarContentFadeIn)>* {
+    opacity: 0 !important;
+}
+
+
+/* Improve Sidebar Buttons */
+
+/*.main-likedSongsButton-likedSongsIcon {
+    background: var(--spice-text);
+}
+.main-likedSongsButton-likedSongsIcon {
+    color: var(--spice-sidebar);
+}*/
+.main-createPlaylistButton-createPlaylistIcon{
+    color: var(--spice-main);
+    background: linear-gradient(311deg, rgba(245,0,245), rgba(0,245,245))
+   }         
+.main-trackList-trackListHeaderRow {
+    border-bottom: 1px solid rgba(var(--spice-rgb-button-disabled),.8)
+}
+.main-trackList-trackListHeaderStuck .main-trackList-trackListHeaderRow {
+    border-bottom: 1px solid rgba(var(--spice-rgb-button-disabled),.8);
+}
+.main-duplicateTracksDialog-container {
+    background-color: var(--spice-card);
+    color: var(--spice-subtext);
+}
+.main-duplicateTracksDialog-secondaryButton {
+    color: var(--spice-text);
+}
+._9eb5acf729a98d62135ca21777fef244-scss {
+    color: var(--spice-card);
+}
+.main-entityHeader-image {
+    border-radius: 10%;
+}
+/*.x-downloadButton-button {
+    box-shadow: var(--spice-shadow) 0 5px 4px 0px;
+    background: var(--spice-player);
+    border-radius: 50%;
+}
+*/
+/* Recolor sub-buttons */
+
+.main-moreButton-button {
+    color: var(--spice-sub-button);
+}
+.x-downloadButton-button {
+    color: var(--spice-sub-button) !important;
+}
+.x-downloadButton-button:hover {
+    color: var(--spice-text) !important;
+}
+.main-entityHeader-metaDataText {
+    color: var(--spice-sub-button);
+}
+.main-duration-container {
+    color: var(--spice-sub-button);
+}
+
+
