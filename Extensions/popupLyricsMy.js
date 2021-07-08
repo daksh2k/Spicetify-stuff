@@ -36,13 +36,13 @@ function PopupLyricsMy() {
         ContextMenu
     } = Spicetify;
 
-    if (!topBar || !Player || !Player.data ||
+    if (!topBar ||
         !CosmosAsync || !LocalStorage || !ContextMenu) {
         setTimeout(PopupLyricsMy, 500);
         return;
     }
 
-    const worker = new Worker ("./popupLyricsMy.js");
+    const worker = new Worker ("./extensions/popupLyricsMy.js");
     worker.onmessage = function (event) {
         if (event.data === "popup-lyric-update-ui") {
             tick(userConfigs);

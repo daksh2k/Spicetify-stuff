@@ -9,14 +9,12 @@
 (function tvMode() {
     const topBar = document.querySelector(".main-topBar-historyButtons");
     const {
-        Player,
         CosmosAsync,
         LocalStorage,
         ContextMenu
     } = Spicetify;
 
-    if (!topBar || !Player || !Player.data ||
-        !CosmosAsync || !LocalStorage || !ContextMenu) {
+    if (!topBar || !CosmosAsync || !LocalStorage || !ContextMenu) {
         setTimeout(tvMode, 500);
         return;
     }
@@ -30,7 +28,6 @@
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 500;
     cursor: default;
 }
 #tvm-upnext-container{
@@ -537,6 +534,7 @@ function getAlbumInfo(uri) {
         }  
         nextTrackImg.onerror = () => {
             // Placeholder
+            console.log("Check your Internet!Unable to load Image")
             nextTrackImg.src = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="
         }
        
@@ -566,7 +564,11 @@ function getAlbumInfo(uri) {
             if(next_image){
                nextCover.style.backgroundImage = `url("${next_image}")`
             } else{
-               nextCover.style.backgroundImage = `url("${metadata.image_url}")`
+                 if(metadata.image_url)
+                    nextCover.style.backgroundImage = `url("${metadata.image_url}")`
+                 else{
+                    nextCover.style.backgroundImage = `url("${"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="}")`
+                }
             }
         if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=45000) && metadata.title){
             myUp.style.display = 'flex'
@@ -769,8 +771,7 @@ function getAlbumInfo(uri) {
     function saveConfig() {
         Spicetify.LocalStorage.set("tvMode-config", JSON.stringify(CONFIG))
     }
-    const videoContainer = document.querySelector(".Root__video-player")
-    videoContainer.append(style, container)
+    document.body.append(style, container)
 
     function newMenuItem(name, key) {
         const container = document.createElement("div");
@@ -793,7 +794,9 @@ function getAlbumInfo(uri) {
             CONFIG[key] = state;
             saveConfig()
             render()
-            activate()
+            if (document.body.classList.contains('tm-activated')) {
+                activate()
+            }
         };
 
         return container;
@@ -874,6 +877,7 @@ button.switch.disabled {
     button.onclick = onOff
 
     topBar.append(button)
+    button.oncontextmenu = openConfig;
 
     // Add activator on top bar
     // new Spicetify.Topbar.Button(

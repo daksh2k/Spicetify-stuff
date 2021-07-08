@@ -11,20 +11,106 @@
         setTimeout(KeyboardShortcutMy, 1000);
         return;
     }
-    sleep(2000).then(()=>{
-        var adtrack = document.getElementById("ad-tracking-pixel")
-        if(adtrack){
-          adtrack.remove();
-        }
+    // sleep(2000).then(()=>{
+        // var adtrack = document.getElementById("ad-tracking-pixel")
+        // if(adtrack){
+          // adtrack.remove();
+        // }
         // var rmp = document.getElementsByClassName("ReactModalPortal")
         // if(rmp.length>0){
         //     for(i=0;i<rmp.length;i++){
         //         rmp[i].remove()
         //     }
         // }
-    });
-    
-    const SCROLL_STEP = 50;
+    // });
+
+
+    // Select the node that will be observed for mutations
+  // const targetNode = document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")
+  // let prevState = [targetNode[0].classList.contains('active'),targetNode[1].classList.contains('active')]
+
+// Options for the observer (which mutations to observe)
+  // const config = { attributes: true, childList: false, subtree: false };
+
+// Callback function to execute when mutations are observed
+// const callback = function(mutationsList, observer) {
+//        // console.log(observer)        
+//        // checkH(document.querySelector(".Root__nav-bar"),document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")[0]);
+//        // checkH(document.querySelector(".Root__main-view"),document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")[1]);
+
+//     // // Use traditional 'for loops' for IE 11
+//     for(const mutation of mutationsList) {
+//         console.log(mutation)
+//         if(mutation.type === 'attributes' && mutation.type === 'attributes')
+//                trac[i].childNodes[0].classList.add("scroll-drag")
+//            else
+//                trac[i].childNodes[0].classList.remove("scroll-drag")
+
+//     //     if (mutation.type === 'childList') {
+//     //         console.log('A child node has been added or removed.');
+//     //     }
+//     //     else if (mutation.type === 'attributes') {
+//     //         console.log('The ' + mutation.attributeName + ' attribute was modified.');
+//     //     }
+//     }
+// };
+
+// Create an observer instance linked to the callback function
+// const observer = new MutationObserver(callback);
+// let flag=false
+// const observer = new MutationObserver((mutations) => { 
+//     mutations.forEach((mutation) => {
+//         const { target } = mutation;
+
+//         if (mutation.attributeName === 'class') {
+//             console.log(mutation)
+//             console.log("flag"+flag)
+//             // const currentState = mutation.target.classList.contains('active');
+//             if (!flag) {
+//                 flag=true;
+//                 // console.log(`'is-busy' class ${currentState ? 'added' : 'removed'}`);
+//                 // if(currentState)
+//                     mutation.target.childNodes[0].classList.add("scroll-drag");
+//                 }
+//             else{
+//                     mutation.target.childNodes[0].classList.remove("scroll-drag");
+//                     flag=false;
+
+//                 }
+
+//             // checkH(document.querySelector(".Root__nav-bar"),document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")[0]);
+//             // checkH(document.querySelector(".Root__main-view"),document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")[1]);
+//         }
+//     });
+// });
+
+// Start observing the target node for configured mutations
+// for(var i=0 ; i<targetNode.length;i++){
+    // observer.observe(targetNode[i], config);
+// }
+    // observer.observe(targetNode[i]);
+
+
+
+    // document.addEventListener('mousemove',function(){
+    //     let sbarlist = document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")
+    //     for(const sbar of sbarlist){
+    //        if(sbar.classList.contains('active'))
+    //            sbar.childNodes[0].classList.add("scroll-drag")
+    //        else
+    //            sbar.childNodes[0].classList.remove("scroll-drag")
+    //    } 
+    //    checkHover(document.querySelector(".Root__nav-bar"),document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")[0]);
+    //    checkH(document.querySelector(".Root__main-view"),document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")[1]);
+    // })  
+    // function checkHover(myDiv,toHide){
+    //      const isHover = e => e.parentElement.querySelector(':hover') === e;   
+    //      const hovered = isHover(myDiv);
+    //      if(hovered || toHide.classList.contains('active'))
+    //              toHide.style.display="block";
+    //      else
+    //             toHide.style.display="none"; 
+    //  }
 
     /**
      * Register your own keybind with function `registerBind`
@@ -77,9 +163,11 @@
     registerBind("C", false, false, false, openContext)
     registerBind("L", false, false, false, toggleLyrics);
     registerBind("H", false, false, false, openHome);
+    registerBind("Y", false, false, false, openLibrary);
+    registerBind("S", false, false, false, openLyrics);
     // registerBind("B", false, false, false, openBrowse);
-    registerBind("F", false, false, false, toggleFullScreen);
-    registerBind("T", false, false, false, toggleTvMode);
+    // registerBind("F", false, false, false, toggleFullScreen);
+    // registerBind("T", false, false, false, toggleTvMode);
     
 
     // Arrow keys to change volume
@@ -112,52 +200,49 @@
         document.querySelector("#main > div > div.Root__top-container > div.Root__now-playing-bar > footer > div > div.main-nowPlayingBar-right > div > button").click()
     }  
     function openHome(){
-        ele = document.getElementsByClassName("icon home-icon")[0]
+        ele = document.querySelector(`.main-navBar-navBar a[href="/"]`)
         if(ele)
             ele.click();
     }
-
-   /* function openBrowse(){
-        ele = document.getElementsByClassName("icon search-icon")[0] 
-        if(ele){
+    function openLyrics(){
+        ele = document.querySelector(`.main-navBar-navBar a[href="/lyrics-plus"]`)
+        if(ele)
             ele.click();
-            sleep(1500).then(() => {
-                cross = document.querySelector("#main > div > div.Root__top-container > div.Root__top-bar > header > div.main-topBar-topbarContentWrapper > div > div > div > button") 
-                if(cross){
-                        cross.click()
-                       sleep(100).then(() => {
-                        document.querySelector("#searchPage > div > div > section > div.x-carousel-header > h2").click
-                    }); 
-                }
-                else{
-                    document.querySelector("#searchPage > div > div > section > div.x-carousel-header > h2").click
-                }
-            });
-     }
- }*/
-    function toggleFullScreen() {
-     if (!document.body.classList.contains('tm-activated')) {
-        document.getElementById("ff-button").click();
     }
-    else if(document.body.classList.contains('tm-activated'))
-    {
-        document.getElementById("TV-button").click();
-        sleep(300).then(() => {
-          document.getElementById("ff-button").click();
-      });   
-    }}
+     function openLibrary(){
+        ele = document.querySelector(`.main-navBar-navBar a[href="/collection"]`)
+        if(ele)
+            ele.click();
+    }
+    // function toggleFullScreen() {
+    //     ele = document.getElementById("fs-button") 
+    //     if(ele) 
+    //         ele.click();
+    // }
+
+    // function toggleFullScreen() {
+    //  if (!document.body.classList.contains('tm-activated')) {
+    //     document.getElementById("fs-button").click();
+    // }
+    // else if(document.body.classList.contains('tm-activated'))
+    // {
+    //     document.getElementById("TV-button").click();
+    //     sleep(300).then(() => {
+    //       document.getElementById("fs-button").click();
+    //   });   
+    // }}
     
-    function toggleTvMode() {
-        if (!document.body.classList.contains('fsd-activated')) {
-        document.getElementById("TV-button").click();
-    }
-     else if(document.body.classList.contains('fsd-activated'))
-    {
-        document.getElementById("ff-button").click();
-        sleep(300).then(() => {
-       document.getElementById("TV-button").click();
-       });
-    }}
+    // function toggleTvMode() {
+    //     if (!document.body.classList.contains('fsd-activated')) {
+    //     document.getElementById("TV-button").click();
+    // }
+    //  else if(document.body.classList.contains('fsd-activated'))
+    // {
+    //     document.getElementById("fs-button").click();
+    //     sleep(300).then(() => {
+    //    document.getElementById("TV-button").click();
+    //    });
+    // }}
 
     function seekForward(){
         Spicetify.Player.skipForward(10000)
@@ -197,7 +282,7 @@
     // Forward Slash to open search page
     registerBind("/", false, false, false, openSearchPage);
 
-    // F to activate Link Follow function
+    // A to activate Link Follow function
     const vim = new VimBind();
     registerBind("A", false, false, false, vim.activate.bind(vim));
     // Esc to cancle Link Follow

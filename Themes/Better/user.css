@@ -1,31 +1,63 @@
 :root {
     --player-bar-height: 105px;
 }
-.main-entityTitle-subtitle.main-entityTitle-gray,.main-entityHeader-metaDataText,.main-duration-container{
-    color: #CCCCCC;
+.main-entityTitle-subtitle.main-entityTitle-gray,
+.main-entityHeader-metaDataText,
+.main-duration-container,
+.main-connectBar-connectBar.main-type-mesto{
+    color: var(--spice-text);
 }
-/* Hide Banner Ads and Upgrade button */
+/* Hide Banner Ads, Upgrade button, Upgrade to Premium in Menu */
 .main-leaderboardComponent-container,
 .main-buttons-button._110dbc41d89af63f97cdd8b7cd7fea47-scss.main-topBar-UpgradeButton,
-#context-menu > div > ul > li:nth-child(7),
+#context-menu > div > ul > li a[href="https://www.spotify.com/premium/"],
+.main-contextMenu-menuItemButton.main-contextMenu-disabled,
 .desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer.contentSpacing,
 .desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer,
 .desktoproutes-homepage-takeover-ad-hptoComponent-container,
-.main-topBar-UpgradeButton {
+.main-topBar-UpgradeButton,
+.main-rootlist-rootlistDividerContainer,
+.connect-title,
+.connect-header 
+/*.main-userWidget-displayName.main-type-mestoBold,
+.main-userWidget-box svg*/ {
     display: none !important;
 }
 /* Make Scrollbar thinner and rounded*/
 .os-scrollbar-handle{
-    border-radius: 3px !important;
+    border-radius: 2px !important;
+}
+.os-scrollbar-handle:hover{
+    border-radius: 0px !important;
 }
 .os-scrollbar-track{
-    width: 6px !important;
+    width: 3px !important;
     background-color: transparent !important;
-    border-radius: 3px !important;
+    border-radius: 2px !important;
 }
+.os-scrollbar-track:hover,
+.scroll-drag{
+    width: 15px !important;
+    border-radius: 0px !important;
+    background-color: rgba(var(--spice-rgb-selected-row),.2) !important;
+}
+/* Remove Topbar background colour */
+/*.main-topBar-background {
+    background-color: unset !important;
+}
+.main-topBar-overlay {
+    background-color: var(--spice-main);
+}*/
+
 /*Change context menu color*/
-.main-contextMenu-menu{
-    background-color: #14051F;
+.main-contextMenu-menu,
+.media.connect-device-list-item,
+.connect-device-list-container{
+    background-color: var(--spice-c-menu) !important;
+}
+.media.connect-device-list-item:hover,
+.media.connect-device-list-item:focus{
+    background-color: rgba(var(--spice-rgb-selected-row),.1) !important;
 }
 /*Change input styles to transparent*/
 input {
@@ -40,17 +72,14 @@ input {
 .x-searchInput-searchInputClearButton {
     color: var(--spice-text) !important;
 }
-/*Change connect to a device*/
-.connect-title, .connect-header {
-    display: none;
-}
+/* Add Shadow to context menu */
 .main-entityHeader-shadow,
 .main-contextMenu-menu,
 .connect-device-list-container {
     box-shadow: 0 4px 20px #21212130;
 }
 .main-trackList-playingIcon,.main-rootlist-statusIcons {
-    filter: hue-rotate(120deg) saturate(600%);
+    filter: hue-rotate(70deg) saturate(80%);
 }
 
 span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
@@ -69,7 +98,7 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
     background-color: var(--spice-button);
     color: white;
     --button-size: 40px !important;
-    box-shadow: #8e0eef 0 0 10px 2px;
+    box-shadow: var(--spice-shadow) 0 0 10px 2px;
     margin-top: -4px;
 }
 /*
@@ -184,5 +213,68 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
 .main-duration-container {
     color: var(--spice-sub-button);
 }
+/* Full window artist background */
+.main-entityHeader-background.main-entityHeader-gradient {
+    opacity: 0.5;
+}
+.main-entityHeader-container.main-entityHeader-withBackgroundImage,
+.main-entityHeader-background,
+.main-entityHeader-background.main-entityHeader-overlay:after {
+    height: 100vh;
+}
+.main-entityHeader-withBackgroundImage .main-entityHeader-headerText {
+    justify-content: center;
+}
 
+.main-entityHeader-container.main-entityHeader-nonWrapped.main-entityHeader-withBackgroundImage {
+    padding-left: 9%;
+}
 
+.main-entityHeader-background.main-entityHeader-overlay:after {
+    background-image: linear-gradient(transparent,transparent),linear-gradient(var(--spice-main), var(--spice-main));
+}
+
+.artist-artistOverview-overview .main-entityHeader-withBackgroundImage h1 {
+    font-size: 175px !important;
+    line-height: 175px !important;
+}
+/** Sidebar */
+.main-rootlist-rootlistDivider {
+    margin-bottom: 8px;
+}
+
+.main-rootlist-rootlistPlaylistsScrollNode {
+    padding: 0;
+}
+
+#spicetify-playlist-list {
+    padding-top: 8px;
+}
+.main-collectionLinkButton-collectionLinkButton .main-collectionLinkButton-icon,
+.main-collectionLinkButton-collectionLinkButton .main-collectionLinkButton-collectionLinkText {
+    opacity: 1;
+}
+
+.link-subtle {
+    color: var(--spice-text);
+}
+/** Buddy bar */
+.main-buddyFeed-activityMetadata .main-buddyFeed-artistAndTrackName a,
+.main-buddyFeed-activityMetadata .main-buddyFeed-username a,
+.main-buddyFeed-activityMetadata .main-buddyFeed-playbackContextLink {
+    color: var(--spice-text);
+}
+
+.main-navBar-navBarLinkActive {
+    background: var(--spice-button);
+}
+
+div.GlueDropTarget.personal-library >*.active {
+    background: var(--spice-button) !important;
+}
+.main-contextMenu-menuHeading,
+.main-contextMenu-menuItemButton,
+.main-contextMenu-menuItemButton:not(.main-contextMenu-disabled):focus,
+.main-contextMenu-menuItemButton:not(.main-contextMenu-disabled):hover {
+    color: var(--spice-text);
+}

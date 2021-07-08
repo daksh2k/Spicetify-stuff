@@ -9,16 +9,57 @@
 (function fullScreen() {
     const extraBar = document.querySelector(".ExtraControls");
     const {
-        Player,
         CosmosAsync,
         LocalStorage,
         ContextMenu
     } = Spicetify;
 
-    if (!extraBar || !Player || !Player.data ||
-        !CosmosAsync || !LocalStorage || !ContextMenu) {
+    if (!extraBar || !CosmosAsync || !LocalStorage || !ContextMenu) {
         setTimeout(fullScreen, 500);
         return;
+    }
+    Spicetify.Keyboard.registerShortcut(
+        {
+            key: Spicetify.Keyboard.KEYS["T"], 
+            ctrl: false, 
+            shift: false, 
+            alt: false,
+        }, 
+        openwithTV
+     );
+    Spicetify.Keyboard.registerShortcut(
+        {
+            key: Spicetify.Keyboard.KEYS["F"], 
+            ctrl: false, 
+            shift: false, 
+            alt: false,
+        }, 
+        openwithDef
+     );
+    function openwithTV() {
+            if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
+              CONFIG.tvMode= true;
+              saveConfig()
+              render()
+              activate()
+            }
+            else
+                onOff()
+    }
+    function openwithDef() {
+            if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
+              CONFIG.tvMode= false;
+              saveConfig()
+              render()
+              activate()
+            }
+            else
+                onOff()
+    }
+ function toggleFullScreen() {
+        ele = document.getElementById("fs-button") 
+        if(ele) 
+            ele.click();
     }
 
     const CONFIG = getConfig()
@@ -30,16 +71,7 @@
     position: fixed;
     width: 100%;
     height: 100%;
-    z-index: 500;
     cursor: default;
-    left: 0;
-    top: 0;
-}
-#fsd-header {
-    position: fixed;
-    width: 100%;
-    height: 80px;
-    -webkit-app-region: drag;
 }
 #fsd-upnext-container{
     float: right;
@@ -48,7 +80,7 @@
     background-color: rgb(25, 25, 25);
     width: 472px;
     height: 102px;
-    position: relative;
+    position: fixed;
     top: 45px;
     right: 70px;
     display: none;
@@ -155,7 +187,7 @@
     z-index: -2;
 }
 .fsd-background-fade {
-    transition: background-image 1s linear;
+    transition: background-image ${CONFIG.tvMode? 0.6:1}s linear;
 }
 #full-screen-display button {
     background-color: transparent;
@@ -169,49 +201,6 @@ body.fsd-activated #full-screen-display {
 
 
     const styleChoices = [`
-#fsd-foreground {
-    flex-direction: row;
-    text-align: left;
-}
-#fsd-art {
-    width: calc(100vw - 840px);
-    min-width: 300px;
-    max-width: 630px;
-}
-#fsd-details {
-    padding-left: 50px;
-    line-height: initial;
-    max-width: 40%;
-    color: #FFFFFF;
-}
-#fsd-title {
-    font-size: 77px;
-    font-weight: var(--glue-font-weight-black);
-}
-#fsd-artist, #fsd-album {
-    font-size: 37px;
-    font-weight: var(--glue-font-weight-medium);
-    color: #C3C7D1;
-}
-#fsd-artist svg, #fsd-album svg {
-    margin-right: 5px;
-    width: 25px;
-    height: 25px;
-}
-#fsd-status {
-    display: flex;
-    min-width: 400px;
-    max-width: 400px;
-    align-items: center;
-}
-#fsd-status.active {
-    margin-top: 20px;
-}
-#fsd-controls {
-    display: flex;
-    margin-right: 10px;
-}`,
-`
 #fsd-art {
     width: calc(100vh - 400px);
     max-width: 600px;
@@ -253,9 +242,66 @@ body.fsd-activated #full-screen-display {
 #fsd-controls {
     margin-top: 20px;
     order: 2
-}`
-    ]
-
+}`,
+`#fsd-background-image {
+    height: 100%;
+    background-size: cover;
+    filter: brightness(0.4);
+    backdrop-filter: brightness(0.4);
+    background-position: center;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+#fsd-foreground {
+    flex-direction: row;
+    text-align: left;
+    justify-content: left;
+    margin-top: 150px
+}
+fsd-background-image {
+    filter: brightness(0.4);
+    background-position: bottom;
+}
+#fsd-art {
+    width: calc(100vw - 840px);
+    min-width: 250px;
+    max-width: 330px;
+    margin-left: 50px;
+}
+#fsd-details {
+    padding-left: 45px;
+    line-height: initial;
+    max-width: 80%;
+    color: #FFFFFF;
+}
+#fsd-title {
+    font-size: 63px;
+    font-weight: var(--glue-font-weight-black);
+}
+#fsd-artist, #fsd-album {
+    font-size: 34px;
+    font-weight: var(--glue-font-weight-medium);
+    color: #C3C7D1;
+}
+#fsd-artist svg, #fsd-album svg {
+    margin-right: 5px;
+    width: 25px;
+    height: 25px;
+}
+#fsd-status {
+    display: flex;
+    min-width: 400px;
+    max-width: 400px;
+    align-items: center;
+}
+#fsd-status.active {
+    margin-top: 20px;
+}
+#fsd-controls {
+    display: flex;
+    margin-right: 10px;
+}
+`]
     const iconStyleChoices = [`
 #fsd-artist svg, #fsd-album svg {
     display: none;
@@ -279,11 +325,12 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
         Spicetify.Player.removeEventListener("onprogress", updateUpNext)
 
-        style.innerHTML = styleBase + styleChoices[CONFIG.vertical ? 1 : 0] + iconStyleChoices[CONFIG.icons ? 1 : 0];
+        style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG.icons ? 1 : 0];
 
         container.innerHTML = `
-<canvas id="fsd-background"></canvas>
-<div id="fsd-header">
+${CONFIG.tvMode?`<div id="fsd-background">
+  <div id="fsd-background-image"></div>
+</div>`:`<canvas id="fsd-background"></canvas>`}
  ${CONFIG.enableUpnext?`
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">
@@ -322,11 +369,11 @@ body.fsd-activated #full-screen-display {
         <div id="fsd-status" class="${CONFIG.enableControl || CONFIG.enableProgress ? "active" : ""}">
         ${CONFIG.enableControl ? `
         <div id="fsd-controls">
-            ${CONFIG.vertical ? `<button id="fsd-back">
+           <button id="fsd-back">
                 <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
                     ${Spicetify.SVGIcons["skip-back"]}
                 </svg>
-            </button>` : ""}
+            </button>
             <button id="fsd-play">
                 <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
                     ${Spicetify.SVGIcons.play}
@@ -347,10 +394,13 @@ body.fsd-activated #full-screen-display {
         </div>
     </div>
 </div>`
-        
-        back = container.querySelector('canvas')
-        back.width = window.innerWidth
-        back.height = window.innerHeight
+       if(CONFIG.tvMode)
+           back = container.querySelector("#fsd-background-image")
+        else{
+           back = container.querySelector('canvas')
+           back.width = window.innerWidth
+           back.height = window.innerHeight
+        }
         cover = container.querySelector("#fsd-art-image")
         title = container.querySelector("#fsd-title")
         artist = container.querySelector("#fsd-artist span")
@@ -377,9 +427,7 @@ body.fsd-activated #full-screen-display {
             play = container.querySelector("#fsd-play")
             play.onclick = Spicetify.Player.togglePlay
             container.querySelector("#fsd-next").onclick = Spicetify.Player.next
-            if (CONFIG.vertical) {
-                container.querySelector("#fsd-back").onclick = Spicetify.Player.back
-            }
+            container.querySelector("#fsd-back").onclick = Spicetify.Player.back
         }
     }
 
@@ -401,6 +449,9 @@ body.fsd-activated #full-screen-display {
 }
 function getAlbumInfo(uri) {
     return Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${uri}/desktop`)
+}
+function getArtistHero(artistId) {
+        return Spicetify.CosmosAsync.get(`hm://artist/v1/${artistId}/desktop?format=json`)
 }
     
     async function updateInfo() {
@@ -458,17 +509,40 @@ function getAlbumInfo(uri) {
         if (CONFIG.enableProgress) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
-
-        // Wait until next track image is downloaded then update UI text and images
-        const previouseImg = nextTrackImg.cloneNode()
+      if(CONFIG.tvMode){
+         //Prepare Artist Image
+        if(meta.artist_uri != null){
+        getArtistHero(meta.artist_uri.split(":")[2]).then(artist_info=>{
+           if(artist_info.header_image){
+                const background_image = artist_info.header_image.image;
+                nextTrackImg.src = background_image;
+            }
+            else{
+                const background_image = meta.image_xlarge_url
+                nextTrackImg.src = background_image;    
+            }
+            }).catch(err => console.error(err))
+        }
+        else{
+            const background_image = meta.image_xlarge_url
+            nextTrackImg.src = background_image;
+        }  
+      }
+      else{
         nextTrackImg.src = meta.image_xlarge_url
+      }
+      const previouseImg = nextTrackImg.cloneNode()
+        // Wait until next track image is downloaded then update UI text and images
         nextTrackImg.onload = () => {
-           const bgImage = `url("${nextTrackImg.src}")`
-
-            animateCanvas(previouseImg, nextTrackImg)
-
-            cover.style.backgroundImage = bgImage
-
+            if(CONFIG.tvMode){
+                 back.style.backgroundImage = `url("${nextTrackImg.src}")`
+                 cover.style.backgroundImage = `url("${meta.image_xlarge_url}")`
+            }
+            else{
+                const bgImage = `url("${nextTrackImg.src}")`
+                animateCanvas(previouseImg, nextTrackImg)
+                cover.style.backgroundImage = bgImage
+            }
             title.innerText = rawTitle || ""
             artist.innerText = artistName || ""
             if (album) {
@@ -482,8 +556,10 @@ function getAlbumInfo(uri) {
              fsd_second_span.innerText=""
              fsd_first_span.style.paddingRight = "0px"
         }
+
         nextTrackImg.onerror = () => {
             // Placeholder
+            console.log("Check your Internet!Unable to load Image")
             nextTrackImg.src = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="
         }
     }
@@ -499,17 +575,17 @@ function getAlbumInfo(uri) {
         ctx.filter = `blur(20px) brightness(0.5)`
         const blur = 20
         
-        // if (!CONFIG.enableFade) {
-        //     ctx.globalAlpha = 1
-        //     ctx.drawImage(
-        //         nextImg, 
-        //         -blur * 2,
-        //         -blur * 2 - (width - height) / 2,
-        //         dim + 4 * blur,
-        //         dim + 4 * blur
-        //     );
-        //     return;
-        // }
+        if (!CONFIG.enableFade) {
+            ctx.globalAlpha = 1
+            ctx.drawImage(
+                nextImg, 
+                -blur * 2,
+                -blur * 2 - (width - height) / 2,
+                dim + 4 * blur,
+                dim + 4 * blur
+            );
+            return;
+        }
 
         let factor = 0.0
         const animate = () => {
@@ -564,9 +640,13 @@ function getAlbumInfo(uri) {
             if(next_image){
                fsd_nextCover.style.backgroundImage = `url("${next_image}")`
             } else{
-               fsd_nextCover.style.backgroundImage = `url("${metadata.image_url}")`
+                 if(metadata.image_url)
+                    fsd_nextCover.style.backgroundImage = `url("${metadata.image_url}")`
+                 else{
+                    fsd_nextCover.style.backgroundImage = `url("${"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="}")`
+                }
             }
-        if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=30000) && metadata.title){
+        if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45000:30000)) && metadata.title){
             fsd_myUp.style.display = 'flex'
             if(fsd_second_span.offsetWidth>=307){
                 fsd_first_span.style.paddingRight = "80px"
@@ -629,7 +709,15 @@ function getAlbumInfo(uri) {
         if(CONFIG.enableUpnext){
           Spicetify.Player.addEventListener("onprogress", updateUpNext)
         }
-        cover.classList.add("fsd-background-fade")
+        if(CONFIG.enableFade){
+            cover.classList.add("fsd-background-fade")
+            if(CONFIG.tvMode)
+                back.classList.add("fsd-background-fade")
+        } else{
+            cover.classList.remove("fsd-background-fade")
+            if(CONFIG.tvMode)
+                back.classList.remove("fsd-background-fade")
+        }
         if (CONFIG.enableProgress) {
             updateProgress()
             Spicetify.Player.addEventListener("onprogress", updateProgress)
@@ -649,7 +737,8 @@ function getAlbumInfo(uri) {
             }
             full_screen_status=false
         }
-            Spicetify.Keyboard.registerShortcut(
+        document.body.append(style, container)
+        Spicetify.Keyboard.registerShortcut(
         {
             key: Spicetify.Keyboard.KEYS["F11"], 
             ctrl: false, 
@@ -657,8 +746,8 @@ function getAlbumInfo(uri) {
             alt: false,
         }, 
         onOff
-    );
-    Spicetify.Keyboard.registerShortcut(
+     );
+       Spicetify.Keyboard.registerShortcut(
         {
             key: Spicetify.Keyboard.KEYS["ESCAPE"], 
             ctrl: false, 
@@ -685,6 +774,8 @@ function getAlbumInfo(uri) {
             FullScreenOff()
             full_screen_status=false;
         }
+        style.remove()
+        container.remove()
         Spicetify.Keyboard._deregisterShortcut(
             {
                 key: Spicetify.Keyboard.KEYS["F11"], 
@@ -728,13 +819,13 @@ function getAlbumInfo(uri) {
    function sleep (time) {
         return new Promise((resolve) => setTimeout(resolve, time));
     }  
-  function toggleTvMode() {
+  function togglefsdode() {
         if (!document.body.classList.contains('fsd-activated')) {
         document.getElementById("TV-button").click();
     }
      else if(document.body.classList.contains('fsd-activated'))
     {
-        document.getElementById("ff-button").click();
+        document.getElementById("fs-button").click();
         sleep(5).then(() => {
        document.getElementById("TV-button").click();
        });
@@ -757,9 +848,6 @@ function getAlbumInfo(uri) {
         Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(CONFIG))
     }
 
-    const videoContainer = document.querySelector(".Root__video-player")
-    videoContainer.append(style, container)
-
     function newMenuItem(name, key) {
         const container = document.createElement("div");
         container.innerHTML = `
@@ -781,7 +869,9 @@ function getAlbumInfo(uri) {
             CONFIG[key] = state;
             saveConfig()
             render()
-            activate()
+            if (document.body.classList.contains('fsd-activated')) {
+                activate()
+            }
         };
 
         return container;
@@ -836,9 +926,10 @@ button.switch.disabled {
                 newMenuItem("Show album", "showAlbum"),
                 newMenuItem("Show all artists", "showAllArtists"),
                 newMenuItem("Show icons", "icons"),
-                newMenuItem("Vertical mode", "vertical"),
+                newMenuItem("Enable song change animation", "enableFade"),
                 newMenuItem("Enable fullscreen", "enableFullscreen"),
                 newMenuItem("Enable Upnext Display", "enableUpnext"),
+                newMenuItem("Enable TV Mode", "tvMode"),
             )
         }
         Spicetify.PopupModal.display({
@@ -852,12 +943,13 @@ button.switch.disabled {
     const button = document.createElement("button")
     button.classList.add("button", "spoticon-fullscreen-16", "fsd-button", "full-button","control-button","InvalidDropTarget")
     button.setAttribute("data-tooltip", "Full Screen")
-    button.id = "ff-button"
+    button.id = "fs-button"
     button.setAttribute("title", "Full Screen")
 
     button.onclick = onOff
     
     extraBar.append(button);
+    button.oncontextmenu = openConfig;
 
     // function toggleFad() {
     //     if (document.body.classList.contains('fad-activated')) {
@@ -934,7 +1026,7 @@ button.switch.disabled {
 //     newMenuItem("Vertical mode", "vertical")
 //     // newMenuItem("Enable song change animation", "enableFade")
 //     newMenuItem("Enable fullscreen", "enableFullscreen")
-//     new Spicetify.ContextMenu.Item("TV Mode", toggleTvMode, checkURI).register()
+//     new Spicetify.ContextMenu.Item("TV Mode", togglefsdode, checkURI).register()
 //     new Spicetify.ContextMenu.Item("Exit", deact, checkURI).register()
 
 //     button.onclick = onOff
