@@ -71,6 +71,8 @@
     width: 100%;
     height: 100%;
     cursor: default;
+    left: 0;
+    top: 0;
 }
 #fsd-upnext-container{
     float: right;
@@ -186,7 +188,7 @@
     z-index: -2;
 }
 .fsd-background-fade {
-    transition: background-image ${CONFIG.tvMode? 0.6:1}s linear;
+    transition: background-image 0.8s linear;
 }
 #full-screen-display button {
     background-color: transparent;
@@ -300,6 +302,11 @@ fsd-background-image {
     display: flex;
     margin-right: 10px;
 }
+#fsd-elapsed {
+    min-width: 56px;
+    margin-right: 10px;
+    text-align: right;
+}
 `]
     const iconStyleChoices = [`
 #fsd-artist svg, #fsd-album svg {
@@ -329,7 +336,8 @@ fsd-background-image {
         container.innerHTML = `
 ${CONFIG.tvMode?`<div id="fsd-background">
   <div id="fsd-background-image"></div>
-</div>`:`<canvas id="fsd-background"></canvas>`}
+</div>`:
+`<canvas id="fsd-background"></canvas>`}
  ${CONFIG.enableUpnext?`
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">
@@ -416,7 +424,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             fsd_second_span= container.querySelector("#fsd_second_span")
         }
 
-        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
+        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             prog = container.querySelector("#fsd-progress-inner")
             durr = container.querySelector("#fsd-duration")
             elaps = container.querySelector("#fsd-elapsed")
@@ -505,32 +513,25 @@ function getArtistHero(artistId) {
 
         // prepare duration
         let durationText
-        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
+        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
+      const previouseImg = nextTrackImg.cloneNode()  
       if(CONFIG.tvMode){
          //Prepare Artist Image
-        if(meta.artist_uri != null){
-        getArtistHero(meta.artist_uri.split(":")[2]).then(artist_info=>{
-           if(artist_info.header_image){
-                const background_image = artist_info.header_image.image;
-                nextTrackImg.src = background_image;
-            }
-            else{
-                const background_image = meta.image_xlarge_url
-                nextTrackImg.src = background_image;    
-            }
-            }).catch(err => console.error(err))
-        }
-        else{
-            const background_image = meta.image_xlarge_url
-            nextTrackImg.src = background_image;
-        }  
-      }
-      else{
+          if(meta.artist_uri != null){
+               getArtistHero(meta.artist_uri.split(":")[2]).then(artist_info=>{
+                  if(artist_info.header_image)
+                       nextTrackImg.src = artist_info.header_image.image
+                   else
+                       nextTrackImg.src = meta.image_xlarge_url    
+                   }).catch(err => console.error(err))
+            } else
+                nextTrackImg.src = meta.image_xlarge_url  
+         }
+     else
         nextTrackImg.src = meta.image_xlarge_url
-      }
-      const previouseImg = nextTrackImg.cloneNode()
+        
         // Wait until next track image is downloaded then update UI text and images
         nextTrackImg.onload = () => {
             if(CONFIG.tvMode){
@@ -702,7 +703,7 @@ function getArtistHero(artistId) {
     }
     container.style.cursor = 'default'
     
-    function activate() {
+  function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
@@ -718,7 +719,7 @@ function getArtistHero(artistId) {
             if(CONFIG.tvMode)
                 back.classList.remove("fsd-background-fade")
         }
-        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
+        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             updateProgress()
             Spicetify.Player.addEventListener("onprogress", updateProgress)
         }
@@ -763,7 +764,7 @@ function getArtistHero(artistId) {
         if(CONFIG.enableUpnext){
             Spicetify.Player.removeEventListener("onprogress", updateUpNext)
         }
-        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
+        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
         }
         if (CONFIG.enableControl) {
@@ -774,6 +775,9 @@ function getArtistHero(artistId) {
         if (CONFIG.enableFullscreen) {
             FullScreenOff()
         }
+        let popup = document.querySelector("body > generic-modal > div > div > div > div.main-trackCreditsModal-header > button")
+        if(popup)
+            popup.click()
         style.remove()
         container.remove()
         Spicetify.Keyboard._deregisterShortcut(
