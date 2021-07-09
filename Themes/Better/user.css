@@ -1,6 +1,9 @@
 :root {
     --player-bar-height: 105px;
 }
+.main-connectBar-connectBar {
+    --triangle-position: 179px;
+}
 .main-entityTitle-subtitle.main-entityTitle-gray,
 .main-entityHeader-metaDataText,
 .main-duration-container,
@@ -17,8 +20,8 @@
 .desktoproutes-homepage-takeover-ad-hptoComponent-container,
 .main-topBar-UpgradeButton,
 .main-rootlist-rootlistDividerContainer,
-.connect-title,
-.connect-header 
+.connect-header,
+.connect-title__help 
 /*.main-userWidget-displayName.main-type-mestoBold,
 .main-userWidget-box svg*/ {
     display: none !important;

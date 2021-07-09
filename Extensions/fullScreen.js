@@ -8,14 +8,16 @@
 
 (function fullScreen() {
     const extraBar = document.querySelector(".ExtraControls");
+    const topBar = document.querySelector(".main-topBar-historyButtons");
     const {
         CosmosAsync,
         LocalStorage,
+        Keyboard,
         ContextMenu
     } = Spicetify;
 
-    if (!extraBar || !CosmosAsync || !LocalStorage || !ContextMenu) {
-        setTimeout(fullScreen, 500);
+    if (!topBar || !extraBar || !CosmosAsync || !LocalStorage || !ContextMenu || !Keyboard) {
+        setTimeout(fullScreen, 300);
         return;
     }
     Spicetify.Keyboard.registerShortcut(
@@ -38,28 +40,25 @@
      );
     function openwithTV() {
             if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
-              CONFIG.tvMode= true;
-              saveConfig()
-              render()
+              if(!CONFIG.tvMode){
+                 CONFIG["tvMode"]= true;
+                 saveConfig()
+                 render()
+             }
               activate()
-            }
-            else
-                onOff()
+          } else
+              deactivate();
     }
     function openwithDef() {
             if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
-              CONFIG.tvMode= false;
-              saveConfig()
-              render()
+              if(CONFIG.tvMode){
+                CONFIG["tvMode"]= false;
+                saveConfig()
+                render()
+             }
               activate()
-            }
-            else
-                onOff()
-    }
- function toggleFullScreen() {
-        ele = document.getElementById("fs-button") 
-        if(ele) 
-            ele.click();
+         }  else
+                deactivate();
     }
 
     const CONFIG = getConfig()
@@ -366,7 +365,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             </svg>
             <span></span>
         </div>` : ""}
-        <div id="fsd-status" class="${CONFIG.enableControl || CONFIG.enableProgress ? "active" : ""}">
+        <div id="fsd-status" class="${CONFIG.enableControl || (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? "active" : ""}">
         ${CONFIG.enableControl ? `
         <div id="fsd-controls">
            <button id="fsd-back">
@@ -385,7 +384,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 </svg>
             </button>
         </div>` : ""}
-            ${CONFIG.enableProgress ? `
+            ${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? `
             <div id="fsd-progress-container">
                 <span id="fsd-elapsed"></span>
                 <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
@@ -417,7 +416,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             fsd_second_span= container.querySelector("#fsd_second_span")
         }
 
-        if (CONFIG.enableProgress) {
+        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
             prog = container.querySelector("#fsd-progress-inner")
             durr = container.querySelector("#fsd-duration")
             elaps = container.querySelector("#fsd-elapsed")
@@ -506,7 +505,7 @@ function getArtistHero(artistId) {
 
         // prepare duration
         let durationText
-        if (CONFIG.enableProgress) {
+        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
       if(CONFIG.tvMode){
@@ -704,6 +703,7 @@ function getArtistHero(artistId) {
     container.style.cursor = 'default'
     
     function activate() {
+        button.classList.add("control-button--active","control-button--active-dot")
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
@@ -718,7 +718,7 @@ function getArtistHero(artistId) {
             if(CONFIG.tvMode)
                 back.classList.remove("fsd-background-fade")
         }
-        if (CONFIG.enableProgress) {
+        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
             updateProgress()
             Spicetify.Player.addEventListener("onprogress", updateProgress)
         }
@@ -745,7 +745,7 @@ function getArtistHero(artistId) {
             shift: false, 
             alt: false,
         }, 
-        onOff
+        fsToggle
      );
        Spicetify.Keyboard.registerShortcut(
         {
@@ -754,25 +754,25 @@ function getArtistHero(artistId) {
             shift: false, 
             alt: false,
         }, 
-        deact
+        deactivate
     );
 }
-
     function deactivate() { 
+        button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
             Spicetify.Player.removeEventListener("onprogress", updateUpNext)
         }
-        if (CONFIG.enableProgress) {
+        if ((CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV))) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
         }
         if (CONFIG.enableControl) {
             Spicetify.Player.removeEventListener("onplaypause", updateControl)
         }
         document.body.classList.remove(...classes)
+        full_screen_status=false;
         if (CONFIG.enableFullscreen) {
             FullScreenOff()
-            full_screen_status=false;
         }
         style.remove()
         container.remove()
@@ -793,43 +793,39 @@ function getArtistHero(artistId) {
             }
         );
     }
-    
-    
-    function onOff() {
-       if (document.body.classList.contains('fsd-activated')) {
-        full_screen_status=false;
-        button.classList.remove("control-button--active","control-button--active-dot")
-        deactivate();
-    } else {
-        if (CONFIG.enableFullscreen) {
-            full_screen_status=true;
-        }
-        activate();
-        button.classList.add("control-button--active","control-button--active-dot")
-    }
-
-  }    
-    function deact() {
-    	 if (document.body.classList.contains('fsd-activated')) {
-            full_screen_status=false;
-            deactivate();
-            button.classList.remove("control-button--active","control-button--active-dot")
+    function fsToggle() {
+        if(CONFIG.enableFullscreen){
+            CONFIG["enableFullscreen"]= false
+            saveConfig()
+            render()
+            activate()
+     } else{
+            CONFIG["enableFullscreen"]= true
+            saveConfig()
+            render()
+            activate()
         }
     }
-   function sleep (time) {
-        return new Promise((resolve) => setTimeout(resolve, time));
-    }  
-  function togglefsdode() {
-        if (!document.body.classList.contains('fsd-activated')) {
-        document.getElementById("TV-button").click();
-    }
-     else if(document.body.classList.contains('fsd-activated'))
-    {
-        document.getElementById("fs-button").click();
-        sleep(5).then(() => {
-       document.getElementById("TV-button").click();
-       });
-    }}
+  //   function onOff() {
+  //      if (document.body.classList.contains('fsd-activated'))
+  //       deactivate();
+  //      else
+  //       activate();
+  // }    
+  //  function sleep (time) {
+  //       return new Promise((resolve) => setTimeout(resolve, time));
+  //   }  
+  // function togglefsdode() {
+  //       if (!document.body.classList.contains('fsd-activated')) {
+  //       document.getElementById("TV-button").click();
+  //   }
+  //    else if(document.body.classList.contains('fsd-activated'))
+  //   {
+  //       document.getElementById("fs-button").click();
+  //       sleep(5).then(() => {
+  //      document.getElementById("TV-button").click();
+  //      });
+  //   }}
 
     function getConfig() {
         try {
@@ -873,10 +869,8 @@ function getArtistHero(artistId) {
                 activate()
             }
         };
-
         return container;
     }
-
     let configContainer;
     function openConfig(event) {
         event.preventDefault();
@@ -920,14 +914,15 @@ button.switch.disabled {
 
             configContainer.append(
                 style,
-                newMenuItem("Enable progress bar", "enableProgress"),
-                newMenuItem("Enable controls", "enableControl"),
-                newMenuItem("Trim title", "trimTitle"),
-                newMenuItem("Show album", "showAlbum"),
-                newMenuItem("Show all artists", "showAllArtists"),
-                newMenuItem("Show icons", "icons"),
-                newMenuItem("Enable song change animation", "enableFade"),
-                newMenuItem("Enable fullscreen", "enableFullscreen"),
+                newMenuItem("Enable Progress Bar", "enableProgress"),
+                newMenuItem("Disable Progress Bar in TV Mode", "disablePTV"),
+                newMenuItem("Enable Controls", "enableControl"),
+                newMenuItem("Trim Title", "trimTitle"),
+                newMenuItem("Show Album", "showAlbum"),
+                newMenuItem("Show All Artists", "showAllArtists"),
+                newMenuItem("Show Icons", "icons"),
+                newMenuItem("Enable Song Change Animation", "enableFade"),
+                newMenuItem("Enable Fullscreen", "enableFullscreen"),
                 newMenuItem("Enable Upnext Display", "enableUpnext"),
                 newMenuItem("Enable TV Mode", "tvMode"),
             )
@@ -938,51 +933,32 @@ button.switch.disabled {
         })
     }
 
-    container.ondblclick = onOff
+    container.ondblclick = deactivate
     container.oncontextmenu = openConfig
+
     const button = document.createElement("button")
-    button.classList.add("button", "spoticon-fullscreen-16", "fsd-button", "full-button","control-button","InvalidDropTarget")
+    button.classList.add("button", "spoticon-fullscreen-16", "fsd-button","control-button","InvalidDropTarget")
     button.setAttribute("data-tooltip", "Full Screen")
     button.id = "fs-button"
     button.setAttribute("title", "Full Screen")
 
-    button.onclick = onOff
+    button.onclick = openwithDef
     
     extraBar.append(button);
     button.oncontextmenu = openConfig;
 
-    // function toggleFad() {
-    //     if (document.body.classList.contains('fad-activated')) {
-    //         deactivate();
-    //     } else {
-    //         activate();
-    //     }
-    // }
-
     // Add activator on top bar
-    // new Spicetify.Topbar.Button(
-    //     "Full App Display",
-    //     `<svg role="img" height="16" width="16" viewBox="0 0 32 32" fill="currentColor"><path d="M8.645 22.648l-5.804 5.804.707.707 5.804-5.804 2.647 2.646v-6h-6l2.646 2.647zM29.157 3.55l-.707-.707-5.804 5.805L20 6.001v6h6l-2.646-2.647 5.803-5.804z"></path></svg>`,
-    //     activate,
-    // );
-    // Spicetify.Keyboard.registerShortcut(
-    //     {
-    //         key: Spicetify.Keyboard.KEYS["F11"], 
-    //         ctrl: false, 
-    //         shift: false, 
-    //         alt: false,
-    //     }, 
-    //     onOff
-    // );
-//     Spicetify.Keyboard.registerShortcut(
-//         {
-//             key: Spicetify.Keyboard.KEYS["ESCAPE"], 
-//             ctrl: false, 
-//             shift: false, 
-//             alt: false,
-//         }, 
-//         deact
-//     );
+    const button2 = document.createElement("button")
+    button2.classList.add("button", "spoticon-device-tv-16", "tm-button", "full-button","main-topBar-button","InvalidDropTarget")
+    button2.setAttribute("data-tooltip", "TV Mode")
+    button2.id = "TV-button"
+
+    button2.setAttribute("title", "TV Mode Display")
+    button2.onclick = openwithTV
+
+    topBar.append(button2)
+    button2.oncontextmenu = openConfig;
+
     render()
 })()
 
