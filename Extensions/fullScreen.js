@@ -4,7 +4,7 @@
 // VERSION: 1.0
 // DESCRIPTION: Fancy artwork and track status display.
 
-/// <reference path="../globals.d.ts" />
+/// <reference path="../spicetify-cli/globals.d.ts" />
 
 (function fullScreen() {
     const extraBar = document.querySelector(".ExtraControls");
@@ -187,9 +187,6 @@
     height: 100%;
     z-index: -2;
 }
-.fsd-background-fade {
-    transition: background-image 0.8s linear;
-}
 #full-screen-display button {
     background-color: transparent;
     border: 0;
@@ -243,6 +240,9 @@ body.fsd-activated #full-screen-display {
 #fsd-controls {
     margin-top: 20px;
     order: 2
+}
+.fsd-background-fade {
+    transition: background-image 0.8s linear;
 }`,
 `#fsd-background-image {
     height: 100%;
@@ -306,6 +306,9 @@ fsd-background-image {
     min-width: 56px;
     margin-right: 10px;
     text-align: right;
+}
+.fsd-background-fade {
+    transition: background-image 0.6s linear;
 }
 `]
     const iconStyleChoices = [`

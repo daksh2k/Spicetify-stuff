@@ -1,10 +1,10 @@
 //@ts-check
 
 // NAME: Keyboard Shortcut
-// AUTHOR: khanhas
+// AUTHOR: dax
 // DESCRIPTION: Register a few more keybinds to support keyboard-driven navigation in Spotify client. 
 
-/// <reference path="../globals.d.ts" />
+/// <reference path="../spicetify-cli/globals.d.ts" />
 
 (function KeyboardShortcutMy() {
     if (!Spicetify.Keyboard) {

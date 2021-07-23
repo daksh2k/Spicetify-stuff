@@ -1,11 +1,10 @@
 // @ts-check
 
 // NAME: Popup Lyrics
-// AUTHOR: khanhas
-//         Netease API parser and UI from https://github.com/mantou132/Spotify-Lyrics
+// AUTHOR: dax
 // DESCRIPTION: Pop lyrics up
 
-/// <reference path="../globals.d.ts" />
+/// <reference path="../spicetify-cli/globals.d.ts" />
 
 if (!navigator.serviceWorker) {
     // Worker code

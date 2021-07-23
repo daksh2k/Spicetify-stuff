@@ -4,7 +4,7 @@
 // VERSION: 1.0
 // DESCRIPTION: Full screen display based on Spotify app on Android TV.
 
-/// <reference path="../globals.d.ts" />
+/// <reference path="../spicetify-cli/globals.d.ts" />
 
 (function tvMode() {
     const topBar = document.querySelector(".main-topBar-historyButtons");
