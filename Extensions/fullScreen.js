@@ -242,7 +242,7 @@ body.fsd-activated #full-screen-display {
     order: 2
 }
 .fsd-background-fade {
-    transition: background-image 0.8s linear;
+    transition: background-image var(--fs-transition) linear;
 }`,
 `#fsd-background-image {
     height: 100%;
@@ -457,12 +457,15 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         const full_off = document.exitFullscreen || document.webkitExitFullScreen || document.mozExitFullScreen || document.msExitFullscreen;
         full_off.call(document);
 }
-function getAlbumInfo(uri) {
-    return Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${uri}/desktop`)
-}
-function getArtistHero(artistId) {
+    function getAlbumInfo(uri) {
+        return Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${uri}/desktop`)
+    }
+    function getArtistHero(artistId) {
         return Spicetify.CosmosAsync.get(`hm://artist/v1/${artistId}/desktop?format=json`)
-}
+    }
+    function searchArt(name){
+        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
+    }
     
     async function updateInfo() {
        const meta = Spicetify.Player.data.track.metadata
@@ -523,7 +526,12 @@ function getArtistHero(artistId) {
       if(CONFIG.tvMode){
          //Prepare Artist Image
           if(meta.artist_uri != null){
-               getArtistHero(meta.artist_uri.split(":")[2]).then(artist_info=>{
+               let arUri =  meta.artist_uri.split(":")[2]
+               if(meta.artist_uri.split(":")[1] === "local"){
+                 var res = await searchArt(meta.artist_name).catch((err) => console.error(err))
+                 arUri = res.artists.items[0].id
+              }
+               getArtistHero(arUri).then(artist_info=>{
                   if(artist_info.header_image)
                        nextTrackImg.src = artist_info.header_image.image
                    else
@@ -610,7 +618,7 @@ function getArtistHero(artistId) {
             );
 
             if (factor < 1.0) {
-                factor += 0.016;
+                factor += 0.03/Math.pow(FSTRANSITION,5);
                 requestAnimationFrame(animate);
             }
         };
@@ -705,9 +713,10 @@ function getArtistHero(artistId) {
         }, 2000)
     }
     container.style.cursor = 'default'
-    
+  FSTRANSITION = 0.9  
   function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
+        container.style.setProperty('--fs-transition',`${FSTRANSITION}s`);
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){

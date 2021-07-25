@@ -12,6 +12,11 @@
         setTimeout(hideScroll, 1000);
         return;
     }
+    // document.querySelectorAll("span").forEach(
+    //     (i) => {
+    //         if(i.innerText=="Account")
+    //             i.parentElement.classList.add("main-contextMenu-dividerBefore")
+    //         })
     document.addEventListener('mousemove',() => {
           let sbarlist = document.querySelectorAll(".os-scrollbar.os-scrollbar-vertical")
           for(const sbar of sbarlist){
