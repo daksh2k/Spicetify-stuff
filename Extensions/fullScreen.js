@@ -528,15 +528,14 @@ ${CONFIG.tvMode?`<div id="fsd-background">
           if(meta.artist_uri != null){
                let arUri =  meta.artist_uri.split(":")[2]
                if(meta.artist_uri.split(":")[1] === "local"){
-                 var res = await searchArt(meta.artist_name).catch((err) => console.error(err))
-                 arUri = res.artists.items[0].id
+                    var res = await searchArt(meta.artist_name).catch((err) => console.error(err))
+                    arUri = res.artists.items[0].id
               }
-               getArtistHero(arUri).then(artist_info=>{
-                  if(artist_info.header_image)
-                       nextTrackImg.src = artist_info.header_image.image
-                   else
-                       nextTrackImg.src = meta.image_xlarge_url    
-                   }).catch(err => console.error(err))
+              var artistInfo = await getArtistHero(arUri).catch((err) => console.error(err))
+              if(artistInfo.header_image)
+                    nextTrackImg.src = artistInfo.header_image.image
+              else
+                    nextTrackImg.src = meta.image_xlarge_url
             } else
                 nextTrackImg.src = meta.image_xlarge_url  
          }
