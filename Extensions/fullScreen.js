@@ -163,13 +163,13 @@
 #fsd-progress {
     width: 100%;
     height: 6px;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: #ffffff50;
     overflow: hidden;
 }
 #fsd-progress-inner {
     height: 100%;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: #ffffff;
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.8);
 }
@@ -301,11 +301,6 @@ fsd-background-image {
 #fsd-controls {
     display: flex;
     margin-right: 10px;
-}
-#fsd-elapsed {
-    min-width: 56px;
-    margin-right: 10px;
-    text-align: right;
 }
 .fsd-background-fade {
     transition: background-image 0.6s linear;
@@ -529,18 +524,17 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                let arUri =  meta.artist_uri.split(":")[2]
                if(meta.artist_uri.split(":")[1] === "local"){
                     var res = await searchArt(meta.artist_name).catch((err) => console.error(err))
-                    arUri = res.artists.items[0].id
+                    if (!res) arUri=""
+                    else  arUri = res.artists.items[0].id
               }
               var artistInfo = await getArtistHero(arUri).catch((err) => console.error(err))
-              if(artistInfo.header_image)
-                    nextTrackImg.src = artistInfo.header_image.image
-              else
-                    nextTrackImg.src = meta.image_xlarge_url
-            } else
-                nextTrackImg.src = meta.image_xlarge_url  
-         }
-     else
-        nextTrackImg.src = meta.image_xlarge_url
+              if (!artistInfo) nextTrackImg.src = meta.image_xlarge_url
+              else {
+                if(artistInfo.header_image) nextTrackImg.src = artistInfo.header_image.image
+                else nextTrackImg.src = meta.image_xlarge_url
+            } 
+        } else nextTrackImg.src = meta.image_xlarge_url  
+     } else nextTrackImg.src = meta.image_xlarge_url
         
         // Wait until next track image is downloaded then update UI text and images
         nextTrackImg.onload = () => {
