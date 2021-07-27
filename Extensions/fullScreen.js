@@ -611,7 +611,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             );
 
             if (factor < 1.0) {
-                factor += 0.03/Math.pow(FSTRANSITION,5);
+                factor += 0.03/Math.pow(FSTRANSITION,4);
                 requestAnimationFrame(animate);
             }
         };
@@ -706,10 +706,11 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         }, 2000)
     }
     container.style.cursor = 'default'
-  FSTRANSITION = 0.9  
+  
+  FSTRANSITION = 0.7  
   function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
-        container.style.setProperty('--fs-transition',`${FSTRANSITION}s`);
+        container.style.setProperty('--fs-transition',`${FSTRANSITION-0.05}s`);
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
