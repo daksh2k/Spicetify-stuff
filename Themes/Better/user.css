@@ -281,3 +281,7 @@ div.GlueDropTarget.personal-library >*.active {
 .main-contextMenu-menuItemButton:not(.main-contextMenu-disabled):hover {
     color: var(--spice-text);
 }
+.main-createPlaylistButton-button, .main-collectionLinkButton-collectionLinkButton{
+   padding-left: 16px !important;
+   padding-top: 8px;
+}
