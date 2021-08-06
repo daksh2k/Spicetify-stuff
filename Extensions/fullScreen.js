@@ -154,12 +154,6 @@
     backface-visibility: hidden;
     backdrop-filter: blur(6px);
 }
-
-#fsd-progress-container {
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
 #fsd-progress {
     width: 100%;
     height: 6px;
@@ -206,6 +200,11 @@ body.fsd-activated #full-screen-display {
 #fsd-foreground {
     flex-direction: column;
     text-align: center;
+}
+#fsd-progress-container {
+    width: 28%;
+    display: flex;
+    align-items: center;
 }
 #fsd-details {
     padding-top: 30px;
@@ -259,9 +258,10 @@ body.fsd-activated #full-screen-display {
     justify-content: left;
     margin-top: 150px
 }
-fsd-background-image {
-    filter: brightness(0.4);
-    background-position: bottom;
+#fsd-progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 #fsd-art {
     width: calc(100vw - 840px);
@@ -390,14 +390,21 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 </svg>
             </button>
         </div>` : ""}
-            ${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? `
+        ${ CONFIG.tvMode ? `${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? `
             <div id="fsd-progress-container">
                 <span id="fsd-elapsed"></span>
                 <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
                 <span id="fsd-duration"></span>
-            </div>` : ""}
+            </div>` : ""}`:""}
+            
         </div>
     </div>
+     ${ CONFIG.tvMode ? "":`${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? `
+            <div id="fsd-progress-container">
+                <span id="fsd-elapsed"></span>
+                <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
+                <span id="fsd-duration"></span>
+            </div>` : ""}`}
 </div>`
        if(CONFIG.tvMode)
            back = container.querySelector("#fsd-background-image")
