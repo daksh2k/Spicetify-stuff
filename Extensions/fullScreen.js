@@ -327,7 +327,10 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
-        Spicetify.Player.removeEventListener("onprogress", updateUpNext)
+        Spicetify.Player.removeEventListener("onprogress", updateUpNextShow)
+        Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNext);
+        // Spicetify.Player.removeEventListener("onplaypause", updateUpNext)
+        // Spicetify.Player.removeEventListener("songchange", updateUpNext)
 
         style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG.icons ? 1 : 0];
 
@@ -467,6 +470,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
     function searchArt(name){
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
+    }
+    function updateUpNextShow(){
+        if(Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45000:30000))
+            updateUpNext();
     }
     
     async function updateInfo() {
@@ -627,7 +634,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
 
     function updateUpNext(){
-        fsd_up_next_text.innerText = "UP NEXT"
+            fsd_up_next_text.innerText = "UP NEXT"
             var metadata = new Object();
             const queue_metadata = Spicetify.Queue.next_tracks[0]
             if(queue_metadata){
@@ -663,7 +670,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 fsd_first_span.style.paddingRight = "80px"
                 anim_time= 5000*(fsd_first_span.offsetWidth/300)
                 fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
-                fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 1200ms infinite"
+                fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 1000ms infinite"
              } 
              else{
                 fsd_first_span.style.paddingRight = "0px"
@@ -694,6 +701,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
     var full_screen_status=false;
 
+
     var timer;
     var fadeInBuffer = false;
     container.onmousemove = function () {
@@ -721,7 +729,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
-          Spicetify.Player.addEventListener("onprogress", updateUpNext)
+          Spicetify.Player.addEventListener("onprogress", updateUpNextShow)
+          Spicetify.Player.origin2.state.addExtendedStatusListener(updateUpNext);
+          // Spicetify.Player.addEventListener("songchange", updateUpNext)
+          // Spicetify.Player.addEventListener("onplaypause", updateUpNext)
         }
         if(CONFIG.enableFade){
             cover.classList.add("fsd-background-fade")
@@ -775,7 +786,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
-            Spicetify.Player.removeEventListener("onprogress", updateUpNext)
+            Spicetify.Player.removeEventListener("onprogress", updateUpNextShow)
+             Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNext);
+             // Spicetify.Player.removeEventListener("onplaypause", updateUpNext)
+             // Spicetify.Player.removeEventListener("songchange", updateUpNext)
         }
         if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
