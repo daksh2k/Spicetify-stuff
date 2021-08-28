@@ -802,9 +802,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         if (CONFIG.enableFullscreen) {
             FullScreenOff()
         }
-        let popup = document.querySelector("body > generic-modal > div > div > div > div.main-trackCreditsModal-header > button")
+        let popup = document.querySelector("body > generic-modal")
         if(popup)
-            popup.click()
+            popup.remove()
         style.remove()
         container.remove()
         Spicetify.Keyboard._deregisterShortcut(
