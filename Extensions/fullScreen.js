@@ -632,13 +632,14 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
         requestAnimationFrame(animate);
     }
-
-    function updateUpNext(){
+    function updateUpNextInfo(){
             fsd_up_next_text.innerText = "UP NEXT"
-            var metadata = new Object();
+            // console.log("%c Executed upnext","color: #6090A0")
+            var metadata = {}
             const queue_metadata = Spicetify.Queue.next_tracks[0]
             if(queue_metadata){
-                metadata = queue_metadata.metadata
+                if(queue_metadata.metadata)
+                    metadata = queue_metadata.metadata
             } else{
                 metadata["artist_name"] = ""
                 metadata["title"] = ""
@@ -650,10 +651,6 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             } else {
                 next_artist = "Artist (Unavailable)"
             }
-            
-            fsd_first_span.innerText = metadata.title + "  •  " + next_artist
-            fsd_second_span.innerText= metadata.title + "  •  " + next_artist
-            
             const next_image =  metadata.image_xlarge_url
             if(next_image){
                fsd_nextCover.style.backgroundImage = `url("${next_image}")`
@@ -664,28 +661,37 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                     fsd_nextCover.style.backgroundImage = `url("${"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="}")`
                 }
             }
-        if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45000:30000)) && metadata.title){
-            fsd_myUp.style.display = 'flex'
-            if(fsd_second_span.offsetWidth>=307){
-                fsd_first_span.style.paddingRight = "80px"
-                anim_time= 5000*(fsd_first_span.offsetWidth/300)
-                fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
-                fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 1000ms infinite"
-             } 
-             else{
-                fsd_first_span.style.paddingRight = "0px"
-                fsd_next_tit_art_inner.style.removeProperty('animation')
-                fsd_second_span.innerText=""
-                fsd_next_tit_art_inner.style.marginLeft = "0px"
-           }
-        } 
-        else{
-            fsd_first_span.style.paddingRight = "0px"
-            fsd_next_tit_art_inner.style.removeProperty('animation')
-            fsd_second_span.innerText=""
-            fsd_next_tit_art_inner.style.marginLeft = "0px"
-            fsd_myUp.style.display = 'none'
-        }
+            fsd_first_span.innerText = metadata.title + "  •  " + next_artist
+            fsd_second_span.innerText= metadata.title + "  •  " + next_artist
+            return "Done"
+    }
+
+    async function updateUpNext(){            
+            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue.next_tracks[0].metadata.title){
+                 var aa = await updateUpNextInfo()
+                 fsd_myUp.style.display = 'flex'
+                 upNextShown = true;
+                 if(fsd_second_span.offsetWidth>=307){
+                     fsd_first_span.style.paddingRight = "80px"
+                     anim_time= 5000*(fsd_first_span.offsetWidth/300)
+                     fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
+                     fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 1000ms infinite"
+                  } 
+                  else{
+                     fsd_first_span.style.paddingRight = "0px"
+                     fsd_next_tit_art_inner.style.removeProperty('animation')
+                     fsd_second_span.innerText=""
+                     fsd_next_tit_art_inner.style.marginLeft = "0px"
+                }
+             }
+            else{
+                 upNextShown = false
+                 fsd_myUp.style.display = 'none'
+                 fsd_first_span.style.paddingRight = "0px"
+                 fsd_next_tit_art_inner.style.removeProperty('animation')
+                 fsd_second_span.innerText=""
+                 fsd_next_tit_art_inner.style.marginLeft = "0px"
+             }
     }
 
     function updateProgress() {
