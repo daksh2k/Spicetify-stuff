@@ -327,10 +327,18 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
-        Spicetify.Player.removeEventListener("onprogress", updateUpNextShow)
-        Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNext);
-        // Spicetify.Player.removeEventListener("onplaypause", updateUpNext)
-        // Spicetify.Player.removeEventListener("songchange", updateUpNext)
+        Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
+        if(Spicetify.Player.origin2.state.queueListeners.length>1)
+            Spicetify.Player.origin2.state.queueListeners.pop();
+        upNextShown = false;
+        if(timetoshow2){
+          clearTimeout(timetoshow2)
+                timetoshow2 = 0
+            }
+        if(timetoshow){
+                clearTimeout(timetoshow)
+                timetoshow = 0 
+            }
 
         style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG.icons ? 1 : 0];
 
@@ -471,9 +479,75 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     function searchArt(name){
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
     }
-    function updateUpNextShow(){
-        if(Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45000:30000))
-            updateUpNext();
+    document.addEventListener('visibilitychange', function() {
+    if(document.hidden) {
+        upNextShown = false;
+        if(timetoshow2){
+          clearTimeout(timetoshow2)
+                timetoshow2 = 0
+            }
+        if(timetoshow){
+                clearTimeout(timetoshow)
+                timetoshow = 0 
+            }
+    }
+    else {
+        updateUpNextShow()
+    }
+});
+
+    var timetoshow,timetoshow2
+    var upNextShown = false;
+    function updateUpNextShow() {
+        let timetogo = getShowTime()
+        // console.log("\nTime to go:"+timetogo)
+        if(timetogo<15){
+           if(!upNextShown || fsd_myUp.style.display!="flex"){
+              // console.log("%cfrom show","color: #AA1010")
+              updateUpNext()
+           }
+           if(timetoshow2){
+               clearTimeout(timetoshow2)
+               timetoshow2 = 0
+            }
+           if(timetoshow){
+               clearTimeout(timetoshow)
+               timetoshow = 0 
+            }
+           upNextShown = true
+       }
+        else{
+            if (timetoshow2){ 
+              clearTimeout(timetoshow2);
+              timetoshow2 = 0;
+          }
+        timetoshow2 = setTimeout( () => {   
+                if (timetoshow) {
+                    clearTimeout(timetoshow);
+                    // console.log("timeout cleared")
+                    timetoshow = 0;
+                }
+                   fsd_myUp.style.display="none"
+                   upNextShown = false;
+               if(!Spicetify.Player.origin._state.isPaused){
+                    // console.log("%c setting timeout","color: #10AA10")
+                    timetoshow = setTimeout( () => {
+                        updateUpNext()
+                        upNextShown = true;
+                    }, timetogo)
+                   }
+            },3)
+        }
+    }
+    function getShowTime(){
+        let showBefore = CONFIG.tvMode ? 45000:30000
+        let dur        = Spicetify.Player.data.duration
+        let curProg    = Spicetify.Player.getProgress() 
+
+        if(dur-curProg<=showBefore)
+            return 10;
+        else
+            return(dur-showBefore-curProg)
     }
     
     async function updateInfo() {
@@ -735,10 +809,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
-          Spicetify.Player.addEventListener("onprogress", updateUpNextShow)
-          Spicetify.Player.origin2.state.addExtendedStatusListener(updateUpNext);
-          // Spicetify.Player.addEventListener("songchange", updateUpNext)
-          // Spicetify.Player.addEventListener("onplaypause", updateUpNext)
+            updateUpNextShow()
+            Spicetify.Player.origin2.state.addExtendedStatusListener(updateUpNextShow);
+            Spicetify.Player.origin2.state.addQueueListener(updateUpNext);
         }
         if(CONFIG.enableFade){
             cover.classList.add("fsd-background-fade")
@@ -792,10 +865,18 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
-            Spicetify.Player.removeEventListener("onprogress", updateUpNextShow)
-             Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNext);
-             // Spicetify.Player.removeEventListener("onplaypause", updateUpNext)
-             // Spicetify.Player.removeEventListener("songchange", updateUpNext)
+            upNextShown = false;
+            if(timetoshow2){
+                clearTimeout(timetoshow2)
+                timetoshow2 = 0
+            }
+            if(timetoshow){
+                clearTimeout(timetoshow)
+                timetoshow = 0 
+            }
+            Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
+            if(Spicetify.Player.origin2.state.queueListeners.length>1)
+                Spicetify.Player.origin2.state.queueListeners.pop();
         }
         if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
