@@ -442,7 +442,6 @@ function PopupLyricsMy() {
 
             try {
                 const data = await service.call(info);
-                console.log(data);
                 if (!data.error && data.lyrics) {
                     sharedData = data;
                     return;
