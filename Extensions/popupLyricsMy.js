@@ -387,6 +387,7 @@ function PopupLyricsMy() {
         }
     };
     extraControlsCont.prepend(button);
+    button.setAttribute("title", "Popup Lyrics")
     button.oncontextmenu = openConfig;
 
     const coverCanvas = document.createElement("canvas");
