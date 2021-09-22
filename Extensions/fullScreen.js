@@ -87,6 +87,7 @@
     display: none;
     flex-direction: row;
     text-align: left;
+    z-index: 50;
 }
 #fsd_next_art_image{
     background-size: cover;
@@ -327,7 +328,7 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
-        Spicetify.Player.removeEventListener("songchange", updateUpNext)
+        Spicetify.Player.removeEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
         Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
         Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
         upNextShown = false;
@@ -810,7 +811,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         Spicetify.Player.addEventListener("songchange", updateInfo)
         if(CONFIG.enableUpnext){
             updateUpNextShow()
-            Spicetify.Player.addEventListener("songchange", updateUpNext)
+            Spicetify.Player.addEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
             Spicetify.Player.origin2.state.addExtendedStatusListener(updateUpNextShow);
             Spicetify.Player.origin2.state.addQueueListener(updateUpNext);
         }
@@ -876,7 +877,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 timetoshow = 0 
             }
             Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
-            Spicetify.Player.removeEventListener("songchange", updateUpNext)
+            Spicetify.Player.removeEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
             Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
         }
         if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
