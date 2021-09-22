@@ -1,14 +1,8 @@
-:root {
+/*:root {
     --player-bar-height: 105px;
-}
+}*/
 .main-connectBar-connectBar {
     --triangle-position: 179px;
-}
-.main-entityTitle-subtitle.main-entityTitle-gray,
-.main-entityHeader-metaDataText,
-.main-duration-container,
-.main-connectBar-connectBar.main-type-mesto{
-    color: var(--spice-text);
 }
 /* Hide Banner Ads, Upgrade button, Upgrade to Premium in Menu */
 .main-leaderboardComponent-container,
@@ -30,6 +24,7 @@
 /* Make Scrollbar thinner and rounded*/
 .os-scrollbar-handle{
     border-radius: 2px !important;
+    background-color: #636b7b !important;
 }
 .os-scrollbar-handle:hover{
     border-radius: 0px !important;
@@ -43,7 +38,13 @@
 .scroll-drag{
     width: 15px !important;
     border-radius: 0px !important;
-    background-color: rgba(var(--spice-rgb-selected-row),.2) !important;
+    background-color: rgba(229,233,240,.2) !important;
+}
+.main-entityTitle-subtitle.main-entityTitle-gray,
+.main-entityHeader-metaDataText,
+.main-duration-container,
+.main-connectBar-connectBar.main-type-mesto{
+    color: var(--spice-text);
 }
 /* Remove Topbar background colour */
 /*.main-topBar-background {
