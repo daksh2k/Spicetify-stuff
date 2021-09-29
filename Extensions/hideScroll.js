@@ -1,7 +1,7 @@
 //@ts-check
 
 // NAME: Better Scrollbars
-// AUTHOR: dax
+// AUTHOR: daksh2k
 // DESCRIPTION: Register a few more keybinds to support keyboard-driven navigation in Spotify client. 
 
 /// <reference path="../spicetify-cli/globals.d.ts" />

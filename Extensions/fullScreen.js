@@ -1,6 +1,6 @@
 // @ts-check
 // NAME: Full Screen Mode
-// AUTHOR: dax
+// AUTHOR: daksh2k
 // VERSION: 1.0
 // DESCRIPTION: Fancy artwork and track status display.
 

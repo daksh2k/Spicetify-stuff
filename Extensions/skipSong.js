@@ -1,7 +1,7 @@
 // @ts-check
 
 // NAME: Auto Skip Songs
-// AUTHOR: dax
+// AUTHOR: daksh2k
 // DESCRIPTION: Auto Skip Certain Songs such as remixes, acoustics etc.., Toggle in Profile menu.
 
 /// <reference path="../spicetify-cli/globals.d.ts" />

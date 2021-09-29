@@ -1,6 +1,6 @@
 // @ts-check
 // NAME: tvMode
-// AUTHOR: dax
+// AUTHOR: daksh2k
 // VERSION: 1.0
 // DESCRIPTION: Full screen display based on Spotify app on Android TV.
 
