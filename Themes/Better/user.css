@@ -2,7 +2,7 @@
     --player-bar-height: 105px;
 }*/
 .main-connectBar-connectBar {
-    --triangle-position: 179px;
+    --triangle-position: 212px;
 }
 /* Hide Banner Ads, Upgrade button, Upgrade to Premium in Menu */
 .main-leaderboardComponent-container,
@@ -45,6 +45,9 @@
 .main-duration-container,
 .main-connectBar-connectBar.main-type-mesto{
     color: var(--spice-text);
+}
+.main-connectBar-connectBar.main-type-mesto {
+    color: var(--spice-subtext);
 }
 /* Remove Topbar background colour */
 /*.main-topBar-background {
