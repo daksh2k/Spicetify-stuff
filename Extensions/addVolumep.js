@@ -11,17 +11,18 @@
         setTimeout(addVolumep, 200);
         return;
     }
-
     const ele = document.createElement("span")
     ele.classList.add("volume-percent")
     ele.setAttribute("style","font-size: 14px; padding-left: 10px")
     
     volumeBar.append(ele)
-    volumeBar.style.flex = "0 1 160px"
+    volumeBar.style.flex = "0 1 170px"
     
+    updatePercentage()
     function updatePercentage(){
         const currVolume = Math.round(Spicetify.Player.getVolume()*100)
         ele.innerText = currVolume==-100 ? `` : `${currVolume}%`
+        document.querySelector(".main-connectBar-connectBar")?.style.setProperty('--triangle-position',"229px");
     }
     const listenerEvent = {
           options: {},
