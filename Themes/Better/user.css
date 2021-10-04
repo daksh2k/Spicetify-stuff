@@ -60,8 +60,10 @@
 /*Change context menu color*/
 .main-contextMenu-menu,
 .media.connect-device-list-item,
-.connect-device-list-container{
+.connect-device-list-container,
+.main-dropDown-dropDown{
     background-color: var(--spice-c-menu) !important;
+    color:  var(--spice-text) !important;
 }
 .media.connect-device-list-item:hover,
 .media.connect-device-list-item:focus{
@@ -95,10 +97,14 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
 
 /* Hightlight selected playlist */
 .main-rootlist-rootlistItemLink.main-rootlist-rootlistItemLinkActive {
-    background: var(--spice-button);
+    color: var(--spice-subtext);
+    background: var(--spice-sidebar-button);
     border-radius: 4px;
     padding: 0 10px;
     margin: 0 5px 0 -10px;
+}
+.main-rootlist-rootlistItemLink.main-rootlist-rootlistItemLinkActive > .main-rootlist-expandArrow:focus, .main-rootlist-rootlistItemLink.main-rootlist-rootlistItemLinkActive > .main-rootlist-expandArrow:hover, .main-rootlist-rootlistItemLink.main-rootlist-rootlistItemLinkActive > .main-rootlist-textWrapper:focus, .main-rootlist-rootlistItemLink.main-rootlist-rootlistItemLinkActive > .main-rootlist-textWrapper:hover {
+    color: var(--spice-subtext);
 }
 /*Colorize play button*/
 /*.main-playPauseButton-button {
@@ -618,31 +624,30 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
 }
 
 /* Controls Changes */
-.player-controls__buttons > div > button {
-  transition-duration: 0.15s;
-}
 
-.progress-bar {
-  transition-duration: 0.15s;
-}
+
 
 /* Link playback-bar color */
 .playback-bar .progress-bar__fg {
   background-color: var(--spice-playback-bar);
 }
 
+.progress-bar,
 .progress-bar__fg,
 .progress-bar__slider {
   transition-duration: 0.15s !important;
+}
+.main-navBar-navBarLink {
+  transition: background-color 0.15s ease;
+}
+.player-controls__buttons > div > button {
+  transition-duration: 0.15s;
 }
 
 :not(.no-focus-outline) .progress-bar:focus-within .progress-bar__fg {
   background-color: var(--spice-playback-bar);
 }
 
-.main-navBar-navBarLink {
-  transition: background-color 0.15s ease;
-}
 
 .main-navBar-navBarLinkActive {
   background-color: var(--spice-sidebar-button);
@@ -945,4 +950,22 @@ ul.main-navBar-entryPoints > div.GlueDropTarget >*.active {
 }
 .collection-collectionEntityHeroCard-opacityText,.collection-collectionEntityHeroCard-headerContainer > div > span > span{
     color:  var(--spice-subtext);
+}
+.x-toggle-indicatorWrapper {
+    background-color: var(--spice-c-menu);
+}
+.x-toggle-indicator{
+    background-color: var(--spice-button-text);
+}
+input:checked~.x-toggle-indicatorWrapper .x-toggle-indicator{
+    background-color:  var(--spice-button-text);
+}
+input:checked~.x-toggle-indicatorWrapper {
+    background-color: var(--spice-button-active);
+}
+input:hover:not([disabled]):not(:active)~.x-toggle-indicatorWrapper {
+    background-color: var(--spice-button);
+}
+input:hover:not([disabled]):not(:active)~.x-toggle-indicator {
+    background-color: var(--spice-button-text);
 }
