@@ -12,8 +12,31 @@
         setTimeout(skipSong, 1000);
         return;
     }
-    
-    CONFIG = getConfig()
+
+    const SKIPS = {
+        skipAcoustic: {
+            menuTitle: "Acoustic Songs",
+            check: ({ title }) => checkByName("acoustic", title)
+        },
+        skipUnplugged: {
+            menuTitle: "Unplugged Songs",
+            check: ({ title }) => checkByName("unplugged", title)
+        },
+        skipRemix: {
+            menuTitle: "Remix Songs",
+            check: ({ title } ) => checkByName("remix", title)
+        },
+        skipLive: {
+            menuTitle: "Live Songs",
+            check: ({ title } ) => ['- live', 'live version', '(live)'].some(value => title.toLowerCase().includes(value))
+        },
+        skipExplicit: {
+            menuTitle: "Explicit Songs",
+            check: ({ is_explicit }) => is_explicit === 'true'
+        }
+    }
+
+    const CONFIG = getConfig()
 
     function getConfig() {
         try {
@@ -48,27 +71,21 @@
     function checkByName(key,title){
         return title.toLowerCase().includes(key)
     }
-    
+
     function checkSkip(){
-        const data = Player.data;
-        if (!data) return;
-        const meta = data.track.metadata;
-        const isAcoustic  = CONFIG.skipAcoustic  ? checkByName("acoustic",meta.title)   : false;
-        const isUnplugged = CONFIG.skipUnplugged ? checkByName("unplugged",meta.title)  : false;
-        const isRemix     = CONFIG.skipRemix     ? checkByName("remix",meta.title)      : false;
-        const isExplicit  = CONFIG.skipExplicit  ? checkByName("true",meta.is_explicit ? meta.is_explicit : "False") : false;
-        if(isAcoustic || isRemix || isExplicit || isUnplugged){
-            Player.next()
+        const meta = Player?.data?.track?.metadata;
+
+        if (!meta) return;
+
+        if (Object.entries(CONFIG).some(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(meta))) {
+            Player.next();
         }
     }
 
-    new Menu.SubMenu("Auto Skip", [
-            createMenu("Acoustic Songs","skipAcoustic"),
-            createMenu("Unplugged Songs","skipUnplugged"),
-            createMenu("Remix Songs","skipRemix"),
-            createMenu("Explicit Songs","skipExplicit")
-            ]).register();
-    
+    new Menu.SubMenu(
+        "Auto Skip",
+        Object.entries(SKIPS).map(([key, value]) => createMenu(value.menuTitle, key))
+    ).register();
+
     Spicetify.Player.addEventListener("songchange", checkSkip);
 })();
-
