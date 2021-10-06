@@ -57,16 +57,16 @@
      //My Personal Binds----------------------------------------------
 
      // Seek to progress percent of song
-     registerBind("NUMPAD_0", false, false, false, ()=>Spicetify.Player.seek(0));
-     registerBind("NUMPAD_1", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.1)));
-     registerBind("NUMPAD_2", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.2)));
-     registerBind("NUMPAD_3", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.3)));
-     registerBind("NUMPAD_4", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.4)));
-     registerBind("NUMPAD_5", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.5)));
-     registerBind("NUMPAD_6", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.6)));
-     registerBind("NUMPAD_7", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.7)));
-     registerBind("NUMPAD_8", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.8)));
-     registerBind("NUMPAD_9", false, false, false, ()=>Spicetify.Player.seek(Math.round(Spicetify.Player.data.duration*0.9)));
+     registerBind("NUMPAD_0", false, false, false, ()=>Spicetify.Player.seek());
+     registerBind("NUMPAD_1", false, false, false, ()=>Spicetify.Player.seek(.1));
+     registerBind("NUMPAD_2", false, false, false, ()=>Spicetify.Player.seek(.2));
+     registerBind("NUMPAD_3", false, false, false, ()=>Spicetify.Player.seek(.3));
+     registerBind("NUMPAD_4", false, false, false, ()=>Spicetify.Player.seek(.4));
+     registerBind("NUMPAD_5", false, false, false, ()=>Spicetify.Player.seek(.5));
+     registerBind("NUMPAD_6", false, false, false, ()=>Spicetify.Player.seek(.6));
+     registerBind("NUMPAD_7", false, false, false, ()=>Spicetify.Player.seek(.7));
+     registerBind("NUMPAD_8", false, false, false, ()=>Spicetify.Player.seek(.8));
+     registerBind("NUMPAD_9", false, false, false, ()=>Spicetify.Player.seek(.9));
 
 
     // Q to open Queue page
