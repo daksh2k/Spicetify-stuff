@@ -258,7 +258,10 @@ body.fsd-activated #full-screen-display {
     flex-direction: row;
     text-align: left;
     justify-content: left;
-    margin-top: 150px
+    align-items: flex-end;
+    position: absolute;
+    top: auto;
+    bottom: 100px;
 }
 #fsd-progress-container {
     width: 100%;
@@ -267,8 +270,8 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-art {
     width: calc(100vw - 840px);
-    min-width: 250px;
-    max-width: 330px;
+    min-width: 200px;
+    max-width: 250px;
     margin-left: 50px;
 }
 #fsd-details {
