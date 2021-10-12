@@ -413,7 +413,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         </div></div>
       </div>
     </div>`:""}
-</div>
+
 <div id="fsd-foreground">
     <div id="fsd-art">
         <div id="fsd-art-image">
