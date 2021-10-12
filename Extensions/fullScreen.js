@@ -779,6 +779,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 ctxSource = "queue"
                 ctxName = "" 
         }
+        if(ctxName=="")
+            ctx_source.classList.add("ctx-no-name")
+        else
+            ctx_source.classList.remove("ctx-no-name")
         ctx_source.innerText = `playing from ${ctxSource}`
         ctx_name.innerText = ctxName
     }
