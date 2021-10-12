@@ -75,9 +75,45 @@
     left: 0;
     top: 0;
 }
+#fsd-context-container{
+    float: left;
+    background-color: transparent;
+    position: fixed;
+    top: 30px;
+    left: 50px;
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    z-index: 50;
+    color: #CCC;
+    transition: opacity .5s ease-in-out;
+    opacity : 1;
+}
+#fsd-context-details{
+    padding-left: 18px;
+    padding-top: 15px;
+    line-height: initial;
+    max-width: 325px;
+    min-width: 200px;
+    font-size: 18px;
+    overflow: hidden;
+}
+#fsd-spotify-icon:before{
+  font-size: 48px;
+}
+#fsd-ctx-source{
+    text-transform: uppercase;
+}
+#fsd-ctx-name{
+    font-weight: 700;
+    font-size: 20px;
+}
+.ctx-no-name{
+    padding-top: 15px;
+    font-size: 22px;
+}
 #fsd-upnext-container{
     float: right;
-    box-sizing: border-box;
     border: 1px solid rgb(125, 125, 125);
     background-color: rgb(25, 25, 25);
     width: 472px;
