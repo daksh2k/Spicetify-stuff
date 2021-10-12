@@ -99,7 +99,7 @@
     overflow: hidden;
 }
 #fsd-spotify-icon:before{
-  font-size: 48px;
+  font-size: 52px;
 }
 #fsd-ctx-source{
     text-transform: uppercase;
