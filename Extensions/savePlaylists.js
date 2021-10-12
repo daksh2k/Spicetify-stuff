@@ -75,7 +75,7 @@
         
         setTimeout(() => {
              Spicetify.CosmosAsync.put(`https://api.spotify.com/v1/playlists/${newPlaylist.uri.split(':')[2]}`, {
-                description: `Copy of ${meta.data.name}(${meta.data.description}) by ${meta.data.owner.name}.`
+                description: `Copy of ${meta.data.name} by ${meta.data.owner.name}. ${meta.data.description}`
         })
         Spicetify.showNotification("Description updated successfully!")     
         },1000)
