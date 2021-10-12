@@ -365,7 +365,7 @@ body.fsd-activated #full-screen-display {
     container.id = "full-screen-display"
     container.classList.add("Video", "VideoPlayer--fullscreen", "VideoPlayer--landscape")
 
-    let cover, back, title, artist,album, prog, elaps, durr, play, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
+    let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
     const nextTrackImg = new Image()
     function render() {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
@@ -391,6 +391,14 @@ ${CONFIG.tvMode?`<div id="fsd-background">
   <div id="fsd-background-image"></div>
 </div>`:
 `<canvas id="fsd-background"></canvas>`}
+  ${CONFIG.enableContext?`
+   <div id="fsd-context-container">
+      <div id="fsd-spotify-icon" class="spoticon-spotifylogo-32"></div>
+      <div id="fsd-context-details">
+        <div id="fsd-ctx-source"></div>
+        <div id="fsd-ctx-name"></div>
+      </div>
+    </div>`:""}
  ${CONFIG.enableUpnext?`
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">
