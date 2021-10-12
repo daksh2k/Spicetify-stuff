@@ -774,6 +774,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             case Spicetify.URI.Type.FOLDER:
                 ctxSource = uriObjType;
                 ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                break;
+            default:
+                ctxSource = "queue"
+                ctxName = "" 
         }
         ctx_source.innerText = `playing from ${ctxSource}`
         ctx_name.innerText = ctxName
