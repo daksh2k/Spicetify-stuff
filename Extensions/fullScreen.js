@@ -136,6 +136,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    color: white;
 }
 #fsd-art-image {
     position: relative;
@@ -153,7 +154,7 @@
     height: 94%;
     z-index: -1;
     filter: blur(6px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
     transform: translateZ(0);
     backface-visibility: hidden;
     backdrop-filter: blur(6px);
