@@ -481,6 +481,11 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         artist = container.querySelector("#fsd-artist span")
         album = container.querySelector("#fsd-album span")
 
+      if(CONFIG.enableContext){
+        ctx_container = container.querySelector("#fsd-context-container")
+        ctx_source = container.querySelector("#fsd-ctx-source")
+        ctx_name = container.querySelector("#fsd-ctx-name")
+      }  
       if (CONFIG.enableUpnext) {
             fsd_myUp = container.querySelector("#fsd-upnext-container")
             fsd_myUp.onclick = Spicetify.Player.next
@@ -600,7 +605,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     
     async function updateInfo() {
        const meta = Spicetify.Player.data.track.metadata
-
+       
+       if (CONFIG.enableContext)
+          await updateContext()
+        
         // prepare title
         let rawTitle = meta.title
         if (CONFIG.trimTitle) {
@@ -754,6 +762,23 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
         requestAnimationFrame(animate);
     }
+
+    function updateContext(){
+        let ctxSource,ctxName
+        const uriObjType = Spicetify.URI.fromString(Spicetify.Player.data.context_uri).type
+        switch (uriObjType){
+            case Spicetify.URI.Type.PLAYLIST_V2:
+            case Spicetify.URI.Type.PLAYLIST:
+            case Spicetify.URI.Type.ALBUM:
+            case Spicetify.URI.Type.ARTIST:
+            case Spicetify.URI.Type.FOLDER:
+                ctxSource = uriObjType;
+                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+        }
+        ctx_source.innerText = `playing from ${ctxSource}`
+        ctx_name.innerText = ctxName
+    }
+
     function updateUpNextInfo(){
             fsd_up_next_text.innerText = "UP NEXT"
             let metadata = {}
@@ -1089,6 +1114,7 @@ button.switch.disabled {
                 newMenuItem("Enable Song Change Animation", "enableFade"),
                 newMenuItem("Enable Fullscreen", "enableFullscreen"),
                 newMenuItem("Enable Upnext Display", "enableUpnext"),
+                newMenuItem("Enable Context Display", "enableContext"),
                 newMenuItem("Enable TV Mode", "tvMode"),
             )
         }
