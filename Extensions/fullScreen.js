@@ -67,6 +67,7 @@
     const styleBase = `
 #full-screen-display {
     display: none;
+    z-index: 100;
     position: fixed;
     width: 100%;
     height: 100%;
@@ -843,7 +844,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             }
             full_screen_status=false
         }
-        document.body.append(style, container)
+        document.querySelector(".Root__top-container").append(style, container)
         Spicetify.Keyboard.registerShortcut(
         {
             key: Spicetify.Keyboard.KEYS["F11"], 
