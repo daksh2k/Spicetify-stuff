@@ -858,35 +858,57 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             play.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.pause}</svg>`
         }
     }
-    var full_screen_status=false;
+    let full_screen_status=false;
 
-
-    var timer;
-    var fadeInBuffer = false;
-    container.onmousemove = function () {
-   	 if (!fadeInBuffer) {
-   		 if (timer) {
-   			 clearTimeout(timer);
-             timer = 0;
+    let curTimer, fadeInCursor = false;
+    let ctxTimer, fadeInCtx = false;
+    
+    function hideCursor(){
+        if (!fadeInCursor) {
+         if (curTimer) {
+             clearTimeout(curTimer);
+             curTimer = 0;
          }
          container.style.cursor = ''   
         } else {
              container.style.cursor =  'default'
-            fadeInBuffer = false;
+             fadeInCursor = false;
         }
         timer = setTimeout(function () {
              container.style.cursor = 'none'
-             fadeInBuffer = true;
+             fadeInCursor = true;
         }, 2000)
-    }
-    container.style.cursor = 'default'
-  
+      }
+      
+      function hideContext(){
+        if (!fadeInCtx) {
+            if (ctxTimer) {
+                clearTimeout(ctxTimer);
+                ctxTimer = 0;
+            }
+            ctx_container.style.opacity = 1  
+            } else {
+                ctx_container.style.opacity =  1
+                fadeInCtx = false;
+            }
+            ctxTimer = setTimeout(function () {
+                ctx_container.style.opacity = 0
+                fadeInCtx = true;
+            }, 4000)
+      }
+
   FSTRANSITION = 0.7  
   function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
         container.style.setProperty('--fs-transition',`${FSTRANSITION-0.05}s`);
         updateInfo()
         Spicetify.Player.addEventListener("songchange", updateInfo)
+        container.addEventListener("mousemove", hideCursor)
+        hideCursor()
+        if(CONFIG.enableContext){
+            container.addEventListener("mousemove", hideContext)
+            hideContext()
+        }
         if(CONFIG.enableUpnext){
             updateUpNextShow()
             Spicetify.Player.addEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
@@ -944,6 +966,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     function deactivate() { 
         button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
+        container.removeEventListener("mousemove", hideCursor)
+        if(CONFIG.enableContext){
+            container.removeEventListener("mousemove", hideContext)
+        }
         if(CONFIG.enableUpnext){
             upNextShown = false;
             if(timetoshow2){
