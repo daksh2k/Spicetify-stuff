@@ -84,11 +84,13 @@
     height: 102px;
     position: fixed;
     top: 45px;
-    right: 70px;
-    display: none;
+    right: 60px;
+    display: flex;
     flex-direction: row;
     text-align: left;
     z-index: 50;
+    transition: transform .8s ease-in-out;
+    transform: translateX(600px);
 }
 #fsd_next_art_image{
     background-size: cover;
@@ -505,10 +507,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     var upNextShown = false;
     function updateUpNextShow() {
         let timetogo = getShowTime()
-        // console.log("\nTime to go:"+timetogo)
         if(timetogo<15){
-           if(!upNextShown || fsd_myUp.style.display!="flex"){
-              // console.log("%cfrom show","color: #AA1010")
+           if(!upNextShown || fsd_myUp.style.transform!="translateX(0px)"){
               updateUpNext()
            }
            if(timetoshow2){
@@ -529,13 +529,11 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         timetoshow2 = setTimeout( () => {   
                 if (timetoshow) {
                     clearTimeout(timetoshow);
-                    // console.log("timeout cleared")
                     timetoshow = 0;
                 }
-                   fsd_myUp.style.display="none"
+                   fsd_myUp.style.transform = "translateX(600px)";
                    upNextShown = false;
                if(!Spicetify.Player.origin._state.isPaused){
-                    // console.log("%c setting timeout","color: #10AA10")
                     timetoshow = setTimeout( () => {
                         updateUpNext()
                         upNextShown = true;
@@ -713,8 +711,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
     function updateUpNextInfo(){
             fsd_up_next_text.innerText = "UP NEXT"
-            // console.log("%c Executed upnext","color: #6090A0")
-            var metadata = {}
+            let metadata = {}
             const queue_metadata = Spicetify.Queue.next_tracks[0]
             if(queue_metadata){
                 if(queue_metadata.metadata)
@@ -742,13 +739,12 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             }
             fsd_first_span.innerText = metadata.title + "  •  " + next_artist
             fsd_second_span.innerText= metadata.title + "  •  " + next_artist
-            return "Done"
     }
 
     async function updateUpNext(){            
             if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue.next_tracks[0].metadata.title){
-                 var aa = await updateUpNextInfo()
-                 fsd_myUp.style.display = 'flex'
+                 await updateUpNextInfo()
+                 fsd_myUp.style.transform = "translateX(0px)";
                  upNextShown = true;
                  if(fsd_second_span.offsetWidth>=307){
                      fsd_first_span.style.paddingRight = "80px"
@@ -765,9 +761,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
              }
             else{
                  upNextShown = false
-                 fsd_myUp.style.display = 'none'
+                 fsd_myUp.style.transform = "translateX(600px)";
                  fsd_first_span.style.paddingRight = "0px"
-                 fsd_next_tit_art_inner.style.removeProperty('animation')
+                 fsd_next_tit_art_inner.style.removeProperty("animation")
                  fsd_second_span.innerText=""
                  fsd_next_tit_art_inner.style.marginLeft = "0px"
              }
