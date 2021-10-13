@@ -858,44 +858,27 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             play.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.pause}</svg>`
         }
     }
+
     let full_screen_status=false;
 
-    let curTimer, fadeInCursor = false;
-    let ctxTimer, fadeInCtx = false;
-    
+    let curTimer, ctxTimer;
     function hideCursor(){
-        if (!fadeInCursor) {
-         if (curTimer) {
-             clearTimeout(curTimer);
-             curTimer = 0;
-         }
-         container.style.cursor = ''   
-        } else {
-             container.style.cursor =  'default'
-             fadeInCursor = false;
+        if (curTimer) {
+            clearTimeout(curTimer);
+            curTimer = 0;
         }
-        timer = setTimeout(function () {
-             container.style.cursor = 'none'
-             fadeInCursor = true;
-        }, 2000)
-      }
+        container.style.cursor = 'default'
+        curTimer = setTimeout( () => container.style.cursor = 'none', 2000)
+    }
       
-      function hideContext(){
-        if (!fadeInCtx) {
-            if (ctxTimer) {
-                clearTimeout(ctxTimer);
-                ctxTimer = 0;
-            }
-            ctx_container.style.opacity = 1  
-            } else {
-                ctx_container.style.opacity =  1
-                fadeInCtx = false;
-            }
-            ctxTimer = setTimeout(function () {
-                ctx_container.style.opacity = 0
-                fadeInCtx = true;
-            }, 4000)
-      }
+    function hideContext(){
+        if (ctxTimer) {
+            clearTimeout(ctxTimer);
+            ctxTimer = 0;
+        }
+        ctx_container.style.opacity = 1
+        ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 4000)
+    }
 
   FSTRANSITION = 0.7  
   function activate() {
