@@ -75,31 +75,32 @@
     left: 0;
     top: 0;
 }
-#fsd-context-container{
-    float: left;
+#fsd-context-container {
     background-color: transparent;
+    color: #CCC;
     position: fixed;
+    float: left;
     top: 30px;
     left: 50px;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
     text-align: left;
     z-index: 50;
-    color: #CCC;
     transition: opacity .8s ease-in-out;
-    opacity : 1;
+    opacity: 1;
+    max-width: 40%;
 }
 #fsd-context-details{
     padding-left: 18px;
-    padding-top: 15px;
+    padding-top: 12px;
     line-height: initial;
-    max-width: 325px;
-    min-width: 200px;
     font-size: 18px;
     overflow: hidden;
 }
 #fsd-spotify-icon:before{
-  font-size: 52px;
+    font-size: 52px;
 }
 #fsd-ctx-source{
     text-transform: uppercase;
@@ -107,21 +108,25 @@
 #fsd-ctx-name{
     font-weight: 700;
     font-size: 20px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 .ctx-no-name{
-    padding-top: 15px;
+    padding-bottom: 12px;
     font-size: 22px;
 }
 #fsd-upnext-container{
     float: right;
-    border: 1px solid rgb(125, 125, 125);
-    background-color: rgb(25, 25, 25);
     width: 472px;
     height: 102px;
+    max-width: 40%;
     position: fixed;
     top: 45px;
     right: 60px;
     display: flex;
+    border: 1px solid rgb(125, 125, 125);
+    background-color: rgb(25, 25, 25);
     flex-direction: row;
     text-align: left;
     z-index: 50;
@@ -195,6 +200,18 @@
     backface-visibility: hidden;
     backdrop-filter: blur(6px);
 }
+#fsd-title{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+#fsd-album, #fsd-artist{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
 #fsd-progress {
     width: 100%;
     height: 6px;
@@ -250,12 +267,18 @@ body.fsd-activated #full-screen-display {
 #fsd-details {
     padding-top: 30px;
     line-height: initial;
-    max-width: 33%;
+    max-width: 500px;
     color: #FFFFFF;
 }
 #fsd-title {
-    font-size: 50px;
+    font-size: 48px;
     font-weight: var(--glue-font-weight-black);
+}
+@media (max-width: 900px), (max-height: 900px){
+    #fsd-title{
+        font-size: 35px;
+        font-weight: 500;
+    }
 }
 #fsd-artist, #fsd-album {
     font-size: 30px;
@@ -269,7 +292,7 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-status {
     display: flex;
-    min-width: 540px;
+    min-width: 100px;
     max-width: 600px;
     align-items: center;
     flex-direction: column;
@@ -320,8 +343,14 @@ body.fsd-activated #full-screen-display {
     color: #FFFFFF;
 }
 #fsd-title {
-    font-size: 63px;
+    font-size: 60px;
     font-weight: var(--glue-font-weight-black);
+}
+@media (max-width: 900px), (max-height: 800px){
+    #fsd-title{
+        font-size: 45px;
+        font-weight: 600;
+    }
 }
 #fsd-artist, #fsd-album {
     font-size: 34px;
