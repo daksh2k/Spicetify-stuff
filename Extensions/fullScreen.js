@@ -537,15 +537,20 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         "video-full-screen--hide-ui",
         "fsd-activated"
     ]
+    
     function FullScreenOn() {
         const elemx = document.documentElement;
         const full_on = elemx.requestFullscreen || elemx.webkitRequestFullScreen || elemx.mozRequestFullScreen || elemx.msRequestFullscreen;
         full_on.call(elemx);
-}
+    }
     function FullScreenOff() {
         const full_off = document.exitFullscreen || document.webkitExitFullScreen || document.mozExitFullScreen || document.msExitFullscreen;
         full_off.call(document);
-}
+    }
+
+    function getTrackInfo(uri){
+        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${uri}`)
+    }
     function getAlbumInfo(uri) {
         return Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${uri}/desktop`)
     }
@@ -782,22 +787,70 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         requestAnimationFrame(animate);
     }
 
-    function updateContext(){
+    //TODO : Add search,track type contexts, more types in station/radio and maybe more!
+    let prevUriObj;
+    async function getContext(){
         let ctxSource,ctxName
-        const uriObjType = Spicetify.URI.fromString(Spicetify.Player.data.context_uri).type
-        switch (uriObjType){
-            case Spicetify.URI.Type.PLAYLIST_V2:
-            case Spicetify.URI.Type.PLAYLIST:
-            case Spicetify.URI.Type.ALBUM:
-            case Spicetify.URI.Type.ARTIST:
-            case Spicetify.URI.Type.FOLDER:
-                ctxSource = uriObjType;
-                ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                break;
-            default:
-                ctxSource = "queue"
-                ctxName = "" 
+        if(Spicetify.Player.data.track.provider==="queue"){
+            ctxSource = "queue"
+            ctxName =  ""
         }
+        else{
+            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri)
+            if(JSON.stringify(uriObj)===JSON.stringify(prevUriObj) && ctxSource!=undefined && ctxName!=undefined)
+                return [ctxSource,ctxName];
+            prevUriObj = uriObj;
+            switch (uriObj.type){
+                case Spicetify.URI.Type.COLLECTION:
+                    ctxSource = uriObj.type;
+                    ctxName = "Liked Songs";
+                    break;
+                case Spicetify.URI.Type.PLAYLIST_V2:
+                    ctxSource = "playlist"
+                    ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
+                    break;
+                
+                case Spicetify.URI.Type.STATION:
+                case Spicetify.URI.Type.RADIO:
+                    const rType = uriObj.args[0]
+                    ctxSource = `${rType} radio`;
+                    if(rType==="album")
+                        await getAlbumInfo(uriObj.args[1]).then(meta => ctxName=meta.name)
+                    else if(rType==="track")
+                        await getTrackInfo(uriObj.args[1]).then(meta => ctxName=`${meta.name}  •  ${meta.artists[0].name}`)
+                    break;
+                
+                case Spicetify.URI.Type.PLAYLIST:
+                case Spicetify.URI.Type.ALBUM:
+                case Spicetify.URI.Type.ARTIST:
+                    ctxSource = uriObj.type;
+                    ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                    break;
+                
+                case Spicetify.URI.Type.FOLDER:
+                    ctxSource = uriObj.type;
+                    const res = await Spicetify.CosmosAsync.get(
+                        `sp://core-playlist/v1/rootlist`,
+                        { policy: { folder: { rows: true, link: true , name: true} } }
+                        );
+                    for(const item of res.rows){
+                        if(item.type==="folder" && item.link === Spicetify.Player.data.context_uri){
+                            ctxName = item.name
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    ctxSource = "queue"
+                    ctxName = ""
+            }
+
+        }
+        return [ctxSource,ctxName]
+    }
+
+    async function updateContext(){
+        [ctxSource,ctxName] = await getContext().catch(err => console.error(err));
         if(ctxName=="")
             ctx_source.classList.add("ctx-no-name")
         else
