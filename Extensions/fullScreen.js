@@ -543,8 +543,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
 });
 
-    var timetoshow,timetoshow2
-    var upNextShown = false;
+    let timetoshow,timetoshow2
+    let upNextShown = false;
     function updateUpNextShow() {
         let timetogo = getShowTime()
         if(timetogo<15){
@@ -597,7 +597,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
        const meta = Spicetify.Player.data.track.metadata
        
        if (CONFIG.enableContext)
-          await updateContext()
+            await updateContext().catch(err => console.error("Error getting context: ",err))
         
         // prepare title
         let rawTitle = meta.title
@@ -657,11 +657,11 @@ ${CONFIG.tvMode?`<div id="fsd-background">
           if(meta.artist_uri != null){
                let arUri =  meta.artist_uri.split(":")[2]
                if(meta.artist_uri.split(":")[1] === "local"){
-                    var res = await searchArt(meta.artist_name).catch((err) => console.error(err))
+                    let res = await searchArt(meta.artist_name).catch(err => console.error(err))
                     if (!res) arUri=""
                     else  arUri = res.artists.items[0].id
               }
-              var artistInfo = await getArtistHero(arUri).catch((err) => console.error(err))
+              let artistInfo = await getArtistHero(arUri).catch(err => console.error(err))
               if (!artistInfo) nextTrackImg.src = meta.image_xlarge_url
               else {
                 if(artistInfo.header_image) nextTrackImg.src = artistInfo.header_image.image
