@@ -86,7 +86,7 @@
     text-align: left;
     z-index: 50;
     color: #CCC;
-    transition: opacity .5s ease-in-out;
+    transition: opacity .8s ease-in-out;
     opacity : 1;
 }
 #fsd-context-details{
