@@ -421,53 +421,43 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         </div>
     </div>
     <div id="fsd-details">
-        <div id="fsd-title"></div>
-        <div id="fsd-artist">
-        <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">
-        ${Spicetify.SVGIcons.artist}
-    </svg>
-    <span></span>
-        </div>
-        ${CONFIG.showAlbum ? `<div id="fsd-album">
-        <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">
-                ${Spicetify.SVGIcons.album}
-            </svg>
-            <span></span>
-        </div>` : ""}
-        <div id="fsd-status" class="${CONFIG.enableControl || (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? "active" : ""}">
-        ${CONFIG.enableControl ? `
-        <div id="fsd-controls">
-           <button id="fsd-back">
-                <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
-                    ${Spicetify.SVGIcons["skip-back"]}
-                </svg>
-            </button>
-            <button id="fsd-play">
-                <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
-                    ${Spicetify.SVGIcons.play}
-                </svg>
-            </button>
-            <button id="fsd-next">
-                <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
-                    ${Spicetify.SVGIcons["skip-forward"]}
-                </svg>
-            </button>
-        </div>` : ""}
-        ${ CONFIG.tvMode ? `${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? `
-            <div id="fsd-progress-container">
-                <span id="fsd-elapsed"></span>
-                <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
-                <span id="fsd-duration"></span>
-            </div>` : ""}`:""}
-            
-        </div>
+            <div id="fsd-title"></div>
+            <div id="fsd-artist">
+                <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>
+                <span></span>
+            </div>
+            ${CONFIG.showAlbum ? 
+            `<div id="fsd-album">
+                 <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>
+                 <span></span>
+            </div>` : ""} 
+            <div id="fsd-status" class="${CONFIG.enableControl || (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? "active" : ""}">
+                ${CONFIG.enableControl ? 
+                    `<div id="fsd-controls">
+                        <button id="fsd-back">
+                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-back"]}</svg>
+                        </button>
+                        <button id="fsd-play">
+                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.play}</svg>
+                        </button>
+                        <button id="fsd-next">
+                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-forward"]}</svg>
+                        </button>
+                    </div>` : ""}
+                ${ CONFIG.tvMode ? `${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? 
+                    `<div id="fsd-progress-container">
+                        <span id="fsd-elapsed"></span>
+                        <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
+                        <span id="fsd-duration"></span>
+                    </div>` : ""}`:""}
+            </div>
     </div>
-     ${ CONFIG.tvMode ? "":`${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? `
-            <div id="fsd-progress-container">
-                <span id="fsd-elapsed"></span>
-                <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
-                <span id="fsd-duration"></span>
-            </div>` : ""}`}
+    ${ CONFIG.tvMode ? "":`${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ?
+        `<div id="fsd-progress-container">
+            <span id="fsd-elapsed"></span>
+            <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
+            <span id="fsd-duration"></span>
+        </div>` : ""}`}
 </div>`
        if(CONFIG.tvMode)
            back = container.querySelector("#fsd-background-image")
