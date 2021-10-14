@@ -66,6 +66,7 @@
     }
 
     const CONFIG = getConfig()
+    const OFFLINESVG = `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`
 
     const style = document.createElement("style")
     const styleBase = `
@@ -147,7 +148,7 @@
     padding-left: 18px;
     padding-top: 17px;
     line-height: initial;
-    width: 100%;
+    width: calc(100% - 115px);
     color: #FFFFFF;
     font-size: 19px;
     overflow: hidden;
@@ -164,7 +165,7 @@
     0% {
         transform: translateX(0%);
     }
-    15% {
+    18% {
         transform: translateX(0%);
     }
     100% {
@@ -591,7 +592,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     function updateUpNextShow() {
         setTimeout( () => {
             let timetogo = getShowTime()
-            if(timetogo<15){
+            if (timetogo<15) {
                if(!upNextShown || fsd_myUp.style.transform!="translateX(0px)"){
                   updateUpNext()
                }
@@ -605,27 +606,27 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 }
                upNextShown = true
            }
-            else{
-                if (timetoshow2){ 
-                  clearTimeout(timetoshow2);
-                  timetoshow2 = 0;
-              }
-            timetoshow2 = setTimeout( () => {   
-                    if (timetoshow) {
-                        clearTimeout(timetoshow);
-                        timetoshow = 0;
-                    }
-                       fsd_myUp.style.transform = "translateX(600px)";
-                       upNextShown = false;
+           else {
+               if (timetoshow2){ 
+                   clearTimeout(timetoshow2);
+                   timetoshow2 = 0;
+               }
+               timetoshow2 = setTimeout( () => {
+                   if (timetoshow) {
+                       clearTimeout(timetoshow);
+                       timetoshow = 0;
+                   }
+                   fsd_myUp.style.transform = "translateX(600px)";
+                   upNextShown = false;
                    if(!Spicetify.Player.origin._state.isPaused){
-                        timetoshow = setTimeout( () => {
-                            updateUpNext()
-                            upNextShown = true;
-                        }, timetogo)
-                       }
-                },3)
-            }
-        },100)
+                       timetoshow = setTimeout( () => {
+                           updateUpNext()
+                           upNextShown = true;
+                       }, timetogo)
+                    }
+               },3)
+           }
+       },100)
     }
     function getShowTime(){
         let showBefore = CONFIG.tvMode ? 45000:30000
@@ -696,24 +697,21 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
-      const previouseImg = nextTrackImg.cloneNode()  
-      if(CONFIG.tvMode){
-         //Prepare Artist Image
-          if(meta.artist_uri != null){
-               let arUri =  meta.artist_uri.split(":")[2]
-               if(meta.artist_uri.split(":")[1] === "local"){
-                    let res = await searchArt(meta.artist_name).catch(err => console.error(err))
-                    if (!res) arUri=""
-                    else  arUri = res.artists.items[0].id
-              }
-              let artistInfo = await getArtistHero(arUri).catch(err => console.error(err))
-              if (!artistInfo) nextTrackImg.src = meta.image_xlarge_url
-              else {
-                if(artistInfo.header_image) nextTrackImg.src = artistInfo.header_image.image
-                else nextTrackImg.src = meta.image_xlarge_url
-            } 
-        } else nextTrackImg.src = meta.image_xlarge_url  
-     } else nextTrackImg.src = meta.image_xlarge_url
+        
+        const previouseImg = nextTrackImg.cloneNode()  
+        if(CONFIG.tvMode){
+           //Prepare Artist Image
+            if(meta.artist_uri != null){
+                 let arUri =  meta.artist_uri.split(":")[2]
+                 if(meta.artist_uri.split(":")[1] === "local"){
+                      let res = await searchArt(meta.artist_name).catch(err => console.error(err))
+                      arUri = res ? res.artists.items[0].id : ""
+                }
+                let artistInfo = await getArtistHero(arUri).catch(err => console.error(err))
+                if (!artistInfo) nextTrackImg.src = meta.image_xlarge_url
+                else  nextTrackImg.src = artistInfo.header_image ? artistInfo.header_image.image : meta.image_xlarge_url
+          } else nextTrackImg.src = meta.image_xlarge_url  
+         } else nextTrackImg.src = meta.image_xlarge_url
         
         // Wait until next track image is downloaded then update UI text and images
         nextTrackImg.onload = () => {
@@ -734,16 +732,12 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             if (durr) {
                 durr.innerText = durationText || ""
             }
-            // Reset Animation
-             fsd_next_tit_art_inner.style.removeProperty('animation')
-             fsd_second_span.innerText=""
-             fsd_first_span.style.paddingRight = "0px"
         }
 
         nextTrackImg.onerror = () => {
             // Placeholder
             console.log("Check your Internet!Unable to load Image")
-            nextTrackImg.src = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="
+            nextTrackImg.src = OFFLINESVG
         }
     }
 
@@ -895,7 +889,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                  if(metadata.image_url)
                     fsd_nextCover.style.backgroundImage = `url("${metadata.image_url}")`
                  else{
-                    fsd_nextCover.style.backgroundImage = `url("${"data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo="}")`
+                    fsd_nextCover.style.backgroundImage = `url("${OFFLINESVG}")`
                 }
             }
             fsd_first_span.innerText = metadata.title + "  •  " + next_artist
@@ -909,13 +903,13 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                  upNextShown = true;
                  if(fsd_second_span.offsetWidth>=(fsd_myUp.offsetWidth-165)){
                      fsd_first_span.style.paddingRight = "80px"
-                     anim_time= 5000*(fsd_first_span.offsetWidth/300)
+                     anim_time= 5000*(fsd_first_span.offsetWidth/400)
                      fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
-                     fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 1000ms infinite"
+                     fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 800ms infinite"
                   } 
                   else{
                      fsd_first_span.style.paddingRight = "0px"
-                     fsd_next_tit_art_inner.style.removeProperty('animation')
+                     fsd_next_tit_art_inner.style.animation = "none"
                      fsd_second_span.innerText=""
                      fsd_next_tit_art_inner.style.marginLeft = "0px"
                 }
@@ -924,7 +918,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                  upNextShown = false
                  fsd_myUp.style.transform = "translateX(600px)";
                  fsd_first_span.style.paddingRight = "0px"
-                 fsd_next_tit_art_inner.style.removeProperty("animation")
+                 fsd_next_tit_art_inner.style.animation = "none"
                  fsd_second_span.innerText=""
                  fsd_next_tit_art_inner.style.marginLeft = "0px"
              }
@@ -1060,6 +1054,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         }
         document.body.classList.remove(...classes)
         full_screen_status=false;
+        upNextShown = false;
         if (CONFIG.enableFullscreen) {
             FullScreenOff()
         }
