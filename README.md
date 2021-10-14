@@ -1,5 +1,4 @@
 # Spicetify Extensions and Themes
-- ## Extensions:
   - ### [Save Playlists](./Extensions/savePlaylists.js)
     **Description:** Save any playlist by right clicking on a playlist > Save Playlist.\
     A new playlist will be created with the same name+last updated date of the parent playlist.\
@@ -32,23 +31,26 @@
     
     ![Volume Percentage](https://i.imgur.com/lQQXSIg.png)
 
-- ## Community extensions modified for extra features or personal preference:
+ ## Community extensions modified for extra features or personal preference:
   - ### [Full Screen Mode](./Extensions/fullScreen.js)
     **Description:** Modified from the [fullAppDisplay.js](https://github.com/khanhas/spicetify-cli/blob/master/Extensions/fullAppDisplay.js) with added features.\
     Fancy artwork and track status display.
     
     Extra Features:
     - Upnext Display
+    - Current Context Display
     - Bigger Album Art and other Style Changes
     - TV Mode - With Artist Header Image as Background(Now the default full screen mode for spotify if you have premium)
 
-      #### **Screenshots:**
-      \
-      <img align="center" src="https://i.imgur.com/9mFTC6y.png" alt="Up Next" width="711" height="auto"/>\
-      \
-      <img align="center" src="https://i.imgur.com/Kii9Khb.jpeg" alt="Default Mode" width="711" height="auto"/>\
-      \
-      <img align="center" src="https://i.imgur.com/yCx3qly.jpg" alt="TV Mode" width="711" height="auto"/>
+    <details>
+      <summary>Screenshots </summary>
+      <img align="center" src="https://i.imgur.com/9mFTC6y.png" alt="Up Next" width="712" height="auto"/><hr>
+      <img align="center" src="https://i.imgur.com/mAkNDSJ.png" alt="Context" width="356" height="auto"/> &nbsp; <img align="center" src="https://i.imgur.com/iHalVYG.png" alt="Context2" width="356" height="auto"/><hr>
+      <img align="center" src="https://i.imgur.com/xlB7VGk.png" alt="Default Mode2" width="712" height="auto"/><hr>
+      <img align="center" src="https://i.imgur.com/Kii9Khb.jpeg" alt="Default Mode3" width="712" height="auto"/><hr>
+      <img align="center" src="https://i.imgur.com/gTQuIgl.jpeg" alt="TV Mode" width="712" height="auto"/><hr>
+      <img align="center" src="https://i.imgur.com/LtYLHiv.jpg" alt="TV Mode2" width="712" height="auto"/>
+    </details>
 
       
 
