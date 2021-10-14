@@ -39,26 +39,30 @@
         openwithDef
      );
     function openwithTV() {
-            if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
-              if(!CONFIG.tvMode){
-                 CONFIG["tvMode"]= true;
-                 saveConfig()
-                 render()
-             }
-              activate()
-          } else
-              deactivate();
+        configContainer = ""
+        if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
+            if(!CONFIG.tvMode){
+                CONFIG["tvMode"]= true;
+                saveConfig()
+                render()
+            }
+            activate()
+        }
+        else
+            deactivate();
     }
     function openwithDef() {
-            if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
-              if(CONFIG.tvMode){
+        configContainer = ""
+        if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
+            if(CONFIG.tvMode){
                 CONFIG["tvMode"]= false;
                 saveConfig()
                 render()
              }
-              activate()
-         }  else
-                deactivate();
+             activate()
+         }
+         else
+            deactivate();
     }
 
     const CONFIG = getConfig()
@@ -1073,38 +1077,19 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         );
     }
     function fsToggle() {
+        configContainer = ""
         if(CONFIG.enableFullscreen){
             CONFIG["enableFullscreen"]= false
             saveConfig()
             render()
             activate()
-     } else{
+        } else{
             CONFIG["enableFullscreen"]= true
             saveConfig()
             render()
             activate()
         }
     }
-  //   function onOff() {
-  //      if (document.body.classList.contains('fsd-activated'))
-  //       deactivate();
-  //      else
-  //       activate();
-  // }    
-  //  function sleep (time) {
-  //       return new Promise((resolve) => setTimeout(resolve, time));
-  //   }  
-  // function togglefsdode() {
-  //       if (!document.body.classList.contains('fsd-activated')) {
-  //       document.getElementById("TV-button").click();
-  //   }
-  //    else if(document.body.classList.contains('fsd-activated'))
-  //   {
-  //       document.getElementById("fs-button").click();
-  //       sleep(5).then(() => {
-  //      document.getElementById("TV-button").click();
-  //      });
-  //   }}
 
     function getConfig() {
         try {
@@ -1216,6 +1201,7 @@ button.switch.disabled {
     container.ondblclick = deactivate
     container.oncontextmenu = openConfig
 
+    // Add Full Screen Button on bottom bar
     const button = document.createElement("button")
     button.classList.add("button", "spoticon-fullscreen-16", "fsd-button","control-button","InvalidDropTarget")
     button.setAttribute("data-tooltip", "Full Screen")
@@ -1227,7 +1213,7 @@ button.switch.disabled {
     extraBar.append(button);
     button.oncontextmenu = openConfig;
 
-    // Add activator on top bar
+    // Add TV Mode Button on top bar
     const button2 = document.createElement("button")
     button2.classList.add("button", "spoticon-device-tv-16", "tm-button", "full-button","main-topBar-button","InvalidDropTarget")
     button2.setAttribute("data-tooltip", "TV Mode")
