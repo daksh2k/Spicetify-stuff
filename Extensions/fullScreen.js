@@ -124,7 +124,7 @@
     float: right;
     width: 472px;
     height: 102px;
-    max-width: 40%;
+    max-width: 45%;
     position: fixed;
     top: 45px;
     right: 60px;
@@ -147,8 +147,7 @@
     padding-left: 18px;
     padding-top: 17px;
     line-height: initial;
-    max-width: 325px;
-    min-width: 200px;
+    width: 100%;
     color: #FFFFFF;
     font-size: 19px;
     overflow: hidden;
@@ -256,7 +255,7 @@ body.fsd-activated #full-screen-display {
 
     const styleChoices = [`
 #fsd-art {
-    width: calc(100vh - 400px);
+    width: calc(100vh - 300px);
     max-width: 600px;
 }
 #fsd-foreground {
@@ -404,9 +403,15 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
-        Spicetify.Player.removeEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
+
+        Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
         Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
         Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
+        window.removeEventListener("resize",updateUpNext)
+
+        container.removeEventListener("mousemove", hideCursor)
+        container.removeEventListener("mousemove", hideContext)
+
         upNextShown = false;
         if(timetoshow2){
           clearTimeout(timetoshow2)
@@ -564,61 +569,63 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     function searchArt(name){
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
     }
-    document.addEventListener('visibilitychange', function() {
-    if(document.hidden) {
-        upNextShown = false;
-        if(timetoshow2){
-          clearTimeout(timetoshow2)
+
+    document.addEventListener('visibilitychange', () => {
+        if(document.hidden) {
+            upNextShown = false;
+            if(timetoshow2){
+                clearTimeout(timetoshow2)
                 timetoshow2 = 0
             }
-        if(timetoshow){
+            if(timetoshow){
                 clearTimeout(timetoshow)
                 timetoshow = 0 
             }
-    }
-    else {
-        updateUpNextShow()
-    }
-});
+        }
+        else 
+            updateUpNextShow()
+    });
 
     let timetoshow,timetoshow2
     let upNextShown = false;
     function updateUpNextShow() {
-        let timetogo = getShowTime()
-        if(timetogo<15){
-           if(!upNextShown || fsd_myUp.style.transform!="translateX(0px)"){
-              updateUpNext()
-           }
-           if(timetoshow2){
-               clearTimeout(timetoshow2)
-               timetoshow2 = 0
-            }
-           if(timetoshow){
-               clearTimeout(timetoshow)
-               timetoshow = 0 
-            }
-           upNextShown = true
-       }
-        else{
-            if (timetoshow2){ 
-              clearTimeout(timetoshow2);
-              timetoshow2 = 0;
-          }
-        timetoshow2 = setTimeout( () => {   
-                if (timetoshow) {
-                    clearTimeout(timetoshow);
-                    timetoshow = 0;
+        setTimeout( () => {
+            let timetogo = getShowTime()
+            if(timetogo<15){
+               if(!upNextShown || fsd_myUp.style.transform!="translateX(0px)"){
+                  updateUpNext()
+               }
+               if(timetoshow2){
+                   clearTimeout(timetoshow2)
+                   timetoshow2 = 0
                 }
-                   fsd_myUp.style.transform = "translateX(600px)";
-                   upNextShown = false;
-               if(!Spicetify.Player.origin._state.isPaused){
-                    timetoshow = setTimeout( () => {
-                        updateUpNext()
-                        upNextShown = true;
-                    }, timetogo)
-                   }
-            },3)
-        }
+               if(timetoshow){
+                   clearTimeout(timetoshow)
+                   timetoshow = 0 
+                }
+               upNextShown = true
+           }
+            else{
+                if (timetoshow2){ 
+                  clearTimeout(timetoshow2);
+                  timetoshow2 = 0;
+              }
+            timetoshow2 = setTimeout( () => {   
+                    if (timetoshow) {
+                        clearTimeout(timetoshow);
+                        timetoshow = 0;
+                    }
+                       fsd_myUp.style.transform = "translateX(600px)";
+                       upNextShown = false;
+                   if(!Spicetify.Player.origin._state.isPaused){
+                        timetoshow = setTimeout( () => {
+                            updateUpNext()
+                            upNextShown = true;
+                        }, timetogo)
+                       }
+                },3)
+            }
+        },100)
     }
     function getShowTime(){
         let showBefore = CONFIG.tvMode ? 45000:30000
@@ -900,7 +907,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
                  upNextShown = true;
-                 if(fsd_second_span.offsetWidth>=307){
+                 if(fsd_second_span.offsetWidth>=(fsd_myUp.offsetWidth-165)){
                      fsd_first_span.style.paddingRight = "80px"
                      anim_time= 5000*(fsd_first_span.offsetWidth/300)
                      fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
@@ -956,8 +963,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 4000)
     }
 
-  FSTRANSITION = 0.7  
-  function activate() {
+    FSTRANSITION = 0.7  
+    function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
         container.style.setProperty('--fs-transition',`${FSTRANSITION-0.05}s`);
         updateInfo()
@@ -970,9 +977,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         }
         if(CONFIG.enableUpnext){
             updateUpNextShow()
-            Spicetify.Player.addEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
+            Spicetify.Player.addEventListener("songchange",updateUpNextShow)
             Spicetify.Player.origin2.state.addExtendedStatusListener(updateUpNextShow);
             Spicetify.Player.origin2.state.addQueueListener(updateUpNext);
+            window.addEventListener("resize",updateUpNext)
         }
         if(CONFIG.enableFade){
             cover.classList.add("fsd-background-fade")
@@ -1011,7 +1019,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             alt: false,
         }, 
         fsToggle
-     );
+       );
        Spicetify.Keyboard.registerShortcut(
         {
             key: Spicetify.Keyboard.KEYS["ESCAPE"], 
@@ -1020,8 +1028,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             alt: false,
         }, 
         deactivate
-    );
-}
+      );
+    }
     function deactivate() { 
         button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
@@ -1040,8 +1048,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 timetoshow = 0 
             }
             Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
-            Spicetify.Player.removeEventListener("songchange", ()=> {setTimeout(updateUpNextShow,100)})
+            Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
             Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
+            window.removeEventListener("resize",updateUpNext)
         }
         if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
