@@ -406,7 +406,7 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
 
         Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
-        Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
+        Spicetify.Player.origin2.state.statusListeners = Spicetify.Player.origin2.state.statusListeners.filter(v => v != updateUpNextShow);
         Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
         window.removeEventListener("resize",updateUpNext)
 
@@ -972,7 +972,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         if(CONFIG.enableUpnext){
             updateUpNextShow()
             Spicetify.Player.addEventListener("songchange",updateUpNextShow)
-            Spicetify.Player.origin2.state.addExtendedStatusListener(updateUpNextShow);
+            Spicetify.Player.origin2.state.addStatusListener(updateUpNextShow);
             Spicetify.Player.origin2.state.addQueueListener(updateUpNext);
             window.addEventListener("resize",updateUpNext)
         }
@@ -1041,7 +1041,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 clearTimeout(timetoshow)
                 timetoshow = 0 
             }
-            Spicetify.Player.origin2.state.removeExtendedStatusListener(updateUpNextShow);
+            Spicetify.Player.origin2.state.statusListeners = Spicetify.Player.origin2.state.statusListeners.filter(v => v != updateUpNextShow);
             Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
             Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
             window.removeEventListener("resize",updateUpNext)
