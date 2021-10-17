@@ -558,14 +558,17 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         full_off.call(document);
     }
 
-    function getTrackInfo(uri){
-        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${uri}`)
+    function getTrackInfo(id){
+        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${id}`)
     }
-    function getAlbumInfo(uri) {
-        return Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${uri}/desktop`)
+    function getAlbumInfo(id) {
+        return Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${id}/desktop`)
     }
-    function getArtistHero(artistId) {
-        return Spicetify.CosmosAsync.get(`hm://artist/v1/${artistId}/desktop?format=json`)
+    function getPlaylistInfo(uri) {
+        return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`)
+    }
+    function getArtistInfo(id) {
+        return Spicetify.CosmosAsync.get(`hm://artist/v1/${id}/desktop?format=json`)
     }
     function searchArt(name){
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
@@ -707,7 +710,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                       let res = await searchArt(meta.artist_name).catch(err => console.error(err))
                       arUri = res ? res.artists.items[0].id : ""
                 }
-                let artistInfo = await getArtistHero(arUri).catch(err => console.error(err))
+                let artistInfo = await getArtistInfo(arUri).catch(err => console.error(err))
                 if (!artistInfo) nextTrackImg.src = meta.image_xlarge_url
                 else  nextTrackImg.src = artistInfo.header_image ? artistInfo.header_image.image : meta.image_xlarge_url
           } else nextTrackImg.src = meta.image_xlarge_url  
@@ -792,7 +795,6 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         requestAnimationFrame(animate);
     }
 
-    //TODO : Add search,track type contexts, more types in station/radio and maybe more!
     let prevUriObj;
     async function getContext(){
         let ctxSource,ctxName
@@ -806,6 +808,14 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 return [ctxSource,ctxName];
             prevUriObj = uriObj;
             switch (uriObj.type){
+                case Spicetify.URI.Type.TRACK:
+                    ctxSource = uriObj.type;
+                    await getTrackInfo(uriObj._base62Id).then(meta => ctxName=`${meta.name}  •  ${meta.artists[0].name}`);
+                    break;
+                case Spicetify.URI.Type.SEARCH:
+                    ctxSource =  uriObj.type;
+                    ctxName = `"${uriObj.query}" in Songs`;
+                    break;   
                 case Spicetify.URI.Type.COLLECTION:
                     ctxSource = uriObj.type;
                     ctxName = "Liked Songs";
@@ -823,6 +833,12 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                         await getAlbumInfo(uriObj.args[1]).then(meta => ctxName=meta.name)
                     else if(rType==="track")
                         await getTrackInfo(uriObj.args[1]).then(meta => ctxName=`${meta.name}  •  ${meta.artists[0].name}`)
+                    else if(rType==="artist")
+                        await getArtistInfo(uriObj.args[1]).then(meta => ctxName=meta.info.name)
+                    else if(rType==="playlist" || rType==="playlist-v2")
+                        await getPlaylistInfo("spotify:playlist:"+uriObj.args[1]).then(meta => ctxName=meta.playlist.name)
+                    else
+                        ctxName = "";
                     break;
                 
                 case Spicetify.URI.Type.PLAYLIST:
@@ -833,7 +849,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                     break;
                 
                 case Spicetify.URI.Type.FOLDER:
-                    ctxSource = uriObj.type;
+                    ctxSource = "playlist folder"
                     const res = await Spicetify.CosmosAsync.get(
                         `sp://core-playlist/v1/rootlist`,
                         { policy: { folder: { rows: true, link: true , name: true} } }
@@ -846,7 +862,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                     }
                     break;
                 default:
-                    ctxSource = "queue"
+                    ctxSource = "unknown"
                     ctxName = ""
             }
 
