@@ -34,16 +34,16 @@
 
     function fetchAndCreate(uris) {
         fetchPlaylist(uris[0])
-            .then((meta) => {
+            .then( (meta) => {
                 createPlaylist(meta)
                 .catch((err) => {
-                        Spicetify.showNotification(`Error in Creating: ${err}`)
-                        console.error("Error in Creating: ",err)
-                    });
+                    Spicetify.showNotification("Error in Creating! Check Console.")
+                    console.error("Creation Error: ",err)
+                });
             })
             .catch((err) => {
-                Spicetify.showNotification(`Error in Fetching: ${err}`)
-                console.error("Error in Fetching: ",err)
+                Spicetify.showNotification("Error in Fetching! Check Console.")
+                console.error("Fetching Error: ",err)
             });
     }
 
@@ -76,8 +76,7 @@
         setTimeout(() => {
              Spicetify.CosmosAsync.put(`https://api.spotify.com/v1/playlists/${newPlaylist.uri.split(':')[2]}`, {
                 description: `Copy of ${meta.data.name} by ${meta.data.owner.name}. ${meta.data.description}`
-        })
-        Spicetify.showNotification("Description updated successfully!")     
+        }).then( () => Spicetify.showNotification("Description updated successfully!")  )   
         },1000)
 
     }     

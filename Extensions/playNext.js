@@ -38,11 +38,12 @@
               revision: Spicetify.Queue?.revision,
               next_tracks: currentQueue,
               prev_tracks: Spicetify.Queue?.prev_tracks
-              }).catch( (err) => {
-            	console.error("Failed to add to queue",err);
-        	    Spicetify.showNotification("Unable to Add");
-        	})
-        	Spicetify.showNotification("Added to Play Next");
+              })
+              .then(() => Spicetify.showNotification("Added to Play Next"))
+              .catch( (err) => {
+                console.error("Failed to add to queue",err);
+                Spicetify.showNotification("Unable to Add! Check Console.");
+            })
     }
 
     // Add option to Context Menu
