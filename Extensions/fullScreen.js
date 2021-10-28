@@ -99,13 +99,13 @@
 }
 #fsd-context-details{
     padding-left: 18px;
-    padding-top: 12px;
+    padding-top: 5px;
     line-height: initial;
     font-size: 18px;
     overflow: hidden;
 }
 #fsd-spotify-icon:before{
-    font-size: 52px;
+    font-size: 55px;
 }
 #fsd-ctx-source{
     text-transform: uppercase;
@@ -118,8 +118,9 @@
     -webkit-line-clamp: 2;
 }
 .ctx-no-name{
-    padding-bottom: 12px;
-    font-size: 22px;
+    padding-bottom: 2px;
+    font-size: 24px;
+    font-weight: 600;
 }
 #fsd-upnext-container{
     float: right;
