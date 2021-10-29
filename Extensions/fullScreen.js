@@ -929,17 +929,21 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
                  upNextShown = true;
-                 if(fsd_second_span.offsetWidth>=(fsd_myUp.offsetWidth-165)){
-                     fsd_first_span.style.paddingRight = "80px"
-                     anim_time= 5000*(fsd_first_span.offsetWidth/400)
-                     fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
-                     fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 800ms infinite"
+                 if(fsd_second_span.offsetWidth>(fsd_next_tit_art.offsetWidth-2)){
+                     // fsd_first_span.style.paddingRight = "80px"
+                     // anim_time= 5000*(fsd_first_span.offsetWidth/400)
+                     // fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
+                     // fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 800ms infinite"
+                     
+                     fsd_second_span.innerText=""
+                     anim_time= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
+                     fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth+5}px`);
+                     fsd_next_tit_art_inner.style.animation = "fsd_translate "+ anim_time +"ms linear 800ms infinite"
                   } 
                   else{
                      fsd_first_span.style.paddingRight = "0px"
                      fsd_next_tit_art_inner.style.animation = "none"
                      fsd_second_span.innerText=""
-                     fsd_next_tit_art_inner.style.marginLeft = "0px"
                 }
              }
             else{
@@ -948,7 +952,6 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                  fsd_first_span.style.paddingRight = "0px"
                  fsd_next_tit_art_inner.style.animation = "none"
                  fsd_second_span.innerText=""
-                 fsd_next_tit_art_inner.style.marginLeft = "0px"
              }
     }
 
