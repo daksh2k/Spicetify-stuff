@@ -173,6 +173,17 @@
          transform: translateX(var(--translate_width_fsd));
     }
 }
+@keyframes fsd_translate {
+    0%,10% {
+        transform: translateX(0%);
+    }
+    50%,55% {
+        transform: translateX(var(--translate_width_fsd));
+    }
+    100% {
+        transform: translateX(0%);
+    }
+}
 #fsd-foreground {
     position: relative;
     top: 0;
