@@ -2,6 +2,8 @@ config.ini
 config-xpui.ini.drib.txt
 Backup
 Extensions/Vibrant.min.js
+Extensions/drib*
+Extensions/hide*
 Extensions/Spotify-Adblock
 Extensions/Custom App Backup
 Extracted
