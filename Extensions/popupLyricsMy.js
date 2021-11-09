@@ -917,16 +917,18 @@ button.switch.small {
 }
 #popup-config-container select {
     color: var(--spice-text);
-    background: rgba(var(--spice-rgb-shadow), .7);
-    border: 0;
+    background: rgba(var(--spice-rgb-subtext), .7);
+    border: none;
     height: 32px;
 }
 #popup-config-container input {
+    color: var(--spice-text);
+    background: var(--spice-card);
     width: 100%;
     margin-top: 10px;
     padding: 0 5px;
     height: 32px;
-    border: 0;
+    border: none;
 }`;
             const optionHeader = document.createElement("h2");
             optionHeader.innerText = "Options";

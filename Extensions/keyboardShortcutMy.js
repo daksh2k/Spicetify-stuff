@@ -57,7 +57,7 @@
      //My Personal Binds----------------------------------------------
 
      // Seek to progress percent of song
-     registerBind("NUMPAD_0", false, false, false, ()=>Spicetify.Player.seek());
+     registerBind("NUMPAD_0", false, false, false, ()=>Spicetify.Player.seek(0));
      registerBind("NUMPAD_1", false, false, false, ()=>Spicetify.Player.seek(.1));
      registerBind("NUMPAD_2", false, false, false, ()=>Spicetify.Player.seek(.2));
      registerBind("NUMPAD_3", false, false, false, ()=>Spicetify.Player.seek(.3));
