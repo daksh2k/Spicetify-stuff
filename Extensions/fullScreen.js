@@ -80,7 +80,7 @@
     left: 0;
     top: 0;
 }
-#fsd-context-container {
+#fsd-ctx-container {
     background-color: transparent;
     color: #CCC;
     position: fixed;
@@ -97,15 +97,23 @@
     opacity: 1;
     max-width: 40%;
 }
-#fsd-context-details{
+#fsd-ctx-details{
     padding-left: 18px;
-    padding-top: 5px;
     line-height: initial;
     font-size: 18px;
     overflow: hidden;
 }
-#fsd-spotify-icon:before{
-    font-size: 55px;
+#fsd-ctx-icon{
+    width: 48px;
+    height : 48px;
+}
+.ctx-no-icon{
+    width: auto !important;
+    height: auto !important;
+}
+#fsd-ctx-icon:before{
+    font-size: 52px;
+    height: auto;
 }
 #fsd-ctx-source{
     text-transform: uppercase;
@@ -410,7 +418,7 @@ body.fsd-activated #full-screen-display {
     container.id = "full-screen-display"
     container.classList.add("Video", "VideoPlayer--fullscreen", "VideoPlayer--landscape")
 
-    let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
+    let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
     const nextTrackImg = new Image()
     function render() {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
@@ -443,9 +451,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 </div>`:
 `<canvas id="fsd-background"></canvas>`}
   ${CONFIG.enableContext?`
-   <div id="fsd-context-container">
-      <div id="fsd-spotify-icon" class="spoticon-spotifylogo-32"></div>
-      <div id="fsd-context-details">
+   <div id="fsd-ctx-container">
+      <div id="fsd-ctx-icon" class="spoticon-spotifylogo-32"></div>
+      <div id="fsd-ctx-details">
         <div id="fsd-ctx-source"></div>
         <div id="fsd-ctx-name"></div>
       </div>
@@ -523,7 +531,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         album = container.querySelector("#fsd-album span")
 
       if(CONFIG.enableContext){
-        ctx_container = container.querySelector("#fsd-context-container")
+        ctx_container = container.querySelector("#fsd-ctx-container")
+        ctx_icon = container.querySelector("#fsd-ctx-icon")
         ctx_source = container.querySelector("#fsd-ctx-source")
         ctx_name = container.querySelector("#fsd-ctx-name")
       }  
@@ -751,7 +760,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
         nextTrackImg.onerror = () => {
             // Placeholder
-            console.log("Check your Internet!Unable to load Image")
+            console.error("Check your Internet!Unable to load Image")
             nextTrackImg.src = OFFLINESVG
         }
     }
@@ -809,36 +818,42 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
     let prevUriObj;
     async function getContext(){
-        let ctxSource,ctxName
+        let ctxIcon = "", ctxSource,ctxName
         if(Spicetify.Player.data.track.provider==="queue"){
+            ctxIcon = `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`
             ctxSource = "queue"
             ctxName =  ""
         }
         else{
             const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri)
             if(JSON.stringify(uriObj)===JSON.stringify(prevUriObj) && ctxSource!=undefined && ctxName!=undefined)
-                return [ctxSource,ctxName];
+                return [ctxIcon,ctxSource,ctxName];
             prevUriObj = uriObj;
             switch (uriObj.type){
                 case Spicetify.URI.Type.TRACK:
+                    ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`
                     ctxSource = uriObj.type;
                     await getTrackInfo(uriObj._base62Id).then(meta => ctxName=`${meta.name}  •  ${meta.artists[0].name}`);
                     break;
                 case Spicetify.URI.Type.SEARCH:
+                    ctxIcon = Spicetify.SVGIcons["search-active"]
                     ctxSource =  uriObj.type;
                     ctxName = `"${uriObj.query}" in Songs`;
                     break;   
                 case Spicetify.URI.Type.COLLECTION:
+                    ctxIcon = Spicetify.SVGIcons["heart-active"]
                     ctxSource = uriObj.type;
                     ctxName = "Liked Songs";
                     break;
                 case Spicetify.URI.Type.PLAYLIST_V2:
+                    ctxIcon = Spicetify.SVGIcons["playlist"]
                     ctxSource = "playlist"
                     ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
                     break;
                 
                 case Spicetify.URI.Type.STATION:
                 case Spicetify.URI.Type.RADIO:
+                    ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M19.359 18.57C21.033 16.818 22 14.461 22 11.89s-.967-4.93-2.641-6.68c-.276-.292-.653-.26-.868-.023-.222.246-.176.591.085.868 1.466 1.535 2.272 3.593 2.272 5.835 0 2.241-.806 4.3-2.272 5.835-.261.268-.307.621-.085.86.215.245.592.276.868-.016zm-13.85.014c.222-.238.176-.59-.085-.86-1.474-1.535-2.272-3.593-2.272-5.834 0-2.242.798-4.3 2.272-5.835.261-.277.307-.622.085-.868-.215-.238-.592-.269-.868.023C2.967 6.96 2 9.318 2 11.89s.967 4.929 2.641 6.68c.276.29.653.26.868.014zm1.957-1.873c.223-.253.162-.583-.1-.867-.951-1.068-1.473-2.45-1.473-3.954 0-1.505.522-2.887 1.474-3.954.26-.284.322-.614.1-.876-.23-.26-.622-.26-.891.039-1.175 1.274-1.827 2.963-1.827 4.79 0 1.82.652 3.517 1.827 4.784.269.3.66.307.89.038zm9.958-.038c1.175-1.267 1.827-2.964 1.827-4.783 0-1.828-.652-3.517-1.827-4.791-.269-.3-.66-.3-.89-.039-.23.262-.162.592.092.876.96 1.067 1.481 2.449 1.481 3.954 0 1.504-.522 2.886-1.481 3.954-.254.284-.323.614-.092.867.23.269.621.261.89-.038zm-8.061-1.966c.23-.26.13-.568-.092-.883-.415-.522-.63-1.197-.63-1.934 0-.737.215-1.413.63-1.943.222-.307.322-.614.092-.875s-.653-.261-.906.054a4.385 4.385 0 00-.968 2.764 4.38 4.38 0 00.968 2.756c.253.322.675.322.906.061zm6.18-.061a4.38 4.38 0 00.968-2.756 4.385 4.385 0 00-.968-2.764c-.253-.315-.675-.315-.906-.054-.23.261-.138.568.092.875.415.53.63 1.206.63 1.943 0 .737-.215 1.412-.63 1.934-.23.315-.322.622-.092.883s.653.261.906-.061zm-3.547-.967c.96 0 1.789-.814 1.789-1.797s-.83-1.789-1.789-1.789c-.96 0-1.781.806-1.781 1.789 0 .983.821 1.797 1.781 1.797z" fill-rule="nonzero"></path></svg>`
                     const rType = uriObj.args[0]
                     ctxSource = `${rType} radio`;
                     if(rType==="album")
@@ -847,8 +862,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                         await getTrackInfo(uriObj.args[1]).then(meta => ctxName=`${meta.name}  •  ${meta.artists[0].name}`)
                     else if(rType==="artist")
                         await getArtistInfo(uriObj.args[1]).then(meta => ctxName=meta.info.name)
-                    else if(rType==="playlist" || rType==="playlist-v2")
+                    else if(rType==="playlist" || rType==="playlist-v2"){
+                        ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`
                         await getPlaylistInfo("spotify:playlist:"+uriObj.args[1]).then(meta => ctxName=meta.playlist.name)
+                    }
                     else
                         ctxName = "";
                     break;
@@ -856,11 +873,13 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 case Spicetify.URI.Type.PLAYLIST:
                 case Spicetify.URI.Type.ALBUM:
                 case Spicetify.URI.Type.ARTIST:
+                    ctxIcon = Spicetify.SVGIcons[uriObj.type]
                     ctxSource = uriObj.type;
                     ctxName = Spicetify.Player.data.context_metadata.context_description || "";
                     break;
                 
                 case Spicetify.URI.Type.FOLDER:
+                    ctxIcon = Spicetify.SVGIcons["playlist-folder"]
                     ctxSource = "playlist folder"
                     const res = await Spicetify.CosmosAsync.get(
                         `sp://core-playlist/v1/rootlist`,
@@ -879,15 +898,23 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             }
 
         }
-        return [ctxSource,ctxName]
+        return [ctxIcon,ctxSource,ctxName]
     }
 
     async function updateContext(){
-        [ctxSource,ctxName] = await getContext().catch(err => console.error(err));
+        [ctxIcon, ctxSource,ctxName] = await getContext().catch(err => console.error(err));
         if(ctxName=="")
             ctx_source.classList.add("ctx-no-name")
         else
             ctx_source.classList.remove("ctx-no-name")
+        if (ctxIcon!=""){
+            ctx_icon.classList.remove("spoticon-spotifylogo-32","ctx-no-icon")
+            ctx_icon.innerHTML = /^<path/.test(ctxIcon) ? `<svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">${ctxIcon}</svg>` : ctxIcon
+        }
+        else{
+            ctx_icon.classList.add("spoticon-spotifylogo-32","ctx-no-icon")
+            ctx_icon.innerHTML = ""
+        }
         ctx_source.innerText = `playing from ${ctxSource}`
         ctx_name.innerText = ctxName
     }
