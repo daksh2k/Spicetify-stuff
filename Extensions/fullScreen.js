@@ -570,13 +570,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     ]
     
     function FullScreenOn() {
-        const elemx = document.documentElement;
-        const full_on = elemx.requestFullscreen || elemx.webkitRequestFullScreen || elemx.mozRequestFullScreen || elemx.msRequestFullscreen;
-        full_on.call(elemx);
+        document.documentElement.requestFullscreen()
     }
     function FullScreenOff() {
-        const full_off = document.exitFullscreen || document.webkitExitFullScreen || document.mozExitFullScreen || document.msExitFullscreen;
-        full_off.call(document);
+        document.exitFullscreen()
     }
 
     function getTrackInfo(id){
@@ -700,18 +697,18 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", ""))
 
                 const albumDate = new Date(albumInfo.year, (albumInfo.month || 1) - 1, albumInfo.day || 0)
-                const recentDate = new Date()
-                recentDate.setMonth(recentDate.getMonth() - 6)
-                const dateStr = albumDate.toLocaleString(
-                    'default',
-                    albumDate > recentDate ? {
-                        year: 'numeric',
-                        month: 'short'
-                    } : {
-                        year: 'numeric'
-                    }
-                )
-
+                // const recentDate = new Date()
+                // recentDate.setMonth(recentDate.getMonth() - 6)
+                // const dateStr = albumDate.toLocaleString(
+                //     'default',
+                //     albumDate > recentDate ? {
+                //         year: 'numeric',
+                //         month: 'short'
+                //     } : {
+                //         year: 'numeric'
+                //     }
+                // )
+                const dateStr = albumDate.toLocaleString('default',{year: 'numeric',month: 'short'})
                 albumText += " • " + dateStr
             }
         }
@@ -963,9 +960,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                      // fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 800ms infinite"
                      
                      fsd_second_span.innerText=""
-                     anim_time= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
+                     anim_time = (fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth-2)/0.05
+                     // anim_time= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
                      fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth+5}px`);
-                     fsd_next_tit_art_inner.style.animation = "fsd_translate "+ anim_time +"ms linear 800ms infinite"
+                     fsd_next_tit_art_inner.style.animation = `fsd_translate ${anim_time>1500 ? anim_time : 1500}ms linear 800ms infinite`
                   } 
                   else{
                      fsd_first_span.style.paddingRight = "0px"
@@ -1015,7 +1013,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 4000)
     }
 
-    FSTRANSITION = 0.7  
+    FSTRANSITION = 1  
     function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
         container.style.setProperty('--fs-transition',`${FSTRANSITION-0.05}s`);
