@@ -12,6 +12,8 @@
         return;
     }
 
+    const SCROLL_STEP = 50;
+
     /**
      * Register your own keybind with function `registerBind`
      * 
@@ -93,7 +95,9 @@
     }
     
    function clickQueueButton() {
-        document.querySelector(".control-button-wrapper .spoticon-queue-16").click();
+        // document.querySelector(".control-button-wrapper .spoticon-queue-16").click();
+        document.querySelector(".Button-sc-1dqy6lx-0.rcWVY").click();
+
     }
     
     function openContext(){
@@ -167,9 +171,9 @@
     const vim = new VimBind();
     registerBind("A", false, false, false, vim.activate.bind(vim));
     
-    // Esc to cancle Link Follow
-    vim.setCancleKey("ESCAPE")
-    vim.setCancleKey("Z")
+    // Esc to cancel Link Follow
+    vim.setCancelKey("ESCAPE")
+    vim.setCancelKey("Z")
 
     function rotateSidebarDown() {
         rotateSidebar(1)
@@ -179,9 +183,9 @@
         rotateSidebar(-1)
     }
 
-    function clickQueueButton() {
-        document.querySelector(".control-button-wrapper .spoticon-queue-16").click();
-    }
+    // function clickQueueButton() {
+    //     document.querySelector(".control-button-wrapper .spoticon-queue-16").click();
+    // }
 
     function clickNavigatingBackButton() {
         document.querySelector(".main-topBar-historyButtons .main-topBar-back").click();
@@ -308,13 +312,7 @@
 })();
 
 function VimBind() {
-    const elementQuery = [
-        "[href]",
-        "button",
-        "td.tl-play",
-        "td.tl-number",
-        "tr.TableRow",
-    ].join(",");
+    const elementQuery = ["[href]", "button", "td.tl-play", "td.tl-number", "tr.TableRow"].join(",");
 
     const keyList = "qwertasdfgzxcvyuiophjklbnm".split("");
 
@@ -352,8 +350,8 @@ function VimBind() {
     mousetrap.stopCallback = () => true;
 
     /**
-     * 
-     * @param {KeyboardEvent} event 
+     *
+     * @param {KeyboardEvent} event
      */
     this.activate = function (event) {
         vimOverlay.style.display = "block";
@@ -368,9 +366,7 @@ function VimBind() {
         let secondKey = 0;
 
         getLinks().forEach((e) => {
-            if (e.style.display === "none" ||
-                e.style.visibility === "hidden" ||
-                e.style.opacity === "0") {
+            if (e.style.display === "none" || e.style.visibility === "hidden" || e.style.opacity === "0") {
                 return;
             }
 
@@ -391,12 +387,7 @@ function VimBind() {
                 return;
             }
 
-            vimOverlay.append(createKey(
-                e,
-                keyList[firstKey] + keyList[secondKey],
-                top,
-                left
-            ));
+            vimOverlay.append(createKey(e, keyList[firstKey] + keyList[secondKey], top, left));
 
             secondKey++;
             if (secondKey > lastKeyIndex) {
@@ -406,19 +397,19 @@ function VimBind() {
         });
 
         this.isActive = true;
-        setTimeout(() => mousetrap.stopCallback = orgStopCallback.bind(mousetrap), 100);
-    }
+        setTimeout(() => (mousetrap.stopCallback = orgStopCallback.bind(mousetrap)), 100);
+    };
 
     /**
-     * 
-     * @param {KeyboardEvent} event 
+     *
+     * @param {KeyboardEvent} event
      */
     this.deactivate = function (event) {
         mousetrap.stopCallback = () => true;
         this.isActive = false;
         vimOverlay.style.display = "none";
         getVims().forEach((e) => e.remove());
-    }
+    };
 
     function getLinks() {
         const elements = Array.from(document.querySelectorAll(elementQuery));
@@ -445,7 +436,7 @@ function VimBind() {
         }
 
         for (const div of vimkey) {
-            const text = div.innerText.toLowerCase()
+            const text = div.innerText.toLowerCase();
             if (text[0] !== event.key) {
                 div.remove();
                 continue;
@@ -472,20 +463,22 @@ function VimBind() {
             return;
         }
 
-        const findButton = element.querySelector(`button[data-ta-id="play-button"]`) ||
-            element.querySelector(`button[data-button="play"]`);
+        const findButton = element.querySelector(`button[data-ta-id="play-button"]`) || element.querySelector(`button[data-button="play"]`);
         if (findButton) {
             findButton.click();
             return;
         }
-
+        alert("Let me know where you found this button, please. I can't click this for you without that information.");
+        return;
         // TableCell case where play button is hidden
         // Index number is in first column
         const index = parseInt(element.firstChild.innerText) - 1;
         const context = getContextUri();
         if (index >= 0 && context) {
-            console.log(index, context)
-            Spicetify.PlaybackControl.playFromResolver(context, { index }, () => {});
+            console.log(index);
+            console.log(context);
+
+            //Spicetify.PlaybackControl.playFromResolver(context, { index }, () => {});
             return;
         }
     }
@@ -506,8 +499,7 @@ function VimBind() {
         if (activeApp) {
             try {
                 return JSON.parse(activeApp).uri.replace("app:", "");
-            }
-            catch {
+            } catch {
                 return null;
             }
         }
@@ -516,12 +508,12 @@ function VimBind() {
     }
 
     /**
-     * 
-     * @param {Spicetify.Keyboard.ValidKey} key 
+     *
+     * @param {Spicetify.Keyboard.ValidKey} key
      */
-    this.setCancleKey = function(key) {
+    this.setCancelKey = function (key) {
         mousetrap.bind(Spicetify.Keyboard.KEYS[key], this.deactivate.bind(this));
-    }
+    };
 
     return this;
 }

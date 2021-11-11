@@ -134,28 +134,30 @@ function PopupLyricsMy() {
 
                 body = body.message.body.macro_calls;
 
-                if (
-                    body["matcher.track.get"].message.header.status_code !== 200
-                ) {
+                if (body["matcher.track.get"].message.header.status_code !== 200) {
+                    let head = body["matcher.track.get"].message.header;
                     return {
-                        error: `Requested error: ${body["matcher.track.get"].message.header.mode}`,
+                        error: `Requested error: ${head.status_code}: ${head.hint} - ${head.mode}`,
                     };
                 }
 
                 const meta = body["matcher.track.get"].message.body;
                 const hasSynced = meta.track.has_subtitles;
+                const isRestricted =
+                    body["track.lyrics.get"].message.header.status_code === 200 && body["track.lyrics.get"].message.body.lyrics.restricted;
+                const isInstrumental = meta.track.instrumental;
 
-                if (hasSynced) {
-                    const subtitle =
-                        body["track.subtitles.get"].message.body
-                            .subtitle_list[0].subtitle;
+                if (isRestricted) {
+                    return { error: "Unfortunately we're not authorized to show these lyrics." };
+                } else if (isInstrumental) {
+                    return { error: "Instrumental" };
+                } else if (hasSynced) {
+                    const subtitle = body["track.subtitles.get"].message.body.subtitle_list[0].subtitle;
 
-                    const lyrics = JSON.parse(subtitle.subtitle_body).map(
-                        (line) => ({
-                            text: line.text || "⋯",
-                            startTime: line.time.total,
-                        })
-                    );
+                    const lyrics = JSON.parse(subtitle.subtitle_body).map((line) => ({
+                        text: line.text || "⋯",
+                        startTime: line.time.total,
+                    }));
                     return { lyrics };
                 } else {
                     return { error: "No lyric" };
@@ -166,28 +168,26 @@ function PopupLyricsMy() {
         }
 
         static async fetchNetease(info) {
-            const searchURL = `https://music.xianqiao.wang/neteaseapi/search?limit=10&type=1&keywords=`;
-            const lyricURL = `https://music.xianqiao.wang/neteaseapi/lyric?id=`;
+            const searchURL = `https://music.xianqiao.wang/neteaseapiv2/search?limit=10&type=1&keywords=`;
+            const lyricURL = `https://music.xianqiao.wang/neteaseapiv2/lyric?id=`;
+            const requestHeader = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0",
+            };
 
-            const cleanTitle = LyricUtils.removeSongFeat(
-                LyricUtils.normalize(info.title)
-            );
-            const finalURL =
-                searchURL + encodeURIComponent(`${cleanTitle} ${info.artist}`);
+            const cleanTitle = LyricUtils.removeSongFeat(LyricUtils.normalize(info.title));
+            const finalURL = searchURL + encodeURIComponent(`${cleanTitle} ${info.artist}`);
 
-            const searchResults = await CosmosAsync.get(finalURL);
+            const searchResults = await CosmosAsync.get(finalURL, null, requestHeader);
             const items = searchResults.result.songs;
             if (!items || !items.length) {
                 return { error: "Cannot find track" };
             }
 
             const album = LyricUtils.capitalize(info.album);
-            let itemId = items.findIndex(
-                (val) => LyricUtils.capitalize(val.album.name) === album
-            );
+            let itemId = items.findIndex((val) => LyricUtils.capitalize(val.album.name) === album);
             if (itemId === -1) itemId = 0;
 
-            const meta = await CosmosAsync.get(lyricURL + items[itemId].id);
+            const meta = await CosmosAsync.get(lyricURL + items[itemId].id, null, requestHeader);
             let lyricStr = meta.lrc;
 
             if (!lyricStr || !lyricStr.lyric) {
@@ -201,10 +201,7 @@ function PopupLyricsMy() {
                 "原唱|翻唱|题字|文案|海报|古筝|二胡|钢琴|吉他|贝斯|笛子|鼓|弦乐",
                 "lrc|publish|vocal|guitar|program|produce|write",
             ];
-            const otherInfoRegexp = new RegExp(
-                `^(${otherInfoKeys.join("|")}).*(:|：)`,
-                "i"
-            );
+            const otherInfoRegexp = new RegExp(`^(${otherInfoKeys.join("|")}).*(:|：)`, "i");
 
             const lines = lyricStr.split(/\r?\n/).map((line) => line.trim());
             const lyrics = lines
@@ -214,21 +211,15 @@ function PopupLyricsMy() {
                     // ["[03:10]", "永远高唱我歌"]
                     // ["永远高唱我歌"]
                     // ["[03:10]", "[03:10]", "永远高唱我歌"]
-                    const matchResult = line.match(/(\[.*?\])|([^\[\]]+)/g) || [
-                        line,
-                    ];
+                    const matchResult = line.match(/(\[.*?\])|([^\[\]]+)/g) || [line];
                     if (!matchResult.length) {
                         return;
                     }
-                    const textIndex = matchResult.findIndex(
-                        (slice) => !slice.endsWith("]")
-                    );
+                    const textIndex = matchResult.findIndex((slice) => !slice.endsWith("]"));
                     let text = "";
                     if (textIndex > -1) {
                         text = matchResult.splice(textIndex, 1)[0];
-                        text = LyricUtils.capitalize(
-                            LyricUtils.normalize(text, false)
-                        );
+                        text = LyricUtils.capitalize(LyricUtils.normalize(text, false));
                     }
                     return matchResult.map((slice) => {
                         const result = {};
@@ -274,10 +265,9 @@ function PopupLyricsMy() {
         smooth: boolLocalStorage("popup-lyrics:smooth"),
         centerAlign: boolLocalStorage("popup-lyrics:center-align"),
         showCover: boolLocalStorage("popup-lyrics:show-cover"),
-        fontSize: LocalStorage.get("popup-lyrics:font-size"),
-        blurSize: LocalStorage.get("popup-lyrics:blur-size"),
-        fontFamily:
-            LocalStorage.get("popup-lyrics:font-family") || "spotify-circular",
+        fontSize: Number(LocalStorage.get("popup-lyrics:font-size")),
+        blurSize: Number(LocalStorage.get("popup-lyrics:blur-size")),
+        fontFamily: LocalStorage.get("popup-lyrics:font-family") || "spotify-circular",
         ratio: LocalStorage.get("popup-lyrics:ratio") || "11",
         services: {
             netease: {
@@ -289,11 +279,7 @@ function PopupLyricsMy() {
                 on: boolLocalStorage("popup-lyrics:services:musixmatch:on"),
                 call: LyricProviders.fetchMusixmatch,
                 desc: `Fully compatible with Spotify. Requires a token that can be retrieved from the official Musixmatch app. Follow instructions on <a href="https://github.com/khanhas/spicetify-cli/wiki/Musixmatch-Token">spicetify Wiki</a>.`,
-                token:
-                    LocalStorage.get(
-                        "popup-lyrics:services:musixmatch:token"
-                    ) ||
-                    "2005218b74f939209bda92cb633c7380612e14cb7fe92dcd6a780f",
+                token: LocalStorage.get("popup-lyrics:services:musixmatch:token") || "2005218b74f939209bda92cb633c7380612e14cb7fe92dcd6a780f",
             },
             spotify: {
                 on: boolLocalStorage("popup-lyrics:services:spotify:on"),
@@ -304,20 +290,14 @@ function PopupLyricsMy() {
         servicesOrder: [],
     };
 
-    userConfigs.fontSize = userConfigs.fontSize
-        ? Number(userConfigs.fontSize)
-        : 46;
+    userConfigs.fontSize = userConfigs.fontSize ? Number(userConfigs.fontSize) : 46;
     try {
-        const rawServicesOrder = LocalStorage.get(
-            "popup-lyrics:services-order"
-        );
+        const rawServicesOrder = LocalStorage.get("popup-lyrics:services-order");
         userConfigs.servicesOrder = JSON.parse(rawServicesOrder);
 
         if (!Array.isArray(userConfigs.servicesOrder)) throw "";
 
-        userConfigs.servicesOrder = userConfigs.servicesOrder.filter(
-            (s) => userConfigs.services[s]
-        ); // Remove obsoleted services
+        userConfigs.servicesOrder = userConfigs.servicesOrder.filter((s) => userConfigs.services[s]); // Remove obsoleted services
 
         const allServices = Object.keys(userConfigs.services);
         if (userConfigs.servicesOrder.length !== allServices.length) {
@@ -326,17 +306,11 @@ function PopupLyricsMy() {
                     userConfigs.servicesOrder.push(s);
                 }
             });
-            LocalStorage.set(
-                "popup-lyrics:services-order",
-                JSON.stringify(userConfigs.servicesOrder)
-            );
+            LocalStorage.set("popup-lyrics:services-order", JSON.stringify(userConfigs.servicesOrder));
         }
     } catch {
         userConfigs.servicesOrder = Object.keys(userConfigs.services);
-        LocalStorage.set(
-            "popup-lyrics:services-order",
-            JSON.stringify(userConfigs.servicesOrder)
-        );
+        LocalStorage.set("popup-lyrics:services-order", JSON.stringify(userConfigs.servicesOrder));
     }
 
     const lyricVideo = document.createElement("video");
@@ -356,6 +330,7 @@ function PopupLyricsMy() {
 
     let lyricVideoIsOpen = false;
     lyricVideo.onenterpictureinpicture = () => {
+        lyricVideo.play();
         lyricVideoIsOpen = true;
         tick(userConfigs);
         updateTrack();
@@ -370,7 +345,6 @@ function PopupLyricsMy() {
     lyricVideo.srcObject = lyricCanvas.captureStream();
     lyricCtx.fillRect(0, 0, 1, 1);
     lyricVideo.play();
-
     const button = document.createElement("button");
     button.classList.add("control-button","InvalidDropTarget")
     button.innerHTML = `<svg role="img" height="16" width="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 7c0-3.309-2.691-6-6-6S8 3.691 8 7c0 .697.126 1.363.345 1.985L3.697 19.421a1.498 1.498 0 00.62 1.91l1.293.747a1.5 1.5 0 001.89-.325l7.561-8.852C17.865 12.396 20 9.945 20 7zM6.741 21.103a.498.498 0 01-.63.108l-1.293-.747a.5.5 0 01-.207-.636l4.301-9.662a5.995 5.995 0 004.763 2.817l-6.934 8.12zM14 12c-2.757 0-5-2.243-5-5s2.243-5 5-5 5 2.243 5 5-2.244 5-5 5z"/></svg>`;
@@ -834,8 +808,12 @@ function PopupLyricsMy() {
 
         const { error, lyrics } = sharedData;
 
-        if (error) {
-            drawText(lyricCtx, error, "red");
+      if (error) {
+            if (error === "Instrumental") {
+                drawText(lyricCtx, error);
+            } else {
+                drawText(lyricCtx, error, "red");
+            }
         } else if (!lyrics) {
             drawText(lyricCtx, "No lyric");
         } else if (audio.duration && lyrics.length) {
