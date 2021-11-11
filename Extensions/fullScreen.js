@@ -426,8 +426,8 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
 
         Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
-        Spicetify.Player.origin2.state.statusListeners = Spicetify.Player.origin2.state.statusListeners.filter(v => v != updateUpNextShow);
-        Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
+        Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
+        Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
         window.removeEventListener("resize",updateUpNext)
 
         container.removeEventListener("mousemove", hideCursor)
@@ -919,10 +919,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     function updateUpNextInfo(){
             fsd_up_next_text.innerText = "UP NEXT"
             let metadata = {}
-            const queue_metadata = Spicetify.Queue.next_tracks[0]
+            const queue_metadata = Spicetify.Queue.nextTracks[0]
             if(queue_metadata){
-                if(queue_metadata.metadata)
-                    metadata = queue_metadata.metadata
+                metadata = queue_metadata?.contextTrack?.metadata
             } else{
                 metadata["artist_name"] = ""
                 metadata["title"] = ""
@@ -949,7 +948,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
 
     async function updateUpNext(){            
-            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue.next_tracks[0].metadata.title){
+            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue.nextTracks[0].contextTrack.metadata.title){
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
                  upNextShown = true;
@@ -1028,8 +1027,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         if(CONFIG.enableUpnext){
             updateUpNextShow()
             Spicetify.Player.addEventListener("songchange",updateUpNextShow)
-            Spicetify.Player.origin2.state.addStatusListener(updateUpNextShow);
-            Spicetify.Player.origin2.state.addQueueListener(updateUpNext);
+            Spicetify.Player.origin._events.addListener("queue_update", updateUpNext)
+            Spicetify.Player.origin._events.addListener("update", updateUpNextShow)
             window.addEventListener("resize",updateUpNext)
         }
         if(CONFIG.enableFade){
@@ -1097,9 +1096,9 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 clearTimeout(timetoshow)
                 timetoshow = 0 
             }
-            Spicetify.Player.origin2.state.statusListeners = Spicetify.Player.origin2.state.statusListeners.filter(v => v != updateUpNextShow);
             Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
-            Spicetify.Player.origin2.state.queueListeners = Spicetify.Player.origin2.state.queueListeners.filter(v => v != updateUpNext);
+            Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
+            Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
             window.removeEventListener("resize",updateUpNext)
         }
         if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {

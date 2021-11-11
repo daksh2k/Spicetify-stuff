@@ -283,9 +283,6 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
     background: var(--spice-button);
 }
 
-div.GlueDropTarget.personal-library >*.active {
-    background: var(--spice-button) !important;
-}*/
 .main-contextMenu-menuHeading,
 .main-contextMenu-menuItemButton,
 .main-contextMenu-menuItemButton:not(.main-contextMenu-disabled):focus,
@@ -451,7 +448,7 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
   border-radius: 0;
 }
 
-.playback-bar__progress-time {
+.playback-bar__progress-time,.playback-bar__progress-time-elapsed{
   transform: scale(1.3);    
   position: absolute;
   bottom: -18px;
@@ -968,4 +965,19 @@ input:hover:not([disabled]):not(:active)~.x-toggle-indicatorWrapper {
 }
 input:hover:not([disabled]):not(:active)~.x-toggle-indicator {
     background-color: var(--spice-button-text);
+}
+img[src="https://misc.scdn.co/liked-songs/liked-songs-300.png"],img[alt="Liked Songs"]{
+  -webkit-mask-size: 90% 90%;
+  -webkit-mask-repeat: no-repeat;
+  content-visibility: hidden;
+  -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgaGVpZ2h0PSIxMiIgd2lkdGg9IjEyIiB2aWV3Qm94PSIwIDAgMTYgMTYiIGNsYXNzPSJTdmctdWx5cmdmLTAgZ2hsWHZmIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDE2djE2SDB6Ij48L3BhdGg+PHBhdGggZD0iTTEzLjc5NyAyLjcyN2E0LjA1NyA0LjA1NyAwIDAwLTUuNDg4LS4yNTMuNTU4LjU1OCAwIDAxLS4zMS4xMTIuNTMxLjUzMSAwIDAxLS4zMTEtLjExMiA0LjA1NCA0LjA1NCAwIDAwLTUuNDg3LjI1M2MtLjc3Ljc3LTEuMTk0IDEuNzk0LTEuMTk0IDIuODgzcy40MjQgMi4xMTMgMS4xNjggMi44NTVsNC40NjIgNS4yMjNhMS43OTEgMS43OTEgMCAwMDIuNzI2IDBsNC40MzUtNS4xOTVhNC4wNTIgNC4wNTIgMCAwMDEuMTk1LTIuODgzIDQuMDU3IDQuMDU3IDAgMDAtMS4xOTYtMi44ODN6Ij48L3BhdGg+PC9zdmc+");
+  background: linear-gradient(45deg, var(--spice-text), var(--spice-text)) !important;
+}
+.fsd-activated .Root__top-bar, .fsd-activated .Root__nav-bar, .fsd-activated .Root__main-view, .fsd-activated .Root__now-playing-bar{
+  visibility: hidden;
+  display: none;
+}
+.main-collectionLinkButton-selected.active{
+    background-color: var(--spice-sidebar-button) !important;
+    color: var(--spice-button-text) !important;
 }
