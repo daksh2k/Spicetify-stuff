@@ -334,8 +334,12 @@ function PopupLyricsMy() {
         lyricVideoIsOpen = true;
         tick(userConfigs);
         updateTrack();
+        button.classList.add("control-button--active","control-button--active-dot")
     };
-    lyricVideo.onleavepictureinpicture = () => (lyricVideoIsOpen = false);
+    lyricVideo.onleavepictureinpicture = () => {
+        lyricVideoIsOpen = false
+        button.classList.remove("control-button--active","control-button--active-dot")
+    };
 
     const lyricCanvas = document.createElement("canvas");
     lyricCanvas.width = lyricVideo.width;
@@ -354,10 +358,8 @@ function PopupLyricsMy() {
     button.onclick = () => {
         if (!lyricVideoIsOpen) {
             lyricVideo.requestPictureInPicture();
-            button.classList.add("control-button--active","control-button--active-dot")
         } else {
             document.exitPictureInPicture();
-            button.classList.remove("control-button--active","control-button--active-dot")
         }
     };
     extraControlsCont.prepend(button);
