@@ -95,9 +95,7 @@
     }
     
    function clickQueueButton() {
-        // document.querySelector(".control-button-wrapper .spoticon-queue-16").click();
-        document.querySelector(".Button-sc-1dqy6lx-0.rcWVY").click();
-
+        document.querySelector('.control-button-wrapper>button[Aria-label="Queue"]').click();
     }
     
     function openContext(){
