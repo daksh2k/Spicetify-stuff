@@ -12,6 +12,7 @@
 .desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer.contentSpacing,
 .desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer,
 .desktoproutes-homepage-takeover-ad-hptoComponent-container,
+.wjOO2jGTjPU3ywXgqYqv,
 .main-topBar-UpgradeButton,
 .main-rootlist-rootlistDividerContainer,
 .x-downloadButton-DownloadButton,
@@ -49,13 +50,69 @@
 .main-connectBar-connectBar.main-type-mesto {
     color: var(--spice-subtext);
 }
-/* Remove Topbar background colour */
-/*.main-topBar-background {
-    background-color: unset !important;
+img[src="https://misc.scdn.co/liked-songs/liked-songs-300.png"],
+img[alt="Liked Songs"],
+img[src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"]{
+  -webkit-mask-size: 80% 80%;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  content-visibility: hidden;
+  -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgaGVpZ2h0PSIxMiIgd2lkdGg9IjEyIiB2aWV3Qm94PSIwIDAgMTYgMTYiIGNsYXNzPSJTdmctdWx5cmdmLTAgZ2hsWHZmIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDE2djE2SDB6Ij48L3BhdGg+PHBhdGggZD0iTTEzLjc5NyAyLjcyN2E0LjA1NyA0LjA1NyAwIDAwLTUuNDg4LS4yNTMuNTU4LjU1OCAwIDAxLS4zMS4xMTIuNTMxLjUzMSAwIDAxLS4zMTEtLjExMiA0LjA1NCA0LjA1NCAwIDAwLTUuNDg3LjI1M2MtLjc3Ljc3LTEuMTk0IDEuNzk0LTEuMTk0IDIuODgzcy40MjQgMi4xMTMgMS4xNjggMi44NTVsNC40NjIgNS4yMjNhMS43OTEgMS43OTEgMCAwMDIuNzI2IDBsNC40MzUtNS4xOTVhNC4wNTIgNC4wNTIgMCAwMDEuMTk1LTIuODgzIDQuMDU3IDQuMDU3IDAgMDAtMS4xOTYtMi44ODN6Ij48L3BhdGg+PC9zdmc+");
+  background: linear-gradient(45deg, var(--spice-text), var(--spice-text)) !important;
 }
-.main-topBar-overlay {
+.fsd-activated .Root__top-bar, .fsd-activated .Root__nav-bar, .fsd-activated .Root__main-view, .fsd-activated .Root__now-playing-bar{
+  visibility: hidden;
+  display: none;
+}
+.main-collectionLinkButton-selected.active{
+    background-color: var(--spice-sidebar-button) !important;
+    color: var(--spice-button-text) !important;
+}
+.wCkjuzeyTEYt_GDNp_O7,.xcxdiSzDr5qL06wCgxh0,.QgSdmcfWjx5jWPX64eSa {
     background-color: var(--spice-main);
-}*/
+    color: var(--spice-text);
+}
+.main-button-tertiary ,.e_qrWAhAs9DQy1pN67Tj{
+    background-color: transparent;
+    color: var(--spice-text) !important;
+}
+.os-scrollbar.os-scrollbar-vertical{
+  display: none;
+}
+.Root__main-view:hover .os-scrollbar.os-scrollbar-vertical{
+  display: block;
+}
+.Root__nav-bar:hover .os-scrollbar.os-scrollbar-vertical{
+  display: block;
+}
+.os-scrollbar.os-scrollbar-vertical.active{
+  display: block !important;
+}
+.playback-bar,
+.progress-bar__fg_wrapper,
+._95134b8c1897fc7ed23d86e424a2e9b4-scss,
+.lz_1dGnEKWyCpV_qE0ux {
+  --fg-color: var(--spice-text) !important;
+  --is-active-fg-color: var(--spice-text) !important;
+  --bg-color: var(--spice-main);
+}
+._8753b35a98c172d2fed1c66a738ff034-scss,
+.progress-bar__slider {
+  background-color: var(--spice-text) !important;
+  box-shadow: 0 0 3px 0 var(--spice-player-bar-shadow) !important;
+  box-sizing: content-box !important;
+  width: 10px;
+  height: 10px;
+  opacity: 1 !important;
+  display: block;
+}
+.main-notificationBubbleContainer-NotificationBubbleContainer{
+  z-index: 1000;
+}
+
+
+
+/*---------------------------------------------*/
 
 /*Change context menu color*/
 .main-contextMenu-menu,
@@ -143,7 +200,7 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
     height: var(--player-bar-height);
 }*/
 
-[aria-label="Playing"] {
+[aria-label^="Playing"] {
     color: var(--spice-text);
 }
 /* Fix design fault */
@@ -229,12 +286,12 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
 }
 /* Full window artist background */
 .main-entityHeader-background.main-entityHeader-gradient {
-    opacity: 0.5;
+    opacity: 0.6;
 }
 .main-entityHeader-container.main-entityHeader-withBackgroundImage,
 .main-entityHeader-background,
 .main-entityHeader-background.main-entityHeader-overlay:after {
-    height: 100vh;
+    height: 70vh;
 }
 .main-entityHeader-withBackgroundImage .main-entityHeader-headerText {
     justify-content: center;
@@ -332,12 +389,6 @@ input {
 .main-playlistEditDetailsModal-textElement:focus {
   border: 0;
 }
-
-.connect-title,
-.connect-header {
-  display: none;
-}
-
 /* Topbar visibility bug */
 
 .main-topBar-topbarContent:not(.main-topBar-topbarContentFadeIn) > * {
@@ -452,7 +503,7 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
   transform: scale(1.3);    
   position: absolute;
   bottom: -18px;
-  left: 3px;
+  left: 1px;
   transition-duration: 0.15s;
 }
 
@@ -460,7 +511,7 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
   transform: scale(1.3);  
   position: absolute;
   bottom: -18px;
-  right: 3px;
+  right: 1px;
   transition-duration: 0.15s;
 }
 
@@ -629,11 +680,6 @@ span.artist-artistVerifiedBadge-badge svg:nth-child(1) {
   background-color: var(--spice-playback-bar);
 }
 
-.progress-bar,
-.progress-bar__fg,
-.progress-bar__slider {
-  transition-duration: 0.15s !important;
-}
 .main-navBar-navBarLink {
   transition: background-color 0.15s ease;
 }
@@ -965,19 +1011,4 @@ input:hover:not([disabled]):not(:active)~.x-toggle-indicatorWrapper {
 }
 input:hover:not([disabled]):not(:active)~.x-toggle-indicator {
     background-color: var(--spice-button-text);
-}
-img[src="https://misc.scdn.co/liked-songs/liked-songs-300.png"],img[alt="Liked Songs"]{
-  -webkit-mask-size: 90% 90%;
-  -webkit-mask-repeat: no-repeat;
-  content-visibility: hidden;
-  -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgaGVpZ2h0PSIxMiIgd2lkdGg9IjEyIiB2aWV3Qm94PSIwIDAgMTYgMTYiIGNsYXNzPSJTdmctdWx5cmdmLTAgZ2hsWHZmIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDE2djE2SDB6Ij48L3BhdGg+PHBhdGggZD0iTTEzLjc5NyAyLjcyN2E0LjA1NyA0LjA1NyAwIDAwLTUuNDg4LS4yNTMuNTU4LjU1OCAwIDAxLS4zMS4xMTIuNTMxLjUzMSAwIDAxLS4zMTEtLjExMiA0LjA1NCA0LjA1NCAwIDAwLTUuNDg3LjI1M2MtLjc3Ljc3LTEuMTk0IDEuNzk0LTEuMTk0IDIuODgzcy40MjQgMi4xMTMgMS4xNjggMi44NTVsNC40NjIgNS4yMjNhMS43OTEgMS43OTEgMCAwMDIuNzI2IDBsNC40MzUtNS4xOTVhNC4wNTIgNC4wNTIgMCAwMDEuMTk1LTIuODgzIDQuMDU3IDQuMDU3IDAgMDAtMS4xOTYtMi44ODN6Ij48L3BhdGg+PC9zdmc+");
-  background: linear-gradient(45deg, var(--spice-text), var(--spice-text)) !important;
-}
-.fsd-activated .Root__top-bar, .fsd-activated .Root__nav-bar, .fsd-activated .Root__main-view, .fsd-activated .Root__now-playing-bar{
-  visibility: hidden;
-  display: none;
-}
-.main-collectionLinkButton-selected.active{
-    background-color: var(--spice-sidebar-button) !important;
-    color: var(--spice-button-text) !important;
 }
