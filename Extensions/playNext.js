@@ -25,20 +25,24 @@
 
     // Add the selected track to the top of the queue and update the queue
     async function addToNext(uri){
-    	const newTrack = {
-            	uri: uri[0],
-            	provider: "queue",
-                metadata: {
-                    is_queued: true, 
-                }
-           }
-        const currentQueue =  Spicetify.Queue?.next_tracks
-        currentQueue.unshift(newTrack)
+        const newTracks = [{
+            uri: uri[0],
+            provider: "queue",
+            metadata: {
+                is_queued: true,
+            }
+        }]
         await Spicetify.CosmosAsync.put("sp://player/v2/main/queue", {
-              revision: Spicetify.Queue?.revision,
-              next_tracks: currentQueue,
-              prev_tracks: Spicetify.Queue?.prev_tracks
-              })
+              queue_revision: Spicetify.Queue?.queueRevision,
+              next_tracks: [...newTracks,...Spicetify.Queue?.nextTracks.map(it => ({
+                  uri: it.contextTrack.uri,
+                  provider: it.provider,
+                  metadata: {
+                    is_queued: it.provider==="queue",
+                  },
+              }))],
+              prev_tracks: Spicetify.Queue?.prevTracks
+             })
               .then(() => Spicetify.showNotification("Added to Play Next"))
               .catch( (err) => {
                 console.error("Failed to add to queue",err);
