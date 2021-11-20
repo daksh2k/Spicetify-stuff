@@ -108,7 +108,7 @@
     }
     
     function toggleLyrics() {
-        document.querySelector("#main > div > div.Root__top-container > div.Root__now-playing-bar > footer > div > div.main-nowPlayingBar-right > div > button").click()
+        document.querySelector('button[title="Popup Lyrics"]').click()
     }  
     function openHome(){
         ele = document.querySelector(`.main-navBar-navBar a[href="/"]`)
