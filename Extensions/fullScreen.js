@@ -43,6 +43,7 @@
         if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
             if(!CONFIG.tvMode){
                 CONFIG["tvMode"]= true;
+                ACTIVE = "tv"
                 saveConfig()
                 render()
             }
@@ -56,6 +57,7 @@
         if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
             if(CONFIG.tvMode){
                 CONFIG["tvMode"]= false;
+                ACTIVE = "def"
                 saveConfig()
                 render()
              }
@@ -66,9 +68,21 @@
     }
 
     const CONFIG = getConfig()
+    let ACTIVE = CONFIG.tvMode ? "tv" : "def"
+
     const OFFLINESVG = `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`
 
     const style = document.createElement("style")
+   
+
+    const container = document.createElement("div")
+    container.id = "full-screen-display"
+    container.classList.add("Video", "VideoPlayer--fullscreen", "VideoPlayer--landscape")
+
+    let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
+    const nextTrackImg = new Image()
+    function render() {
+
     const styleBase = `
 #full-screen-display {
     display: none;
@@ -218,11 +232,8 @@
     width: 94%;
     height: 94%;
     z-index: -1;
-    filter: blur(6px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
     transform: translateZ(0);
-    backface-visibility: hidden;
-    backdrop-filter: blur(6px);
 }
 #fsd-title{
     display: -webkit-box;
@@ -334,10 +345,8 @@ body.fsd-activated #full-screen-display {
 `#fsd-background-image {
     height: 100%;
     background-size: cover;
-    filter: brightness(0.4);
-    backdrop-filter: brightness(0.4);
+    filter: brightness(${"brightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].brightness : .4}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 5}px);
     background-position: center;
-    backface-visibility: hidden;
     transform: translateZ(0);
 }
 #fsd-foreground {
@@ -400,7 +409,7 @@ body.fsd-activated #full-screen-display {
     margin-right: 10px;
 }
 .fsd-background-fade {
-    transition: background-image 0.6s linear;
+    transition: background-image var(--fs-transition) linear;
 }
 `]
     const iconStyleChoices = [`
@@ -412,15 +421,6 @@ body.fsd-activated #full-screen-display {
     display: inline-block;
 }`
     ]
-   
-
-    const container = document.createElement("div")
-    container.id = "full-screen-display"
-    container.classList.add("Video", "VideoPlayer--fullscreen", "VideoPlayer--landscape")
-
-    let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
-    const nextTrackImg = new Image()
-    function render() {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updateControl)
@@ -442,15 +442,14 @@ body.fsd-activated #full-screen-display {
                 clearTimeout(timetoshow)
                 timetoshow = 0 
             }
-
-        style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG.icons ? 1 : 0];
+        style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG[ACTIVE].icons ? 1 : 0];
 
         container.innerHTML = `
 ${CONFIG.tvMode?`<div id="fsd-background">
   <div id="fsd-background-image"></div>
 </div>`:
 `<canvas id="fsd-background"></canvas>`}
-  ${CONFIG.enableContext?`
+  ${CONFIG[ACTIVE].contextDisplay!=="never"?`
    <div id="fsd-ctx-container">
       <div id="fsd-ctx-icon" class="spoticon-spotifylogo-32"></div>
       <div id="fsd-ctx-details">
@@ -458,7 +457,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         <div id="fsd-ctx-name"></div>
       </div>
     </div>`:""}
- ${CONFIG.enableUpnext?`
+ ${CONFIG[ACTIVE].enableUpnext?`
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">
         <div id="fsd_next_art_image"></div>
@@ -485,13 +484,13 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>
                 <span></span>
             </div>
-            ${CONFIG.showAlbum ? 
+            ${CONFIG[ACTIVE].showAlbum!=="n" ? 
             `<div id="fsd-album">
                  <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>
                  <span></span>
             </div>` : ""} 
-            <div id="fsd-status" class="${CONFIG.enableControl || (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? "active" : ""}">
-                ${CONFIG.enableControl ? 
+            <div id="fsd-status" class="${CONFIG[ACTIVE].enableControl || CONFIG[ACTIVE].enableProgress ? "active" : ""}">
+                ${CONFIG[ACTIVE].enableControl ? 
                     `<div id="fsd-controls">
                         <button id="fsd-back">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-back"]}</svg>
@@ -503,7 +502,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-forward"]}</svg>
                         </button>
                     </div>` : ""}
-                ${ CONFIG.tvMode ? `${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ? 
+                ${ CONFIG.tvMode ? `${CONFIG[ACTIVE].enableProgress ? 
                     `<div id="fsd-progress-container">
                         <span id="fsd-elapsed"></span>
                         <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
@@ -511,7 +510,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                     </div>` : ""}`:""}
             </div>
     </div>
-    ${ CONFIG.tvMode ? "":`${(CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) ?
+    ${ CONFIG.tvMode ? "":`${CONFIG[ACTIVE].enableProgress ?
         `<div id="fsd-progress-container">
             <span id="fsd-elapsed"></span>
             <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
@@ -530,13 +529,13 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         artist = container.querySelector("#fsd-artist span")
         album = container.querySelector("#fsd-album span")
 
-      if(CONFIG.enableContext){
+      if(CONFIG[ACTIVE].contextDisplay!=="never"){
         ctx_container = container.querySelector("#fsd-ctx-container")
         ctx_icon = container.querySelector("#fsd-ctx-icon")
         ctx_source = container.querySelector("#fsd-ctx-source")
         ctx_name = container.querySelector("#fsd-ctx-name")
       }  
-      if (CONFIG.enableUpnext) {
+      if (CONFIG[ACTIVE].enableUpnext) {
             fsd_myUp = container.querySelector("#fsd-upnext-container")
             fsd_myUp.onclick = Spicetify.Player.next
             fsd_nextCover = container.querySelector("#fsd_next_art_image")
@@ -547,13 +546,13 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             fsd_second_span= container.querySelector("#fsd_second_span")
         }
 
-        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
+        if (CONFIG[ACTIVE].enableProgress) {
             prog = container.querySelector("#fsd-progress-inner")
             durr = container.querySelector("#fsd-duration")
             elaps = container.querySelector("#fsd-elapsed")
         }
 
-        if (CONFIG.enableControl) {
+        if (CONFIG[ACTIVE].enableControl) {
             play = container.querySelector("#fsd-play")
             play.onclick = Spicetify.Player.togglePlay
             container.querySelector("#fsd-next").onclick = Spicetify.Player.next
@@ -663,12 +662,12 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     async function updateInfo() {
        const meta = Spicetify.Player.data.track.metadata
        
-       if (CONFIG.enableContext)
+       if (CONFIG[ACTIVE].contextDisplay!=="never")
             await updateContext().catch(err => console.error("Error getting context: ",err))
         
         // prepare title
         let rawTitle = meta.title
-        if (CONFIG.trimTitle) {
+        if (CONFIG[ACTIVE].trimTitle) {
             rawTitle = rawTitle
                 .replace(/\(.+?\)/g, "")
                 .replace(/\[.+?\]/g, "")
@@ -678,7 +677,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
         // prepare artist
         let artistName
-        if (CONFIG.showAllArtists) {
+        if (CONFIG[ACTIVE].showAllArtists) {
             artistName = Object.keys(meta)
                 .filter(key => key.startsWith('artist_name'))
                 .sort()
@@ -690,32 +689,22 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
         // prepare album
         let albumText
-        if (CONFIG.showAlbum) {
+        if (CONFIG[ACTIVE].showAlbum!=="n") {
             albumText = meta.album_title || ""
             const albumURI = meta.album_uri
             if (albumURI?.startsWith("spotify:album:")) {
                 const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", ""))
 
                 const albumDate = new Date(albumInfo.year, (albumInfo.month || 1) - 1, albumInfo.day || 0)
-                // const recentDate = new Date()
-                // recentDate.setMonth(recentDate.getMonth() - 6)
-                // const dateStr = albumDate.toLocaleString(
-                //     'default',
-                //     albumDate > recentDate ? {
-                //         year: 'numeric',
-                //         month: 'short'
-                //     } : {
-                //         year: 'numeric'
-                //     }
-                // )
                 const dateStr = albumDate.toLocaleString('default',{year: 'numeric',month: 'short'})
-                albumText += " • " + dateStr
+                
+                albumText += CONFIG[ACTIVE].showAlbum==="d" ? (" • " + dateStr) : ""
             }
         }
 
         // prepare duration
         let durationText
-        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
+        if (CONFIG[ACTIVE].enableProgress) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
         
@@ -770,10 +759,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 
         const ctx = back.getContext('2d')
         ctx.imageSmoothingEnabled = false
-        ctx.filter = `blur(20px) brightness(0.5)`
-        const blur = 20
+        ctx.filter = `brightness(${"brightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].brightness : .6}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 20}px)`
+        const blur = "blurSize" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].blurSize) : 20
         
-        if (!CONFIG.enableFade) {
+        if (!CONFIG[ACTIVE].enableFade) {
             ctx.globalAlpha = 1
             ctx.drawImage(
                 nextImg, 
@@ -948,21 +937,28 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
 
     async function updateUpNext(){            
-            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue.nextTracks[0].contextTrack.metadata.title){
+            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title){
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
                  upNextShown = true;
                  if(fsd_second_span.offsetWidth>(fsd_next_tit_art.offsetWidth-2)){
-                     // fsd_first_span.style.paddingRight = "80px"
-                     // anim_time= 5000*(fsd_first_span.offsetWidth/400)
-                     // fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
-                     // fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 800ms infinite"
-                     
-                     fsd_second_span.innerText=""
-                     anim_time = (fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth-2)/0.05
-                     // anim_time= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
-                     fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth+5}px`);
-                     fsd_next_tit_art_inner.style.animation = `fsd_translate ${anim_time>1500 ? anim_time : 1500}ms linear 800ms infinite`
+                    switch(CONFIG[ACTIVE].upNextAnim){
+                        case "mq":
+                            fsd_first_span.style.paddingRight = "80px"
+                            anim_time= 5000*(fsd_first_span.offsetWidth/400)
+                            fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth+3.5}px`);
+                            fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee "+ anim_time +"ms linear 800ms infinite"
+                            break;
+                        case "sp":
+                        default:
+                            fsd_first_span.style.paddingRight = "0px"
+                            fsd_second_span.innerText=""
+                            anim_time = (fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth-2)/0.05
+                            // anim_time= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
+                            fsd_myUp.style.setProperty('--translate_width_fsd', `-${fsd_first_span.offsetWidth-fsd_next_tit_art.offsetWidth+5}px`);
+                            fsd_next_tit_art_inner.style.animation = `fsd_translate ${anim_time>1500 ? anim_time : 1500}ms linear 800ms infinite`
+                            break;
+                    }
                   } 
                   else{
                      fsd_first_span.style.paddingRight = "0px"
@@ -1012,7 +1008,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 4000)
     }
 
-    FSTRANSITION = 1  
+    FSTRANSITION = "backAnimationTime" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backAnimationTime) : 0.8
     function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
         container.style.setProperty('--fs-transition',`${FSTRANSITION-0.05}s`);
@@ -1020,18 +1016,18 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         Spicetify.Player.addEventListener("songchange", updateInfo)
         container.addEventListener("mousemove", hideCursor)
         hideCursor()
-        if(CONFIG.enableContext){
+        if(CONFIG[ACTIVE].contextDisplay==="hover"){
             container.addEventListener("mousemove", hideContext)
             hideContext()
         }
-        if(CONFIG.enableUpnext){
+        if(CONFIG[ACTIVE].enableUpnext){
             updateUpNextShow()
             Spicetify.Player.addEventListener("songchange",updateUpNextShow)
             Spicetify.Player.origin._events.addListener("queue_update", updateUpNext)
             Spicetify.Player.origin._events.addListener("update", updateUpNextShow)
             window.addEventListener("resize",updateUpNext)
         }
-        if(CONFIG.enableFade){
+        if(CONFIG[ACTIVE].enableFade){
             cover.classList.add("fsd-background-fade")
             if(CONFIG.tvMode)
                 back.classList.add("fsd-background-fade")
@@ -1040,16 +1036,16 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             if(CONFIG.tvMode)
                 back.classList.remove("fsd-background-fade")
         }
-        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
+        if (CONFIG[ACTIVE].enableProgress) {
             updateProgress()
             Spicetify.Player.addEventListener("onprogress", updateProgress)
         }
-        if (CONFIG.enableControl) {
+        if (CONFIG[ACTIVE].enableControl) {
             updateControl({ data: { is_paused: !Spicetify.Player.isPlaying() }})
             Spicetify.Player.addEventListener("onplaypause", updateControl)
         }
         document.body.classList.add(...classes)
-        if (CONFIG.enableFullscreen) {
+        if (CONFIG[ACTIVE].enableFullscreen) {
             FullScreenOn()
             full_screen_status=true;
         } else {
@@ -1083,10 +1079,10 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         container.removeEventListener("mousemove", hideCursor)
-        if(CONFIG.enableContext){
+        if(CONFIG[ACTIVE].contextDisplay==="hover"){
             container.removeEventListener("mousemove", hideContext)
         }
-        if(CONFIG.enableUpnext){
+        if(CONFIG[ACTIVE].enableUpnext){
             upNextShown = false;
             if(timetoshow2){
                 clearTimeout(timetoshow2)
@@ -1101,16 +1097,16 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
             window.removeEventListener("resize",updateUpNext)
         }
-        if (CONFIG.enableProgress && (!CONFIG.tvMode || !CONFIG.disablePTV)) {
+        if (CONFIG[ACTIVE].enableProgress) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
         }
-        if (CONFIG.enableControl) {
+        if (CONFIG[ACTIVE].enableControl) {
             Spicetify.Player.removeEventListener("onplaypause", updateControl)
         }
         document.body.classList.remove(...classes)
         full_screen_status=false;
         upNextShown = false;
-        if (CONFIG.enableFullscreen) {
+        if (CONFIG[ACTIVE].enableFullscreen) {
             FullScreenOff()
         }
         let popup = document.querySelector("body > generic-modal")
@@ -1137,13 +1133,13 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
     function fsToggle() {
         configContainer = ""
-        if(CONFIG.enableFullscreen){
-            CONFIG["enableFullscreen"]= false
+        if(CONFIG[ACTIVE].enableFullscreen){
+            CONFIG[ACTIVE]["enableFullscreen"]= false
             saveConfig()
             render()
             activate()
         } else{
-            CONFIG["enableFullscreen"]= true
+            CONFIG[ACTIVE]["enableFullscreen"]= true
             saveConfig()
             render()
             activate()
@@ -1154,12 +1150,16 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         try {
             const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config"))
             if (parsed && typeof parsed === "object") {
+                if(!"tv" in parsed){
+                    Spicetify.LocalStorage.set("full-screen-config", "{tv: {}, def: {}, tvMode: false}")
+                    return {tv: {}, def: {}, tvMode: false}
+                }
                 return parsed
             }
             throw ""
         } catch {
-            Spicetify.LocalStorage.set("full-screen-config", "{}")
-            return {}
+            Spicetify.LocalStorage.set("full-screen-config", "{tv: {}, def: {}, tvMode: false}")
+            return {tv: {}, def: {}, tvMode: false}
         }
     }
 
@@ -1167,25 +1167,82 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(CONFIG))
     }
 
+
+    function createAdjust(name,key,unit="",defaultValue, step, min, max, onChange = () => {}){
+        let value = key in CONFIG[ACTIVE] ? CONFIG[ACTIVE][key] : defaultValue
+        function adjustValue(dir) {
+           let temp = value + dir * step;
+           if (temp < min) {
+               temp = min;
+           } else if (temp > max) {
+               temp = max;
+           }
+           value = Number(Number(temp).toFixed(step>= 1 ? 0 : 1))
+           container.querySelector(".adjust-value").innerText = `${value}${unit}`
+           plus.classList.toggle("disabled",value===max)
+           minus.classList.toggle("disabled",value===min)
+           onChange(value)
+        }
+        const container = document.createElement("div")
+        container.innerHTML = `
+        <div class="setting-row">
+             <label class="col description">${name}</label>
+             <div class="col action">
+                <button class="switch small minus"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 7h12v2H0z"/></button>
+                <p class="adjust-value">${value}${unit}</p>
+                <button class="switch small plus"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.plus2px}</button>
+            </div>
+        </div>
+        `
+        const minus = container.querySelector(".minus")
+        const plus = container.querySelector(".plus")
+        minus.classList.toggle("disabled",value===min)
+        plus.classList.toggle("disabled",value===max)
+        minus.onclick = () => adjustValue(-1)
+        plus.onclick = () => adjustValue(1)
+        return container
+    }
+
+    function createOptions(name, options, defaultValue, callback) {
+        const container = document.createElement("div");
+        container.innerHTML = `
+          <div class="setting-row">
+            <label class="col description">${name}</label>
+            <div class="col action">
+              <select>
+               ${Object.keys(options)
+                .map(
+                    (item) => `
+                  <option value="${item}" dir="auto">${options[item]}</option>`
+                ).join("\n")}
+             </select>
+            </div>
+          </div>`;
+        const select = container.querySelector("select");
+        select.value = defaultValue;
+        select.onchange = (e) => {
+            callback(e.target.value);
+        };
+        return container;
+    }
+
     function newMenuItem(name, key) {
         const container = document.createElement("div");
         container.innerHTML = `
-<div class="setting-row">
-    <label class="col description">${name}</label>
-    <div class="col action"><button class="switch">
-        <svg height="16" width="16" viewBox="0 0 16 16" fill="currentColor">
-            ${Spicetify.SVGIcons.check}
-        </svg>
-    </button></div>
-</div>`;
+          <div class="setting-row">
+             <label class="col description">${name}</label>
+             <div class="col action">
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider"></span>
+                </label>
+             </div>
+          </div>`;
 
-        const slider = container.querySelector("button");
-        slider.classList.toggle("disabled", !CONFIG[key]);
-
-        slider.onclick = () => {
-            const state = slider.classList.contains("disabled");
-            slider.classList.toggle("disabled");
-            CONFIG[key] = state;
+        const toggle = container.querySelector("input");
+        toggle.checked = CONFIG[ACTIVE][key]
+        toggle.onchange = (evt) => {
+            CONFIG[ACTIVE][key] = evt.target.checked;
             saveConfig()
             render()
             if (document.body.classList.contains('fsd-activated')) {
@@ -1195,64 +1252,228 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         return container;
     }
     let configContainer;
-    function openConfig(event) {
-        event.preventDefault();
-        if (!configContainer) {
-            configContainer = document.createElement("div");
-            configContainer.id = "popup-config-container"
-            const style = document.createElement("style");
-            style.innerHTML = `
-.setting-row::after {
-    content: "";
-    display: table;
-    clear: both;
-}
-.setting-row .col {
-    display: flex;
-    padding: 10px 0;
-    align-items: center;
-}
-.setting-row .col.description {
-    float: left;
-    padding-right: 15px;
-}
-.setting-row .col.action {
-    float: right;
-    text-align: right;
-}
-button.switch {
-    align-items: center;
-    border: 0px;
-    border-radius: 50%;
-    background-color: rgba(var(--spice-rgb-shadow), .7);
-    color: var(--spice-text);
-    cursor: pointer;
-    display: flex;
-    margin-inline-start: 12px;
-    padding: 8px;
-}
-button.switch.disabled {
-    color: rgba(var(--spice-rgb-text), .3);
-}`;
-
-            configContainer.append(
-                style,
-                newMenuItem("Enable Progress Bar", "enableProgress"),
-                newMenuItem("Disable Progress Bar in TV Mode", "disablePTV"),
-                newMenuItem("Enable Controls", "enableControl"),
-                newMenuItem("Trim Title", "trimTitle"),
-                newMenuItem("Show Album", "showAlbum"),
-                newMenuItem("Show All Artists", "showAllArtists"),
-                newMenuItem("Show Icons", "icons"),
-                newMenuItem("Enable Song Change Animation", "enableFade"),
-                newMenuItem("Enable Fullscreen", "enableFullscreen"),
-                newMenuItem("Enable Upnext Display", "enableUpnext"),
-                newMenuItem("Enable Context Display", "enableContext"),
-                newMenuItem("Enable TV Mode", "tvMode"),
-            )
-        }
+    
+    function openConfig(evt) {
+        evt?.preventDefault()
+        configContainer = document.createElement("div");
+        configContainer.id = "popup-config-container"
+        const style = document.createElement("style");
+        style.innerHTML = `           
+           .setting-row::after {
+               content: "";
+               display: table;
+               clear: both;
+           }
+           .setting-row-but{
+               display: flex;
+               align-items: center;
+               justify-content: center;
+           }
+           .setting-row .col {
+               display: flex;
+               padding: 10px 0;
+               align-items: center;
+           }
+           .setting-row .col.description {
+               float: left;
+               padding-right: 15px;
+           }
+           .setting-row .col.action {
+               float: right;
+               text-align: right;
+           }
+           .switch {
+             position: relative;
+             display: inline-block;
+             width: 46px;
+             height: 26px;
+           }
+           .switch input {
+             opacity: 0;
+             width: 0;
+             height: 0;
+           }
+           .slider {
+             position: absolute;
+             cursor: pointer;
+             top: 0;
+             left: 0;
+             right: 0;
+             bottom: 0;
+             background-color: rgba(150,150,150,.5);
+             transition: .3s;
+             border-radius: 34px;
+           }
+           .slider:before {
+             position: absolute;
+             content: "";
+             height: 20px;
+             width: 20px;
+             left: 3px;
+             bottom: 3px;
+             background-color: #EEE;
+             transition: .3s;
+             border-radius: 50%;
+           }
+           input:checked + .slider {
+             background-color: rgba(var(--spice-rgb-button-disabled),.6);
+           }
+           input:focus + .slider {
+             box-shadow: 0 0 1px rgba(var(--spice-rgb-button-disabled),.6);
+           }
+           input:checked + .slider:before {
+             transform: translateX(20px);
+             background-color: var(--spice-button);
+             filter:  brightness(1.3);
+           }
+           #popup-config-container select {
+               color: var(--spice-text);
+               background: var(--spice-card);
+               border: none;
+               height: 32px;
+           }
+           #popup-config-container option {
+            color: var(--spice-text);
+            background: var(--spice-card);
+           }
+           button.switch {
+               align-items: center;
+               border: 0px;
+               border-radius: 50%;
+               background-color: rgba(var(--spice-rgb-shadow), 0.7);
+               color: var(--spice-text);
+               cursor: pointer;
+               margin-inline-start: 12px;
+               padding: 8px;
+               width: 32px;
+               height: 32px;
+           }
+           button.switch.disabled,
+           button.switch[disabled] {
+               color: rgba(var(--spice-rgb-text), 0.3);
+               pointer-events: none;
+           }
+           button.switch.small {
+               width: 22px;
+               height: 22px;
+               padding: 3px;
+           }
+           #popup-config-container .adjust-value {
+               margin-inline: 12px;
+               width: 22px;
+               text-align: center;
+           }
+        `;
+        configContainer.append(
+            style,
+            (() => {
+                const container = document.createElement("div");
+                container.innerHTML = `
+                <div class="setting-row-but">
+                  <button class="main-buttons-button main-button-primary">${CONFIG.tvMode ? "Switch to Default Mode" : "Switch to TV Mode"}</button>
+                </div>`;
+                const button = container.querySelector("button");
+                button.onclick = () => {
+                    CONFIG.tvMode ? openwithDef() : openwithTV()
+                    document.querySelector("body > generic-modal")?.remove()
+                };
+                return document.body.classList.contains('fsd-activated') ? container : "";
+            })(),
+            newMenuItem("Enable Progress Bar", "enableProgress"),
+            newMenuItem("Enable Controls", "enableControl"),
+            newMenuItem("Trim Title", "trimTitle"),
+            createOptions("Show Album",
+            {
+                "n" : "Never",
+                "a" : "Show",
+                "d" : "Show with Release Date"
+            },
+            CONFIG[ACTIVE].showAlbum || "a",
+            (state) => {
+                CONFIG[ACTIVE]["showAlbum"] = state;
+                saveConfig()
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }),
+            newMenuItem("Show All Artists", "showAllArtists"),
+            newMenuItem("Show Icons", "icons"),
+            newMenuItem("Enable Song Change Animation", "enableFade"),
+            createAdjust("Background Animation Time","backAnimationTime","s",0.8,0.1,0,1,(state) => {
+                CONFIG[ACTIVE]["backAnimationTime"] = state;
+                saveConfig()
+                FSTRANSITION = CONFIG[ACTIVE]["backAnimationTime"]
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }),
+            newMenuItem("Enable Fullscreen", "enableFullscreen"),
+            newMenuItem("Enable Upnext Display", "enableUpnext"),
+            createOptions(
+            "Upnext Scroll Animation",
+            {
+                 "mq": "Marquee/Scrolling",
+                 "sp": "Spotify/Translating",
+            },
+            CONFIG[ACTIVE].upNextAnim || "sp",
+            (state) => {
+                CONFIG[ACTIVE]["upNextAnim"] = state;
+                saveConfig()
+                updateUpNext()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }
+        ),
+            createOptions(
+            "Context Display",
+            {
+                 "never": "Never",
+                 "hover": "Display on Mousemove",
+                 "always": "Always Display"
+            },
+            CONFIG[ACTIVE].contextDisplay || "always",
+            (state) => {
+                CONFIG[ACTIVE]["contextDisplay"] = state;
+                saveConfig()
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }
+        ),
+            createAdjust("Background Blur","blurSize","px",20,4,0,100,(state) => {
+                CONFIG[ACTIVE]["blurSize"] = Number(state);
+                saveConfig()
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }),
+            createOptions(
+            "Background Brightness",
+            {
+                 0: "0%",
+                .1: "10%",
+                .2: "20%",
+                .3: "30%",
+                .4: "40%",
+                .5: "50%",
+                .6: "60%",
+                .7: "70%",
+                .8: "80%",
+                .9: "90%",
+                 1: "Full"
+            },
+            "brightness" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].brightness) : .8 ,
+            (state) => {
+                CONFIG[ACTIVE]["brightness"] = Number(state);
+                saveConfig()
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }
+        ),
+        )
         Spicetify.PopupModal.display({
-            title: "Full Screen Display",
+            title: ACTIVE==="tv" ? "TV Mode Config" : "Full Screen Config",
             content: configContainer,
         })
     }
@@ -1270,7 +1491,11 @@ button.switch.disabled {
     button.onclick = openwithDef
     
     extraBar.append(button);
-    button.oncontextmenu = openConfig;
+    button.oncontextmenu = (evt) =>{
+        evt.preventDefault()
+        ACTIVE = "def"
+        openConfig()
+    };
 
     // Add TV Mode Button on top bar
     const button2 = document.createElement("button")
@@ -1282,7 +1507,11 @@ button.switch.disabled {
     button2.onclick = openwithTV
 
     topBar.append(button2)
-    button2.oncontextmenu = openConfig;
-
+    button2.oncontextmenu = (evt) =>{
+        evt.preventDefault()
+        ACTIVE = "tv"
+        openConfig()
+    };
+    
     render()
 })()
