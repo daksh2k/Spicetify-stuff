@@ -13,9 +13,12 @@
 .desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer,
 .desktoproutes-homepage-takeover-ad-hptoComponent-container,
 .wjOO2jGTjPU3ywXgqYqv,
+.hx2D0g_ursHte5bm62U2,
 .main-topBar-UpgradeButton,
 .main-rootlist-rootlistDividerContainer,
 .x-downloadButton-DownloadButton,
+button[aria-label="Download"],
+.YuL8TZO5okStcwZtm4zm,
 .connect-header,
 .connect-title__help 
 /*.main-userWidget-displayName.main-type-mestoBold,
@@ -68,7 +71,7 @@ img[src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"]{
     background-color: var(--spice-sidebar-button) !important;
     color: var(--spice-button-text) !important;
 }
-.wCkjuzeyTEYt_GDNp_O7,.xcxdiSzDr5qL06wCgxh0,.QgSdmcfWjx5jWPX64eSa {
+.wCkjuzeyTEYt_GDNp_O7,.xcxdiSzDr5qL06wCgxh0,.QgSdmcfWjx5jWPX64eSa ,._XjIr3Jebi9c96f7h74J,.GenericModal>div{
     background-color: var(--spice-main);
     color: var(--spice-text);
 }
@@ -91,7 +94,8 @@ img[src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"]{
 .playback-bar,
 .progress-bar__fg_wrapper,
 ._95134b8c1897fc7ed23d86e424a2e9b4-scss,
-.lz_1dGnEKWyCpV_qE0ux {
+.lz_1dGnEKWyCpV_qE0ux,
+.dt2nNuPMSEfD8Pv4Na9G {
   --fg-color: var(--spice-text) !important;
   --is-active-fg-color: var(--spice-text) !important;
   --bg-color: var(--spice-main);
@@ -109,9 +113,16 @@ img[src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"]{
 .main-notificationBubbleContainer-NotificationBubbleContainer{
   z-index: 1000;
 }
-
-
-
+select{
+    color: var(--spice-text) !important;
+    background: var(--spice-c-menu) !important;
+    border: none;
+    height: 32px;
+}
+option{
+ color: var(--spice-text) !important;
+ background: var(--spice-c-menu) !important;
+}
 /*---------------------------------------------*/
 
 /*Change context menu color*/
@@ -986,12 +997,12 @@ ul.main-navBar-entryPoints > div.GlueDropTarget >*.active {
 .main-collectionLinkButton-collectionLinkButton:hover{
     opacity: 1;
 }
-.collection-collectionEntityHeroCard-likedSongs {
+.collection-collectionEntityHeroCard-likedSongs ,.main-heroCard-card.GbXSJaVC61cQYqOVDfz9.aMCCvuHnzEolcWDV6Dep{
     background: linear-gradient(
 149.46deg
 , var(--spice-sidebar), var(--spice-button) 99.16%) !important;
 }
-.collection-collectionEntityHeroCard-opacityText,.collection-collectionEntityHeroCard-headerContainer > div > span > span{
+.collection-collectionEntityHeroCard-opacityText,.collection-collectionEntityHeroCard-headerContainer > div > span > span,.QwCSPAsINTl5cBRXG6pR,.yJc7df5lumdc0jmFXdSf{
     color:  var(--spice-subtext);
 }
 .x-toggle-indicatorWrapper {
