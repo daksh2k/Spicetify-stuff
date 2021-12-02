@@ -295,7 +295,8 @@ body.fsd-activated #full-screen-display {
     text-align: center;
 }
 #fsd-progress-container {
-    width: 28%;
+    width: 28vw;
+    max-width: 550px;
     display: flex;
     align-items: center;
 }
