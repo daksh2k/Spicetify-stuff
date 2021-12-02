@@ -40,10 +40,10 @@
      );
     function openwithTV() {
         configContainer = ""
+        ACTIVE = "tv"
         if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
             if(!CONFIG.tvMode){
                 CONFIG["tvMode"]= true;
-                ACTIVE = "tv"
                 saveConfig()
                 render()
             }
@@ -54,10 +54,10 @@
     }
     function openwithDef() {
         configContainer = ""
+        ACTIVE = "def"
         if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
             if(CONFIG.tvMode){
                 CONFIG["tvMode"]= false;
-                ACTIVE = "def"
                 saveConfig()
                 render()
              }
