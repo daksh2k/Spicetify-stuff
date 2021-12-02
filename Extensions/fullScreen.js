@@ -206,6 +206,16 @@
         transform: translateX(0%);
     }
 }
+#fad-lyrics-plus-container .lyrics-lyricsContainer-LyricsContainer{
+   --lyrics-color-active: rgba(255,255,255,1) !important;
+   --lyrics-color-inactive: rgba(220,220,220,.5) !important;
+   --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
+   --animation-tempo: ${"animationTempo" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].animationTempo : .4}s !important;
+   height: 85vh !important;
+}
+.lyrics-unavailable #fad-lyrics-plus-container{
+    display: none;
+}
 #fsd-foreground {
     position: relative;
     top: 0;
@@ -216,6 +226,7 @@
     align-items: center;
     justify-content: center;
     color: white;
+    transition: width 1s ease;
 }
 #fsd-art-image {
     position: relative;
@@ -306,6 +317,18 @@ body.fsd-activated #full-screen-display {
     max-width: 500px;
     color: #FFFFFF;
 }
+#fad-lyrics-plus-container{
+    right: -50px;
+    position: absolute;
+    max-width: 50%;
+    top: 7.5vh;
+}
+#fad-lyrics-plus-container + #fsd-foreground{
+    width: 50%;
+}
+.lyrics-unavailable #fsd-foreground{
+    width: 100% !important;
+}
 #fsd-title {
     font-size: 48px;
     font-weight: var(--glue-font-weight-black);
@@ -349,6 +372,16 @@ body.fsd-activated #full-screen-display {
     filter: brightness(${"brightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].brightness : .4}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 5}px);
     background-position: center;
     transform: translateZ(0);
+}
+#fad-lyrics-plus-container{
+    position: absolute;
+    right: -50px;
+    max-width: 50%;
+    top: 7.5vh;
+}
+#fad-lyrics-plus-container + #fsd-foreground{
+    width: max-content;
+    max-width: 70%;
 }
 #fsd-foreground {
     flex-direction: row;
@@ -430,7 +463,10 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
         Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
         window.removeEventListener("resize",updateUpNext)
-
+        if(origLoc)
+           Spicetify.Platform.History.push(origLoc)
+        window.dispatchEvent(new Event("fad-request"));
+        window.removeEventListener("lyrics-plus-update",handleLyricsUpdate)
         container.removeEventListener("mousemove", hideCursor)
         container.removeEventListener("mousemove", hideContext)
 
@@ -472,7 +508,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         </div></div>
       </div>
     </div>`:""}
-
+${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
     <div id="fsd-art">
         <div id="fsd-art-image">
@@ -694,7 +730,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             albumText = meta.album_title || ""
             const albumURI = meta.album_uri
             if (albumURI?.startsWith("spotify:album:")) {
-                const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", ""))
+                const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(err => console.error(err))
 
                 const albumDate = new Date(albumInfo.year, (albumInfo.month || 1) - 1, albumInfo.day || 0)
                 const dateStr = albumDate.toLocaleString('default',{year: 'numeric',month: 'short'})
@@ -751,7 +787,11 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             nextTrackImg.src = OFFLINESVG
         }
     }
-
+    function handleLyricsUpdate(evt){
+        if(evt.detail.isLoading)
+            return
+        container.classList.toggle("lyrics-unavailable",!(evt.detail.available && evt.detail?.synced?.length>1))
+    }
     function animateCanvas(prevImg, nextImg) {
         const { innerWidth: width, innerHeight: height } = window
         back.width = width
@@ -1010,6 +1050,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
 
     FSTRANSITION = "backAnimationTime" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backAnimationTime) : 0.8
+    let origLoc
     function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
         container.style.setProperty('--fs-transition',`${FSTRANSITION-0.05}s`);
@@ -1017,6 +1058,8 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         Spicetify.Player.addEventListener("songchange", updateInfo)
         container.addEventListener("mousemove", hideCursor)
         hideCursor()
+        container.querySelector("#fsd-foreground").oncontextmenu = openConfig
+        back.oncontextmenu = openConfig
         if(CONFIG[ACTIVE].contextDisplay==="hover"){
             container.addEventListener("mousemove", hideContext)
             hideContext()
@@ -1057,6 +1100,14 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             full_screen_status=false
         }
         document.querySelector(".Root__top-container").append(style, container)
+        if(CONFIG[ACTIVE].enableLyrics){
+            window.addEventListener("lyrics-plus-update",handleLyricsUpdate)
+            origLoc = Spicetify.Platform.History.location.pathname
+            if(!Spicetify.Platform.History.location.pathname!=="/lyrics-plus"){
+                Spicetify.Platform.History.push("/lyrics-plus")
+            }
+            window.dispatchEvent(new Event("fad-request"));
+        }
         Spicetify.Keyboard.registerShortcut(
         {
             key: Spicetify.Keyboard.KEYS["F11"], 
@@ -1115,6 +1166,12 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             popup.remove()
         style.remove()
         container.remove()
+        if(CONFIG[ACTIVE].enableLyrics){
+            window.removeEventListener("lyrics-plus-update",handleLyricsUpdate)
+            if(origLoc)
+                Spicetify.Platform.History.push(origLoc)
+            window.dispatchEvent(new Event("fad-request"));
+        }
         Spicetify.Keyboard._deregisterShortcut(
             {
                 key: Spicetify.Keyboard.KEYS["F11"], 
@@ -1380,6 +1437,28 @@ ${CONFIG.tvMode?`<div id="fsd-background">
                 };
                 return document.body.classList.contains('fsd-activated') ? container : "";
             })(),
+            newMenuItem("Show Lyrics","enableLyrics"),
+            createOptions("Lyrics ALignment",
+            {
+                "left" : "Left",
+                "center": "Center",
+                "right" : "Right"
+            },
+            CONFIG[ACTIVE].lyricsAlignment || "right",
+            (state) => {
+                CONFIG[ACTIVE]["lyricsAlignment"] = state;
+                saveConfig()
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }),
+            createAdjust("Lyrics Animation Tempo","animationTempo","s",0.4,0.1,0,1,(state) => {
+                CONFIG[ACTIVE]["animationTempo"] = state;
+                saveConfig()
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }),
             newMenuItem("Enable Progress Bar", "enableProgress"),
             newMenuItem("Enable Controls", "enableControl"),
             newMenuItem("Trim Title", "trimTitle"),
@@ -1442,7 +1521,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
             }
         ),
             createAdjust("Background Blur","blurSize","px",20,4,0,100,(state) => {
-                CONFIG[ACTIVE]["blurSize"] = Number(state);
+                CONFIG[ACTIVE]["blurSize"] = state;
                 saveConfig()
                 render()
                 if (document.body.classList.contains('fsd-activated')) 
@@ -1480,7 +1559,6 @@ ${CONFIG.tvMode?`<div id="fsd-background">
     }
 
     container.ondblclick = deactivate
-    container.oncontextmenu = openConfig
 
     // Add Full Screen Button on bottom bar
     const button = document.createElement("button")
