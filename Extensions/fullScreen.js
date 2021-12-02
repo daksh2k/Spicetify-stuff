@@ -153,8 +153,9 @@
     top: 45px;
     right: 60px;
     display: flex;
-    border: 1px solid rgb(125, 125, 125);
-    background-color: rgb(25, 25, 25);
+    border: 1px solid rgba(130, 130, 130,.7);
+    border-radius: 10px;
+    background-color: rgb(20, 20, 20);
     flex-direction: row;
     text-align: left;
     z-index: 50;
@@ -166,6 +167,7 @@
     background-position: center;
     width:  100px;
     height: 100px;
+    border-radius: 9px 0 0 9px;
 }
 #fsd_next_details{
     padding-left: 18px;
@@ -178,8 +180,8 @@
 }
 #fsd_next_tit_art{
     padding-top: 9px;
-    font-size: 21px;
-    font-weight: 500;
+    font-size: 22px;
+    font-weight: 700;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
