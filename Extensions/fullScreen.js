@@ -427,7 +427,7 @@ body.fsd-activated #full-screen-display {
 `#fsd-background-image {
     height: 100%;
     background-size: cover;
-    filter: brightness(${"brightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].brightness : .4}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 5}px);
+    filter: brightness(${"backgroundBrightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].backgroundBrightness : .4}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 5}px);
     background-position: center;
     transform: translateZ(0);
 }
@@ -544,7 +544,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
   <div id="fsd-background-image"></div>
 </div>`:
 `<canvas id="fsd-background"></canvas>`}
-  ${CONFIG[ACTIVE].contextDisplay!=="never"?`
+  ${CONFIG[ACTIVE].contextDisplay!=="n"?`
    <div id="fsd-ctx-container">
       <div id="fsd-ctx-icon" class="spoticon-spotifylogo-32"></div>
       <div id="fsd-ctx-details">
@@ -651,7 +651,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         artist = container.querySelector("#fsd-artist span")
         album = container.querySelector("#fsd-album span")
 
-      if(CONFIG[ACTIVE].contextDisplay!=="never"){
+      if(CONFIG[ACTIVE].contextDisplay!=="n"){
         ctx_container = container.querySelector("#fsd-ctx-container")
         ctx_icon = container.querySelector("#fsd-ctx-icon")
         ctx_source = container.querySelector("#fsd-ctx-source")
@@ -822,7 +822,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     async function updateInfo() {
        const meta = Spicetify.Player.data.track.metadata
        
-       if (CONFIG[ACTIVE].contextDisplay!=="never")
+       if (CONFIG[ACTIVE].contextDisplay!=="n")
             await updateContext().catch(err => console.error("Error getting context: ",err))
         
         // prepare title
@@ -925,7 +925,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
         const ctx = back.getContext('2d')
         ctx.imageSmoothingEnabled = false
-        ctx.filter = `brightness(${"brightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].brightness : .6}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 20}px)`
+        ctx.filter = `brightness(${"backgroundBrightness" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].backgroundBrightness : .6}) blur(${"blurSize" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].blurSize : 20}px)`
         const blur = "blurSize" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].blurSize) : 20
         
         if (!CONFIG[ACTIVE].enableFade) {
@@ -1186,7 +1186,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         hideCursor()
         container.querySelector("#fsd-foreground").oncontextmenu = openConfig
         back.oncontextmenu = openConfig
-        if(CONFIG[ACTIVE].contextDisplay==="hover"){
+        if(CONFIG[ACTIVE].contextDisplay==="m"){
             container.addEventListener("mousemove", hideContext)
             hideContext()
         }
@@ -1260,7 +1260,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         button.classList.remove("control-button--active","control-button--active-dot")
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         container.removeEventListener("mousemove", hideCursor)
-        if(CONFIG[ACTIVE].contextDisplay==="hover"){
+        if(CONFIG[ACTIVE].contextDisplay==="m"){
             container.removeEventListener("mousemove", hideContext)
         }
         if(CONFIG[ACTIVE].upnextDisplay){
@@ -1360,7 +1360,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     function saveConfig() {
         Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(CONFIG))
     }
-
+    function saveOption(key,value) {
+        CONFIG[ACTIVE][key] = value;
+        saveConfig()
+        render()
+        if (document.body.classList.contains('fsd-activated')) 
+            activate()
+    }
 
     function createAdjust(name,key,unit="",defaultValue, step, min, max, onChange = () => {}){
         let value = key in CONFIG[ACTIVE] ? CONFIG[ACTIVE][key] : defaultValue
@@ -1574,20 +1580,15 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 return document.body.classList.contains('fsd-activated') ? container : "";
             })(),
             newMenuItem("Lyrics","lyricsDisplay"),
-            createOptions("Lyrics Alignment",
-            {
-                "left" : "Left",
-                "center": "Center",
-                "right" : "Right"
-            },
-            CONFIG[ACTIVE].lyricsAlignment || "right",
-            (state) => {
-                CONFIG[ACTIVE]["lyricsAlignment"] = state;
-                saveConfig()
-                render()
-                if (document.body.classList.contains('fsd-activated')) 
-                    activate()
-            }),
+            createOptions(
+                "Lyrics Alignment",
+                {
+                    "left" : "Left",
+                    "center": "Center",
+                    "right" : "Right"
+                },
+                CONFIG[ACTIVE].lyricsAlignment || "right",
+                (value) => saveOption("lyricsAlignment",value)),
             createAdjust("Lyrics Animation Tempo","animationTempo","s",0.4,0.1,0,1,(state) => {
                 CONFIG[ACTIVE]["animationTempo"] = state;
                 saveConfig()
@@ -1599,20 +1600,15 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             newMenuItem("Player Controls","playerControls"),
             newMenuItem("Extra Controls","extraControls"),
             newMenuItem("Trim Title", "trimTitle"),
-            createOptions("Show Album",
-            {
-                "n" : "Never",
-                "a" : "Show",
-                "d" : "Show with Release Date"
-            },
-            CONFIG[ACTIVE].showAlbum || "a",
-            (state) => {
-                CONFIG[ACTIVE]["showAlbum"] = state;
-                saveConfig()
-                render()
-                if (document.body.classList.contains('fsd-activated')) 
-                    activate()
-            }),
+            createOptions(
+                "Show Album",
+                {
+                    "n" : "Never",
+                    "a" : "Show",
+                    "d" : "Show with Release Date"
+                },
+                CONFIG[ACTIVE].showAlbum || "a",
+                (value) => saveOption("showAlbum",value)),
             newMenuItem("Show All Artists", "showAllArtists"),
             newMenuItem("Icons", "icons"),
             newMenuItem("Song Change Animation", "enableFade"),
@@ -1627,34 +1623,32 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             newMenuItem("Fullscreen", "enableFullscreen"),
             newMenuItem("Upnext Display", "upnextDisplay"),
             createOptions(
-            "Upnext Scroll Animation",
-            {
-                 "mq": "Marquee/Scrolling",
-                 "sp": "Spotify/Translating",
-            },
-            CONFIG[ACTIVE].upNextAnim || "sp",
-            (state) => {
-                CONFIG[ACTIVE]["upNextAnim"] = state;
-                saveConfig()
-                updateUpNext()
-                if (document.body.classList.contains('fsd-activated')) 
-                    activate()
-            }),
+                "Upnext Scroll Animation",
+                {
+                    "mq": "Marquee/Scrolling",
+                    "sp": "Spotify/Translating",
+                },
+                CONFIG[ACTIVE].upNextAnim || "sp",
+                (value) => saveOption("upNextAnim",value)),
             createOptions(
-            "Context Display",
-            {
-                 "never": "Never",
-                 "hover": "Display on Mousemove",
-                 "always": "Always Display"
-            },
-            CONFIG[ACTIVE].contextDisplay || "always",
-            (state) => {
-                CONFIG[ACTIVE]["contextDisplay"] = state;
-                saveConfig()
-                render()
-                if (document.body.classList.contains('fsd-activated')) 
-                    activate()
-            }),
+                "Context Display",
+                {
+                    "n": "Never",
+                    "m": "On Mousemove",
+                    "a": "Always"
+                },
+                CONFIG[ACTIVE].contextDisplay || "a",
+                (value) => saveOption("contextDisplay",value)),
+            createOptions(
+                "Volume Bar Display",
+                {
+                    "a" : "Always",
+                    "n" : "Never",
+                    "m" : "On Mousemove",
+                    "o" : "On Volumechange"
+                },
+                CONFIG[ACTIVE].volumeDisplay || "a",
+                (value) => saveOption("volumeDisplay",value)),
             createAdjust("Background Blur","blurSize","px",20,4,0,100,(state) => {
                 CONFIG[ACTIVE]["blurSize"] = state;
                 saveConfig()
@@ -1663,28 +1657,22 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     activate()
             }),
             createOptions(
-            "Background Brightness",
-            {
-                 0: "0%",
-                .1: "10%",
-                .2: "20%",
-                .3: "30%",
-                .4: "40%",
-                .5: "50%",
-                .6: "60%",
-                .7: "70%",
-                .8: "80%",
-                .9: "90%",
-                 1: "Full"
-            },
-            "brightness" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].brightness) : .8 ,
-            (state) => {
-                CONFIG[ACTIVE]["brightness"] = Number(state);
-                saveConfig()
-                render()
-                if (document.body.classList.contains('fsd-activated')) 
-                    activate()
-            }),
+                "Background Brightness",
+                {
+                    0: "0%",
+                    .1: "10%",
+                    .2: "20%",
+                    .3: "30%",
+                    .4: "40%",
+                    .5: "50%",
+                    .6: "60%",
+                    .7: "70%",
+                    .8: "80%",
+                    .9: "90%",
+                     1: "Full"
+                 },
+                 "backgroundBrightness" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backgroundBrightness) : .8 ,
+                 (value) => saveOption("backgroundBrightness",value))
         )
         Spicetify.PopupModal.display({
             title: ACTIVE==="tv" ? "TV Mode Config" : "Full Screen Config",
