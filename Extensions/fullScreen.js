@@ -465,8 +465,13 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
         Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
         window.removeEventListener("resize",updateUpNext)
-        if(origLoc)
+
+        if(origLoc!=="/lyrics-plus" && document.body.classList.contains('fsd-activated')){
            Spicetify.Platform.History.push(origLoc)
+           Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length-3,2)
+           Spicetify.Platform.History.index = Spicetify.Platform.History.index>0 ? Spicetify.Platform.History.index-2 : -1
+           Spicetify.Platform.History.length = Spicetify.Platform.History.length>1 ? Spicetify.Platform.History.length-2 : 0
+        }
         window.dispatchEvent(new Event("fad-request"));
         window.removeEventListener("lyrics-plus-update",handleLyricsUpdate)
         container.removeEventListener("mousemove", hideCursor)
@@ -1105,7 +1110,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
         if(CONFIG[ACTIVE].enableLyrics){
             window.addEventListener("lyrics-plus-update",handleLyricsUpdate)
             origLoc = Spicetify.Platform.History.location.pathname
-            if(!Spicetify.Platform.History.location.pathname!=="/lyrics-plus"){
+            if(origLoc!=="/lyrics-plus"){
                 Spicetify.Platform.History.push("/lyrics-plus")
             }
             window.dispatchEvent(new Event("fad-request"));
@@ -1170,8 +1175,12 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
         container.remove()
         if(CONFIG[ACTIVE].enableLyrics){
             window.removeEventListener("lyrics-plus-update",handleLyricsUpdate)
-            if(origLoc)
+            if(origLoc!=="/lyrics-plus"){
                 Spicetify.Platform.History.push(origLoc)
+                Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length-3,2)
+                Spicetify.Platform.History.index = Spicetify.Platform.History.index>0 ? Spicetify.Platform.History.index-2 : -1
+                Spicetify.Platform.History.length = Spicetify.Platform.History.length>1 ? Spicetify.Platform.History.length-2 : 0
+            }
             window.dispatchEvent(new Event("fad-request"));
         }
         Spicetify.Keyboard._deregisterShortcut(
