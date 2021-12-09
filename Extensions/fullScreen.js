@@ -804,11 +804,11 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             const albumURI = meta.album_uri
             if (albumURI?.startsWith("spotify:album:")) {
                 const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(err => console.error(err))
-
-                const albumDate = new Date(albumInfo.year, (albumInfo.month || 1) - 1, albumInfo.day || 0)
-                const dateStr = albumDate.toLocaleString('default',{year: 'numeric',month: 'short'})
-                
-                albumText += CONFIG[ACTIVE].showAlbum==="d" ? (" • " + dateStr) : ""
+                if(albumInfo){
+                    const albumDate = new Date(albumInfo.year, (albumInfo.month || 1) - 1, albumInfo.day || 0)
+                    const dateStr = albumDate.toLocaleString('default',{year: 'numeric',month: 'short'})
+                    albumText += CONFIG[ACTIVE].showAlbum==="d" ? (" • " + dateStr) : ""
+                }
             }
         }
 
