@@ -82,8 +82,8 @@
     let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
     const nextTrackImg = new Image()
     function render() {
-
-    const styleBase = `
+            container.classList.toggle("lyrics-active",CONFIG[ACTIVE].enableLyrics)
+            const styleBase = `
 #full-screen-display {
     display: none;
     z-index: 100;
@@ -93,6 +93,8 @@
     cursor: default;
     left: 0;
     top: 0;
+    --transition-duration: 1.5s;
+    --transition-function: ease-in-out;
 }
 #fsd-ctx-container {
     background-color: transparent;
@@ -107,7 +109,7 @@
     align-items: center;
     text-align: left;
     z-index: 50;
-    transition: opacity .8s ease-in-out;
+    transition: opacity 1s ease-in-out;
     opacity: 1;
     max-width: 40%;
 }
@@ -208,15 +210,22 @@
         transform: translateX(0%);
     }
 }
+#fad-lyrics-plus-container{
+    transition: transform var(--transition-duration) var(--transition-function);
+    position: absolute;
+    right: -50px;
+    max-width: 50%;
+    top: 7.5vh;
+}
+.lyrics-unavailable #fad-lyrics-plus-container, .lyrics-hide-force #fad-lyrics-plus-container{
+    transform: translateX(1000px) scale3d(.1,.1,.1) rotate(45deg);
+}
 #fad-lyrics-plus-container .lyrics-lyricsContainer-LyricsContainer{
    --lyrics-color-active: rgba(255,255,255,1) !important;
    --lyrics-color-inactive: rgba(220,220,220,.5) !important;
    --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
    --animation-tempo: ${"animationTempo" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].animationTempo : .4}s !important;
    height: 85vh !important;
-}
-.lyrics-unavailable #fad-lyrics-plus-container{
-    display: none;
 }
 #fsd-foreground {
     position: relative;
@@ -228,7 +237,7 @@
     align-items: center;
     justify-content: center;
     color: white;
-    transition: width 1s ease;
+    transition: width var(--transition-duration) var(--transition-function);
 }
 #fsd-art-image {
     position: relative;
@@ -299,6 +308,9 @@ body.fsd-activated #full-screen-display {
 
 
     const styleChoices = [`
+#fsd-foregorund, #fsd-art, #fsd-details, #fsd-status, #fsd-progress-container{
+    transition: max-width var(--transition-duration) var(--transition-function),width var(--transition-duration) var(--transition-function);
+}   
 #fsd-art {
     width: calc(100vh - 300px);
     max-width: 600px;
@@ -309,42 +321,76 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-progress-container {
     width: 28vw;
-    max-width: 550px;
+    max-width: 580px;
     display: flex;
     align-items: center;
 }
 #fsd-details {
     padding-top: 30px;
     line-height: initial;
-    max-width: 500px;
+    max-width: 580px;
     color: #FFFFFF;
 }
-#fad-lyrics-plus-container{
-    right: -50px;
-    position: absolute;
-    max-width: 50%;
-    top: 7.5vh;
-}
-#fad-lyrics-plus-container + #fsd-foreground{
+.lyrics-active #fsd-foreground{
     width: 50%;
 }
-.lyrics-unavailable #fsd-foreground{
+.lyrics-active #fsd-art{
+    max-width: 450px;
+}
+.lyrics-active #fsd-progress-container,.lyrics-active #fsd-details,.lyrics-active #fsd-status{
+    max-width: 430px;
+}
+.lyrics-active #fsd-title{
+    font-size: 40px;
+}
+.lyrics-active #fsd-artist,.lyrics-active #fsd-album{
+    font-size: 25px;
+}
+.lyrics-unavailable #fsd-title,.lyrics-hide-force #fsd-title{
+    font-size: 48px;
+}
+.lyrics-unavailable #fsd-artist,.lyrics-hide-force #fsd-artist,.lyrics-unavailable #fsd-album,.lyrics-hide-force #fsd-album{
+    font-size: 30px;
+}
+.lyrics-unavailable #fsd-progress-container,.lyrics-hide-force #fsd-progress-container,.lyrics-unavailable #fsd-status,.lyrics-hide-force #fsd-status,.lyrics-unavailable #fsd-details,.lyrics-hide-force #fsd-details{
+    max-width: 580px;
+}
+.lyrics-unavailable #fsd-art,.lyrics-hide-force #fsd-art{
+    max-width: 600px;
+}
+.lyrics-unavailable #fsd-foreground, .lyrics-hide-force #fsd-foreground{
     width: 100% !important;
 }
 #fsd-title {
     font-size: 48px;
-    font-weight: var(--glue-font-weight-black);
+    font-weight: 900;
+    transition: font-size var(--transition-duration) var(--transition-function);
 }
 @media (max-width: 900px), (max-height: 900px){
     #fsd-title{
         font-size: 35px;
-        font-weight: 500;
+        font-weight: 600;
+    }
+    #fsd-artist{
+        font-size: 25px;
+        font-weight: 400;
+    }
+    #fsd-album{
+        font-size: 25px;
+        font-weight: 300;
     }
 }
-#fsd-artist, #fsd-album {
+#fsd-artist {
     font-size: 30px;
-    font-weight: var(--glue-font-weight-medium);
-    color: #C3C7D1;
+    font-weight: 600;
+    color: #FFFFFFBB;
+    transition: font-size var(--transition-duration) var(--transition-function);
+}
+#fsd-album{
+    font-size: 30px;
+    font-weight: 400;
+    color: #FFFFFF88;
+    transition: font-size var(--transition-duration) var(--transition-function);
 }
 #fsd-artist svg, #fsd-album svg {
     width: 25px;
@@ -353,17 +399,20 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-status {
     display: flex;
-    min-width: 100px;
-    max-width: 600px;
+    width: 28vw;
+    max-width: 580px;
     align-items: center;
-    flex-direction: column;
+    justify-content: space-between;
+    flex-direction: row;
 }
 #fsd-status.active {
-    margin: 20px auto 0;
+    margin: 5px auto 0;
 }
-#fsd-controls {
-    margin-top: 20px;
-    order: 2
+.fsd-controls {
+    margin-top: 10px;
+}
+.fsd-controls-center{
+    margin: 10px auto 0;
 }
 .fsd-background-fade {
     transition: background-image var(--fs-transition) linear;
@@ -375,15 +424,9 @@ body.fsd-activated #full-screen-display {
     background-position: center;
     transform: translateZ(0);
 }
-#fad-lyrics-plus-container{
-    position: absolute;
-    right: -50px;
-    max-width: 50%;
-    top: 7.5vh;
-}
-#fad-lyrics-plus-container + #fsd-foreground{
+.lyrics-active #fsd-foreground{
     width: max-content;
-    max-width: 70%;
+    max-width: 65%;
 }
 #fsd-foreground {
     flex-direction: row;
@@ -396,6 +439,7 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-progress-container {
     width: 100%;
+    max-width: 450px;
     display: flex;
     align-items: center;
 }
@@ -408,12 +452,12 @@ body.fsd-activated #full-screen-display {
 #fsd-details {
     padding-left: 45px;
     line-height: initial;
-    max-width: 80%;
+    width: 100%;
     color: #FFFFFF;
 }
 #fsd-title {
     font-size: 60px;
-    font-weight: var(--glue-font-weight-black);
+    font-weight: 900;
 }
 @media (max-width: 900px), (max-height: 800px){
     #fsd-title{
@@ -423,8 +467,8 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-artist, #fsd-album {
     font-size: 34px;
-    font-weight: var(--glue-font-weight-medium);
-    color: #C3C7D1;
+    font-weight: 500;
+    color: #FFFFFFBB;
 }
 #fsd-artist svg, #fsd-album svg {
     margin-right: 5px;
@@ -433,16 +477,17 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-status {
     display: flex;
-    min-width: 400px;
-    max-width: 400px;
+    flex-direction: row;
+    min-width: 450px;
+    max-width: 450px;
     align-items: center;
+    justify-content: space-between;
 }
 #fsd-status.active {
-    margin-top: 20px;
+    margin-top: 10px;
 }
-#fsd-controls {
+.fsd-controls {
     display: flex;
-    margin-right: 10px;
 }
 .fsd-background-fade {
     transition: background-image var(--fs-transition) linear;
