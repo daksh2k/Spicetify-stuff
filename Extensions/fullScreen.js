@@ -1564,8 +1564,8 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
 
     // Add Full Screen Button on bottom bar
     const button = document.createElement("button")
-    button.classList.add("button", "spoticon-fullscreen-16", "fsd-button","control-button","InvalidDropTarget")
-    button.setAttribute("data-tooltip", "Full Screen")
+    button.classList.add("button", "fsd-button","control-button","InvalidDropTarget")
+    button.innerHTML = `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.fullscreen}</svg>`
     button.id = "fs-button"
     button.setAttribute("title", "Full Screen")
 
@@ -1580,11 +1580,10 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
 
     // Add TV Mode Button on top bar
     const button2 = document.createElement("button")
-    button2.classList.add("button", "spoticon-device-tv-16", "tm-button", "full-button","main-topBar-button","InvalidDropTarget")
-    button2.setAttribute("data-tooltip", "TV Mode")
+    button2.classList.add("button", "spoticon-device-tv-16", "tm-button","main-topBar-button","InvalidDropTarget")
     button2.id = "TV-button"
-
     button2.setAttribute("title", "TV Mode Display")
+    
     button2.onclick = openwithTV
 
     topBar.append(button2)
