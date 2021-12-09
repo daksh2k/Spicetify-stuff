@@ -82,7 +82,7 @@
     let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
     const nextTrackImg = new Image()
     function render() {
-            container.classList.toggle("lyrics-active",CONFIG[ACTIVE].enableLyrics)
+            container.classList.toggle("lyrics-active",CONFIG[ACTIVE].lyricsDisplay)
             const styleBase = `
 #full-screen-display {
     display: none;
@@ -552,7 +552,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         <div id="fsd-ctx-name"></div>
       </div>
     </div>`:""}
- ${CONFIG[ACTIVE].enableUpnext?`
+ ${CONFIG[ACTIVE].upnextDisplay?`
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">
         <div id="fsd_next_art_image"></div>
@@ -566,7 +566,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         </div></div>
       </div>
     </div>`:""}
-${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : ""}
+${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
     <div id="fsd-art">
         <div id="fsd-art-image">
@@ -584,7 +584,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                  <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>
                  <span></span>
             </div>` : ""} 
-            <div id="fsd-status" class="${CONFIG[ACTIVE].playerControls || CONFIG[ACTIVE].extraControls|| CONFIG[ACTIVE].enableProgress ? "active" : ""}">
+            <div id="fsd-status" class="${CONFIG[ACTIVE].playerControls || CONFIG[ACTIVE].extraControls|| CONFIG[ACTIVE].progressBarDisplay ? "active" : ""}">
                 ${CONFIG[ACTIVE].extraControls ? 
                     `<div class="fsd-controls-left fsd-controls">
                        <button id="fsd-heart">
@@ -611,28 +611,28 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                        <button id="fsd-repeat">
                           <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>
                        </button>
-                       ${CONFIG[ACTIVE].enableLyrics ? `<button id="fsd-lyrics">
+                       ${CONFIG[ACTIVE].lyricsDisplay ? `<button id="fsd-lyrics">
                           <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
                              <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                              <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
                           </svg>
                        </button>`:""}
                     </div>`:"" }
-                ${ CONFIG.tvMode && !(CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls)? `${CONFIG[ACTIVE].enableProgress ? 
+                ${ CONFIG.tvMode && !(CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls)? `${CONFIG[ACTIVE].progressBarDisplay ? 
                     `<div id="fsd-progress-container">
                         <span id="fsd-elapsed"></span>
                         <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
                         <span id="fsd-duration"></span>
                     </div>` : ""}`:""}
             </div>
-            ${ CONFIG.tvMode && CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls ? `${CONFIG[ACTIVE].enableProgress ? 
+            ${ CONFIG.tvMode && CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls ? `${CONFIG[ACTIVE].progressBarDisplay ? 
                     `<div id="fsd-progress-container">
                         <span id="fsd-elapsed"></span>
                         <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
                         <span id="fsd-duration"></span>
                     </div>` : ""}`:""}
     </div>
-    ${ CONFIG.tvMode ? "":`${CONFIG[ACTIVE].enableProgress ?
+    ${ CONFIG.tvMode ? "":`${CONFIG[ACTIVE].progressBarDisplay ?
         `<div id="fsd-progress-container">
             <span id="fsd-elapsed"></span>
             <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
@@ -657,7 +657,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
         ctx_source = container.querySelector("#fsd-ctx-source")
         ctx_name = container.querySelector("#fsd-ctx-name")
       }  
-      if (CONFIG[ACTIVE].enableUpnext) {
+      if (CONFIG[ACTIVE].upnextDisplay) {
             fsd_myUp = container.querySelector("#fsd-upnext-container")
             fsd_myUp.onclick = Spicetify.Player.next
             fsd_nextCover = container.querySelector("#fsd_next_art_image")
@@ -668,7 +668,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             fsd_second_span= container.querySelector("#fsd_second_span")
         }
 
-        if (CONFIG[ACTIVE].enableProgress) {
+        if (CONFIG[ACTIVE].progressBarDisplay) {
             prog = container.querySelector("#fsd-progress-inner")
             durr = container.querySelector("#fsd-duration")
             elaps = container.querySelector("#fsd-elapsed")
@@ -686,7 +686,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             repeat = container.querySelector("#fsd-repeat")
 
             heart.onclick = Spicetify.Player.toggleHeart
-            if(CONFIG[ACTIVE].enableLyrics){
+            if(CONFIG[ACTIVE].lyricsDisplay){
                 lyrics = container.querySelector("#fsd-lyrics")
                 lyrics.onclick = () => {
                     container.classList.toggle("lyrics-hide-force")
@@ -864,7 +864,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
 
         // prepare duration
         let durationText
-        if (CONFIG[ACTIVE].enableProgress) {
+        if (CONFIG[ACTIVE].progressBarDisplay) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
         
@@ -1190,7 +1190,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             container.addEventListener("mousemove", hideContext)
             hideContext()
         }
-        if(CONFIG[ACTIVE].enableUpnext){
+        if(CONFIG[ACTIVE].upnextDisplay){
             updateUpNextShow()
             Spicetify.Player.addEventListener("songchange",updateUpNextShow)
             Spicetify.Player.origin._events.addListener("queue_update", updateUpNext)
@@ -1206,7 +1206,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             if(CONFIG.tvMode)
                 back.classList.remove("fsd-background-fade")
         }
-        if (CONFIG[ACTIVE].enableProgress) {
+        if (CONFIG[ACTIVE].progressBarDisplay) {
             updateProgress()
             Spicetify.Player.addEventListener("onprogress", updateProgress)
         }
@@ -1229,7 +1229,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             full_screen_status=false
         }
         document.querySelector(".Root__top-container").append(style, container)
-        if(CONFIG[ACTIVE].enableLyrics){
+        if(CONFIG[ACTIVE].lyricsDisplay){
             window.addEventListener("lyrics-plus-update",handleLyricsUpdate)
             origLoc = Spicetify.Platform.History.location.pathname
             if(origLoc!=="/lyrics-plus"){
@@ -1263,7 +1263,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
         if(CONFIG[ACTIVE].contextDisplay==="hover"){
             container.removeEventListener("mousemove", hideContext)
         }
-        if(CONFIG[ACTIVE].enableUpnext){
+        if(CONFIG[ACTIVE].upnextDisplay){
             upNextShown = false;
             if(timetoshow2){
                 clearTimeout(timetoshow2)
@@ -1278,7 +1278,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
             window.removeEventListener("resize",updateUpNext)
         }
-        if (CONFIG[ACTIVE].enableProgress) {
+        if (CONFIG[ACTIVE].progressBarDisplay) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
         }
         if (CONFIG[ACTIVE].playerControls) {
@@ -1298,7 +1298,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
             popup.remove()
         style.remove()
         container.remove()
-        if(CONFIG[ACTIVE].enableLyrics){
+        if(CONFIG[ACTIVE].lyricsDisplay){
             window.removeEventListener("lyrics-plus-update",handleLyricsUpdate)
             if(origLoc!=="/lyrics-plus"){
                 Spicetify.Platform.History.push(origLoc)
@@ -1573,8 +1573,8 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                 };
                 return document.body.classList.contains('fsd-activated') ? container : "";
             })(),
-            newMenuItem("Show Lyrics","enableLyrics"),
-            createOptions("Lyrics ALignment",
+            newMenuItem("Lyrics","lyricsDisplay"),
+            createOptions("Lyrics Alignment",
             {
                 "left" : "Left",
                 "center": "Center",
@@ -1595,9 +1595,9 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
             }),
-            newMenuItem("Enable Progress Bar", "enableProgress"),
-            newMenuItem("Show Player Controls","playerControls"),
-            newMenuItem("Show Extra Controls","extraControls"),
+            newMenuItem("Progress Bar", "progressBarDisplay"),
+            newMenuItem("Player Controls","playerControls"),
+            newMenuItem("Extra Controls","extraControls"),
             newMenuItem("Trim Title", "trimTitle"),
             createOptions("Show Album",
             {
@@ -1614,8 +1614,8 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                     activate()
             }),
             newMenuItem("Show All Artists", "showAllArtists"),
-            newMenuItem("Show Icons", "icons"),
-            newMenuItem("Enable Song Change Animation", "enableFade"),
+            newMenuItem("Icons", "icons"),
+            newMenuItem("Song Change Animation", "enableFade"),
             createAdjust("Background Animation Time","backAnimationTime","s",0.8,0.1,0,1,(state) => {
                 CONFIG[ACTIVE]["backAnimationTime"] = state;
                 saveConfig()
@@ -1624,8 +1624,8 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
             }),
-            newMenuItem("Enable Fullscreen", "enableFullscreen"),
-            newMenuItem("Enable Upnext Display", "enableUpnext"),
+            newMenuItem("Fullscreen", "enableFullscreen"),
+            newMenuItem("Upnext Display", "upnextDisplay"),
             createOptions(
             "Upnext Scroll Animation",
             {
@@ -1639,8 +1639,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                 updateUpNext()
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
-            }
-        ),
+            }),
             createOptions(
             "Context Display",
             {
@@ -1655,8 +1654,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                 render()
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
-            }
-        ),
+            }),
             createAdjust("Background Blur","blurSize","px",20,4,0,100,(state) => {
                 CONFIG[ACTIVE]["blurSize"] = state;
                 saveConfig()
@@ -1686,8 +1684,7 @@ ${CONFIG[ACTIVE].enableLyrics ? `<div id="fad-lyrics-plus-container"></div>` : "
                 render()
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
-            }
-        ),
+            }),
         )
         Spicetify.PopupModal.display({
             title: ACTIVE==="tv" ? "TV Mode Config" : "Full Screen Config",
