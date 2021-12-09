@@ -95,10 +95,13 @@
     top: 0;
     --transition-duration: 1.5s;
     --transition-function: ease-in-out;
+    --primary-color: rgba(255,255,255,1);
+    --secondary-color: rgba(255,255,255,.7);
+    --tertiary-color: rgba(255,255,255,.5);
 }
 #fsd-ctx-container {
     background-color: transparent;
-    color: #CCC;
+    color: var(--secondary-color);
     position: fixed;
     float: left;
     top: 30px;
@@ -176,7 +179,7 @@
     padding-top: 17px;
     line-height: initial;
     width: calc(100% - 115px);
-    color: #FFFFFF;
+    color: var(--primary-color);
     font-size: 19px;
     overflow: hidden;
 }
@@ -221,7 +224,7 @@
     transform: translateX(1000px) scale3d(.1,.1,.1) rotate(45deg);
 }
 #fad-lyrics-plus-container .lyrics-lyricsContainer-LyricsContainer{
-   --lyrics-color-active: rgba(255,255,255,1) !important;
+   --lyrics-color-active: var(--primary-color) !important;
    --lyrics-color-inactive: rgba(220,220,220,.5) !important;
    --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
    --animation-tempo: ${"animationTempo" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].animationTempo : .4}s !important;
@@ -236,7 +239,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--primary-color);
     transition: width var(--transition-duration) var(--transition-function);
 }
 #fsd-art-image {
@@ -269,6 +272,14 @@
     -webkit-line-clamp: 2;
     overflow: hidden;
 }
+#fsd-artist{
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+#fsd-album{
+    font-weight: 400;
+    color: var(--tertiary-color);
+}
 #fsd-progress {
     width: 100%;
     height: 6px;
@@ -279,7 +290,7 @@
 #fsd-progress-inner {
     height: 100%;
     border-radius: 4px;
-    background-color: #ffffff;
+    background-color: var(--primary-color);
     box-shadow: 4px 0 12px rgba(0, 0, 0, 0.8);
 }
 #fsd-elapsed {
@@ -299,7 +310,7 @@
 #full-screen-display button {
     background-color: transparent;
     border: 0;
-    color: currentColor;
+    color: var(--primary-color);
     padding: 0 5px;
 }
 body.fsd-activated #full-screen-display {
@@ -329,7 +340,7 @@ body.fsd-activated #full-screen-display {
     padding-top: 30px;
     line-height: initial;
     max-width: 580px;
-    color: #FFFFFF;
+    color: var(--primary-color);
 }
 .lyrics-active #fsd-foreground{
     width: 50%;
@@ -382,14 +393,10 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-artist {
     font-size: 30px;
-    font-weight: 600;
-    color: #FFFFFFBB;
     transition: font-size var(--transition-duration) var(--transition-function);
 }
 #fsd-album{
     font-size: 30px;
-    font-weight: 400;
-    color: #FFFFFF88;
     transition: font-size var(--transition-duration) var(--transition-function);
 }
 #fsd-artist svg, #fsd-album svg {
@@ -452,8 +459,8 @@ body.fsd-activated #full-screen-display {
 #fsd-details {
     padding-left: 45px;
     line-height: initial;
-    width: 100%;
-    color: #FFFFFF;
+    width: 80%;
+    color: var(--primary-color);
 }
 #fsd-title {
     font-size: 60px;
@@ -467,8 +474,6 @@ body.fsd-activated #full-screen-display {
 }
 #fsd-artist, #fsd-album {
     font-size: 34px;
-    font-weight: 500;
-    color: #FFFFFFBB;
 }
 #fsd-artist svg, #fsd-album svg {
     margin-right: 5px;
