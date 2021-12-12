@@ -24,9 +24,5 @@
         ele.innerText = currVolume==-100 ? `` : `${currVolume}%`
         document.querySelector(".main-connectBar-connectBar")?.style.setProperty('--triangle-position',"229px");
     }
-    const listenerEvent = {
-          options: {},
-          listener: updatePercentage
-      }
-    Spicetify.Player.origin._volume._events._emitter._listeners.volume.push(listenerEvent)
+    Spicetify.Player.origin._events.addListener("volume",updatePercentage)
 })();
