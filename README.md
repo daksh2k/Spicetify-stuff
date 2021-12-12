@@ -1,16 +1,16 @@
 # Spicetify Extensions and Themes
-  - ### [Save Playlists](./Extensions/savePlaylists.js)
+  - ### [Save Playlists](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/savePlaylists.js)
     **Description:** Save any playlist by right clicking on a playlist > Save Playlist.\
     A new playlist will be created with the same name+last updated date of the parent playlist.\
-    Modify the the date format and locale from [here.](./Extensions/savePlaylists.js#L11-L14)
+    Modify the the date format and locale from [here.](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/savePlaylists.js#L11-L14)
 
     ![Save Playlist](https://i.imgur.com/2AEyRrs.png)
 
-  - ### [Auto Skip](./Extensions/skipSong.js)
+  - ### [Auto Skip](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/skipSong.js)
     **Description:** Auto Skip Certain Songs such as remixes, acoustics etc.\
     Toggle in Profile menu for each skipping option you want.
 
-    <img src="https://i.imgur.com/WXOGnrj.png" alt="Auto Skip" width="300" height="auto"/>
+    <img src="https://i.imgur.com/GxdGp9t.png" alt="Auto Skip" width="300" height="auto"/>
 
     Current options:
     - Accoustic Songs
@@ -18,21 +18,23 @@
     - Remix Songs
     - Live Songs
     - Explicit Songs
+    - Stripped Songs
+    - Christmas Songs
 
-  - ### [Play Next](./Extensions/playNext.js)
-    **Description:** Add the option to context menu to add the track to the top of the queue.\
+  - ### [Play Next](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/playNext.js)
+    **Description:** Add the option to context menu to add stuff(albums, tracks, playlists) to the top of the queue.\
     Spotify `Add to Queue` works by adding tracks directly to the end of the queue.\
     This option enables to directly add to top of the queue.
 
     ![Play Next](https://i.imgur.com/osY8QmH.png)
   
-  - ### [Volume Percentage](./Extensions/addVolumeP.js)
+  - ### [Volume Percentage](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/addVolumep.js)
     **Description:** Add the current Volume Percentage to the Volume Bar.
     
     ![Volume Percentage](https://i.imgur.com/lQQXSIg.png)
 
  ## Community extensions modified for extra features or personal preference:
-  - ### [Full Screen Mode](./Extensions/fullScreen.js)
+  - ### [Full Screen Mode](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/fullScreen.js)
     **Description:** Modified from the [fullAppDisplay.js](https://github.com/khanhas/spicetify-cli/blob/master/Extensions/fullAppDisplay.js) with added features.\
     Fancy artwork and track status display.
     
@@ -41,6 +43,9 @@
     - Current Context Display
     - Bigger Album Art and other Style Changes
     - TV Mode - With Artist Header Image as Background(Now the default full screen mode for spotify if you have premium)
+    - Volume Bar Display
+    - Extra Controls(Heart, shuffle, repeat, lyrics quick toggle)
+    - Control Background brightness and blur right from the config
 
     <details>
       <summary>Screenshots </summary>
@@ -54,7 +59,7 @@
 
       
 
-  - ### [Keyboard Shortcuts](./Extensions/keyboardShortcutMy.js)
+  - ### [Keyboard Shortcuts](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/keyboardShortcutMy.js)
     **Description:** Modified from the [keyboardShortcut.js](https://github.com/khanhas/spicetify-cli/blob/master/Extensions/keyboardShortcut.js) with added shortcuts.
 
-    Look [here](./Extensions/keyboardShortcutMy.js#L56-L134) for the extra binds.
+    Look [here](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/keyboardShortcutMy.js#L56-L134) for the extra binds.
