@@ -454,10 +454,30 @@ body.fsd-activated #full-screen-display {
     font-size: 30px;
     transition: font-size var(--transition-duration) var(--transition-function);
 }
-#fsd-artist svg, #fsd-album svg {
+#fsd-title svg{
+    width: 35px;
+    height: 35px;
+}
+.lyrics-active #fsd-title svg{
+    width: 30px;
+    height: 30px;
+}
+.lyrics-unavailable #fsd-title svg,.lyrics-hide-force #fsd-title svg{
+    width: 35px;
+    height: 35px;
+}
+#fsd-artist svg, #fsd-album svg{
     width: 25px;
     height: 25px;
     margin-right: 5px;
+}
+.lyrics-active #fsd-artist svg,.lyrics-active #fsd-album svg{
+    width: 20px;
+    height: 20px;
+}
+.lyrics-unavailable #fsd-artist svg,.lyrics-hide-force #fsd-artist svg,.lyrics-unavailable #fsd-album svg,.lyrics-hide-force #fsd-album svg {
+    width: 25px;
+    height: 25px;
 }
 #fsd-status {
     display: flex;
@@ -530,10 +550,14 @@ body.fsd-activated #full-screen-display {
 #fsd-artist, #fsd-album {
     font-size: 34px;
 }
+#fsd-title svg{
+    width: 45px;
+    height: 45px;
+}
 #fsd-artist svg, #fsd-album svg {
-    margin-right: 5px;
-    width: 25px;
-    height: 25px;
+    margin-right: 10px;
+    width: 30px;
+    height: 30px;
 }
 #fsd-status {
     display: flex;
@@ -554,11 +578,12 @@ body.fsd-activated #full-screen-display {
 }
 `]
     const iconStyleChoices = [`
-#fsd-artist svg, #fsd-album svg {
+#fsd-title svg, #fsd-artist svg, #fsd-album svg {
     display: none;
 }`,
 `
-#fsd-artist svg, #fsd-album svg {
+#fsd-title svg, #fsd-artist svg, #fsd-album svg {
+    transition: width var(--transition-duration) var(--transition-function), height var(--transition-duration) var(--transition-function);
     display: inline-block;
 }`
     ]
@@ -639,7 +664,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         </div>
     </div>
     <div id="fsd-details">
-            <div id="fsd-title"></div>
+            <div id="fsd-title">
+                 <svg width="30" height="30" viewBox="5 4 16 16" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>
+                 <span></span>
+            </div>
             <div id="fsd-artist">
                 <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>
                 <span></span>
@@ -714,7 +742,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
            back.height = window.innerHeight
         }
         cover = container.querySelector("#fsd-art-image")
-        title = container.querySelector("#fsd-title")
+        title = container.querySelector("#fsd-title span")
         artist = container.querySelector("#fsd-artist span")
         album = container.querySelector("#fsd-album span")
 
