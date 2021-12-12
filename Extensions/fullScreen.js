@@ -707,11 +707,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         "fsd-activated"
     ]
     
-    function FullScreenOn() {
-        document.documentElement.requestFullscreen()
+    function fullScreenOn() {
+        if(!document.fullscreen)
+            document.documentElement.requestFullscreen()
     }
-    function FullScreenOff() {
-        document.exitFullscreen()
+    function fullScreenOff() {
+        if(document.fullscreen)
+            document.exitFullscreen()
     }
 
     function getTrackInfo(id){
@@ -1153,7 +1155,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
 
-    let full_screen_status=false;
 
     let curTimer, ctxTimer;
     function hideCursor(){
@@ -1218,16 +1219,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             addObserver(heartObserver,'.control-button-heart',{attributes: true,attributeFilter: ['aria-checked']})
         }
         document.body.classList.add(...classes)
-        if (CONFIG[ACTIVE].enableFullscreen) {
-            FullScreenOn()
-            full_screen_status=true;
-        } else {
-            if(full_screen_status) {
-               FullScreenOff()
-               full_screen_status=false;
-            }
-            full_screen_status=false
-        }
+        if (CONFIG[ACTIVE].enableFullscreen) 
+            fullScreenOn()
+        else
+            fullScreenOff()
         document.querySelector(".Root__top-container").append(style, container)
         if(CONFIG[ACTIVE].lyricsDisplay){
             window.addEventListener("lyrics-plus-update",handleLyricsUpdate)
@@ -1288,10 +1283,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             heartObserver.disconnect()
         }
         document.body.classList.remove(...classes)
-        full_screen_status=false;
         upNextShown = false;
         if (CONFIG[ACTIVE].enableFullscreen) {
-            FullScreenOff()
+            fullScreenOff()
         }
         let popup = document.querySelector("body > generic-modal")
         if(popup)
@@ -1620,7 +1614,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
             }),
-            newMenuItem("Fullscreen", "enableFullscreen"),
+            document.fullscreenEnabled && newMenuItem("Fullscreen", "enableFullscreen"),
             newMenuItem("Upnext Display", "upnextDisplay"),
             createOptions(
                 "Upnext Scroll Animation",
