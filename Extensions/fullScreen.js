@@ -13,10 +13,12 @@
         CosmosAsync,
         LocalStorage,
         Keyboard,
-        ContextMenu
+        ContextMenu,
+        Player,
+        Platform
     } = Spicetify;
 
-    if (!topBar || !extraBar || !CosmosAsync || !LocalStorage || !ContextMenu || !Keyboard) {
+    if (!topBar || !extraBar || !CosmosAsync || !LocalStorage || !ContextMenu || !Keyboard || !Player || !Platform) {
         setTimeout(fullScreen, 300);
         return;
     }
@@ -390,7 +392,7 @@ button.dot-after{
     transform: scale(1.1);
 }
 #full-screen-display button.button-active{
-    background: rgba(150,150,150,.5) !important;
+    background: rgba(175,175,175,.5) !important;
 }
 body.fsd-activated #full-screen-display {
     display: block
@@ -616,6 +618,7 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls)
         Spicetify.Platform.PlayerAPI._events.removeListener("update",updateExtraControls)
+        heartObserver.disconnect()
 
         Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
         Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
@@ -862,24 +865,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
     }
 
-    // function addObserver(observer,selector,options){
-    //     const ele = document.querySelector(selector)
-    //     if(!ele){
-    //         setTimeout(() =>{
-    //             addObserver(observer,selector,options)
-    //         },2000)
-    //         return
-    //     }
-    //     observer.observe(ele,options)
-    // }
-    // function updateHeart(){
-    //     if(Spicetify.Player.getHeart()){
-    //        heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`
-    //     }
-    //     else{
-    //        heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>`   
-    //     }
-    // }
+    function addObserver(observer,selector,options){
+        const ele = document.querySelector(selector)
+        if(!ele){
+            setTimeout(() =>{
+                addObserver(observer,selector,options)
+            },2000)
+            return
+        }
+        observer.observe(ele,options)
+    }
     // document.addEventListener('visibilitychange', () => {
     //     if(document.hidden) {
     //         upNextShown = false;
@@ -1030,6 +1025,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             }
             if (durr) {
                 durr.innerText = durationText || ""
+            }
+            if (CONFIG[ACTIVE].extraControls){
+                updateHeart()
             }
         }
 
@@ -1309,14 +1307,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
     function updateExtraControls(data){
         data = !data ? Spicetify.Platform.PlayerAPI._state : data.data
-        if(data?.item?.metadata["collection.in_collection"]==="true" || Spicetify.Player.getHeart()){
-            heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`
-            heart.classList.add("button-active")
-        }
-        else{
-           heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>`
-           heart.classList.remove("button-active")   
-        }
+        updateHeart()
         repeat.classList.toggle("dot-after",data?.repeat!==0)
         repeat.classList.toggle("button-active",data?.repeat!==0)
 
@@ -1332,6 +1323,17 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             shuffle.classList.toggle("disabled",!data?.restrictions?.canToggleShuffle)
             repeat.classList.toggle("disabled",!data?.restrictions?.canToggleRepeatTrack && !data?.restrictions?.canToggleRepeatContext)
         }
+    }
+    function updateHeart(){
+        if(Spicetify?.Platform?.PlayerAPI?._state?.item?.metadata["collection.in_collection"]==="true" || Spicetify.Player.getHeart()){
+           heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`
+           heart.classList.add("button-active")
+        }
+        else{
+           heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>`
+           heart.classList.remove("button-active")
+        }
+        
     }
 
     let curTimer, ctxTimer, volTimer;
@@ -1363,6 +1365,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     FSTRANSITION = "backAnimationTime" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backAnimationTime) : 0.8
     let origLoc
+    const heartObserver = new MutationObserver(updateHeart)
 
     function activate() {
         button.classList.add("control-button--active","control-button--active-dot")
@@ -1411,6 +1414,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
         if(CONFIG[ACTIVE].extraControls){
            updateExtraControls()
+           addObserver(heartObserver,'.control-button-heart',{attributes: true,attributeFilter: ['aria-checked']})
            Spicetify.Platform.PlayerAPI._events.addListener("update",updateExtraControls)
         }
         document.body.classList.add(...classes)
@@ -1480,6 +1484,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls)
         }
         if(CONFIG[ACTIVE].extraControls){
+            heartObserver.disconnect()
             Spicetify.Platform.PlayerAPI._events.removeListener("update",updateExtraControls)
         }
         document.body.classList.remove(...classes)
