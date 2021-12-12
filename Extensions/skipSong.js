@@ -28,11 +28,19 @@
         },
         skipLive: {
             menuTitle: "Live Songs",
-            check: ({ title } ) => ['- live', 'live version', '(live)'].some(value => title.toLowerCase().includes(value))
+            check: ({ title } ) => ["- live", "live version", "(live)"].some(value => title.toLowerCase().includes(value))
         },
         skipExplicit: {
             menuTitle: "Explicit Songs",
             check: ({ is_explicit }) => is_explicit === 'true'
+        },
+        skipStripped: {
+            menuTitle: "Stripped Songs",
+            check: ({ title }) => checkByName("stripped", title)
+        },
+        skipChristmas: {
+            menuTitle: "Christmas Songs",
+            check: ({ title } ) => ["xmas", "christmas", "jingle","mistletoe","merry","santa"].some(value => title.toLowerCase().includes(value))
         }
     }
 
