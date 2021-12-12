@@ -82,7 +82,9 @@
     let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
     const nextTrackImg = new Image()
     function render() {
-            container.classList.toggle("lyrics-active",CONFIG[ACTIVE].lyricsDisplay)
+            container.classList.toggle("lyrics-active",!!CONFIG[ACTIVE].lyricsDisplay)
+            if(!CONFIG[ACTIVE].lyricsDisplay || !CONFIG[ACTIVE].extraControls)
+                container.classList.remove("lyrics-hide-force")
             const styleBase = `
 #full-screen-display {
     display: none;
@@ -93,11 +95,16 @@
     cursor: default;
     left: 0;
     top: 0;
-    --transition-duration: 1.5s;
+    --transition-duration: 1.2s;
     --transition-function: ease-in-out;
     --primary-color: rgba(255,255,255,1);
     --secondary-color: rgba(255,255,255,.7);
     --tertiary-color: rgba(255,255,255,.5);
+}
+.disabled{
+    color: var(--tertiary-color) !important;
+    pointer-events: none;
+    opacity: .5;
 }
 #fsd-ctx-container {
     background-color: transparent;
@@ -212,6 +219,54 @@
     100% {
         transform: translateX(0%);
     }
+}
+#fsd-volume-container{
+    position: fixed;
+    text-align: center;
+    background-color: transparent;
+    color: var(--primary-color);
+    float: left;
+    top: 30%;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    height: 200px;
+    max-height: 33vh;
+    transition: transform .8s var(--transition-function);
+}
+#fsd-volume-container.v-hidden{
+    transform: translateX(-100px) scale(.1);
+}
+#fsd-volume-container:hover{
+    transform: translateX(0px) scale(1);
+}
+#fsd-volume-bar{
+    margin: 8px 0;
+    border-radius: 4px;
+    background-color: #ffffff50;
+    overflow: hidden;
+    width: 8px;
+    height: 100%;
+    display: flex;
+    align-items: end;
+}
+#fsd-volume-bar-inner{
+    width: 100%;
+    border-radius: 4px;
+    background-color: var(--primary-color);
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.8);
+    transition: height .2s var(--transition-function);
+}
+.disabled #fsd-volume-bar-inner{
+    height: 100%;
+    background-color: var(--tertiary-color);
+}
+#fsd-volume{
+    width: 50px;
+    font-size: 18px;
 }
 #fad-lyrics-plus-container{
     transition: transform var(--transition-duration) var(--transition-function);
@@ -517,6 +572,8 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
         window.removeEventListener("resize",updateUpNext)
 
+        Spicetify.Player.origin._events.removeListener("volume",updateVolume)
+
         if(origLoc!=="/lyrics-plus" && document.body.classList.contains('fsd-activated')){
            Spicetify.Platform.History.push(origLoc)
            Spicetify.Platform.History.entries.splice(Spicetify.Platform.History.entries.length-3,2)
@@ -525,8 +582,10 @@ body.fsd-activated #full-screen-display {
         }
         window.dispatchEvent(new Event("fad-request"));
         window.removeEventListener("lyrics-plus-update",handleLyricsUpdate)
+
         container.removeEventListener("mousemove", hideCursor)
         container.removeEventListener("mousemove", hideContext)
+        container.removeEventListener("mousemove", hideVolume)
 
         upNextShown = false;
         if(timetoshow2){
@@ -566,6 +625,12 @@ ${CONFIG.tvMode?`<div id="fsd-background">
         </div></div>
       </div>
     </div>`:""}
+${CONFIG[ACTIVE].volumeDisplay!=="n" ? `
+<div id="fsd-volume-container">
+     <span id="fsd-volume"></span>
+     <div id="fsd-volume-bar"><div id="fsd-volume-bar-inner"></div></div>
+     <button id="fsd-volume-icon"></button>
+</div>`:""}
 ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
     <div id="fsd-art">
@@ -612,10 +677,12 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                           <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>
                        </button>
                        ${CONFIG[ACTIVE].lyricsDisplay ? `<button id="fsd-lyrics">
-                          <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
-                             <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-                             <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
-                          </svg>
+                          ${container.classList.contains("lyrics-hide-force") ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                                 <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                 <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
+                              </svg>`:`<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                              <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/>
+                          </svg>`}
                        </button>`:""}
                     </div>`:"" }
                 ${ CONFIG.tvMode && !(CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls)? `${CONFIG[ACTIVE].progressBarDisplay ? 
@@ -666,37 +733,42 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             fsd_next_tit_art_inner = container.querySelector("#fsd_next_tit_art_inner")
             fsd_first_span= container.querySelector("#fsd_first_span")
             fsd_second_span= container.querySelector("#fsd_second_span")
-        }
+      }
+      if(CONFIG[ACTIVE].volumeDisplay!=="n"){
+        volumeContainer = container.querySelector("#fsd-volume-container")
+        volumeCurr = container.querySelector("#fsd-volume")
+        volumeBarInner = container.querySelector("#fsd-volume-bar-inner")
+        volumeIcon = container.querySelector("#fsd-volume-icon")
+        volumeIcon.onclick = Spicetify.Player.toggleMute
+      }
+      if (CONFIG[ACTIVE].progressBarDisplay) {
+          prog = container.querySelector("#fsd-progress-inner")
+          durr = container.querySelector("#fsd-duration")
+          elaps = container.querySelector("#fsd-elapsed")
+      }
 
-        if (CONFIG[ACTIVE].progressBarDisplay) {
-            prog = container.querySelector("#fsd-progress-inner")
-            durr = container.querySelector("#fsd-duration")
-            elaps = container.querySelector("#fsd-elapsed")
-        }
-
-        if (CONFIG[ACTIVE].playerControls) {
-            play = container.querySelector("#fsd-play")
-            play.onclick = Spicetify.Player.togglePlay
-            container.querySelector("#fsd-next").onclick = Spicetify.Player.next
-            container.querySelector("#fsd-back").onclick = Spicetify.Player.back
-        }
-        if(CONFIG[ACTIVE].extraControls){
-            heart = container.querySelector("#fsd-heart")
-            shuffle = container.querySelector("#fsd-shuffle")
-            repeat = container.querySelector("#fsd-repeat")
-
-            heart.onclick = Spicetify.Player.toggleHeart
-            if(CONFIG[ACTIVE].lyricsDisplay){
-                lyrics = container.querySelector("#fsd-lyrics")
-                lyrics.onclick = () => {
-                    container.classList.toggle("lyrics-hide-force")
-                    lyrics.innerHTML = (container.classList.contains("lyrics-unavailable") || container.classList.contains("lyrics-hide-force")) ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+      if (CONFIG[ACTIVE].playerControls) {
+          play = container.querySelector("#fsd-play")
+          play.onclick = Spicetify.Player.togglePlay
+          container.querySelector("#fsd-next").onclick = Spicetify.Player.next
+          container.querySelector("#fsd-back").onclick = Spicetify.Player.back
+      }
+      if(CONFIG[ACTIVE].extraControls){
+          heart = container.querySelector("#fsd-heart")
+          shuffle = container.querySelector("#fsd-shuffle")
+          repeat = container.querySelector("#fsd-repeat")
+          heart.onclick = Spicetify.Player.toggleHeart
+          if(CONFIG[ACTIVE].lyricsDisplay){
+            lyrics = container.querySelector("#fsd-lyrics")
+            lyrics.onclick = () => {
+                container.classList.toggle("lyrics-hide-force")
+                lyrics.innerHTML = (container.classList.contains("lyrics-unavailable") || container.classList.contains("lyrics-hide-force")) ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
                                  <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                  <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
                               </svg>` : `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`
-                  }
             }
-        }
+          }
+      }
     }
 
     const classes = [
@@ -750,24 +822,21 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
            heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>`   
         }
     }
-    function updateLyrics(){
-        console.log("yaa")
-    }
-    document.addEventListener('visibilitychange', () => {
-        if(document.hidden) {
-            upNextShown = false;
-            if(timetoshow2){
-                clearTimeout(timetoshow2)
-                timetoshow2 = 0
-            }
-            if(timetoshow){
-                clearTimeout(timetoshow)
-                timetoshow = 0 
-            }
-        }
-        else 
-            updateUpNextShow()
-    });
+    // document.addEventListener('visibilitychange', () => {
+    //     if(document.hidden) {
+    //         upNextShown = false;
+    //         if(timetoshow2){
+    //             clearTimeout(timetoshow2)
+    //             timetoshow2 = 0
+    //         }
+    //         if(timetoshow){
+    //             clearTimeout(timetoshow)
+    //             timetoshow = 0 
+    //         }
+    //     }
+    //     else 
+    //         updateUpNextShow()
+    // });
 
     let timetoshow,timetoshow2
     let upNextShown = false;
@@ -918,6 +987,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if(evt.detail.isLoading)
             return
         container.classList.toggle("lyrics-unavailable",!(evt.detail.available && evt.detail?.synced?.length>1))
+        if(CONFIG[ACTIVE].extraControls){
+            lyrics.classList.toggle("hidden",container.classList.contains("lyrics-unavailable"))
+        }
     }
     function animateCanvas(prevImg, nextImg) {
         const { innerWidth: width, innerHeight: height } = window
@@ -1143,6 +1215,31 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              }
     }
 
+    let prevVolume = Spicetify.Player.getVolume()
+    function updateVolume(data){
+        volume = !data ? Spicetify.Player.getVolume() : data.data.volume
+        if(volume!==prevVolume || !data){  //Only update volume when there is a change or on initial fire
+            prevVolume = volume
+            if(CONFIG[ACTIVE].volumeDisplay==="o" || CONFIG[ACTIVE].volumeDisplay==="m"){
+                volumeContainer.classList.remove(".v-hidden")
+            }
+            volumeBarInner.style.height = volume*100 + "%"
+            let currVol = Math.round(volume*100) ===-100 ? "%" : Math.round(volume*100)
+            volumeCurr.innerText = currVol + "%"
+            volumeContainer.classList.toggle("disabled",typeof currVol!=="number")
+            if(typeof currVol!=="number" || currVol>60)
+                volumeIcon.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["volume"]}</svg>`
+            else if(currVol>30)
+                volumeIcon.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["volume-two-wave"]}</svg>`
+            else if(currVol>0)
+                volumeIcon.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["volume-one-wave"]}</svg>`
+            else
+                volumeIcon.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["volume-off"]}</svg>`
+            if(CONFIG[ACTIVE].volumeDisplay==="o" || CONFIG[ACTIVE].volumeDisplay==="m"){
+                hideVolume()
+            }
+        }
+    }
     function updateProgress() {
         prog.style.width = Spicetify.Player.getProgressPercent() * 100 + "%"
         elaps.innerText = Spicetify.Player.formatTime(Spicetify.Player.getProgress())
@@ -1155,8 +1252,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
 
-
-    let curTimer, ctxTimer;
+    let curTimer, ctxTimer, volTimer;
     function hideCursor(){
         if (curTimer) {
             clearTimeout(curTimer);
@@ -1172,9 +1268,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             ctxTimer = 0;
         }
         ctx_container.style.opacity = 1
-        ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 4000)
+        ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 3500)
     }
-
+    function hideVolume(){
+        if (volTimer) {
+            clearTimeout(volTimer);
+            volTimer = 0;
+        }
+        volumeContainer.classList.remove("v-hidden")
+        volTimer = setTimeout( () => volumeContainer.classList.add("v-hidden"), 3000)
+    }
     FSTRANSITION = "backAnimationTime" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backAnimationTime) : 0.8
     let origLoc
     const heartObserver = new MutationObserver(updateHeart)
@@ -1197,6 +1300,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             Spicetify.Player.origin._events.addListener("queue_update", updateUpNext)
             Spicetify.Player.origin._events.addListener("update", updateUpNextShow)
             window.addEventListener("resize",updateUpNext)
+        }
+        if(CONFIG[ACTIVE].volumeDisplay!=="n"){
+             Spicetify.Player.origin._events.addListener("volume",updateVolume)
+             updateVolume()
+             if(CONFIG[ACTIVE].volumeDisplay==="m"){
+                container.addEventListener("mousemove", hideVolume)
+                hideVolume()
+             }
         }
         if(CONFIG[ACTIVE].enableFade){
             cover.classList.add("fsd-background-fade")
@@ -1272,6 +1383,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
             Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
             window.removeEventListener("resize",updateUpNext)
+        }
+        if(CONFIG[ACTIVE].volumeDisplay!=="n"){
+             Spicetify.Player.origin._events.removeListener("volume",updateVolume)
+             if(CONFIG[ACTIVE].volumeDisplay==="m")
+                container.removeEventListener("mousemove",hideVolume)
         }
         if (CONFIG[ACTIVE].progressBarDisplay) {
             Spicetify.Player.removeEventListener("onprogress", updateProgress)
