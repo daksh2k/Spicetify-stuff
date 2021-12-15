@@ -1195,8 +1195,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             ctx_icon.classList.add("spoticon-spotifylogo-32","ctx-no-icon")
             ctx_icon.innerHTML = ""
         }
-        ctx_source.innerText = `playing from ${ctxSource}`
-        ctx_name.innerText = ctxName
+        if(ctx_source.innerText.toLowerCase()!==(`playing from ${ctxSource}`).toLowerCase() || ctx_name.innerText.toLowerCase()!==ctxName.toLowerCase()){
+            ctx_source.innerText = `playing from ${ctxSource}`
+            ctx_name.innerText = ctxName
+            hideContext()
+        }
     }
 
     function updateUpNextInfo(){
