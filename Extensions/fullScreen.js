@@ -41,11 +41,10 @@
         openwithDef
      );
     function openwithTV() {
-        configContainer = ""
-        ACTIVE = "tv"
-        if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode) {
-            if(!CONFIG.tvMode){
+        if (!document.body.classList.contains('fsd-activated') || !CONFIG.tvMode || ACTIVE!=="tv") {
+            if(!CONFIG.tvMode || ACTIVE!=="tv"){
                 CONFIG["tvMode"]= true;
+                 ACTIVE = "tv"
                 saveConfig()
                 render()
             }
@@ -55,11 +54,10 @@
             deactivate();
     }
     function openwithDef() {
-        configContainer = ""
-        ACTIVE = "def"
-        if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode) {
-            if(CONFIG.tvMode){
+        if (!document.body.classList.contains('fsd-activated') || CONFIG.tvMode || ACTIVE!=="def") {
+            if(CONFIG.tvMode || ACTIVE!=="def"){
                 CONFIG["tvMode"]= false;
+                ACTIVE = "def"
                 saveConfig()
                 render()
              }
@@ -102,11 +100,13 @@
     --primary-color: rgba(255,255,255,1);
     --secondary-color: rgba(255,255,255,.7);
     --tertiary-color: rgba(255,255,255,.5);
+    --theme-background-color: rgba(175,175,175,.5);
 }
 .disabled{
     color: var(--tertiary-color) !important;
     pointer-events: none !important;
     opacity: .5 !important;
+    background: transparent !important;
 }
 button.dot-after{
     padding-bottom: 3px !important;
@@ -392,7 +392,7 @@ button.dot-after{
     transform: scale(1.1);
 }
 #full-screen-display button.button-active{
-    background: rgba(175,175,175,.5) !important;
+    background: var(--theme-background-color) !important;
 }
 body.fsd-activated #full-screen-display {
     display: block
@@ -957,6 +957,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 .replace(/\[.+?\]/g, "")
                 .replace(/\s\-\s.+?$/, "")
                 .trim()
+            if(!rawTitle) rawTitle = meta.title    
         }
 
         // prepare artist
@@ -1328,7 +1329,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
     function updateHeart(){
-        if(Spicetify?.Platform?.PlayerAPI?._state?.item?.metadata["collection.in_collection"]==="true" || Spicetify.Player.getHeart()){
+        const meta = Spicetify?.Platform?.PlayerAPI?._state?.item
+        heart.classList.toggle("disabled",meta?.metadata["collection.can_add"]!=="true")
+        if(meta?.metadata["collection.in_collection"]==="true" || Spicetify.Player.getHeart()){
            heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`
            heart.classList.add("button-active")
         }
@@ -1355,7 +1358,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             ctxTimer = 0;
         }
         ctx_container.style.opacity = 1
-        ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 3500)
+        ctxTimer = setTimeout( () => ctx_container.style.opacity = 0, 3000)
     }
     function hideVolume(){
         if (volTimer) {
@@ -1528,7 +1531,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         );
     }
     function fsToggle() {
-        configContainer = ""
         if(CONFIG[ACTIVE].enableFullscreen){
             CONFIG[ACTIVE]["enableFullscreen"]= false
             saveConfig()
@@ -1653,14 +1655,38 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         };
         return container;
     }
+    function headerText(text,subtext=""){
+        const container = document.createElement("div");
+        container.classList.add("subhead")
+        const listHeader = document.createElement("h2");
+        listHeader.innerText = text;
+        container.append(listHeader)
+        if(subtext){
+            const listSub = document.createElement("i");
+            listSub.innerText = "(" + subtext + ")"
+            container.append(listSub)
+        }
+        return container
+    }
     let configContainer;
     
     function openConfig(evt) {
         evt?.preventDefault()
         configContainer = document.createElement("div");
-        configContainer.id = "popup-config-container"
+        configContainer.id = "full-screen-config-container"
         const style = document.createElement("style");
-        style.innerHTML = `           
+        style.innerHTML = `
+           .GenericModal ::-webkit-scrollbar{
+              width: 7px;
+           }
+           .GenericModal ::-webkit-scrollbar-thumb{
+              border-radius: 2rem;
+           }
+           .main-trackCreditsModal-container{
+              height: 75vh;
+              max-height: 600px;
+              width: 500px;
+           }        
            .setting-row::after {
                content: "";
                display: table;
@@ -1670,6 +1696,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                display: flex;
                align-items: center;
                justify-content: center;
+           }
+           .subhead{
+              text-align: center;
+              padding: 5px 0;
+           }
+           .setting-row-but button{
+               margin: 5px 10px;
            }
            .setting-row .col {
                display: flex;
@@ -1703,7 +1736,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              right: 0;
              bottom: 0;
              background-color: rgba(150,150,150,.5);
-             transition: .3s;
+             transition: all .2s ease-in-out;
              border-radius: 34px;
            }
            .slider:before {
@@ -1714,7 +1747,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              left: 3px;
              bottom: 3px;
              background-color: #EEE;
-             transition: .3s;
+             transition: all .2s ease-in-out;
              border-radius: 50%;
            }
            input:checked + .slider {
@@ -1726,15 +1759,21 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
            input:checked + .slider:before {
              transform: translateX(20px);
              background-color: var(--spice-button);
-             filter:  brightness(1.3);
+             filter:  brightness(1.2);
            }
-           #popup-config-container select {
+           .switch:hover .slider:before{
+             transform: scale(1.1);
+           }
+           .switch:hover input:checked + .slider:before{
+             transform: translateX(20px) scale(1.1);
+           }
+           #full-screen-config-container select {
                color: var(--spice-text);
                background: var(--spice-card);
                border: none;
                height: 32px;
            }
-           #popup-config-container option {
+           #full-screen-config-container option {
             color: var(--spice-text);
             background: var(--spice-card);
            }
@@ -1760,7 +1799,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                height: 22px;
                padding: 3px;
            }
-           #popup-config-container .adjust-value {
+           #full-screen-config-container .adjust-value {
                margin-inline: 12px;
                width: 22px;
                text-align: center;
@@ -1772,15 +1811,17 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 const container = document.createElement("div");
                 container.innerHTML = `
                 <div class="setting-row-but">
-                  <button class="main-buttons-button main-button-primary">${CONFIG.tvMode ? "Switch to Default Mode" : "Switch to TV Mode"}</button>
+                  <button class="main-buttons-button main-button-primary" id="mode-switch">${CONFIG.tvMode ? "Switch to Default Mode" : "Switch to TV Mode"}</button>
+                  <button class="main-buttons-button main-button-primary" id="mode-exit">Exit</button>
                 </div>`;
-                const button = container.querySelector("button");
-                button.onclick = () => {
+               container.querySelector("#mode-exit").onclick = deactivate 
+               container.querySelector("#mode-switch").onclick = () => {
                     CONFIG.tvMode ? openwithDef() : openwithTV()
                     document.querySelector("body > generic-modal")?.remove()
                 };
                 return document.body.classList.contains('fsd-activated') ? container : "";
             })(),
+            headerText("Lyrics Settings"),
             newMenuItem("Lyrics","lyricsDisplay"),
             createOptions(
                 "Lyrics Alignment",
@@ -1798,6 +1839,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 if (document.body.classList.contains('fsd-activated')) 
                     activate()
             }),
+            headerText("General"),
             newMenuItem("Progress Bar", "progressBarDisplay"),
             newMenuItem("Player Controls","playerControls"),
             newMenuItem("Extra Controls","extraControls"),
@@ -1814,24 +1856,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             newMenuItem("Show All Artists", "showAllArtists"),
             newMenuItem("Icons", "icons"),
             newMenuItem("Song Change Animation", "enableFade"),
-            createAdjust("Background Animation Time","backAnimationTime","s",0.8,0.1,0,1,(state) => {
-                CONFIG[ACTIVE]["backAnimationTime"] = state;
-                saveConfig()
-                FSTRANSITION = CONFIG[ACTIVE]["backAnimationTime"]
-                render()
-                if (document.body.classList.contains('fsd-activated')) 
-                    activate()
-            }),
             document.fullscreenEnabled && newMenuItem("Fullscreen", "enableFullscreen"),
+            headerText("Extra Functionality"),
             newMenuItem("Upnext Display", "upnextDisplay"),
-            createOptions(
-                "Upnext Scroll Animation",
-                {
-                    "mq": "Marquee/Scrolling",
-                    "sp": "Spotify/Translating",
-                },
-                CONFIG[ACTIVE].upNextAnim || "sp",
-                (value) => saveOption("upNextAnim",value)),
             createOptions(
                 "Context Display",
                 {
@@ -1851,6 +1878,23 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 },
                 CONFIG[ACTIVE].volumeDisplay || "a",
                 (value) => saveOption("volumeDisplay",value)),
+            headerText("Advanced","Only change if you know what you are doing!"),
+            createAdjust("Background Animation Time","backAnimationTime","s",0.8,0.1,0,1,(state) => {
+                CONFIG[ACTIVE]["backAnimationTime"] = state;
+                saveConfig()
+                FSTRANSITION = CONFIG[ACTIVE]["backAnimationTime"]
+                render()
+                if (document.body.classList.contains('fsd-activated')) 
+                    activate()
+            }),
+            createOptions(
+                "Upnext Scroll Animation",
+                {
+                    "mq": "Marquee/Scrolling",
+                    "sp": "Spotify/Translating",
+                },
+                CONFIG[ACTIVE].upNextAnim || "sp",
+                (value) => saveOption("upNextAnim",value)),
             createAdjust("Background Blur","blurSize","px",20,4,0,100,(state) => {
                 CONFIG[ACTIVE]["blurSize"] = state;
                 saveConfig()
