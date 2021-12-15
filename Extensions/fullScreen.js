@@ -100,7 +100,6 @@
     --primary-color: rgba(255,255,255,1);
     --secondary-color: rgba(255,255,255,.7);
     --tertiary-color: rgba(255,255,255,.5);
-    --theme-background-color: rgba(175,175,175,.5);
 }
 .disabled{
     color: var(--tertiary-color) !important;
@@ -992,7 +991,18 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if (CONFIG[ACTIVE].progressBarDisplay) {
             durationText = Spicetify.Player.formatTime(meta.duration)
         }
-        
+
+        // Prepare theme color
+        if(CONFIG[ACTIVE].themedButtons){
+            let themeVibrantColor;
+            const artColors = await Spicetify.colorExtractor(Spicetify.Player.data.track.uri).catch(err => console.error(err))
+            if(!artColors?.VIBRANT) themeVibrantColor = "#AFAFAF"
+            else themeVibrantColor = artColors.VIBRANT
+            container.style.setProperty("--theme-background-color",themeVibrantColor+"99")
+        }
+        else{
+            container.style.setProperty("--theme-background-color","rgba(175,175,175,.6)")
+        }
         const previouseImg = nextTrackImg.cloneNode()  
         if(CONFIG.tvMode){
            //Prepare Artist Image
@@ -1630,7 +1640,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return container;
     }
 
-    function newMenuItem(name, key) {
+    function createToggle(name, key) {
         const container = document.createElement("div");
         container.innerHTML = `
           <div class="setting-row">
@@ -1721,7 +1731,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              position: relative;
              display: inline-block;
              width: 46px;
-             height: 26px;
+             height: 20px;
            }
            .switch input {
              opacity: 0;
@@ -1736,18 +1746,18 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              right: 0;
              bottom: 0;
              background-color: rgba(150,150,150,.5);
-             transition: all .2s ease-in-out;
+             transition: all .3s ease-in-out;
              border-radius: 34px;
            }
            .slider:before {
              position: absolute;
              content: "";
-             height: 20px;
-             width: 20px;
-             left: 3px;
-             bottom: 3px;
+             height: 26px;
+             width: 26px;
+             left: -2px;
+             bottom: -3px;
              background-color: #EEE;
-             transition: all .2s ease-in-out;
+             transition: all .3s ease-in-out;
              border-radius: 50%;
            }
            input:checked + .slider {
@@ -1757,16 +1767,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              box-shadow: 0 0 1px rgba(var(--spice-rgb-button-disabled),.6);
            }
            input:checked + .slider:before {
-             transform: translateX(20px);
+             transform: translateX(24px);
              background-color: var(--spice-button);
              filter:  brightness(1.2);
            }
-           .switch:hover .slider:before{
+           /*.switch:hover .slider:before{
              transform: scale(1.1);
            }
            .switch:hover input:checked + .slider:before{
              transform: translateX(20px) scale(1.1);
-           }
+           }*/
            #full-screen-config-container select {
                color: var(--spice-text);
                background: var(--spice-card);
@@ -1822,7 +1832,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 return document.body.classList.contains('fsd-activated') ? container : "";
             })(),
             headerText("Lyrics Settings"),
-            newMenuItem("Lyrics","lyricsDisplay"),
+            createToggle("Lyrics","lyricsDisplay"),
             createOptions(
                 "Lyrics Alignment",
                 {
@@ -1840,10 +1850,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     activate()
             }),
             headerText("General"),
-            newMenuItem("Progress Bar", "progressBarDisplay"),
-            newMenuItem("Player Controls","playerControls"),
-            newMenuItem("Extra Controls","extraControls"),
-            newMenuItem("Trim Title", "trimTitle"),
+            createToggle("Progress Bar", "progressBarDisplay"),
+            createToggle("Player Controls","playerControls"),
+            createToggle("Trim Title", "trimTitle"),
             createOptions(
                 "Show Album",
                 {
@@ -1853,12 +1862,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 },
                 CONFIG[ACTIVE].showAlbum || "a",
                 (value) => saveOption("showAlbum",value)),
-            newMenuItem("Show All Artists", "showAllArtists"),
-            newMenuItem("Icons", "icons"),
-            newMenuItem("Song Change Animation", "enableFade"),
-            document.fullscreenEnabled && newMenuItem("Fullscreen", "enableFullscreen"),
+            createToggle("Show All Artists", "showAllArtists"),
+            createToggle("Icons", "icons"),
+            createToggle("Song Change Animation", "enableFade"),
+            document.fullscreenEnabled && createToggle("Fullscreen", "enableFullscreen"),
             headerText("Extra Functionality"),
-            newMenuItem("Upnext Display", "upnextDisplay"),
+            createToggle("Extra Controls","extraControls"),
+            createToggle("Upnext Display", "upnextDisplay"),
             createOptions(
                 "Context Display",
                 {
@@ -1878,7 +1888,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 },
                 CONFIG[ACTIVE].volumeDisplay || "a",
                 (value) => saveOption("volumeDisplay",value)),
-            headerText("Advanced","Only change if you know what you are doing!"),
+            headerText("Advanced/Appearance","Only change if you know what you are doing!"),
+            createToggle("Themed Buttons","themedButtons"),
             createAdjust("Background Animation Time","backAnimationTime","s",0.8,0.1,0,1,(state) => {
                 CONFIG[ACTIVE]["backAnimationTime"] = state;
                 saveConfig()
