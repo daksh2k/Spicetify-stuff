@@ -107,6 +107,9 @@
     opacity: .5 !important;
     background: transparent !important;
 }
+.fade-animation{
+    animation: fadeIn .5s cubic-bezier(.3, 0, 0, 1);
+}
 button.dot-after{
     padding-bottom: 3px !important;
 }
@@ -181,9 +184,9 @@ button.dot-after{
     top: 45px;
     right: 60px;
     display: flex;
-    border: 1px solid rgba(130, 130, 130,.7);
+    border: 1px solid rgba(130,130,130,.7);
     border-radius: 10px;
-    background-color: rgb(20, 20, 20);
+    background-color: rgba(20,20,20,1);
     flex-direction: row;
     text-align: left;
     z-index: 50;
@@ -202,7 +205,7 @@ button.dot-after{
     padding-top: 17px;
     line-height: initial;
     width: calc(100% - 115px);
-    color: var(--primary-color);
+    color: rgba(255,255,255,1);
     font-size: 19px;
     overflow: hidden;
 }
@@ -296,9 +299,9 @@ button.dot-after{
 }
 #fad-lyrics-plus-container .lyrics-lyricsContainer-LyricsContainer{
    --lyrics-color-active: var(--primary-color) !important;
-   --lyrics-color-inactive: rgba(220,220,220,.5) !important;
+   --lyrics-color-inactive: var(--tertiary-color) !important;
    --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
-   --animation-tempo: ${"animationTempo" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].animationTempo : .4}s !important;
+   --animation-tempo: ${"animationTempo" in CONFIG[ACTIVE] ? CONFIG[ACTIVE].animationTempo : .3}s !important;
    height: 85vh !important;
 }
 #fsd-foreground {
@@ -381,6 +384,8 @@ button.dot-after{
 #full-screen-display button {
     background-color: transparent;
     border: 0;
+    border-radius: 8px;
+    margin: 0 2px;
     color: var(--primary-color);
     padding: 3px 5px 0 5px;
     cursor: pointer;
@@ -395,6 +400,13 @@ button.dot-after{
 }
 body.fsd-activated #full-screen-display {
     display: block
+}
+.fsd-activated .Root__top-bar, .fsd-activated .Root__nav-bar, .fsd-activated .Root__main-view, .fsd-activated .Root__now-playing-bar{
+  visibility: hidden;
+  display: none;
+}
+.main-notificationBubbleContainer-NotificationBubbleContainer{
+  z-index: 1000;
 }`
 
 
@@ -795,7 +807,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
       if (CONFIG[ACTIVE].playerControls) {
           play = container.querySelector("#fsd-play")
-          play.onclick = Spicetify.Player.togglePlay
+          play.onclick = () => {
+            fadeAnimation(play)
+            Spicetify.Player.togglePlay()
+          }
           container.querySelector("#fsd-next").onclick = Spicetify.Player.next
           container.querySelector("#fsd-back").onclick = Spicetify.Player.back
       }
@@ -804,13 +819,23 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
           shuffle = container.querySelector("#fsd-shuffle")
           repeat = container.querySelector("#fsd-repeat")
           
-          heart.onclick = Spicetify.Player.toggleHeart
-          shuffle.onclick = Spicetify.Player.toggleShuffle
-          repeat.onclick = Spicetify.Player.toggleRepeat
+          heart.onclick = () => {
+            fadeAnimation(heart)
+            Spicetify.Player.toggleHeart()
+          }
+          shuffle.onclick = () => {
+            fadeAnimation(shuffle)
+            Spicetify.Player.toggleShuffle()
+          }
+          repeat.onclick = () => {
+            fadeAnimation(repeat)
+            Spicetify.Player.toggleRepeat()
+          }
 
           if(CONFIG[ACTIVE].lyricsDisplay){
             lyrics = container.querySelector("#fsd-lyrics")
             lyrics.onclick = () => {
+                fadeAnimation(lyrics)
                 container.classList.toggle("lyrics-hide-force")
                 lyrics.classList.toggle("button-active")
                 lyrics.innerHTML = (container.classList.contains("lyrics-unavailable") || container.classList.contains("lyrics-hide-force")) ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
@@ -855,6 +880,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
     }
 
+    function fadeAnimation(ele){
+        ele.classList.remove("fade-animation")
+        ele.classList.add("fade-animation")
+        setTimeout(() => {ele.classList.remove("fade-animation")},800)
+    }
     function addObserver(observer,selector,options){
         const ele = document.querySelector(selector)
         if(!ele){
@@ -1885,7 +1915,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     // Add Full Screen Button on bottom bar
     const button = document.createElement("button")
     button.classList.add("button", "fsd-button","control-button","InvalidDropTarget")
-    button.innerHTML = `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.fullscreen}</svg>`
+    button.innerHTML = `<svg role="img" height="20" width="20" viewBox="0 0 24 24" fill="currentColor"><rect fill="none" height="24" width="24"/><polygon points="21,11 21,3 13,3 16.29,6.29 6.29,16.29 3,13 3,21 11,21 7.71,17.71 17.71,7.71"/></svg>`
     button.id = "fs-button"
     button.setAttribute("title", "Full Screen")
 
@@ -1900,7 +1930,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     // Add TV Mode Button on top bar
     const button2 = document.createElement("button")
-    button2.classList.add("button", "spoticon-device-tv-16", "tm-button","main-topBar-button","InvalidDropTarget")
+    button2.classList.add("button", "tm-button","main-topBar-button","InvalidDropTarget")
+    button2.innerHTML = `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>`
     button2.id = "TV-button"
     button2.setAttribute("title", "TV Mode Display")
     
