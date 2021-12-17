@@ -616,13 +616,13 @@ body.fsd-activated #full-screen-display {
         Spicetify.Player.removeEventListener("songchange", updateInfo)
         Spicetify.Player.removeEventListener("onprogress", updateProgress)
         Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls)
-        Spicetify.Platform.PlayerAPI._events.removeListener("update",updateExtraControls)
+        Spicetify.Player.origin._events.removeListener("update",updateExtraControls)
         heartObserver.disconnect()
 
-        Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
         Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
         Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
         window.removeEventListener("resize",updateUpNext)
+        upNextShown = false;
 
         Spicetify.Player.origin._events.removeListener("volume",updateVolume)
 
@@ -639,15 +639,6 @@ body.fsd-activated #full-screen-display {
         container.removeEventListener("mousemove", hideContext)
         container.removeEventListener("mousemove", hideVolume)
 
-        upNextShown = false;
-        if(timetoshow2){
-          clearTimeout(timetoshow2)
-                timetoshow2 = 0
-            }
-        if(timetoshow){
-                clearTimeout(timetoshow)
-                timetoshow = 0 
-            }
         style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG[ACTIVE].icons ? 1 : 0];
 
         container.innerHTML = `
@@ -874,72 +865,41 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
         observer.observe(ele,options)
     }
-    // document.addEventListener('visibilitychange', () => {
-    //     if(document.hidden) {
-    //         upNextShown = false;
-    //         if(timetoshow2){
-    //             clearTimeout(timetoshow2)
-    //             timetoshow2 = 0
-    //         }
-    //         if(timetoshow){
-    //             clearTimeout(timetoshow)
-    //             timetoshow = 0 
-    //         }
-    //     }
-    //     else 
-    //         updateUpNextShow()
-    // });
 
-    let timetoshow,timetoshow2
-    let upNextShown = false;
+    let upnextTimer, upNextShown = false;
     function updateUpNextShow() {
         setTimeout( () => {
+            // console.log((new Date()).toLocaleTimeString()+"  Executed updateUpnextShow")
             let timetogo = getShowTime()
-            if (timetogo<15) {
-               if(!upNextShown || fsd_myUp.style.transform!="translateX(0px)"){
+            if (upnextTimer) {
+                clearTimeout(upnextTimer);
+                upnextTimer = 0;
+            }
+            if (timetogo<10) {
+               if(!upNextShown || fsd_myUp.style.transform!=="translateX(0px)"){
                   updateUpNext()
                }
-               if(timetoshow2){
-                   clearTimeout(timetoshow2)
-                   timetoshow2 = 0
-                }
-               if(timetoshow){
-                   clearTimeout(timetoshow)
-                   timetoshow = 0 
-                }
                upNextShown = true
-           }
-           else {
-               if (timetoshow2){ 
-                   clearTimeout(timetoshow2);
-                   timetoshow2 = 0;
+            }
+            else {
+               fsd_myUp.style.transform = "translateX(600px)";
+               upNextShown = false;
+               if(!Spicetify.Player.origin._state.isPaused){
+                   upnextTimer = setTimeout( () => {
+                       updateUpNext()
+                       upNextShown = true;
+                   }, timetogo)
                }
-               timetoshow2 = setTimeout( () => {
-                   if (timetoshow) {
-                       clearTimeout(timetoshow);
-                       timetoshow = 0;
-                   }
-                   fsd_myUp.style.transform = "translateX(600px)";
-                   upNextShown = false;
-                   if(!Spicetify.Player.origin._state.isPaused){
-                       timetoshow = setTimeout( () => {
-                           updateUpNext()
-                           upNextShown = true;
-                       }, timetogo)
-                    }
-               },3)
-           }
-       },100)
+            }
+        },100)
     }
     function getShowTime(){
         let showBefore = CONFIG.tvMode ? 45000:30000
         let dur        = Spicetify.Player.data.duration
         let curProg    = Spicetify.Player.getProgress() 
 
-        if(dur-curProg<=showBefore)
-            return 10;
-        else
-            return(dur-showBefore-curProg)
+        if(dur-curProg<=showBefore) return -1;
+        else return(dur-showBefore-curProg)
     }
     
     async function updateInfo() {
@@ -1036,9 +996,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             }
             if (durr) {
                 durr.innerText = durationText || ""
-            }
-            if (CONFIG[ACTIVE].extraControls){
-                updateHeart()
             }
         }
 
@@ -1214,6 +1171,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     function updateUpNextInfo(){
+            // console.log((new Date()).toLocaleTimeString()+"  Executed info func")
             fsd_up_next_text.innerText = "UP NEXT"
             let metadata = {}
             const queue_metadata = Spicetify.Queue.nextTracks[0]
@@ -1244,7 +1202,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             fsd_second_span.innerText= metadata.title + "  •  " + next_artist
     }
 
-    async function updateUpNext(){            
+    async function updateUpNext(){
+            // console.log((new Date()).toLocaleTimeString()+"  Executed main funccc!!!")
             if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title){
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
@@ -1320,7 +1279,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
     function updateExtraControls(data){
-        data = !data ? Spicetify.Platform.PlayerAPI._state : data.data
+        data = !data ? Spicetify.Player.origin._state : data.data
         updateHeart()
         repeat.classList.toggle("dot-after",data?.repeat!==0)
         repeat.classList.toggle("button-active",data?.repeat!==0)
@@ -1339,7 +1298,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
     function updateHeart(){
-        const meta = Spicetify?.Platform?.PlayerAPI?._state?.item
+        const meta = Spicetify?.Player?.origin?._state?.item
         heart.classList.toggle("disabled",meta?.metadata["collection.can_add"]!=="true")
         if(meta?.metadata["collection.in_collection"]==="true" || Spicetify.Player.getHeart()){
            heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`
@@ -1398,7 +1357,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
         if(CONFIG[ACTIVE].upnextDisplay){
             updateUpNextShow()
-            Spicetify.Player.addEventListener("songchange",updateUpNextShow)
             Spicetify.Player.origin._events.addListener("queue_update", updateUpNext)
             Spicetify.Player.origin._events.addListener("update", updateUpNextShow)
             window.addEventListener("resize",updateUpNext)
@@ -1431,7 +1389,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if(CONFIG[ACTIVE].extraControls){
            updateExtraControls()
            addObserver(heartObserver,'.control-button-heart',{attributes: true,attributeFilter: ['aria-checked']})
-           Spicetify.Platform.PlayerAPI._events.addListener("update",updateExtraControls)
+           Spicetify.Player.origin._events.addListener("update",updateExtraControls)
         }
         document.body.classList.add(...classes)
         if (CONFIG[ACTIVE].enableFullscreen) 
@@ -1475,15 +1433,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
         if(CONFIG[ACTIVE].upnextDisplay){
             upNextShown = false;
-            if(timetoshow2){
-                clearTimeout(timetoshow2)
-                timetoshow2 = 0
-            }
-            if(timetoshow){
-                clearTimeout(timetoshow)
-                timetoshow = 0 
-            }
-            Spicetify.Player.removeEventListener("songchange", updateUpNextShow)
             Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext)
             Spicetify.Player.origin._events.removeListener("update", updateUpNextShow)
             window.removeEventListener("resize",updateUpNext)
@@ -1501,7 +1450,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
         if(CONFIG[ACTIVE].extraControls){
             heartObserver.disconnect()
-            Spicetify.Platform.PlayerAPI._events.removeListener("update",updateExtraControls)
+            Spicetify.Player.origin._events.removeListener("update",updateExtraControls)
         }
         document.body.classList.remove(...classes)
         upNextShown = false;
@@ -1771,12 +1720,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              background-color: var(--spice-button);
              filter:  brightness(1.2);
            }
-           /*.switch:hover .slider:before{
-             transform: scale(1.1);
-           }
-           .switch:hover input:checked + .slider:before{
-             transform: translateX(20px) scale(1.1);
-           }*/
            #full-screen-config-container select {
                color: var(--spice-text);
                background: var(--spice-card);
