@@ -999,7 +999,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     // Return the total time left to show the upnext timer
     function getShowTime(){
-        let showBefore = CONFIG.tvMode ? 45000:30000
+        let showBefore = CONFIG[ACTIVE].upnextTimeToShow*1000 ?? 30000
         let dur        = Spicetify.Player.data.duration
         let curProg    = Spicetify.Player.getProgress() 
 
@@ -1312,7 +1312,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     async function updateUpNext(){
             // console.log((new Date()).toLocaleTimeString()+"  Executed main funccc!!!")
-            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG.tvMode ? 45050:30050)) && Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title){
+            if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG[ACTIVE].upnextTimeToShow*1000 ?? 30000)+50) && Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title){
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
                  upNextShown = true;
@@ -1981,6 +1981,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 },
                 CONFIG[ACTIVE].upNextAnim || "sp",
                 (value) => saveOption("upNextAnim",value)),
+            createAdjust("Upnext Time to Show","upnextTimeToShow","s",30,1,5,60,(state) => {
+                CONFIG[ACTIVE]["upnextTimeToShow"] = state;
+                saveConfig()
+                updateUpNextShow()
+                // render()
+                // if (document.body.classList.contains('fsd-activated')) 
+                    // activate()
+            }),
             createAdjust("Background Blur","blurSize","px",20,4,0,100,(state) => {
                 CONFIG[ACTIVE]["blurSize"] = state;
                 saveConfig()
