@@ -208,14 +208,6 @@ button.dot-after{
 #fsd-ctx-icon svg{
     fill: var(--primary-color) !important;
 }
-.ctx-no-icon{
-    width: auto !important;
-    height: auto !important;
-}
-#fsd-ctx-icon:before{
-    font-size: 52px;
-    height: auto;
-}
 #fsd-ctx-source{
     text-transform: uppercase;
 }
@@ -800,7 +792,7 @@ ${CONFIG.tvMode?`<div id="fsd-background">
 `<canvas id="fsd-background"></canvas>`}
   ${CONFIG[ACTIVE].contextDisplay!=="n"?`
    <div id="fsd-ctx-container">
-      <div id="fsd-ctx-icon" class="spoticon-spotifylogo-32"></div>
+      <div id="fsd-ctx-icon"></div>
       <div id="fsd-ctx-details">
         <div id="fsd-ctx-source"></div>
         <div id="fsd-ctx-name"></div>
@@ -1342,28 +1334,24 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     }
                     break;
                 default:
-                    ctxSource = "unknown"
-                    ctxName = ""
+                    ctxSource = uriObj.type
+                    ctxName = Spicetify.Player.data?.context_metadata?.context_description || ""
             }
 
         }
         return [ctxIcon,ctxSource,ctxName]
     }
 
+    // Get the context and update it
     async function updateContext(){
         [ctxIcon, ctxSource,ctxName] = await getContext().catch(err => console.error(err));
-        if(ctxName=="")
-            ctx_source.classList.add("ctx-no-name")
-        else
-            ctx_source.classList.remove("ctx-no-name")
-        if (ctxIcon!=""){
-            ctx_icon.classList.remove("spoticon-spotifylogo-32","ctx-no-icon")
-            ctx_icon.innerHTML = /^<path/.test(ctxIcon) ? `<svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">${ctxIcon}</svg>` : ctxIcon
-        }
-        else{
-            ctx_icon.classList.add("spoticon-spotifylogo-32","ctx-no-icon")
-            ctx_icon.innerHTML = ""
-        }
+        ctx_source.classList.toggle("ctx-no-name",!ctxName)
+        
+        //Set default icon if no icon is returned
+        if(!ctxIcon) ctxIcon = Spicetify.SVGIcons.spotify
+        ctx_icon.innerHTML = /^<path/.test(ctxIcon) ? `<svg width="48" height="48" viewBox="0 0 16 16" fill="currentColor">${ctxIcon}</svg>` : ctxIcon
+        
+        //Only change the DOM if context is changed
         if(ctx_source.innerText.toLowerCase()!==(`playing from ${ctxSource}`).toLowerCase() || ctx_name.innerText.toLowerCase()!==ctxName.toLowerCase()){
             ctx_source.innerText = `playing from ${ctxSource}`
             ctx_name.innerText = ctxName
@@ -1373,7 +1361,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     function updateUpNextInfo(){
-            // console.log((new Date()).toLocaleTimeString()+"  Executed info func")
             fsd_up_next_text.innerText = "UP NEXT"
             let metadata = {}
             const queue_metadata = Spicetify.Queue.nextTracks[0]
@@ -1405,7 +1392,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     async function updateUpNext(){
-            // console.log((new Date()).toLocaleTimeString()+"  Executed main funccc!!!")
             if((Spicetify.Player.data.duration-Spicetify.Player.getProgress()<=(CONFIG[ACTIVE].upnextTimeToShow*1000 ?? 30000)+50) && Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title){
                  await updateUpNextInfo()
                  fsd_myUp.style.transform = "translateX(0px)";
