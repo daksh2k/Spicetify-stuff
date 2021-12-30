@@ -111,8 +111,57 @@
     opacity: .5 !important;
     background: transparent !important;
 }
-.fade-animation{
-    animation: fadeIn .5s cubic-bezier(.3, 0, 0, 1);
+@keyframes fadeUp{
+    0%{
+        opacity:0;
+        transform:translateY(-10px)
+    }
+    to{
+        opacity:1;
+        transform:translateY(0)
+    }
+}
+@keyframes fadeDo{
+    0%{
+        opacity:0;
+        transform:translateY(10px)
+    }
+    to{
+        opacity:1;
+        transform:translateY(0)
+    }
+}
+@keyframes fadeRi{
+    0%{
+        opacity:0;
+        transform:translateX(10px)
+    }
+    to{
+        opacity:1;
+        transform:translateX(0)
+    }
+}
+@keyframes fadeLe{
+    0%{
+        opacity:0;
+        transform:translateX(-10px)
+    }
+    to{
+        opacity:1;
+        transform:translateX(0)
+    }
+}
+.fade-do{
+    animation: fadeDo .5s cubic-bezier(.3, 0, 0, 1);
+}
+.fade-up{
+    animation: fadeUp .5s cubic-bezier(.3, 0, 0, 1);
+}
+.fade-ri{
+    animation: fadeRi .5s cubic-bezier(.3, 0, 0, 1);
+}
+.fade-le{
+    animation: fadeLe .5s cubic-bezier(.3, 0, 0, 1);
 }
 button.dot-after{
     padding-bottom: 3px !important;
@@ -869,8 +918,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             fadeAnimation(play)
             Spicetify.Player.togglePlay()
           }
-          container.querySelector("#fsd-next").onclick = Spicetify.Player.next
-          container.querySelector("#fsd-back").onclick = Spicetify.Player.back
+          nextControl = container.querySelector("#fsd-next")
+          nextControl.onclick = () => {
+              fadeAnimation(nextControl,"fade-ri")
+              Spicetify.Player.next()
+          }
+          backControl = container.querySelector("#fsd-back")
+          backControl.onclick = () => {
+              fadeAnimation(backControl,"fade-le")
+              Spicetify.Player.back()
+          }
       }
       if(CONFIG[ACTIVE].extraControls){
           heart = container.querySelector("#fsd-heart")
@@ -939,10 +996,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     // Add fade animation on button click
-    function fadeAnimation(ele){
-        ele.classList.remove("fade-animation")
-        ele.classList.add("fade-animation")
-        setTimeout(() => {ele.classList.remove("fade-animation")},800)
+    function fadeAnimation(ele,anim="fade-do"){
+        ele.classList.remove(anim)
+        ele.classList.add(anim)
+        setTimeout(() => {ele.classList.remove(anim)},800)
     }
 
     // Utility function to add a observer with wait for element support
