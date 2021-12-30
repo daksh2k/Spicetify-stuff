@@ -764,7 +764,8 @@ body.fsd-activated #full-screen-display {
 }`
     ]
         Spicetify.Player.removeEventListener("songchange", updateInfo)
-        Spicetify.Player.removeEventListener("onprogress", updateProgress)
+        if(progressListener)
+          clearInterval(progressListener)
         Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls)
         Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon)
         Spicetify.Player.origin._events.removeListener("update",updateExtraControls)
@@ -1469,8 +1470,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
     function updateProgress() {
-        prog.style.width = Spicetify.Player.getProgressPercent() * 100 + "%"
-        elaps.innerText = Spicetify.Player.formatTime(Spicetify.Player.getProgress())
+        const progress = Spicetify.Player.formatTime(Spicetify.Player.getProgress())
+        if(!Spicetify.Player.origin._state.isPaused || elaps.innerText!==progress){
+            prog.style.width = Spicetify.Player.getProgressPercent() * 100 + "%"
+            elaps.innerText = progress
+        }
     }
     function updatePlayingIcon({ data }){
         if (data.is_paused) {
@@ -1557,7 +1561,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     FSTRANSITION = "backAnimationTime" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backAnimationTime) : 0.8
-    let origLoc
+    let origLoc,progressListener
     const heartObserver = new MutationObserver(updateHeart)
 
     function activate() {
@@ -1602,7 +1606,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
         if (CONFIG[ACTIVE].progressBarDisplay) {
             updateProgress()
-            Spicetify.Player.addEventListener("onprogress", updateProgress)
+            progressListener = setInterval(updateProgress,500)
         }
         if (CONFIG[ACTIVE].playerControls) {
             updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() }})
@@ -1665,7 +1669,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 container.removeEventListener("mousemove",hideVolume)
         }
         if (CONFIG[ACTIVE].progressBarDisplay) {
-            Spicetify.Player.removeEventListener("onprogress", updateProgress)
+            clearInterval(progressListener)
         }
         if (CONFIG[ACTIVE].icons) {
             Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon)
