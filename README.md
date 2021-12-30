@@ -6,7 +6,7 @@
 
     ![Save Playlist](https://i.imgur.com/2AEyRrs.png)
 
-  - ### [Auto Skip](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/skipSong.js)
+  - ### [Auto Skip](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/autoSkip.js)
     **Description:** Auto Skip Certain Songs such as remixes, acoustics etc.\
     Toggle in Profile menu for each skipping option you want.
 

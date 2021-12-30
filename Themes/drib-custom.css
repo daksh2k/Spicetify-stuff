@@ -1,0 +1,69 @@
+.main-leaderboardComponent-container,
+.main-buttons-button._110dbc41d89af63f97cdd8b7cd7fea47-scss.main-topBar-UpgradeButton,
+#context-menu > div > ul > li a[href="https://www.spotify.com/premium/"],
+.main-contextMenu-menuItemButton.main-contextMenu-disabled,
+.desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer.contentSpacing,
+.desktoproutes-homepage-takeover-ad-hptoComponent-parentContainer,
+.desktoproutes-homepage-takeover-ad-hptoComponent-container,
+.wjOO2jGTjPU3ywXgqYqv,
+.hx2D0g_ursHte5bm62U2,
+.main-topBar-UpgradeButton,
+.main-rootlist-rootlistDividerContainer,
+.x-downloadButton-DownloadButton,
+button[aria-label="Download"],
+.YuL8TZO5okStcwZtm4zm,
+.connect-header,
+.connect-title__help {
+    display: none !important;
+}
+.dribbblish-info-item[key="beta"]{
+  display:  none !important;
+}
+.main-noConnection{
+  display: inherit;
+}
+.os-scrollbar.os-scrollbar-vertical{
+  display: none;
+}
+.Root__main-view:hover .os-scrollbar.os-scrollbar-vertical{
+  display: block;
+}
+.os-scrollbar.os-scrollbar-vertical.active{
+  display: block !important;
+}
+.main-trackList-playingIcon {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg id='playing-icon' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 24'%3E%3Cdefs%3E%3Cstyle%3E %23playing-icon %7B fill: %2320BC54; %7D @keyframes play %7B 0%25 %7Btransform: scaleY(1);%7D 3.3%25 %7Btransform: scaleY(0.9583);%7D 6.6%25 %7Btransform: scaleY(0.9166);%7D 9.9%25 %7Btransform: scaleY(0.8333);%7D 13.3%25 %7Btransform: scaleY(0.7083);%7D 16.6%25 %7Btransform: scaleY(0.5416);%7D 19.9%25 %7Btransform: scaleY(0.4166);%7D 23.3%25 %7Btransform: scaleY(0.25);%7D 26.6%25 %7Btransform: scaleY(0.1666);%7D 29.9%25 %7Btransform: scaleY(0.125);%7D 33.3%25 %7Btransform: scaleY(0.125);%7D 36.6%25 %7Btransform: scaleY(0.1666);%7D 39.9%25 %7Btransform: scaleY(0.1666);%7D 43.3%25 %7Btransform: scaleY(0.2083);%7D 46.6%25 %7Btransform: scaleY(0.2916);%7D 49.9%25 %7Btransform: scaleY(0.375);%7D 53.3%25 %7Btransform: scaleY(0.5);%7D 56.6%25 %7Btransform: scaleY(0.5833);%7D 59.9%25 %7Btransform: scaleY(0.625);%7D 63.3%25 %7Btransform: scaleY(0.6666);%7D 66.6%25 %7Btransform: scaleY(0.6666);%7D 69.9%25 %7Btransform: scaleY(0.6666);%7D 73.3%25 %7Btransform: scaleY(0.6666);%7D 76.6%25 %7Btransform: scaleY(0.7083);%7D 79.9%25 %7Btransform: scaleY(0.75);%7D 83.3%25 %7Btransform: scaleY(0.8333);%7D 86.6%25 %7Btransform: scaleY(0.875);%7D 89.9%25 %7Btransform: scaleY(0.9166);%7D 93.3%25 %7Btransform: scaleY(0.9583);%7D 96.6%25 %7Btransform: scaleY(1);%7D %7D %23bar1 %7B transform-origin: bottom; animation: play 0.9s -0.51s infinite; %7D %23bar2 %7B transform-origin: bottom; animation: play 0.9s infinite; %7D %23bar3 %7B transform-origin: bottom; animation: play 0.9s -0.15s infinite; %7D %23bar4 %7B transform-origin: bottom; animation: play 0.9s -0.75s infinite; %7D %3C/style%3E%3C/defs%3E%3Ctitle%3Eplaying-icon%3C/title%3E%3Crect id='bar1' class='cls-1' width='4' height='24'/%3E%3Crect id='bar2' class='cls-1' x='6' width='4' height='24'/%3E%3Crect id='bar3' class='cls-1' x='12' width='4' height='24'/%3E%3Crect id='bar4' class='cls-1' x='18' width='4' height='24'/%3E%3C/svg%3E");
+  background: var(--spice-button);
+  content-visibility: hidden;
+  -webkit-mask-repeat: no-repeat;
+  border-radius: 0 !important;
+  filter: none !important;
+}
+.fsd-activated .Root__top-bar, .fsd-activated .Root__nav-bar, .fsd-activated .Root__main-view, .fsd-activated .Root__now-playing-bar{
+  visibility: hidden;
+  display: none;
+}
+.main-notificationBubbleContainer-NotificationBubbleContainer{
+  z-index: 1000;
+}
+.Gm_dPzFIPCwDrNHFehH7{
+  display: none;
+}
+#spicetify-show-list >*{
+  padding:  0px;
+}
+.collection-collectionEntityHeroCard-likedSongs ,.main-heroCard-card.GbXSJaVC61cQYqOVDfz9.aMCCvuHnzEolcWDV6Dep{
+    background: linear-gradient(
+149.46deg
+, var(--spice-sidebar), var(--spice-button) 99.16%) !important;
+}
+img[src="https://misc.scdn.co/liked-songs/liked-songs-300.png"],
+img[alt="Liked Songs"],
+img[src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png"]{
+  -webkit-mask-size: 80% 80%;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  content-visibility: hidden;
+  -webkit-mask-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHJvbGU9ImltZyIgaGVpZ2h0PSIxMiIgd2lkdGg9IjEyIiB2aWV3Qm94PSIwIDAgMTYgMTYiIGNsYXNzPSJTdmctdWx5cmdmLTAgZ2hsWHZmIj48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDE2djE2SDB6Ij48L3BhdGg+PHBhdGggZD0iTTEzLjc5NyAyLjcyN2E0LjA1NyA0LjA1NyAwIDAwLTUuNDg4LS4yNTMuNTU4LjU1OCAwIDAxLS4zMS4xMTIuNTMxLjUzMSAwIDAxLS4zMTEtLjExMiA0LjA1NCA0LjA1NCAwIDAwLTUuNDg3LjI1M2MtLjc3Ljc3LTEuMTk0IDEuNzk0LTEuMTk0IDIuODgzcy40MjQgMi4xMTMgMS4xNjggMi44NTVsNC40NjIgNS4yMjNhMS43OTEgMS43OTEgMCAwMDIuNzI2IDBsNC40MzUtNS4xOTVhNC4wNTIgNC4wNTIgMCAwMDEuMTk1LTIuODgzIDQuMDU3IDQuMDU3IDAgMDAtMS4xOTYtMi44ODN6Ij48L3BhdGg+PC9zdmc+");
+  background: linear-gradient(45deg, var(--spice-text), var(--spice-text)) !important;
+}
