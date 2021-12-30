@@ -98,7 +98,7 @@
     --transition-duration: 1s;
     --transition-function: ease-in-out;
     --main-color: 255,255,255;
-    --theme-color: 175,175,175;
+    --theme-color: var(--spice-rgb-button);
     --primary-color: rgba(var(--main-color),1);
     --secondary-color: rgba(var(--main-color),.7);
     --tertiary-color: rgba(var(--main-color),.5);
@@ -191,7 +191,7 @@ button.dot-after{
     align-items: center;
     text-align: left;
     z-index: 50;
-    transition: opacity 1s ease-in-out;
+    transition: all 1s ease-in-out;
     opacity: 1;
     max-width: 40%;
 }
@@ -321,7 +321,7 @@ button.dot-after{
 #fsd-volume-bar{
     margin: 8px 0;
     border-radius: 4px;
-    background-color: #ffffff50;
+    background-color: rgba(var(--main-color),.35);
     overflow: hidden;
     width: 8px;
     height: 100%;
@@ -373,7 +373,7 @@ button.dot-after{
     align-items: center;
     justify-content: center;
     color: var(--primary-color);
-    transition: width var(--transition-duration) var(--transition-function);
+    transition: all var(--transition-duration) var(--transition-function);
 }
 #fsd-art-image {
     position: relative;
@@ -393,20 +393,8 @@ button.dot-after{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
     transform: translateZ(0);
 }
-#fsd-title{
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    overflow: hidden;
-}
-#fsd-album, #fsd-artist{
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-}
 #fsd-artist{
-    font-weight: 600;
+    font-weight: 500;
     color: var(--secondary-color);
 }
 #fsd-album{
@@ -422,7 +410,7 @@ button.dot-after{
     width: 100%;
     height: 6px;
     border-radius: 4px;
-    background-color: #ffffff50;
+    background-color: rgba(var(--main-color),.35);
     overflow: hidden;
 }
 #fsd-progress-inner {
@@ -459,7 +447,7 @@ button.dot-after{
     fill: var(--primary-color);
     transition: all var(--transition-duration) var(--transition-function);
 }
-.themed svg{
+.themed-icons svg{
     fill: var(--theme-main-color) !important;
     filter: saturate(1.8);
 }
@@ -470,6 +458,9 @@ button.dot-after{
     transform: scale(1.1);
 }
 #full-screen-display button.button-active{
+    background: rgba(175,175,175,.6);
+}
+#full-screen-display.themed-buttons button.button-active{
     background: var(--theme-background-color) !important;
 }
 body.fsd-activated #full-screen-display {
@@ -485,17 +476,47 @@ body.fsd-activated #full-screen-display {
 
 
     const styleChoices = [`
-#fsd-foregorund, #fsd-art, #fsd-details, #fsd-status, #fsd-progress-container{
-    transition: max-width var(--transition-duration) var(--transition-function),width var(--transition-duration) var(--transition-function);
-}   
-#fsd-art {
-    width: calc(100vh - 300px);
-    max-width: 600px;
+#fsd-art, #fsd-details, #fsd-status, #fsd-progress-container{
+    transition: all var(--transition-duration) var(--transition-function);
 }
+#fsd-title{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+#fsd-album, #fsd-artist{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
 #fsd-foreground {
+    transform: translateX(50%);
+    width: 50%;
     flex-direction: column;
     text-align: center;
 }
+.lyrics-active #fsd-foreground{
+    transform: translateX(0px);
+}
+.lyrics-unavailable #fsd-foreground, .lyrics-hide-force #fsd-foreground{
+    transform: translateX(50%);
+}
+
+#fsd-art {
+    width: calc(100vh - 300px);
+    max-width: 600px;
+    min-width: 300px;
+}
+.lyrics-active #fsd-art{
+    max-width: 500px;
+}
+.lyrics-unavailable #fsd-art,.lyrics-hide-force #fsd-art{
+    max-width: 600px;
+}
+
 #fsd-progress-container {
     width: 28vw;
     max-width: 580px;
@@ -507,99 +528,6 @@ body.fsd-activated #full-screen-display {
     line-height: initial;
     max-width: 580px;
     color: var(--primary-color);
-}
-.lyrics-active #fsd-foreground{
-    width: 50%;
-}
-.lyrics-active #fsd-art{
-    max-width: 450px;
-}
-.lyrics-active #fsd-progress-container,.lyrics-active #fsd-details,.lyrics-active #fsd-status{
-    max-width: 430px;
-}
-.lyrics-active #fsd-title{
-    font-size: 40px;
-}
-.lyrics-active #fsd-artist,.lyrics-active #fsd-album{
-    font-size: 25px;
-}
-.lyrics-unavailable #fsd-title,.lyrics-hide-force #fsd-title{
-    font-size: 48px;
-}
-.lyrics-unavailable #fsd-artist,.lyrics-hide-force #fsd-artist,.lyrics-unavailable #fsd-album,.lyrics-hide-force #fsd-album{
-    font-size: 30px;
-}
-.lyrics-unavailable #fsd-progress-container,.lyrics-hide-force #fsd-progress-container,.lyrics-unavailable #fsd-status,.lyrics-hide-force #fsd-status,.lyrics-unavailable #fsd-details,.lyrics-hide-force #fsd-details{
-    max-width: 580px;
-}
-.lyrics-unavailable #fsd-art,.lyrics-hide-force #fsd-art{
-    max-width: 600px;
-}
-.lyrics-unavailable #fsd-foreground, .lyrics-hide-force #fsd-foreground{
-    width: 100% !important;
-}
-#fsd-title {
-    font-size: 48px;
-    font-weight: 900;
-    transition: font-size var(--transition-duration) var(--transition-function);
-}
-@media (max-width: 900px), (max-height: 900px){
-    #fsd-title{
-        font-size: 35px;
-        font-weight: 600;
-    }
-    #fsd-artist{
-        font-size: 25px;
-        font-weight: 400;
-    }
-    #fsd-album{
-        font-size: 25px;
-        font-weight: 300;
-    }
-}
-#fsd-artist {
-    font-size: 30px;
-    transition: font-size var(--transition-duration) var(--transition-function);
-}
-#fsd-album{
-    font-size: 30px;
-    transition: font-size var(--transition-duration) var(--transition-function);
-}
-#fsd-title svg{
-    width: 35px;
-    height: 35px;
-}
-.lyrics-active #fsd-title svg{
-    width: 30px;
-    height: 30px;
-}
-.lyrics-unavailable #fsd-title svg,.lyrics-hide-force #fsd-title svg{
-    width: 35px;
-    height: 35px;
-}
-#playing-icon{
-    width: 30px !important;
-    height: 30px !important;
-    margin-right: 5px;
-}
-.lyrics-active #playing-icon{
-    margin-right: 0px;
-}
-.lyrics-unavailable #playing-icon,.lyrics-hide-force #playing-icon{
-    margin-right: 5px;
-}
-#fsd-artist svg, #fsd-album svg{
-    width: 25px;
-    height: 25px;
-    margin-right: 5px;
-}
-.lyrics-active #fsd-artist svg,.lyrics-active #fsd-album svg{
-    width: 20px;
-    height: 20px;
-}
-.lyrics-unavailable #fsd-artist svg,.lyrics-hide-force #fsd-artist svg,.lyrics-unavailable #fsd-album svg,.lyrics-hide-force #fsd-album svg {
-    width: 25px;
-    height: 25px;
 }
 #fsd-status {
     display: flex;
@@ -613,6 +541,80 @@ body.fsd-activated #full-screen-display {
     margin: 5px auto 0;
     gap: 10px;
 }
+.lyrics-active #fsd-progress-container,.lyrics-active #fsd-details,.lyrics-active #fsd-status{
+    max-width: 480px;
+}
+.lyrics-unavailable #fsd-progress-container,.lyrics-hide-force #fsd-progress-container,.lyrics-unavailable #fsd-status,.lyrics-hide-force #fsd-status,.lyrics-unavailable #fsd-details,.lyrics-hide-force #fsd-details{
+    max-width: 580px;
+}
+
+#fsd-title {
+    font-size: 50px;
+    font-weight: 900;
+    transition: all var(--transition-duration) var(--transition-function);
+}
+.lyrics-active #fsd-title{
+    font-size: 40px;
+}
+.lyrics-unavailable #fsd-title,.lyrics-hide-force #fsd-title{
+    font-size: 50px;
+}
+
+#fsd-artist,#fsd-album{
+    font-size: 28px;
+    transition: all var(--transition-duration) var(--transition-function);
+}
+.lyrics-active #fsd-artist,.lyrics-active #fsd-album{
+    font-size: 23px;
+}
+.lyrics-unavailable #fsd-artist,.lyrics-hide-force #fsd-artist,.lyrics-unavailable #fsd-album,.lyrics-hide-force #fsd-album{
+    font-size: 28px;
+}
+@media (max-width: 900px), (max-height: 900px){
+    #fsd-title{
+        font-size: 35px;
+        font-weight: 600;
+    }
+}
+
+#fsd-title svg{
+    width: 35px;
+    height: 35px;
+}
+.lyrics-active #fsd-title svg{
+    width: 30px;
+    height: 30px;
+}
+.lyrics-unavailable #fsd-title svg,.lyrics-hide-force #fsd-title svg{
+    width: 35px;
+    height: 35px;
+}
+#playing-icon{
+    width: 28px !important;
+    height: 28px !important;
+    margin-right: 7px;
+}
+.lyrics-active #playing-icon{
+    margin-right: 2px;
+}
+.lyrics-unavailable #playing-icon,.lyrics-hide-force #playing-icon{
+    margin-right: 7px;
+}
+
+#fsd-artist svg, #fsd-album svg{
+    width: 22px;
+    height: 22px;
+    margin-right: 5px;
+}
+.lyrics-active #fsd-artist svg,.lyrics-active #fsd-album svg{
+    width: 18px;
+    height: 18px;
+}
+.lyrics-unavailable #fsd-artist svg,.lyrics-hide-force #fsd-artist svg,.lyrics-unavailable #fsd-album svg,.lyrics-hide-force #fsd-album svg {
+    width: 22px;
+    height: 22px;
+}
+
 .fsd-controls {
     margin-top: 10px;
     margin-bottom: 5px;
@@ -640,10 +642,7 @@ body.fsd-activated #full-screen-display {
     background-position: center;
     transform: translateZ(0);
 }
-.lyrics-active #fsd-foreground{
-    width: max-content;
-    max-width: 65%;
-}
+
 #fsd-foreground {
     flex-direction: row;
     text-align: left;
@@ -651,8 +650,20 @@ body.fsd-activated #full-screen-display {
     align-items: flex-end;
     position: absolute;
     top: auto;
-    bottom: 100px;
+    bottom: 75px;
 }
+.lyrics-active #fsd-foreground{
+    width: max-content;
+    max-width: 65%;
+}
+
+#fsd-art {
+    width: calc(100vw - 840px);
+    min-width: 180px;
+    max-width: 220px;
+    margin-left: 65px;
+}
+
 #fsd-progress-container {
     width: 100%;
     max-width: 450px;
@@ -662,44 +673,69 @@ body.fsd-activated #full-screen-display {
 .fsd-controls + #fsd-progress-container{
     padding-left: 10px;
 }
-#fsd-art {
-    width: calc(100vw - 840px);
-    min-width: 200px;
-    max-width: 250px;
-    margin-left: 50px;
-}
 #fsd-details {
-    padding-left: 45px;
+    padding-left: 30px;
     line-height: initial;
     width: 80%;
     color: var(--primary-color);
 }
+#fsd-title, #fsd-album, #fsd-artist{
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+    gap: 5px;
+}
+#fsd-title span, #fsd-album span, #fsd-artist span{
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+#fsd-title span{
+    -webkit-line-clamp: 3;
+}
+#fsd-title svg, #fsd-artist svg, #fsd-album svg{
+    flex: 0 0 auto;
+}
+#fsd-album{
+    position: relative;
+}
+#fsd-album svg{
+    position: absolute;
+    top: 7px;
+}
+#fsd-album svg + span{
+    margin-left: 40px;
+}
 #fsd-title {
-    font-size: 60px;
+    font-size: 62px;
     font-weight: 900;
 }
 @media (max-width: 900px), (max-height: 800px){
     #fsd-title{
-        font-size: 45px;
+        font-size: 40px;
         font-weight: 600;
+    }
+    #fsd-artist, #fsd-album {
+        font-size: 20px;
     }
 }
 #fsd-artist, #fsd-album {
-    font-size: 34px;
+    font-size: 28px;
 }
 #fsd-title svg{
-    width: 45px;
+    width: 35px;
     height: 45px;
 }
 #playing-icon{
-    width: 35px !important;
-    height: 35px !important;
-    margin-right: 10px;
+    width: 30px !important;
+    height: 40px !important;
+    margin-right: 5px;
 }
 #fsd-artist svg, #fsd-album svg {
-    margin-right: 10px;
-    width: 30px;
-    height: 30px;
+    margin-right: 15px;
+    width: 22px;
+    height: 22px;
 }
 #fsd-status {
     display: flex;
@@ -723,7 +759,7 @@ body.fsd-activated #full-screen-display {
 }`,
 `
 #fsd-title svg, #fsd-artist svg, #fsd-album svg {
-    transition: width var(--transition-duration) var(--transition-function), height var(--transition-duration) var(--transition-function);
+    transition: all var(--transition-duration) var(--transition-function);
     display: inline-block;
 }`
     ]
