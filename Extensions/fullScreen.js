@@ -827,7 +827,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     </div>
     <div id="fsd-details">
             <div id="fsd-title">
-                 <svg id='playing-icon' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 24'><defs><style> #playing-icon { fill: currentColor; } @keyframes play { 0% {transform: scaleY(1);} 3.3% {transform: scaleY(0.9583);} 6.6% {transform: scaleY(0.9166);} 9.9% {transform: scaleY(0.8333);} 13.3% {transform: scaleY(0.7083);} 16.6% {transform: scaleY(0.5416);} 19.9% {transform: scaleY(0.4166);} 23.3% {transform: scaleY(0.25);} 26.6% {transform: scaleY(0.1666);} 29.9% {transform: scaleY(0.125);} 33.3% {transform: scaleY(0.125);} 36.6% {transform: scaleY(0.1666);} 39.9% {transform: scaleY(0.1666);} 43.3% {transform: scaleY(0.2083);} 46.6% {transform: scaleY(0.2916);} 49.9% {transform: scaleY(0.375);} 53.3% {transform: scaleY(0.5);} 56.6% {transform: scaleY(0.5833);} 59.9% {transform: scaleY(0.625);} 63.3% {transform: scaleY(0.6666);} 66.6% {transform: scaleY(0.6666);} 69.9% {transform: scaleY(0.6666);} 73.3% {transform: scaleY(0.6666);} 76.6% {transform: scaleY(0.7083);} 79.9% {transform: scaleY(0.75);} 83.3% {transform: scaleY(0.8333);} 86.6% {transform: scaleY(0.875);} 89.9% {transform: scaleY(0.9166);} 93.3% {transform: scaleY(0.9583);} 96.6% {transform: scaleY(1);} } #bar1 { transform-origin: bottom; animation: play 0.9s -0.51s infinite; } #bar2 { transform-origin: bottom; animation: play 0.9s infinite; } #bar3 { transform-origin: bottom; animation: play 0.9s -0.15s infinite; } #bar4 { transform-origin: bottom; animation: play 0.9s -0.75s infinite; } </style></defs><title>playing-icon</title><rect id='bar1' class='cls-1' width='2' height='24'/><rect id='bar2' class='cls-1' x='6' width='2' height='24'/><rect id='bar3' class='cls-1' x='12' width='2' height='24'/><rect id='bar4' class='cls-1' x='18' width='2' height='24'/></svg>
+                 <svg id='playing-icon' width="30" height="30" viewBox='0 0 22 24' fill="currentColor"><defs><style> #playing-icon { fill: currentColor; } @keyframes play { 0% {transform: scaleY(1);} 3.3% {transform: scaleY(0.9583);} 6.6% {transform: scaleY(0.9166);} 9.9% {transform: scaleY(0.8333);} 13.3% {transform: scaleY(0.7083);} 16.6% {transform: scaleY(0.5416);} 19.9% {transform: scaleY(0.4166);} 23.3% {transform: scaleY(0.25);} 26.6% {transform: scaleY(0.1666);} 29.9% {transform: scaleY(0.125);} 33.3% {transform: scaleY(0.125);} 36.6% {transform: scaleY(0.1666);} 39.9% {transform: scaleY(0.1666);} 43.3% {transform: scaleY(0.2083);} 46.6% {transform: scaleY(0.2916);} 49.9% {transform: scaleY(0.375);} 53.3% {transform: scaleY(0.5);} 56.6% {transform: scaleY(0.5833);} 59.9% {transform: scaleY(0.625);} 63.3% {transform: scaleY(0.6666);} 66.6% {transform: scaleY(0.6666);} 69.9% {transform: scaleY(0.6666);} 73.3% {transform: scaleY(0.6666);} 76.6% {transform: scaleY(0.7083);} 79.9% {transform: scaleY(0.75);} 83.3% {transform: scaleY(0.8333);} 86.6% {transform: scaleY(0.875);} 89.9% {transform: scaleY(0.9166);} 93.3% {transform: scaleY(0.9583);} 96.6% {transform: scaleY(1);} } #bar1 { transform-origin: bottom; animation: play 0.9s -0.51s infinite; } #bar2 { transform-origin: bottom; animation: play 0.9s infinite; } #bar3 { transform-origin: bottom; animation: play 0.9s -0.15s infinite; } #bar4 { transform-origin: bottom; animation: play 0.9s -0.75s infinite; } </style></defs><rect id='bar1' class='cls-1' width='2' height='24'/><rect id='bar2' class='cls-1' x='6' width='2' height='24'/><rect id='bar3' class='cls-1' x='12' width='2' height='24'/><rect id='bar4' class='cls-1' x='18' width='2' height='24'/></svg>
                  <svg id='paused-icon'  width="30" height="30" viewBox="5 4 16 16" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>
                  <span></span>
             </div>
@@ -938,8 +938,27 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
           elaps = container.querySelector("#fsd-elapsed")
       }
       if(CONFIG[ACTIVE].icons){
+        if(CONFIG[ACTIVE].titleMovingIcon===undefined){
+            CONFIG[ACTIVE]["titleMovingIcon"] = true
+            saveConfig()
+        }
         playingIcon = container.querySelector("#playing-icon")
+        
+        //Clicking on playing icon disables it and remembers the config
+        playingIcon.onclick = () => {
+            CONFIG[ACTIVE]["titleMovingIcon"] = false
+            saveConfig()
+            playingIcon.classList.add("hidden")
+            pausedIcon.classList.remove("hidden")
+        }
         pausedIcon = container.querySelector("#paused-icon")
+        pausedIcon.onclick = () => {
+            CONFIG[ACTIVE]["titleMovingIcon"] = true
+            saveConfig()
+            playingIcon.classList.remove("hidden")
+            pausedIcon.classList.add("hidden")
+            updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() }})
+        }
       }
       if (CONFIG[ACTIVE].playerControls) {
           play = container.querySelector("#fsd-play")
@@ -1467,8 +1486,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             pausedIcon.classList.remove("hidden")
             playingIcon.classList.add("hidden")
         } else {
-            pausedIcon.classList.add("hidden")
-            playingIcon.classList.remove("hidden")
+            pausedIcon.classList.toggle("hidden",CONFIG[ACTIVE].titleMovingIcon)
+            playingIcon.classList.toggle("hidden",!CONFIG[ACTIVE].titleMovingIcon)
         }
     }
     function updatePlayerControls({ data }) {
