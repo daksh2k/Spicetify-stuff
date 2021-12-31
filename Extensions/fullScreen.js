@@ -4,7 +4,7 @@
 // VERSION: 1.0
 // DESCRIPTION: Fancy artwork and track status display.
 
-/// <reference path="../spicetify-cli/globals.d.ts" />
+/// <reference path="../globals.d.ts" />
 
 (function fullScreen() {
     const extraBar = document.querySelector(".ExtraControls");
@@ -837,7 +837,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             </div>
             ${CONFIG[ACTIVE].showAlbum!=="n" ? 
             `<div id="fsd-album">
-                 <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>
+                ${CONFIG[ACTIVE].icons ? `<svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>`: ""}
                  <span></span>
             </div>` : ""} 
             <div id="fsd-status" class="${CONFIG[ACTIVE].playerControls || CONFIG[ACTIVE].extraControls|| CONFIG[ACTIVE].progressBarDisplay ? "active" : ""}">
@@ -1077,7 +1077,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     let upnextTimer, upNextShown = false;
     function updateUpNextShow() {
         setTimeout( () => {
-            // console.log((new Date()).toLocaleTimeString()+"  Executed updateUpnextShow")
             let timetogo = getShowTime()
             if (upnextTimer) {
                 clearTimeout(upnextTimer);
@@ -1150,7 +1149,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(err => console.error(err))
                 if(albumInfo){
                     const albumDate = new Date(albumInfo.year, (albumInfo.month || 1) - 1, albumInfo.day || 0)
-                    const dateStr = albumDate.toLocaleString('default',{year: 'numeric',month: 'short'})
+                    const recentDate = new Date();
+                    recentDate.setMonth(recentDate.getMonth() - 18);
+                    const dateStr = albumDate.toLocaleString('default',albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" })
                     albumText += CONFIG[ACTIVE].showAlbum==="d" ? (" • " + dateStr) : ""
                 }
             }
@@ -1234,7 +1235,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         const ctx = back.getContext('2d')
         ctx.imageSmoothingEnabled = false
         ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness ?? .6}) blur(${CONFIG[ACTIVE].blurSize ?? 20}px)`
-        const blur = "blurSize" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].blurSize) : 20
+        const blur = CONFIG[ACTIVE].blurSize===undefined ? 20 : CONFIG[ACTIVE].blurSize
         
         if (!CONFIG[ACTIVE].enableFade) {
             ctx.globalAlpha = 1
@@ -1565,7 +1566,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         volTimer = setTimeout( () => volumeContainer.classList.add("v-hidden"), 3000)
     }
 
-    FSTRANSITION = "backAnimationTime" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backAnimationTime) : 0.8
+    FSTRANSITION = CONFIG[ACTIVE].backAnimationTime===undefined ? 0.8 : CONFIG[ACTIVE].backAnimationTime
     let origLoc,progressListener
     const heartObserver = new MutationObserver(updateHeart)
 
@@ -1738,19 +1739,20 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     function getConfig() {
+        const baseConfig = {tv: {}, def: {}, tvMode: false}
         try {
             const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config"))
             if (parsed && typeof parsed === "object") {
-                if(!"tv" in parsed){
-                    Spicetify.LocalStorage.set("full-screen-config", "{tv: {}, def: {}, tvMode: false}")
-                    return {tv: {}, def: {}, tvMode: false}
+                if(parsed.tv===undefined || parsed.def===undefined){
+                    Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(baseConfig))
+                    return baseConfig
                 }
                 return parsed
             }
             throw ""
         } catch {
-            Spicetify.LocalStorage.set("full-screen-config", "{tv: {}, def: {}, tvMode: false}")
-            return {tv: {}, def: {}, tvMode: false}
+            Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(baseConfig))
+            return baseConfig
         }
     }
 
@@ -1878,7 +1880,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
            .main-trackCreditsModal-container{
               height: 75vh;
               max-height: 600px;
-              width: 500px;
+              width: clamp(500px,50vw,600px);
            }        
            .setting-row::after {
                content: "";
@@ -2019,7 +2021,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 },
                 CONFIG[ACTIVE].lyricsAlignment || "right",
                 (value) => saveOption("lyricsAlignment",value)),
-            createAdjust("Lyrics Animation Tempo","animationTempo","s",0.4,0.1,0,1,(state) => {
+            createAdjust("Lyrics Animation Tempo","animationTempo","s",0.3,0.1,0,1,(state) => {
                 CONFIG[ACTIVE]["animationTempo"] = state;
                 saveConfig()
                 render()
