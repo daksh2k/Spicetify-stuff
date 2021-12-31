@@ -81,6 +81,7 @@
 
     let cover, back, title, artist,album, prog, elaps, durr, play, ctx_container, ctx_icon, ctx_source, ctx_name, fsd_nextCover, fsd_up_next_text, fsd_next_tit_art, fsd_next_tit_art_inner, fsd_first_span, fsd_second_span;
     const nextTrackImg = new Image()
+    const artistImg = new Image()
     function render() {
             container.classList.toggle("lyrics-active",!!CONFIG[ACTIVE].lyricsDisplay)
             if(!CONFIG[ACTIVE].lyricsDisplay || !CONFIG[ACTIVE].extraControls)
@@ -1051,7 +1052,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`)
     }
     function getArtistInfo(id) {
-        return Spicetify.CosmosAsync.get(`hm://artist/v1/${id}/desktop?format=json`)
+        return Spicetify.CosmosAsync.get(`https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`
+               ).then(res => res.data.artist)
     }
     function searchArt(name){
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
@@ -1085,6 +1087,18 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         });
         let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
         return result ? `${parseInt(result[1], 16)},${parseInt(result[2], 16)},${parseInt(result[3], 16)}`: null;
+    }
+
+    async function getImageAndLoad(meta){
+        if(meta.artist_uri == null)
+            return meta.image_xlarge_url
+        let arUri =  meta.artist_uri.split(":")[2]
+        if(meta.artist_uri.split(":")[1] === "local"){
+            let res = await searchArt(meta.artist_name).catch(err => console.error(err))
+            arUri = res ? res.artists.items[0].id : ""
+        }
+        let artistInfo = await getArtistInfo(arUri).catch(err => console.error(err))
+        return artistInfo?.visuals?.headerImage?.sources[0].url ?? meta.image_xlarge_url
     }
 
     // Set the timeout to show upnext or hide when song ends
@@ -1175,47 +1189,19 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         let durationText
         if (CONFIG[ACTIVE].progressBarDisplay) {
             durationText = Spicetify.Player.formatTime(meta.duration)
-        }
+        }        
+        const previousImg = nextTrackImg.cloneNode()
 
-        // Prepare theme color
-        if(CONFIG[ACTIVE].themedButtons){
-            container.classList.add("themed")
-            let themeVibrantColor;
-            const artColors = await Spicetify.colorExtractor(Spicetify.Player.data.track.uri).catch(err => console.error(err))
-            if(!artColors?.VIBRANT) themeVibrantColor = "#AFAFAF"
-            else themeVibrantColor = artColors.VIBRANT
-            container.style.setProperty("--theme-color",hexToRgb(themeVibrantColor))
-        }
-        else{
-            container.classList.remove("themed")
-            container.style.setProperty("--theme-color","175,175,175")
-        }
-        const previouseImg = nextTrackImg.cloneNode()  
-        if(CONFIG.tvMode){
-           //Prepare Artist Image
-            if(meta.artist_uri != null){
-                 let arUri =  meta.artist_uri.split(":")[2]
-                 if(meta.artist_uri.split(":")[1] === "local"){
-                      let res = await searchArt(meta.artist_name).catch(err => console.error(err))
-                      arUri = res ? res.artists.items[0].id : ""
-                }
-                let artistInfo = await getArtistInfo(arUri).catch(err => console.error(err))
-                if (!artistInfo) nextTrackImg.src = meta.image_xlarge_url
-                else  nextTrackImg.src = artistInfo.header_image ? artistInfo.header_image.image : meta.image_xlarge_url
-          } else nextTrackImg.src = meta.image_xlarge_url  
-         } else nextTrackImg.src = meta.image_xlarge_url
+        nextTrackImg.src = meta.image_xlarge_url
         
         // Wait until next track image is downloaded then update UI text and images
         nextTrackImg.onload = () => {
-            if(CONFIG.tvMode){
-                 back.style.backgroundImage = `url("${nextTrackImg.src}")`
-                 cover.style.backgroundImage = `url("${meta.image_xlarge_url}")`
+            if(!CONFIG.tvMode){
+                animateCanvas(previousImg, nextTrackImg)
+                updateMainColor(Spicetify.Player.data.track.uri)
+                updateThemeColor(Spicetify.Player.data.track.uri)
             }
-            else{
-                const bgImage = `url("${nextTrackImg.src}")`
-                animateCanvas(previouseImg, nextTrackImg)
-                cover.style.backgroundImage = bgImage
-            }
+            cover.style.backgroundImage = `url("${nextTrackImg.src}")`
             title.innerText = rawTitle || ""
             artist.innerText = artistName || ""
             if (album) {
@@ -1224,12 +1210,26 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             if (durr) {
                 durr.innerText = durationText || ""
             }
-        }
-
+            new Image().src = Spicetify?.Queue?.nextTracks[0]?.contextTrack?.metadata.image_xlarge_url
+        };
         nextTrackImg.onerror = () => {
             // Placeholder
             console.error("Check your Internet!Unable to load Image")
             nextTrackImg.src = OFFLINESVG
+        };
+        if(CONFIG.tvMode){
+            artistImg.src = await getImageAndLoad(meta)
+            updateMainColor(artistImg.src)
+            updateThemeColor(artistImg.src)
+            artistImg.onload = async () => {
+            // artistImg.onload = () => {    
+                back.style.backgroundImage = `url("${artistImg.src}")`
+                let newurl = await getImageAndLoad(Spicetify?.Queue?.nextTracks[0]?.contextTrack?.metadata)
+                new Image().src = newurl
+            };
+        }
+    }
+
     async function updateMainColor(imageURL){
         switch(CONFIG[ACTIVE].invertColors){
             case "a":
@@ -1278,6 +1278,60 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if(CONFIG[ACTIVE].extraControls){
             lyrics.classList.toggle("hidden",container.classList.contains("lyrics-unavailable"))
         }
+    }
+    function animateCanvas2(prevImg, nextImg) {
+        const { innerWidth: width, innerHeight: height } = window
+        back.width = width
+        back.height = height
+        const dim = width > height ? width : height
+
+        const ctx = back.getContext('2d')
+        ctx.imageSmoothingEnabled = false
+        ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness ?? .6}) blur(${CONFIG[ACTIVE].blurSize ?? 20}px)`
+
+        const center_X = width / 2;
+        const center_Y = height / 2;
+        const img_center_X = nextImg.width / 2;
+        const img_center_Y = nextImg.height / 2;
+
+        if (!CONFIG[ACTIVE].enableFade) {
+            ctx.globalAlpha = 1
+            ctx.drawImage(
+                nextImg,
+                width > nextImg.width ? 0 : -(img_center_X - center_X),
+                height > nextImg.height ? 0 : -(img_center_Y - center_Y),
+                width > nextImg.width ? width : nextImg.width,
+                height > nextImg.height ? height : nextImg.height
+            );
+            return;
+        }
+
+        let factor = 0.0
+        const animate = () => {
+            ctx.globalAlpha = 1
+            ctx.drawImage(
+                prevImg,
+                width > prevImg.width ? 0 : -(img_center_X - center_X),
+                height > prevImg.height ? 0 : -(img_center_Y - center_Y),
+                width > prevImg.width ? width : prevImg.width,
+                height > prevImg.height ? height : prevImg.height
+                );
+            ctx.globalAlpha = Math.sin(Math.PI/2*factor)
+            ctx.drawImage(
+                nextImg,
+                width > nextImg.width ? 0 : -(img_center_X - center_X),
+                height > nextImg.height ? 0 : -(img_center_Y - center_Y),
+                width > nextImg.width ? width : nextImg.width,
+                height > nextImg.height ? height : nextImg.height
+                );
+
+            if (factor < 1.0) {
+                factor += 0.03/Math.pow(FSTRANSITION,4);
+                requestAnimationFrame(animate);
+            }
+        };
+
+        requestAnimationFrame(animate);
     }
     function animateCanvas(prevImg, nextImg) {
         const { innerWidth: width, innerHeight: height } = window
@@ -1375,7 +1429,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     else if(rType==="track")
                         await getTrackInfo(uriObj.args[1]).then(meta => ctxName=`${meta.name}  •  ${meta.artists[0].name}`)
                     else if(rType==="artist")
-                        await getArtistInfo(uriObj.args[1]).then(meta => ctxName=meta.info.name)
+                        await getArtistInfo(uriObj.args[1]).then(meta => ctxName=meta?.profile?.name)
                     else if(rType==="playlist" || rType==="playlist-v2"){
                         ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`
                         await getPlaylistInfo("spotify:playlist:"+uriObj.args[1]).then(meta => ctxName=meta.playlist.name)
