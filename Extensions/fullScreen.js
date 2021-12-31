@@ -864,8 +864,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     </div>` : ""}
                 ${CONFIG[ACTIVE].extraControls ? 
                     `<div class="fsd-controls-right fsd-controls extra-controls">
+                        ${CONFIG[ACTIVE].invertColors==="d" ? `<button id="fsd-invert">
+                            <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>
+                        </button>`: ""}
                        <button id="fsd-repeat">
-                          <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>
+                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>
                        </button>
                        ${CONFIG[ACTIVE].lyricsDisplay ? `<button id="fsd-lyrics" class="${container.classList.contains("lyrics-hide-force") ? "" : "button-active"}">
                           ${container.classList.contains("lyrics-hide-force") ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
@@ -994,7 +997,18 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             fadeAnimation(repeat)
             Spicetify.Player.toggleRepeat()
           }
-
+          if(CONFIG[ACTIVE].invertColors==="d"){
+              invertButton = container.querySelector("#fsd-invert")
+              invertButton.onclick = () => {
+                  fadeAnimation(invertButton)
+                  invertButton.classList.toggle("button-active")
+                  invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M14.53,6.59L14.53,6.59L10,2L5.5,6.56c-1.08,1.11-1.75,2.62-1.75,4.28c0,3.4,2.8,6.16,6.25,6.16s6.25-2.76,6.25-6.16 C16.25,9.19,15.6,7.7,14.53,6.59z M5.25,10.84c0-1.21,0.47-2.35,1.32-3.22L10,4.14V15.5C7.38,15.5,5.25,13.41,5.25,10.84z"/></svg>`
+                  if(getComputedStyle(container).getPropertyValue("--main-color").startsWith("0"))
+                    container.style.setProperty("--main-color","255,255,255")
+                  else
+                    container.style.setProperty("--main-color","0,0,0")  
+              }
+          }
           if(CONFIG[ACTIVE].lyricsDisplay){
             lyrics = container.querySelector("#fsd-lyrics")
             lyrics.onclick = () => {
@@ -1216,8 +1230,47 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             // Placeholder
             console.error("Check your Internet!Unable to load Image")
             nextTrackImg.src = OFFLINESVG
+    async function updateMainColor(imageURL){
+        switch(CONFIG[ACTIVE].invertColors){
+            case "a":
+                container.style.setProperty("--main-color","0,0,0")
+                break;
+            case "d":
+                let imageProminentColor;
+                const imageColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
+                if(!imageColors?.PROMINENT) imageProminentColor = "0,0,0"
+                else imageProminentColor = hexToRgb(imageColors.PROMINENT)
+                const thresholdValue = 260 - CONFIG[ACTIVE].backgroundBrightness*100
+                const isLightBG = (imageProminentColor.split(",")[0] * 0.299
+                                + imageProminentColor.split(",")[1] * 0.587
+                                + imageProminentColor.split(",")[2] * 0.114) > thresholdValue
+                container.style.setProperty("--main-color", isLightBG && CONFIG[ACTIVE].backgroundBrightness>0.3 ? "0,0,0" : "255,255,255")
+                invertButton.classList.remove("button-active")
+                invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`
+                break;
+            case "n":
+            default:
+                container.style.setProperty("--main-color","255,255,255")
+                break;
         }
     }
+    //Set main theme color for the display
+    async function updateThemeColor(imageURL){
+        if(CONFIG[ACTIVE].themedButtons || CONFIG[ACTIVE].themedIcons){
+            container.classList.toggle("themed-buttons",!!CONFIG[ACTIVE].themedButtons)
+            container.classList.toggle("themed-icons",!!CONFIG[ACTIVE].themedIcons)
+            let themeVibrantColor;
+            const artColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
+            if(!artColors?.VIBRANT) themeVibrantColor = "var(--spice-rgb-button)"
+            else themeVibrantColor = hexToRgb(artColors.VIBRANT)
+            container.style.setProperty("--theme-color",themeVibrantColor)
+        }
+        else{
+            container.classList.remove("themed-buttons","themed-icons")
+            container.style.setProperty("--theme-color","var(--spice-rgb-button)")
+        }
+    }
+
     function handleLyricsUpdate(evt){
         if(evt.detail.isLoading)
             return
@@ -2068,7 +2121,17 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 CONFIG[ACTIVE].volumeDisplay || "a",
                 (value) => saveOption("volumeDisplay",value)),
             headerText("Advanced/Appearance","Only change if you know what you are doing!"),
-            createToggle("Themed Buttons and Icons","themedButtons"),
+            createToggle("Themed Buttons","themedButtons"),
+            createToggle("Themed Icons","themedIcons"),
+            createOptions(
+                "Invert Colors",
+                {
+                    "n": "Never",
+                    "a": "Always",
+                    "d": "Automatic(Based on BG)"
+                },
+                CONFIG[ACTIVE].invertColors || "n",
+                (value) => saveOption("invertColors",value)),
             createAdjust("Background Animation Time","backAnimationTime","s",0.8,0.1,0,1,(state) => {
                 CONFIG[ACTIVE]["backAnimationTime"] = state;
                 saveConfig()
