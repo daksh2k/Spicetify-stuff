@@ -96,17 +96,22 @@
     cursor: default;
     left: 0;
     top: 0;
-    --transition-duration: 1s;
+    --transition-duration: .8s;
     --transition-function: ease-in-out;
     --main-color: 255,255,255;
-    --theme-color: var(--spice-rgb-button);
     --primary-color: rgba(var(--main-color),1);
     --secondary-color: rgba(var(--main-color),.7);
     --tertiary-color: rgba(var(--main-color),.5);
-    --theme-background-color: rgba(var(--theme-color),.6);
+    --theme-color: 175,175,175;
+    --theme-background-color: rgba(175,175,175,.6);
+    --theme-hover-color: rgba(175,175,175,.3);
     --theme-main-color: rgba(var(--theme-color),1);
 }
-.disabled{
+#full-screen-display.themed-buttons{
+    --theme-background-color: rgba(var(--theme-color),.6);
+    --theme-hover-color: rgba(var(--theme-color),.3);
+}
+.unavailable{
     color: var(--tertiary-color) !important;
     pointer-events: none !important;
     opacity: .5 !important;
@@ -331,7 +336,7 @@ button.dot-after{
 #fsd-volume-icon svg{
     fill: var(--primary-color) !important;
 }
-.disabled #fsd-volume-bar-inner{
+.unavailable #fsd-volume-bar-inner{
     height: 100%;
     background-color: var(--tertiary-color);
 }
@@ -355,6 +360,9 @@ button.dot-after{
    --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
    --animation-tempo: ${CONFIG[ACTIVE].animationTempo ?? .3}s !important;
    height: 85vh !important;
+}
+.lyrics-config-button{
+    margin-right: 20px;
 }
 #fsd-foreground {
     position: relative;
@@ -426,7 +434,8 @@ button.dot-after{
     height: 100%;
     z-index: -2;
 }
-#full-screen-display button {
+
+#full-screen-display .fs-button{
     background-color: transparent;
     border: 0;
     border-radius: 8px;
@@ -434,28 +443,28 @@ button.dot-after{
     padding: 3px 5px 0 5px;
     cursor: pointer;
     position: relative;
-    transition: all .5s var(--transition-function), transform .1s var(--transition-function);
+    transition: all .3s var(--transition-function), transform .1s var(--transition-function);
 }
-#full-screen-display svg{
+#full-screen-display .fs-button:hover{
+    transform: scale(1.2);
+    background-color: var(--theme-hover-color);
+}
+#full-screen-display .fs-button.button-active{
+    background: var(--theme-background-color) !important;
+}
+
+#fsd-foreground svg{
     fill: var(--primary-color);
-    transition: all var(--transition-duration) var(--transition-function);
+    transition: all .3s var(--transition-function);
 }
-.themed-icons svg{
+.themed-icons #fsd-foreground svg{
     fill: var(--theme-main-color) !important;
     filter: saturate(1.8);
 }
-#full-screen-display button.button-active svg{
+.themed-icons.themed-buttons .fs-button.button-active svg{
     fill: var(--primary-color) !important;
 }
-#full-screen-display button:hover{
-    transform: scale(1.1);
-}
-#full-screen-display button.button-active{
-    background: rgba(175,175,175,.6);
-}
-#full-screen-display.themed-buttons button.button-active{
-    background: var(--theme-background-color) !important;
-}
+
 body.fsd-activated #full-screen-display {
     display: block;
 }
@@ -817,7 +826,7 @@ ${CONFIG[ACTIVE].volumeDisplay!=="n" ? `
 <div id="fsd-volume-container">
      <span id="fsd-volume"></span>
      <div id="fsd-volume-bar"><div id="fsd-volume-bar-inner"></div></div>
-     <button id="fsd-volume-icon"></button>
+     <button class="fs-button" id="fsd-volume-icon"></button>
 </div>`:""}
 ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
@@ -844,34 +853,34 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             <div id="fsd-status" class="${CONFIG[ACTIVE].playerControls || CONFIG[ACTIVE].extraControls|| CONFIG[ACTIVE].progressBarDisplay ? "active" : ""}">
                 ${CONFIG[ACTIVE].extraControls ? 
                     `<div class="fsd-controls-left fsd-controls extra-controls">
-                       <button id="fsd-heart">
+                       <button class="fs-button" id="fsd-heart">
                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>
                        </button>
-                       <button id="fsd-shuffle">
+                       <button class="fs-button" id="fsd-shuffle">
                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["shuffle"]}</svg>
                        </button>
                     </div>`:"" }
                     ${CONFIG[ACTIVE].playerControls ?`
                     <div class="fsd-controls-center fsd-controls">
-                        <button id="fsd-back">
+                        <button class="fs-button" id="fsd-back">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-back"]}</svg>
                         </button>
-                        <button id="fsd-play">
+                        <button class="fs-button" id="fsd-play">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.play}</svg>
                         </button>
-                        <button id="fsd-next">
+                        <button class="fs-button" id="fsd-next">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-forward"]}</svg>
                         </button>
                     </div>` : ""}
                 ${CONFIG[ACTIVE].extraControls ? 
                     `<div class="fsd-controls-right fsd-controls extra-controls">
-                        ${CONFIG[ACTIVE].invertColors==="d" ? `<button id="fsd-invert">
+                        ${CONFIG[ACTIVE].invertColors==="d" ? `<button class="fs-button" id="fsd-invert">
                             <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>
                         </button>`: ""}
-                       <button id="fsd-repeat">
+                       <button class="fs-button" id="fsd-repeat">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>
                        </button>
-                       ${CONFIG[ACTIVE].lyricsDisplay ? `<button id="fsd-lyrics" class="${container.classList.contains("lyrics-hide-force") ? "" : "button-active"}">
+                       ${CONFIG[ACTIVE].lyricsDisplay ? `<button id="fsd-lyrics" class="fs-button ${container.classList.contains("lyrics-hide-force") ? "" : "button-active"}">
                           ${container.classList.contains("lyrics-hide-force") ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
                                  <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                  <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
@@ -1261,13 +1270,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             container.classList.toggle("themed-icons",!!CONFIG[ACTIVE].themedIcons)
             let themeVibrantColor;
             const artColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
-            if(!artColors?.VIBRANT) themeVibrantColor = "var(--spice-rgb-button)"
+            if(!artColors?.VIBRANT) themeVibrantColor = "175,175,175"
             else themeVibrantColor = hexToRgb(artColors.VIBRANT)
             container.style.setProperty("--theme-color",themeVibrantColor)
         }
         else{
             container.classList.remove("themed-buttons","themed-icons")
-            container.style.setProperty("--theme-color","var(--spice-rgb-button)")
+            container.style.setProperty("--theme-color","175,175,175")
         }
     }
 
@@ -1568,7 +1577,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             volumeBarInner.style.height = volume*100 + "%"
             let currVol = Math.round(volume*100) ===-100 ? "%" : Math.round(volume*100)
             volumeCurr.innerText = currVol + "%"
-            volumeContainer.classList.toggle("disabled",typeof currVol!=="number")
+            volumeContainer.classList.toggle("unavailable",typeof currVol!=="number")
             if(typeof currVol!=="number" || currVol>60)
                 volumeIcon.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["volume"]}</svg>`
             else if(currVol>30)
@@ -1625,14 +1634,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             repeat.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>`   
         }
         if(data.restrictions){
-            shuffle.classList.toggle("disabled",!data?.restrictions?.canToggleShuffle)
-            repeat.classList.toggle("disabled",!data?.restrictions?.canToggleRepeatTrack && !data?.restrictions?.canToggleRepeatContext)
+            shuffle.classList.toggle("unavailable",!data?.restrictions?.canToggleShuffle)
+            repeat.classList.toggle("unavailable",!data?.restrictions?.canToggleRepeatTrack && !data?.restrictions?.canToggleRepeatContext)
         }
     }
     let prevHeartData = Spicetify?.Player?.origin?._state?.item?.metadata["collection.in_collection"]
     function updateHeart(){
         const meta = Spicetify?.Player?.origin?._state?.item
-        heart.classList.toggle("disabled",meta?.metadata["collection.can_add"]!=="true")
+        heart.classList.toggle("unavailable",meta?.metadata["collection.can_add"]!=="true")
         if(prevHeartData!==meta?.metadata["collection.in_collection"]) fadeAnimation(heart)
         prevHeartData = meta?.metadata["collection.in_collection"]
         if(meta?.metadata["collection.in_collection"]==="true" || Spicetify.Player.getHeart()){
