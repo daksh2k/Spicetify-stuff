@@ -436,7 +436,7 @@ button.dot-after{
 }
 
 #full-screen-display .fs-button{
-    background-color: transparent;
+    background: transparent;
     border: 0;
     border-radius: 8px;
     color: var(--primary-color);
@@ -447,7 +447,7 @@ button.dot-after{
 }
 #full-screen-display .fs-button:hover{
     transform: scale(1.2);
-    background-color: var(--theme-hover-color);
+    background: var(--theme-hover-color);
 }
 #full-screen-display .fs-button.button-active{
     background: var(--theme-background-color) !important;
@@ -458,7 +458,7 @@ button.dot-after{
     transition: all .3s var(--transition-function);
 }
 .themed-icons #fsd-foreground svg{
-    fill: var(--theme-main-color) !important;
+    fill: var(--theme-main-color);
     filter: saturate(1.8);
 }
 .themed-icons.themed-buttons .fs-button.button-active svg{
