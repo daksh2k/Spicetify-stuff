@@ -464,7 +464,9 @@ button.dot-after{
 .themed-icons.themed-buttons .fs-button.button-active svg{
     fill: var(--primary-color) !important;
 }
-
+.fsd-background-fade {
+    transition: background-image var(--fs-transition) linear;
+}
 body.fsd-activated #full-screen-display {
     display: block;
 }
@@ -478,9 +480,39 @@ body.fsd-activated #full-screen-display {
 
 
     const styleChoices = [`
+#full-screen-display,
+#full-screen-display.lyrics-unavailable,
+#full-screen-display.lyrics-hide-force{
+    --fsd-foreground-transform: 50%;
+    --fsd-art-max-width: 600px;
+    --fsd-items-max-width: 580px;
+    --fsd-title-size: 50px;
+    --fsd-sec-size: 28px;
+}
+#full-screen-display.lyrics-active :not(#full-screen-display.lyrics-unavailable *,#full-screen-display.lyrics-hide-force *){
+    --fsd-foreground-transform: 0px;
+    --fsd-art-max-width: 500px;
+    --fsd-items-max-width: 480px;
+    --fsd-title-size: 40px;
+    --fsd-sec-size: 23px;
+}
+
 #fsd-art, #fsd-details, #fsd-status, #fsd-progress-container{
     transition: all var(--transition-duration) var(--transition-function);
 }
+
+#fsd-foreground {
+    transform: translateX(var(--fsd-foreground-transform));
+    width: 50%;
+    flex-direction: column;
+    text-align: center;
+}
+#fsd-art {
+    width: calc(100vh - 300px);
+    max-width: var(--fsd-art-max-width);
+    min-width: 300px;
+}
+
 #fsd-title{
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -494,47 +526,22 @@ body.fsd-activated #full-screen-display {
     overflow: hidden;
 }
 
-#fsd-foreground {
-    transform: translateX(50%);
-    width: 50%;
-    flex-direction: column;
-    text-align: center;
-}
-.lyrics-active #fsd-foreground{
-    transform: translateX(0px);
-}
-.lyrics-unavailable #fsd-foreground, .lyrics-hide-force #fsd-foreground{
-    transform: translateX(50%);
-}
-
-#fsd-art {
-    width: calc(100vh - 300px);
-    max-width: 600px;
-    min-width: 300px;
-}
-.lyrics-active #fsd-art{
-    max-width: 500px;
-}
-.lyrics-unavailable #fsd-art,.lyrics-hide-force #fsd-art{
-    max-width: 600px;
-}
-
 #fsd-progress-container {
     width: 28vw;
-    max-width: 580px;
+    max-width: var(--fsd-items-max-width);
     display: flex;
     align-items: center;
 }
 #fsd-details {
     padding-top: 30px;
     line-height: initial;
-    max-width: 580px;
+    max-width: var(--fsd-items-max-width);
     color: var(--primary-color);
 }
 #fsd-status {
     display: flex;
     width: 28vw;
-    max-width: 580px;
+    max-width: var(--fsd-items-max-width);
     align-items: center;
     justify-content: space-between;
     flex-direction: row;
@@ -543,34 +550,15 @@ body.fsd-activated #full-screen-display {
     margin: 5px auto 0;
     gap: 10px;
 }
-.lyrics-active #fsd-progress-container,.lyrics-active #fsd-details,.lyrics-active #fsd-status{
-    max-width: 480px;
-}
-.lyrics-unavailable #fsd-progress-container,.lyrics-hide-force #fsd-progress-container,.lyrics-unavailable #fsd-status,.lyrics-hide-force #fsd-status,.lyrics-unavailable #fsd-details,.lyrics-hide-force #fsd-details{
-    max-width: 580px;
-}
 
 #fsd-title {
-    font-size: 50px;
+    font-size: var(--fsd-title-size);
     font-weight: 900;
     transition: all var(--transition-duration) var(--transition-function);
 }
-.lyrics-active #fsd-title{
-    font-size: 40px;
-}
-.lyrics-unavailable #fsd-title,.lyrics-hide-force #fsd-title{
-    font-size: 50px;
-}
-
 #fsd-artist,#fsd-album{
-    font-size: 28px;
+    font-size: var(--fsd-sec-size);
     transition: all var(--transition-duration) var(--transition-function);
-}
-.lyrics-active #fsd-artist,.lyrics-active #fsd-album{
-    font-size: 23px;
-}
-.lyrics-unavailable #fsd-artist,.lyrics-hide-force #fsd-artist,.lyrics-unavailable #fsd-album,.lyrics-hide-force #fsd-album{
-    font-size: 28px;
 }
 @media (max-width: 900px), (max-height: 900px){
     #fsd-title{
@@ -604,17 +592,9 @@ body.fsd-activated #full-screen-display {
 }
 
 #fsd-artist svg, #fsd-album svg{
-    width: 22px;
-    height: 22px;
+    width: calc(var(--fsd-sec-size) - 6px);
+    height: calc(var(--fsd-sec-size) - 6px);
     margin-right: 5px;
-}
-.lyrics-active #fsd-artist svg,.lyrics-active #fsd-album svg{
-    width: 18px;
-    height: 18px;
-}
-.lyrics-unavailable #fsd-artist svg,.lyrics-hide-force #fsd-artist svg,.lyrics-unavailable #fsd-album svg,.lyrics-hide-force #fsd-album svg {
-    width: 22px;
-    height: 22px;
 }
 
 .fsd-controls {
@@ -634,9 +614,7 @@ body.fsd-activated #full-screen-display {
     width: 30%;
     justify-content: flex-end;
 }
-.fsd-background-fade {
-    transition: background-image var(--fs-transition) linear;
-}`,
+`,
 `#fsd-background-image {
     height: 100%;
     background-size: cover;
@@ -750,9 +728,6 @@ body.fsd-activated #full-screen-display {
 #fsd-status.active {
     column-gap: 10px;
     margin: 10px 0;
-}
-.fsd-background-fade {
-    transition: background-image var(--fs-transition) linear;
 }
 `]
     const iconStyleChoices = [`
