@@ -1916,7 +1916,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return container;
     }
 
-    function createToggle(name, key) {
+    function createToggle(name, key, callback = () => {}) {
         const container = document.createElement("div");
         container.innerHTML = `
           <div class="setting-row">
@@ -1935,6 +1935,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             CONFIG[ACTIVE][key] = evt.target.checked;
             saveConfig()
             render()
+            callback(container,evt.target.checked)
             if (document.body.classList.contains('fsd-activated')) {
                 activate()
             }
@@ -2102,7 +2103,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 return document.body.classList.contains('fsd-activated') ? container : "";
             })(),
             headerText("Lyrics Settings"),
-            createToggle("Lyrics","lyricsDisplay"),
+            createToggle("Lyrics","lyricsDisplay",(row,status) => {
+                container.classList.remove("lyrics-unavailable")
+                let nextEle = row.nextElementSibling
+                while(!nextEle.classList.contains("subhead")){
+                    nextEle.classList.toggle("hidden",!status)
+                    nextEle = nextEle.nextElementSibling
+                }
+            }),
             createOptions(
                 "Lyrics Alignment",
                 {
