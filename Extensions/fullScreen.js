@@ -753,7 +753,8 @@ body.fsd-activated #full-screen-display {
         window.removeEventListener("resize",updateUpNext)
         upNextShown = false;
 
-        Spicetify.Player.origin._events.removeListener("volume",updateVolume)
+        if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player.origin._events.removeListener("volume",updateVolume)
+        else Spicetify.Platform.PlaybackAPI._events.removeListener("volume",updateVolume)
 
         if(origLoc!=="/lyrics-plus" && document.body.classList.contains('fsd-activated')){
            Spicetify.Platform.History.push(origLoc)
@@ -1541,9 +1542,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              }
     }
 
-    let prevVolume = Spicetify.Player.getVolume()
+    let prevVolume = Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume
     function updateVolume(data){
-        volume = !data ? Spicetify.Player.getVolume() : data.data.volume
+        volume = !data ? (Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume) : data.data.volume
         if(volume!==prevVolume || !data){  //Only update volume when there is a change or on initial fire
             prevVolume = volume
             if(CONFIG[ACTIVE].volumeDisplay==="o" || CONFIG[ACTIVE].volumeDisplay==="m"){
@@ -1681,7 +1682,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             window.addEventListener("resize",updateUpNext)
         }
         if(CONFIG[ACTIVE].volumeDisplay!=="n"){
-             Spicetify.Player.origin._events.addListener("volume",updateVolume)
+             if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player.origin._events.addListener("volume",updateVolume)
+             else Spicetify.Platform.PlaybackAPI._events.addListener("volume",updateVolume)
              updateVolume()
              if(CONFIG[ACTIVE].volumeDisplay==="m"){
                 container.addEventListener("mousemove", hideVolume)
@@ -1761,7 +1763,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             window.removeEventListener("resize",updateUpNext)
         }
         if(CONFIG[ACTIVE].volumeDisplay!=="n"){
-             Spicetify.Player.origin._events.removeListener("volume",updateVolume)
+            if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player.origin._events.removeListener("volume",updateVolume)
+            else Spicetify.Platform.PlaybackAPI._events.removeListener("volume",updateVolume)
              if(CONFIG[ACTIVE].volumeDisplay==="m")
                 container.removeEventListener("mousemove",hideVolume)
         }

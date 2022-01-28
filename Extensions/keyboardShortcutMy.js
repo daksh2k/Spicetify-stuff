@@ -82,8 +82,8 @@
     registerBind("S", false, false, false, openLyrics);
  
     // Arrow keys to change volume
-    registerBind("ARROW_DOWN", false, false, false, ()=>Spicetify.Player.origin.setVolume(Spicetify.Player.getVolume() - 0.05));
-    registerBind("ARROW_UP"  , false, false, false, ()=>Spicetify.Player.origin.setVolume(Spicetify.Player.getVolume() + 0.05));
+    registerBind("ARROW_DOWN", false, false, false, decreaseVolume);
+    registerBind("ARROW_UP"  , false, false, false, increaseVolume);
     
     // Arrow keys to seek track
     registerBind("ARROW_RIGHT", false, false, false, seekForward);
@@ -131,6 +131,17 @@
     function seekBack(){
         Spicetify.Player.skipBack(10000)
     }  
+    async function decreaseVolume(){
+        if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player?.origin?.setVolume(getVolume() - 0.05)
+        else await Spicetify.Platform.PlaybackAPI.setVolume(getVolume() - 0.05)
+    }
+    async function increaseVolume(){
+        if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player?.origin?.setVolume(getVolume() + 0.05)
+        else await Spicetify.Platform.PlaybackAPI.setVolume(getVolume() + 0.05)
+    }
+    function getVolume(){
+        return (Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume)
+    }
 
     // ---------------------------------------------------------------------------------------
 

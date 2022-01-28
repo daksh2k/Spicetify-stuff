@@ -20,9 +20,10 @@
     
     updatePercentage()
     function updatePercentage(){
-        const currVolume = Math.round(Spicetify.Player.getVolume()*100)
+        const currVolume = Math.round( (Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume)  * 100)
         ele.innerText = currVolume==-100 ? `` : `${currVolume}%`
         document.querySelector(".main-connectBar-connectBar")?.style.setProperty('--triangle-position',"229px");
     }
-    Spicetify.Player.origin._events.addListener("volume",updatePercentage)
+    if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player.origin._events.addListener("volume",updatePercentage)
+    else Spicetify.Platform.PlaybackAPI._events.addListener("volume",updatePercentage)    
 })();
