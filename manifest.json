@@ -1,30 +1,37 @@
 [
   {
+    "name": "Full Screen",
+    "description": "Modified from FAD with extra features.",
+    "preview": "https://i.imgur.com/uPbnZkz.png",
+    "main": "Extensions/Wrappers/fullScreenWrapper.js",
+    "readme": "EXTENSIONS.md#full-screen-mode"
+  },
+  {
     "name": "Save Playlists",
-    "description": "Extension to save any playlist by right clicking on a playlist > Save Playlist.",
+    "description": "Extension to save any playlist.",
     "preview": "https://i.imgur.com/2AEyRrs.png",
-    "main": "Extensions/savePlaylists.js",
-    "readme": "README.md#save-playlists"
+    "main": "Extensions/Wrappers/savePlaylistsWrapper.js",
+    "readme": "EXTENSIONS.md#save-playlists"
   },
   {
     "name": "Auto Skip",
-    "description": " Auto Skip Certain Songs such as remixes, acoustics etc. Toggle in Profile menu.",
+    "description": " Auto Skip Certain Songs such as remixes, acoustics etc.",
     "preview": "https://i.imgur.com/GxdGp9t.png",
-    "main": "Extensions/autoSkip.js",
-    "readme": "README.md#auto-skip"
+    "main": "Extensions/Wrappers/autoSkipWrapper.js",
+    "readme": "EXTENSIONS.md#auto-skip"
   },
   {
     "name": "Play Next",
     "description": "Add the option to context menu to add the track to the top of the queue.",
     "preview": "https://i.imgur.com/osY8QmH.png",
-    "main": "Extensions/playNext.js",
-    "readme": "README.md#play-next"
+    "main": "Extensions/Wrappers/playNextWrapper.js",
+    "readme": "EXTENSIONS.md#play-next"
   },
   {
     "name": "Volume Percentage",
     "description": "Add the current Volume Percentage to the Volume Bar.",
     "preview": "https://i.imgur.com/lQQXSIg.png",
-    "main": "Extensions/addVolumep.js",
-    "readme": "README.md#volume-percentage"
+    "main": "Extensions/Wrappers/volumePercentageWrapper.js",
+    "readme": "EXTENSIONS.md#volume-percentage"
   }
 ]

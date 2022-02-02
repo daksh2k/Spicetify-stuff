@@ -1,65 +1,44 @@
 # Spicetify Extensions and Themes
-  - ### [Save Playlists](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/savePlaylists.js)
-    **Description:** Save any playlist by right clicking on a playlist > Save Playlist.\
-    A new playlist will be created with the same name+last updated date of the parent playlist.\
-    Modify the the date format and locale from [here.](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/savePlaylists.js#L11-L14)
 
-    ![Save Playlist](https://i.imgur.com/2AEyRrs.png)
+## **You can find a list and description of all the Extensions in [EXTENSIONS.md](https://github.com/daksh2k/Spicetify-stuff/blob/master/EXTENSIONS.md)**
 
-  - ### [Auto Skip](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/autoSkip.js)
-    **Description:** Auto Skip Certain Songs such as remixes, acoustics etc.\
-    Toggle in Profile menu for each skipping option you want.
-
-    <img src="https://i.imgur.com/GxdGp9t.png" alt="Auto Skip" width="300" height="auto"/>
-
-    Current options:
-    - Accoustic Songs
-    - Unplugged Songs
-    - Remix Songs
-    - Live Songs
-    - Explicit Songs
-    - Stripped Songs
-    - Christmas Songs
-
-  - ### [Play Next](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/playNext.js)
-    **Description:** Add the option to context menu to add stuff(albums, tracks, playlists) to the top of the queue.\
-    Spotify `Add to Queue` works by adding tracks directly to the end of the queue.\
-    This option enables to directly add to top of the queue.
-
-    ![Play Next](https://i.imgur.com/osY8QmH.png)
+## Install Methods
+- ### Method 1(Automatic updates) **Marketplace**:
   
-  - ### [Volume Percentage](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/addVolumep.js)
-    **Description:** Add the current Volume Percentage to the Volume Bar.
-    
-    ![Volume Percentage](https://i.imgur.com/lQQXSIg.png)
+  - Using [Spicetify Marketplace](https://github.com/CharlieS1103/spicetify-marketplace). Follow it's README for installation instructions.
+  
+  - Extensions are automatically updated.
 
- ## Community extensions modified for extra features or personal preference:
-  - ### [Full Screen Mode](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/fullScreen.js)
-    **Description:** Modified from the [fullAppDisplay.js](https://github.com/khanhas/spicetify-cli/blob/master/Extensions/fullAppDisplay.js) with added features.\
-    Fancy artwork and track status display.
-    
-    Extra Features:
-    - Upnext Display
-    - Current Context Display
-    - Bigger Album Art and other Style Changes
-    - TV Mode - With Artist Header Image as Background(Now the default full screen mode for spotify if you have premium)
-    - Volume Bar Display
-    - Extra Controls(Heart, shuffle, repeat, lyrics quick toggle)
-    - Control Background brightness and blur right from the config
 
-    <details>
-      <summary>Screenshots </summary>
-      <img align="center" src="https://i.imgur.com/9mFTC6y.png" alt="Up Next" width="712" height="auto"/><hr>
-      <img align="center" src="https://i.imgur.com/mAkNDSJ.png" alt="Context" width="356" height="auto"/> &nbsp; <img align="center" src="https://i.imgur.com/iHalVYG.png" alt="Context2" width="356" height="auto"/><hr>
-      <img align="center" src="https://i.imgur.com/xlB7VGk.png" alt="Default Mode2" width="712" height="auto"/><hr>
-      <img align="center" src="https://i.imgur.com/Kii9Khb.jpeg" alt="Default Mode3" width="712" height="auto"/><hr>
-      <img align="center" src="https://i.imgur.com/gTQuIgl.jpeg" alt="TV Mode" width="712" height="auto"/><hr>
-      <img align="center" src="https://i.imgur.com/LtYLHiv.jpg" alt="TV Mode2" width="712" height="auto"/>
-    </details>
+- ### Method 2(Automatic Updates) **Wrappers**:
+  - This method always fetches the latest version of extensions from this repo.
 
-      
+  - Use the `extensionNameWrapper.js` from the [Wrappers](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/Wrappers) folder.
 
-  - ### [Keyboard Shortcuts](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/keyboardShortcutMy.js)
-    **Description:** Modified from the [keyboardShortcut.js](https://github.com/khanhas/spicetify-cli/blob/master/Extensions/keyboardShortcut.js) with added shortcuts.
+  - For eg. You want to install the `fullScreen.js` extension. So use the `fullScreenWrapper.js` file from the [Wrappers](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/Wrappers) folder.
 
-    Look [here](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/keyboardShortcutMy.js#L56-L134) for the extra binds.
+  - If you want to modify the extension before using or don't want automatic updates, Use method 3.
+- ### Method 3(Manual Updates) **Manual**:
+  - Get the extension from the [Extensions](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions) folder and follow the Instructions below.
+
+  - This method does not update the extension automatically.
+  You have to check manually from the repo if the extension is updated or not and proceed from there.
+## Instructions
+
+Download the [zip](https://github.com/daksh2k/Spicetify-stuff/archive/refs/heads/master.zip) of the repo or clone it if you have git installed on your system.
+
+Extract the files and choose which extensions you want to install and follow the below procedure for each extension.
+
+Copy `extensionNameWrapper.js` from `Extensions/Wrappers` folder or `extensionName.js` from `Extensions` folder if you don't want automatic updates, into your [Spicetify](https://github.com/khanhas/spicetify-cli) extensions directory:
+| **Platform** | **Path**                                                                               |
+|------------|------------------------------------------------------------------------------------------|
+| **Linux**      | `~/.config/spicetify/Extensions` or `$XDG_CONFIG_HOME/.config/spicetify/Extensions/` |
+| **MacOS**      | `~/.config/spicetify/Extensions` or `$SPICETIFY_CONFIG/Extensions`                   |
+| **Windows**    | `%userprofile%/.spicetify/Extensions/`                                               |
+
+After putting the extension file into the correct folder, run the following command to install the extension:
+```
+spicetify config extensions extensionNameWrapper.js
+spicetify apply
+```
+
