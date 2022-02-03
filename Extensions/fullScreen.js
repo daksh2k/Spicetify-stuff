@@ -1670,7 +1670,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         container.addEventListener("mousemove", hideCursor)
         hideCursor()
         container.querySelector("#fsd-foreground").oncontextmenu = openConfig
+        container.querySelector("#fsd-foreground").ondblclick = deactivate
         back.oncontextmenu = openConfig
+        back.ondblclick = deactivate
         if(CONFIG[ACTIVE].contextDisplay==="m"){
             container.addEventListener("mousemove", hideContext)
             hideContext()
@@ -2258,7 +2260,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         })
     }
 
-    container.ondblclick = deactivate
+    // container.ondblclick = deactivate
 
     // Add Full Screen Button on bottom bar
     const button = document.createElement("button")
