@@ -928,7 +928,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
       }
       if(CONFIG[ACTIVE].icons){
         if(CONFIG[ACTIVE].titleMovingIcon===undefined){
-            CONFIG[ACTIVE]["titleMovingIcon"] = true
+            CONFIG[ACTIVE]["titleMovingIcon"] = false
             saveConfig()
         }
         playingIcon = container.querySelector("#playing-icon")
