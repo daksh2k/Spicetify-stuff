@@ -140,7 +140,7 @@
         else await Spicetify.Platform.PlaybackAPI.setVolume(getVolume() + 0.05)
     }
     function getVolume(){
-        return (Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume)
+        return (Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume)
     }
 
     // ---------------------------------------------------------------------------------------

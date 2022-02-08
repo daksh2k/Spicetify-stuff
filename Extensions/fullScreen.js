@@ -1542,9 +1542,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
              }
     }
 
-    let prevVolume = Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume
+    let prevVolume = Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume
     function updateVolume(data){
-        volume = !data ? (Spicetify.Player?.origin?._volume?._volume || Spicetify.Platform?.PlaybackAPI?._volume) : data.data.volume
+        volume = !data ? (Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume) : data.data.volume
         if(volume!==prevVolume || !data){  //Only update volume when there is a change or on initial fire
             prevVolume = volume
             if(CONFIG[ACTIVE].volumeDisplay==="o" || CONFIG[ACTIVE].volumeDisplay==="m"){
@@ -1583,6 +1583,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             playingIcon.classList.toggle("hidden",!CONFIG[ACTIVE].titleMovingIcon)
         }
     }
+
     function updatePlayerControls({ data }) {
         fadeAnimation(play)
         if (data.is_paused) {
@@ -1591,13 +1592,20 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             play.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.pause}</svg>`
         }
     }
-    let prevControlData = Spicetify?.Player?.origin?._state
+
+    let prevControlData = {
+        shuffle: Spicetify?.Player?.origin?._state?.shuffle,
+        repeat: Spicetify?.Player?.origin?._state?.repeat
+    }
     function updateExtraControls(data){
         data = !data ? Spicetify.Player.origin._state : data.data
         updateHeart()
         if(prevControlData?.shuffle !== data?.shuffle) fadeAnimation(shuffle)
         if(prevControlData?.repeat !== data?.repeat) fadeAnimation(repeat)
-        prevControlData = data
+        prevControlData = {
+            shuffle: data?.shuffle,
+            repeat: data?.repeat
+        }
         repeat.classList.toggle("dot-after",data?.repeat!==0)
         repeat.classList.toggle("button-active",data?.repeat!==0)
 
@@ -1614,6 +1622,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             repeat.classList.toggle("unavailable",!data?.restrictions?.canToggleRepeatTrack && !data?.restrictions?.canToggleRepeatContext)
         }
     }
+
     let prevHeartData = Spicetify?.Player?.origin?._state?.item?.metadata["collection.in_collection"]
     function updateHeart(){
         const meta = Spicetify?.Player?.origin?._state?.item
