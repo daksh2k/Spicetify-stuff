@@ -13,7 +13,7 @@
     }
     const ele = document.createElement("span")
     ele.classList.add("volume-percent")
-    ele.setAttribute("style","font-size: 14px; padding-left: 10px")
+    ele.setAttribute("style","font-size: 14px; padding-left: 10px; min-width: 45px;")
     
     volumeBar.append(ele)
     volumeBar.style.flex = "0 1 170px"
