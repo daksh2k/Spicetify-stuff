@@ -1005,6 +1005,7 @@ ul.main-navBar-entryPoints > div.GlueDropTarget >*.active {
 .collection-collectionEntityHeroCard-opacityText,.collection-collectionEntityHeroCard-headerContainer > div > span > span,.QwCSPAsINTl5cBRXG6pR,.yJc7df5lumdc0jmFXdSf{
     color:  var(--spice-subtext);
 }
+/*
 .x-toggle-indicatorWrapper {
     background-color: var(--spice-c-menu);
 }
@@ -1022,4 +1023,45 @@ input:hover:not([disabled]):not(:active)~.x-toggle-indicatorWrapper {
 }
 input:hover:not([disabled]):not(:active)~.x-toggle-indicator {
     background-color: var(--spice-button-text);
+}*/
+
+select,option{
+    color: var(--spice-text) !important;
+    background: var(--spice-card) !important;
+}
+select{
+  border: 1px solid var(--spice-main); 
+}
+input:not([disabled])~.x-toggle-indicatorWrapper {
+    background-color: rgba(var(--spice-rgb-subtext),.5) !important;
+}
+input:not([disabled]):checked~.x-toggle-indicatorWrapper {
+    background-color: rgba(var(--spice-rgb-button-disabled),.5) !important;
+}
+input:checked~.x-toggle-indicatorWrapper .x-toggle-indicator{
+  background-color: var(--spice-button)!important;
+  filter:  brightness(1.3);
+}
+
+/*Hide spotify tooltips*/
+.Gm_dPzFIPCwDrNHFehH7,.X8yW2lJbFCQfV5GjoRwL{
+  display: none !important;
+}
+
+/*Reduce the width of scrollbars of modals*/
+.GenericModal ::-webkit-scrollbar{
+  width: 7px;
+}
+.GenericModal ::-webkit-scrollbar-thumb{
+  border-radius: 2rem;
+}
+
+/*Fix scrollbar showing on lyrics container*/
+.lyrics-lyricsContainer-LyricsContainer{
+  height: calc(100vh - 105px);
+  margin-top: -65px;
+}
+
+.kNOYsX:hover .ButtonInner-sc-14ud5tc-0,.JkEwH:hover .ButtonInner-sc-14ud5tc-0 {
+    background-color: var(--spice-button-active);
 }

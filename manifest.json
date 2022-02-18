@@ -1,7 +1,7 @@
 [
   {
     "name": "Full Screen",
-    "description": "Modified from FAD with extra features.",
+    "description": "Fancy artwork display. Modified from FAD with extra features.",
     "preview": "https://i.imgur.com/uPbnZkz.png",
     "main": "Extensions/Wrappers/fullScreenWrapper.js",
     "readme": "EXTENSIONS.md#full-screen-mode"
@@ -15,7 +15,7 @@
   },
   {
     "name": "Auto Skip",
-    "description": " Auto Skip Certain Songs such as remixes, acoustics etc.",
+    "description": "Auto Skip Certain Songs such as remixes, acoustics etc.",
     "preview": "https://i.imgur.com/GxdGp9t.png",
     "main": "Extensions/Wrappers/autoSkipWrapper.js",
     "readme": "EXTENSIONS.md#auto-skip"
