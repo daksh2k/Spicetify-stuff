@@ -68,6 +68,10 @@
     }
 
     const CONFIG = getConfig()
+    if (localStorage.getItem("full-screen:inverted") === null) {
+        localStorage.setItem("full-screen:inverted", "{}")
+    }
+    const INVERTED = JSON.parse(localStorage.getItem("full-screen:inverted"))
     let ACTIVE = CONFIG.tvMode ? "tv" : "def"
 
     const OFFLINESVG = `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`
@@ -1002,6 +1006,21 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 container.classList.toggle("lyrics-hide-force")
                 lyrics.classList.toggle("button-active")
                 lyrics.innerHTML = (container.classList.contains("lyrics-unavailable") || container.classList.contains("lyrics-hide-force")) ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                invertButton.onclick = () => {
+                    fadeAnimation(invertButton)
+                    if(invertButton.classList.contains("button-active"))
+                        invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`
+                    else
+                        invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M14.53,6.59L14.53,6.59L10,2L5.5,6.56c-1.08,1.11-1.75,2.62-1.75,4.28c0,3.4,2.8,6.16,6.25,6.16s6.25-2.76,6.25-6.16 C16.25,9.19,15.6,7.7,14.53,6.59z M5.25,10.84c0-1.21,0.47-2.35,1.32-3.22L10,4.14V15.5C7.38,15.5,5.25,13.41,5.25,10.84z"/></svg>`
+                    invertButton.classList.toggle("button-active")
+                    if (getComputedStyle(container).getPropertyValue("--main-color").startsWith("0")) {
+                        container.style.setProperty("--main-color", "255,255,255")
+                        INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = false
+                    } else {
+                        container.style.setProperty("--main-color", "0,0,0")
+                        INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = true
+                    }
+                    localStorage.setItem("full-screen:inverted", JSON.stringify(INVERTED))
                                  <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                  <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
                               </svg>` : `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`
@@ -1217,21 +1236,33 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     async function updateMainColor(imageURL){
         switch(CONFIG[ACTIVE].invertColors){
+    async function updateMainColor(imageURL,meta) {
+        switch (CONFIG[ACTIVE].invertColors) {
             case "a":
-                container.style.setProperty("--main-color","0,0,0")
+                container.style.setProperty("--main-color", "0,0,0")
                 break;
             case "d":
-                let imageProminentColor;
-                const imageColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
-                if(!imageColors?.PROMINENT) imageProminentColor = "0,0,0"
-                else imageProminentColor = hexToRgb(imageColors.PROMINENT)
-                const thresholdValue = 260 - CONFIG[ACTIVE].backgroundBrightness*100
-                const isLightBG = (imageProminentColor.split(",")[0] * 0.299
-                                + imageProminentColor.split(",")[1] * 0.587
-                                + imageProminentColor.split(",")[2] * 0.114) > thresholdValue
-                container.style.setProperty("--main-color", isLightBG && CONFIG[ACTIVE].backgroundBrightness>0.3 ? "0,0,0" : "255,255,255")
-                invertButton.classList.remove("button-active")
-                invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`
+                let mainColor
+                if (meta.album_uri.split(":")[2] in INVERTED) {
+                    mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255"
+                } else {
+                    let imageProminentColor;
+                    const imageColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
+                    if (!imageColors?.PROMINENT) imageProminentColor = "0,0,0"
+                    else imageProminentColor = hexToRgb(imageColors.PROMINENT)
+
+                    const thresholdValue = 260 - CONFIG[ACTIVE].backgroundBrightness * 100
+                    const isLightBG = (imageProminentColor.split(",")[0] * 0.299 +
+                        imageProminentColor.split(",")[1] * 0.587 +
+                        imageProminentColor.split(",")[2] * 0.114) > thresholdValue
+                    mainColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "0,0,0" : "255,255,255"
+
+                }
+                container.style.setProperty("--main-color", mainColor)
+                if(CONFIG[ACTIVE].extraControls){
+                    invertButton.classList.remove("button-active")
+                    invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`
+                }
                 break;
             case "n":
             default:
