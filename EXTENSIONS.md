@@ -17,6 +17,15 @@
     
     **Additional settings can be modified by right clicking anywhere in the extension to open the config.**
     
+    **Note:** You need `lyrics-plus` custom app for showing the lyrics in the extension.
+    
+    It comes bundled with [Spicetify](https://spicetify.app/docs/getting-started/custom-apps), just run 
+    
+    ```ps
+    spicetify config custom_apps lyrics-plus
+    spicetify apply
+    ```
+    
     Extra Features:
     - Upnext Display
     - Current Context Display
