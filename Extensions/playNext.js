@@ -81,6 +81,10 @@
         return array;
     }
 
+    /**
+     * Main entry point when clicked from context menu.
+     * @param uris List of uris for uniquesly identifying tracks/playlist/album etc.
+     * */
     async function fetchAndAdd(uris){
         const uri = uris[0]
         const uriObj = Spicetify.URI.fromString(uri)
@@ -103,8 +107,12 @@
         addToNext(tracks)
     }
 
-    // Add the selected track to the top of the queue and update the queue
+    /**
+     * Add the selected track to the top of the queue and update the queue
+     * @param uris List of uris/tracks to add.
+     */
     async function addToNext(uris){
+        //Check if all uris are valid track uris.
         if(!uris.every(uri => Spicetify.URI.fromString(uri).type===Spicetify.URI.Type.TRACK)){
             Spicetify.showNotification("Malformed uris!")
             return

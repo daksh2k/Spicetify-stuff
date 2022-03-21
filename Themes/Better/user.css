@@ -1065,3 +1065,6 @@ input:checked~.x-toggle-indicatorWrapper .x-toggle-indicator{
 .kNOYsX:hover .ButtonInner-sc-14ud5tc-0,.JkEwH:hover .ButtonInner-sc-14ud5tc-0 {
     background-color: var(--spice-button-active);
 }
+.x-progressBar-progressBarBg {
+    background-color: transparent;
+}

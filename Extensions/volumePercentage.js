@@ -16,7 +16,7 @@
     ele.setAttribute("style","font-size: 14px; padding-left: 10px; min-width: 45px;")
     
     volumeBar.append(ele)
-    volumeBar.style.flex = "0 1 170px"
+    volumeBar.style.flex = "0 1 180px"
     
     updatePercentage()
     function updatePercentage(){
