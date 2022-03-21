@@ -37,6 +37,16 @@
         }
         return items;
     };
+
+    const fetchAlbumFromWebApi = async (url) => {
+        const res = await Spicetify.CosmosAsync.get(url);
+        return [
+        ...(res.items.map(item => item.uri)),
+        ...(!!res.next ? await fetchAlbumFromWebApi(res.next) : [])
+        ]
+
+    }
+
     const fetchPlaylist = async (uri) => {
         const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}/rows`, {
             policy: { link: true },
@@ -85,7 +95,7 @@
                 tracks = await fetchPlaylist(uri);
                 break;
             case Spicetify.URI.Type.ALBUM:
-                tracks = await fetchAlbum(uri);
+                tracks = await fetchAlbumFromWebApi(`https://api.spotify.com/v1/albums/${uri.split(":")[2]}/tracks?limit=50`);
                 break;  
         }
         if(Spicetify.Player.getShuffle())
