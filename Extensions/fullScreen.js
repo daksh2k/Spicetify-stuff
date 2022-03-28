@@ -120,6 +120,32 @@
     opacity: .5 !important;
     background: transparent !important;
 }
+/*
+.unavailable::after{
+    content: "";
+    display: block;
+    background-color: #FFF;
+    bottom: 50%;
+    left: 0;
+    right: 0;
+    position: absolute;
+    transform: rotateZ(45deg);
+    width: 25px;
+    height: 1.5px;
+}
+.unavailable::before{
+    content: "";
+    display: block;
+    background-color: #FFF;
+    bottom: 50%;
+    left: 0;
+    right: 0;
+    position: absolute;
+    transform: rotateZ(-45deg);
+    width: 25px;
+    height: 1.5px;
+}
+*/
 @keyframes fadeUp{
     0%{
         opacity:0;
@@ -1043,6 +1069,12 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             document.exitFullscreen()
     }
 
+    function getToken() {
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+          preferCached: true,
+        }).then((res) => res.accessToken);
+    }
+
     function getTrackInfo(id) {
         return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${id}`)
     }
@@ -1055,8 +1087,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`)
     }
 
-    function getArtistInfo(id) {
-        return Spicetify.CosmosAsync.get(`https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`).then(res => res.data.artist)
+    async function getArtistInfo(id) {
+        return fetch(`https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`,
+        {
+            headers: {
+                Authorization: `Bearer ${await getToken()}`,
+            }
+        })
+         .then(res => res.json())
+         .then(res => res.data.artist)
+        // return Spicetify.CosmosAsync.get(`https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`).then(res => res.data.artist)
     }
 
     function searchArt(name) {
@@ -1226,7 +1266,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             updateMainColor(artistImg.src,meta)
             updateThemeColor(artistImg.src)
             artistImg.onload = async () => {
-                // artistImg.onload = () => {    
                 back.style.backgroundImage = `url("${artistImg.src}")`
                 let newurl = await getImageAndLoad(Spicetify?.Queue?.nextTracks[0]?.contextTrack?.metadata)
                 new Image().src = newurl
@@ -1245,7 +1284,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255"
                 } else {
                     let imageProminentColor;
-                    const imageColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
+                    const imageColors = await Spicetify.colorExtractor(imageURL).catch(err => console.warn(err))
                     if (!imageColors?.PROMINENT) imageProminentColor = "0,0,0"
                     else imageProminentColor = hexToRgb(imageColors.PROMINENT)
 
@@ -1274,7 +1313,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             container.classList.toggle("themed-buttons", !!CONFIG[ACTIVE].themedButtons)
             container.classList.toggle("themed-icons", !!CONFIG[ACTIVE].themedIcons)
             let themeVibrantColor;
-            const artColors = await Spicetify.colorExtractor(imageURL).catch(err => console.error(err))
+            const artColors = await Spicetify.colorExtractor(imageURL).catch(err => console.warn(err))
             if (!artColors?.VIBRANT) themeVibrantColor = "175,175,175"
             else themeVibrantColor = hexToRgb(artColors.VIBRANT)
             container.style.setProperty("--theme-color", themeVibrantColor)
