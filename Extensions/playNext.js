@@ -27,6 +27,12 @@
         return false;
     }
 
+    function getToken() {
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+          preferCached: true,
+        }).then((res) => res.accessToken);
+    }
+
     const fetchAlbum = async (uri) => {
         const arg = uri.split(":")[2];
         const res = await Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${arg}/desktop`);
@@ -39,10 +45,15 @@
     };
 
     const fetchAlbumFromWebApi = async (url) => {
-        const res = await Spicetify.CosmosAsync.get(url);
+        const res = await fetch(url,{
+            headers: {
+                Authorization: `Bearer ${await getToken()}`,
+            }
+        })
+        const albumDetails = await res.json()
         return [
-        ...(res.items.map(item => item.uri)),
-        ...(!!res.next ? await fetchAlbumFromWebApi(res.next) : [])
+        ...(albumDetails.items.map(item => item.uri)),
+        ...(!!albumDetails.next ? await fetchAlbumFromWebApi(albumDetails.next) : [])
         ]
 
     }

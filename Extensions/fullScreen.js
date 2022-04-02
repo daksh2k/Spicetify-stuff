@@ -1075,12 +1075,26 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }).then((res) => res.accessToken);
     }
 
-    function getTrackInfo(id) {
-        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${id}`)
+    async function getTrackInfo(id) {
+        return fetch(`https://api.spotify.com/v1/tracks/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${await getToken()}`,
+            }
+        })
+        .then(res => res.json())
+        // return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${id}`)
     }
 
-    function getAlbumInfo(id) {
-        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums/${id}`)
+    async function getAlbumInfo(id) {
+        return fetch(`https://api.spotify.com/v1/albums/${id}`,
+        {
+            headers: {
+                Authorization: `Bearer ${await getToken()}`,
+            }
+        })
+        .then(res => res.json())
+        // return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums/${id}`)
     }
 
     function getPlaylistInfo(uri) {
@@ -1099,8 +1113,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         // return Spicetify.CosmosAsync.get(`https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`).then(res => res.data.artist)
     }
 
-    function searchArt(name) {
-        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
+    async function searchArt(name) {
+        return fetch(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`,{
+            headers: {
+                Authorization: `Bearer ${await getToken()}`,
+            }
+        })
+        .then(res => res.json())
+        // return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`)
     }
 
     // Add fade animation on button click
@@ -1187,7 +1207,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         const meta = Spicetify.Player.data.track.metadata
 
         if (CONFIG[ACTIVE].contextDisplay !== "n")
-            await updateContext().catch(err => console.error("Error getting context: ", err))
+            updateContext().catch(err => console.error("Error getting context: ", err))
 
         // prepare title
         let rawTitle = meta.title
@@ -1216,16 +1236,20 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         let albumText
         if (CONFIG[ACTIVE].showAlbum !== "n") {
             albumText = meta.album_title || ""
+            if (album) album.innerText = albumText || ""
             const albumURI = meta.album_uri
-            if (albumURI?.startsWith("spotify:album:")) {
-                const albumInfo = await getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(err => console.error(err))
-                if (albumInfo) {
+            if (albumURI?.startsWith("spotify:album:") && CONFIG[ACTIVE].showAlbum === "d") {
+                getAlbumInfo(albumURI.replace("spotify:album:", ""))
+                .then( albumInfo => {
+                    if(!albumInfo?.release_date) throw Error("No release Date")
                     const albumDate = new Date(albumInfo.release_date)
                     const recentDate = new Date();
                     recentDate.setMonth(recentDate.getMonth() - 18);
                     const dateStr = albumDate.toLocaleString('default', albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" })
-                    albumText += CONFIG[ACTIVE].showAlbum === "d" ? (" • " + dateStr) : ""
-                }
+                    albumText += " • " + dateStr
+                    if (album) album.innerText = albumText || ""
+                })
+                .catch(err => console.error(err))
             }
         }
 
@@ -1248,9 +1272,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             cover.style.backgroundImage = `url("${nextTrackImg.src}")`
             title.innerText = rawTitle || ""
             artist.innerText = artistName || ""
-            if (album) {
-                album.innerText = albumText || ""
-            }
             if (durr) {
                 durr.innerText = durationText || ""
             }
@@ -1258,7 +1279,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         };
         nextTrackImg.onerror = () => {
             // Placeholder
-            console.error("Check your Internet!Unable to load Image")
+            console.error("Check your Internet! Unable to load Image")
             nextTrackImg.src = OFFLINESVG
         };
         if (CONFIG.tvMode) {
