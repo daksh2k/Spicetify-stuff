@@ -102,6 +102,7 @@
     --transition-duration: .8s;
     --transition-function: ease-in-out;
     --main-color: 255,255,255;
+    --contrast-color: 0,0,0;
     --primary-color: rgba(var(--main-color),1);
     --secondary-color: rgba(var(--main-color),.7);
     --tertiary-color: rgba(var(--main-color),.5);
@@ -386,6 +387,7 @@ button.dot-after{
 #fad-lyrics-plus-container .lyrics-lyricsContainer-LyricsContainer{
    --lyrics-color-active: var(--primary-color) !important;
    --lyrics-color-inactive: var(--tertiary-color) !important;
+   --lyrics-highlight-background: rgba(var(--contrast-color),.7) !important;
    --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
    --animation-tempo: ${CONFIG[ACTIVE].animationTempo ?? .3}s !important;
    height: 85vh !important;
@@ -1028,9 +1030,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     invertButton.classList.toggle("button-active")
                     if (getComputedStyle(container).getPropertyValue("--main-color").startsWith("0")) {
                         container.style.setProperty("--main-color", "255,255,255")
+                        container.style.setProperty("--contrast-color", "0,0,0")
                         INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = false
                     } else {
                         container.style.setProperty("--main-color", "0,0,0")
+                        container.style.setProperty("--contrast-color", "255,255,255")
                         INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = true
                     }
                     localStorage.setItem("full-screen:inverted", JSON.stringify(INVERTED))
@@ -1298,9 +1302,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         switch (CONFIG[ACTIVE].invertColors) {
             case "a":
                 container.style.setProperty("--main-color", "0,0,0")
+                container.style.setProperty("--contrast-color", "255,255,255")
                 break;
             case "d":
-                let mainColor
+                let mainColor,contrastColor
                 if (meta.album_uri.split(":")[2] in INVERTED) {
                     mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255"
                 } else {
@@ -1314,9 +1319,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                         imageProminentColor.split(",")[1] * 0.587 +
                         imageProminentColor.split(",")[2] * 0.114) > thresholdValue
                     mainColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "0,0,0" : "255,255,255"
+                    contrastColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "255,255,255" : "0,0,0"
 
                 }
                 container.style.setProperty("--main-color", mainColor)
+                container.style.setProperty("--contrast-color", contrastColor)
                 if(CONFIG[ACTIVE].extraControls){
                     invertButton.classList.remove("button-active")
                     invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`
@@ -1325,6 +1332,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             case "n":
             default:
                 container.style.setProperty("--main-color", "255,255,255")
+                container.style.setProperty("--contrast-color", "0,0,0")
                 break;
         }
     }
