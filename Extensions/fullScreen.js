@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-no-check
 // NAME: Full Screen Mode
 // AUTHOR: daksh2k
 // VERSION: 1.0
@@ -449,8 +449,8 @@ button.dot-after{
    --lyrics-color-active: var(--primary-color) !important;
    --lyrics-color-inactive: var(--tertiary-color) !important;
    --lyrics-highlight-background: rgba(var(--contrast-color),.7) !important;
-   --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment || "right"} !important;
-   --animation-tempo: ${CONFIG[ACTIVE].animationTempo ?? 0.3}s !important;
+   --lyrics-align-text: ${CONFIG[ACTIVE].lyricsAlignment} !important;
+   --animation-tempo: ${CONFIG[ACTIVE].animationTempo}s !important;
    height: 85vh !important;
 }
 .lyrics-config-button{
@@ -714,7 +714,7 @@ body.fsd-activated #full-screen-display {
             `#fsd-background-image {
     height: 100%;
     background-size: cover;
-    filter: brightness(${CONFIG[ACTIVE].backgroundBrightness ?? 0.4}) blur(${CONFIG[ACTIVE].blurSize ?? 0}px);
+    filter: brightness(${CONFIG[ACTIVE].backgroundBrightness}) blur(${CONFIG[ACTIVE].blurSize}px);
     background-position: center;
     transform: translateZ(0);
 }
@@ -1088,10 +1088,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             elaps = container.querySelector("#fsd-elapsed");
         }
         if (CONFIG[ACTIVE].icons) {
-            if (CONFIG[ACTIVE].titleMovingIcon === undefined) {
-                CONFIG[ACTIVE]["titleMovingIcon"] = false;
-                saveConfig();
-            }
             playingIcon = container.querySelector("#playing-icon");
 
             //Clicking on playing icon disables it and remembers the config
@@ -1318,7 +1314,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     // Return the total time left to show the upnext timer
     function getShowTime() {
-        let showBefore = CONFIG[ACTIVE].upnextTimeToShow * 1000 ?? 30000;
+        let showBefore = CONFIG[ACTIVE].upnextTimeToShow * 1000;
         let dur = Spicetify.Player.data.duration;
         let curProg = Spicetify.Player.getProgress();
 
@@ -1503,7 +1499,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
         const ctx = back.getContext("2d");
         ctx.imageSmoothingEnabled = false;
-        ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness ?? 0.6}) blur(${CONFIG[ACTIVE].blurSize ?? 20}px)`;
+        ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness}) blur(${CONFIG[ACTIVE].blurSize}px)`;
 
         const center_X = width / 2;
         const center_Y = height / 2;
@@ -1557,8 +1553,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
         const ctx = back.getContext("2d");
         ctx.imageSmoothingEnabled = false;
-        ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness ?? 0.6}) blur(${CONFIG[ACTIVE].blurSize ?? 20}px)`;
-        const blur = CONFIG[ACTIVE].blurSize === undefined ? 20 : CONFIG[ACTIVE].blurSize;
+        ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness}) blur(${CONFIG[ACTIVE].blurSize}px)`;
+        const blur = CONFIG[ACTIVE].blurSize;
 
         const x = -blur * 2;
 
@@ -1732,7 +1728,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     async function updateUpNext() {
         if (
-            Spicetify.Player.data.duration - Spicetify.Player.getProgress() <= (CONFIG[ACTIVE].upnextTimeToShow * 1000 ?? 30000) + 50 &&
+            Spicetify.Player.data.duration - Spicetify.Player.getProgress() <= CONFIG[ACTIVE].upnextTimeToShow * 1000 + 50 &&
             Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title
         ) {
             await updateUpNextInfo();
@@ -1778,7 +1774,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             //Only update volume when there is a change or on initial fire
             prevVolume = volume;
             if (CONFIG[ACTIVE].volumeDisplay === "o" || CONFIG[ACTIVE].volumeDisplay === "m") {
-                volumeContainer.classList.remove(".v-hidden");
+                volumeContainer.classList.remove("v-hidden");
             }
             volumeBarInner.style.height = volume * 100 + "%";
             let currVol = Math.round(volume * 100) === -100 ? "%" : Math.round(volume * 100);
@@ -1900,7 +1896,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         volTimer = setTimeout(() => volumeContainer.classList.add("v-hidden"), 3000);
     }
 
-    FSTRANSITION = CONFIG[ACTIVE].backAnimationTime === undefined ? 0.8 : CONFIG[ACTIVE].backAnimationTime;
+    FSTRANSITION = CONFIG[ACTIVE].backAnimationTime;
     let origLoc, progressListener;
     const heartObserver = new MutationObserver(updateHeart);
 
@@ -2371,7 +2367,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     center: "Center",
                     right: "Right",
                 },
-                CONFIG[ACTIVE].lyricsAlignment || "right",
+                CONFIG[ACTIVE].lyricsAlignment,
                 (value) => saveOption("lyricsAlignment", value)
             ),
             createAdjust("Lyrics Animation Tempo", "animationTempo", "s", 0.3, 0.1, 0, 1, (state) => {
@@ -2391,7 +2387,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     a: "Show",
                     d: "Show with Release Date",
                 },
-                CONFIG[ACTIVE].showAlbum || "a",
+                CONFIG[ACTIVE].showAlbum,
                 (value) => saveOption("showAlbum", value)
             ),
             createToggle("Show All Artists", "showAllArtists"),
@@ -2408,7 +2404,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     m: "On Mousemove",
                     a: "Always",
                 },
-                CONFIG[ACTIVE].contextDisplay || "a",
+                CONFIG[ACTIVE].contextDisplay,
                 (value) => saveOption("contextDisplay", value)
             ),
             createOptions(
@@ -2419,7 +2415,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     m: "On Mousemove",
                     o: "On Volumechange",
                 },
-                CONFIG[ACTIVE].volumeDisplay || "a",
+                CONFIG[ACTIVE].volumeDisplay,
                 (value) => saveOption("volumeDisplay", value)
             ),
             headerText("Advanced/Appearance", "Only change if you know what you are doing!"),
@@ -2432,7 +2428,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     a: "Always",
                     d: "Automatic(Based on BG)",
                 },
-                CONFIG[ACTIVE].invertColors || "n",
+                CONFIG[ACTIVE].invertColors,
                 (value) => saveOption("invertColors", value)
             ),
             createAdjust("Background Animation Time", "backAnimationTime", "s", 0.8, 0.1, 0, 1, (state) => {
@@ -2448,7 +2444,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     mq: "Marquee/Scrolling",
                     sp: "Spotify/Translating",
                 },
-                CONFIG[ACTIVE].upNextAnim || "sp",
+                CONFIG[ACTIVE].upNextAnim,
                 (value) => saveOption("upNextAnim", value)
             ),
             createAdjust("Upnext Time to Show", "upnextTimeToShow", "s", 30, 1, 5, 60, (state) => {
@@ -2480,8 +2476,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     0.9: "90%",
                     1: "Full",
                 },
-                "backgroundBrightness" in CONFIG[ACTIVE] ? Number(CONFIG[ACTIVE].backgroundBrightness) : 0.8,
-                (value) => saveOption("backgroundBrightness", value)
+                CONFIG[ACTIVE].backgroundBrightness,
+                (value) => saveOption("backgroundBrightness", Number(value))
             ),
             (() => {
                 const container = document.createElement("div");
