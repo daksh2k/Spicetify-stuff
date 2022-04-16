@@ -7,7 +7,7 @@
 /// <reference path="../globals.d.ts" />
 
 (function autoSkip() {
-    const { Player, Menu} = Spicetify;
+    const { Player, Menu } = Spicetify;
     if (!(Player && Menu)) {
         setTimeout(autoSkip, 1000);
         return;
@@ -17,107 +17,105 @@
     const SKIPS = {
         skipAcoustic: {
             menuTitle: "Acoustic Songs",
-            check: ({ title }) => checkByName("acoustic", title)
+            check: ({ title }) => checkByName("acoustic", title),
         },
         skipUnplugged: {
             menuTitle: "Unplugged Songs",
-            check: ({ title }) => checkByName("unplugged", title)
+            check: ({ title }) => checkByName("unplugged", title),
         },
         skipRemix: {
             menuTitle: "Remix Songs",
-            check: ({ title } ) => checkByName("remix", title)
+            check: ({ title }) => checkByName("remix", title),
         },
         skipLive: {
             menuTitle: "Live Songs",
-            check: ({ title } ) => ["- live", "live version", "(live)"].some(value => title.toLowerCase().includes(value))
+            check: ({ title }) => ["- live", "live version", "(live)"].some((value) => title.toLowerCase().includes(value)),
         },
         skipExplicit: {
             menuTitle: "Explicit Songs",
-            check: ({ is_explicit }) => is_explicit === 'true'
+            check: ({ is_explicit }) => is_explicit === "true",
         },
         skipStripped: {
             menuTitle: "Stripped Songs",
-            check: ({ title }) => checkByName("stripped", title)
+            check: ({ title }) => checkByName("stripped", title),
         },
         skipChristmas: {
             menuTitle: "Christmas Songs",
-            check: ({ title } ) => ["xmas", "christmas", "jingle","mistletoe","merry","santa","feliz","navidad"].some(value => title.toLowerCase().includes(value))
-        }
-    }
+            check: ({ title }) =>
+                ["xmas", "christmas", "jingle", "mistletoe", "merry", "santa", "feliz", "navidad"].some((value) =>
+                    title.toLowerCase().includes(value)
+                ),
+        },
+    };
 
     // Load the basic config and define some utility functions for easy loading and saving
-    const CONFIG = getConfig()
+    const CONFIG = getConfig();
     function getConfig() {
         try {
-            const parsed = JSON.parse(localStorage.getItem("auto-skip:skips"))
+            const parsed = JSON.parse(localStorage.getItem("auto-skip:skips"));
             if (parsed && typeof parsed === "object") {
-                return parsed
+                return parsed;
             }
-            throw ""
+            throw "";
         } catch {
-            localStorage.setItem("auto-skip:skips", "{}")
-            return {}
+            localStorage.setItem("auto-skip:skips", "{}");
+            return {};
         }
     }
 
     function saveConfig() {
-        localStorage.setItem("auto-skip:skips", JSON.stringify(CONFIG))
+        localStorage.setItem("auto-skip:skips", JSON.stringify(CONFIG));
     }
 
     // Store the stats in localstorage and load it on start
-    if(localStorage.getItem("auto-skip:stats")===null){
-        localStorage.setItem("auto-skip:stats","{}")
+    if (localStorage.getItem("auto-skip:stats") === null) {
+        localStorage.setItem("auto-skip:stats", "{}");
     }
-    const STATS = JSON.parse(localStorage.getItem("auto-skip:stats"))
+    const STATS = JSON.parse(localStorage.getItem("auto-skip:stats"));
     Object.keys(SKIPS)
-          .filter(key => STATS[key]===undefined)
-          .forEach( key => STATS[key] = 0)
-    localStorage.setItem("auto-skip:stats",JSON.stringify(STATS))
+        .filter((key) => STATS[key] === undefined)
+        .forEach((key) => (STATS[key] = 0));
+    localStorage.setItem("auto-skip:stats", JSON.stringify(STATS));
 
     // Create a menu item to enable/disable
-    function createMenu(title,key) {
-       return new Menu.Item(
-          title,
-          CONFIG[key],
-          (menuItem) => {
-              CONFIG[key] = !CONFIG[key];
-              menuItem.isEnabled = CONFIG[key];
-              saveConfig()
-              checkSkip()
-         }
-     );
+    function createMenu(title, key) {
+        return new Menu.Item(title, CONFIG[key], (menuItem) => {
+            CONFIG[key] = !CONFIG[key];
+            menuItem.isEnabled = CONFIG[key];
+            saveConfig();
+            checkSkip();
+        });
     }
 
-    function checkByName(key,title){
-        return title.toLowerCase().includes(key)
+    function checkByName(key, title) {
+        return title.toLowerCase().includes(key);
     }
 
     // Main function to check skip of current song
-    let skippedSong = {}
-    function checkSkip(){
+    let skippedSong = {};
+    function checkSkip() {
         const meta = Player?.data?.track;
         if (!meta) return;
 
         const skipReasonsKeys = Object.entries(CONFIG)
-                                      .filter(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(meta.metadata))
-                                      .map(reason => reason[0])
-        if (skipReasonsKeys.length>0) {
-            const skipReasons = skipReasonsKeys.map(key => SKIPS[key].menuTitle).join(", ")
+            .filter(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(meta.metadata))
+            .map((reason) => reason[0]);
+        if (skipReasonsKeys.length > 0) {
+            const skipReasons = skipReasonsKeys.map((key) => SKIPS[key].menuTitle).join(", ");
             /* Check if the current song was skipped just before
                if it was then dont't skip it.*/
-            if(meta?.uri === skippedSong?.uri && meta?.uid === skippedSong?.uid){
-                Spicetify.showNotification(`${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`)
-                console.log(`${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`)
-                skippedSong = {}
-            }
-            else{
-                skipReasonsKeys.forEach(key => STATS[key]++)
-                localStorage.setItem("auto-skip:stats",JSON.stringify(STATS))
-                const totalSkips = Object.values(STATS).reduce((a, b) => a + b, 0)
-                Spicetify.showNotification(`${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`)
-                console.log(`${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`)
+            if (meta?.uri === skippedSong?.uri && meta?.uid === skippedSong?.uid) {
+                Spicetify.showNotification(`${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`);
+                console.log(`${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`);
+                skippedSong = {};
+            } else {
+                skipReasonsKeys.forEach((key) => STATS[key]++);
+                localStorage.setItem("auto-skip:stats", JSON.stringify(STATS));
+                const totalSkips = Object.values(STATS).reduce((a, b) => a + b, 0);
+                Spicetify.showNotification(`${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`);
+                console.log(`${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`);
                 Player.next();
-                skippedSong = meta
+                skippedSong = meta;
             }
         }
     }

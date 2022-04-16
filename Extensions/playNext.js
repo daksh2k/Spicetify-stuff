@@ -5,15 +5,15 @@
 // DESCRIPTION: Add the current track to the top of the queue
 
 /// <reference path="../spicetify-cli/globals.d.ts" />
-(function playNext(){    
-    if (!(Spicetify.CosmosAsync && Spicetify.Queue && Spicetify.ContextMenu && Spicetify.URI)){
+(function playNext() {
+    if (!(Spicetify.CosmosAsync && Spicetify.Queue && Spicetify.ContextMenu && Spicetify.URI)) {
         setTimeout(playNext, 200);
         return;
     }
 
     // Add context menu option to tracks, playlist and albums
-    function uriTrack(uris){
-    	if (uris.length > 1) {
+    function uriTrack(uris) {
+        if (uris.length > 1) {
             return true;
         }
         const uriObj = Spicetify.URI.fromString(uris[0]);
@@ -22,14 +22,14 @@
             case Spicetify.URI.Type.PLAYLIST:
             case Spicetify.URI.Type.PLAYLIST_V2:
             case Spicetify.URI.Type.ALBUM:
-               return true;
+                return true;
         }
         return false;
     }
 
     function getToken() {
         return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-          preferCached: true,
+            preferCached: true,
         }).then((res) => res.accessToken);
     }
 
@@ -45,18 +45,14 @@
     };
 
     const fetchAlbumFromWebApi = async (url) => {
-        const res = await fetch(url,{
+        const res = await fetch(url, {
             headers: {
                 Authorization: `Bearer ${await getToken()}`,
-            }
-        })
-        const albumDetails = await res.json()
-        return [
-        ...(albumDetails.items.map(item => item.uri)),
-        ...(!!albumDetails.next ? await fetchAlbumFromWebApi(albumDetails.next) : [])
-        ]
-
-    }
+            },
+        });
+        const albumDetails = await res.json();
+        return [...albumDetails.items.map((item) => item.uri), ...(!!albumDetails.next ? await fetchAlbumFromWebApi(albumDetails.next) : [])];
+    };
 
     const fetchPlaylist = async (uri) => {
         const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}/rows`, {
@@ -96,61 +92,63 @@
      * Main entry point when clicked from context menu.
      * @param uris List of uris for uniquesly identifying tracks/playlist/album etc.
      * */
-    async function fetchAndAdd(uris){
-        const uri = uris[0]
-        const uriObj = Spicetify.URI.fromString(uri)
-        if(uris.length>1 || uriObj.type === Spicetify.URI.Type.TRACK){
-            addToNext(uris)
-            return
+    async function fetchAndAdd(uris) {
+        const uri = uris[0];
+        const uriObj = Spicetify.URI.fromString(uri);
+        if (uris.length > 1 || uriObj.type === Spicetify.URI.Type.TRACK) {
+            addToNext(uris);
+            return;
         }
-        let tracks = []
-        switch(uriObj.type){
+        let tracks = [];
+        switch (uriObj.type) {
             case Spicetify.URI.Type.PLAYLIST:
             case Spicetify.URI.Type.PLAYLIST_V2:
                 tracks = await fetchPlaylist(uri);
                 break;
             case Spicetify.URI.Type.ALBUM:
                 tracks = await fetchAlbumFromWebApi(`https://api.spotify.com/v1/albums/${uri.split(":")[2]}/tracks?limit=50`);
-                break;  
+                break;
         }
-        if(Spicetify.Player.getShuffle())
-            tracks = shuffle(tracks)
-        addToNext(tracks)
+        if (Spicetify.Player.getShuffle()) tracks = shuffle(tracks);
+        addToNext(tracks);
     }
 
     /**
      * Add the selected track to the top of the queue and update the queue
      * @param uris List of uris/tracks to add.
      */
-    async function addToNext(uris){
+    async function addToNext(uris) {
         //Check if all uris are valid track uris.
-        if(!uris.every(uri => Spicetify.URI.fromString(uri).type===Spicetify.URI.Type.TRACK)){
-            Spicetify.showNotification("Malformed uris!")
-            return
+        if (!uris.every((uri) => Spicetify.URI.fromString(uri).type === Spicetify.URI.Type.TRACK)) {
+            Spicetify.showNotification("Malformed uris!");
+            return;
         }
-        const newTracks = uris.map(uri => ({
+        const newTracks = uris.map((uri) => ({
             uri,
             provider: "queue",
             metadata: {
                 is_queued: true,
-            }
-        }))
+            },
+        }));
         await Spicetify.CosmosAsync.put("sp://player/v2/main/queue", {
-              queue_revision: Spicetify.Queue?.queueRevision,
-              next_tracks: [...newTracks,...Spicetify.Queue?.nextTracks.map(track => ({
-                  uri: track.contextTrack.uri,
-                  provider: track.provider,
-                  metadata: {
-                    is_queued: track.provider==="queue",
-                  },
-              }))],
-              prev_tracks: Spicetify.Queue?.prevTracks
-             })
-              .then(() => Spicetify.showNotification("Added to Play Next"))
-              .catch( (err) => {
-                console.error("Failed to add to queue",err);
+            queue_revision: Spicetify.Queue?.queueRevision,
+            next_tracks: [
+                ...newTracks,
+                ...Spicetify.Queue?.nextTracks.map((track) => ({
+                    uri: track.contextTrack.uri,
+                    provider: track.provider,
+                    metadata: {
+                        is_queued: track.provider === "queue",
+                    },
+                })),
+            ],
+            prev_tracks: Spicetify.Queue?.prevTracks,
+        })
+            .then(() => Spicetify.showNotification("Added to Play Next"))
+            .catch((err) => {
+                console.error("Failed to add to queue", err);
                 Spicetify.showNotification("Unable to Add! Check Console.");
-            })
+            });
     }
 
     // Add option to Context Menu
