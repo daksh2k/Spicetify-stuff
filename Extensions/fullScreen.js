@@ -57,7 +57,59 @@
             activate();
         } else deactivate();
     }
-
+    const DEFAULTS = {
+        tv: {
+            lyricsDisplay: true,
+            animationTempo: 0.2,
+            trimTitle: true,
+            showAlbum: "d",
+            showAllArtists: true,
+            icons: true,
+            titleMovingIcon: false,
+            enableFade: true,
+            enableFullscreen: true,
+            upnextDisplay: true,
+            contextDisplay: "a",
+            volumeDisplay: "o",
+            themedButtons: true,
+            themedIcons: true,
+            backAnimationTime: 0.4,
+            upnextTimeToShow: 45,
+            blurSize: 0,
+            backgroundBrightness: 0.4,
+            progressBarDisplay: false,
+            extraControls: false,
+            playerControls: false,
+            lyricsAlignment: "right",
+        },
+        def: {
+            lyricsDisplay: true,
+            animationTempo: 0.2,
+            progressBarDisplay: true,
+            playerControls: true,
+            trimTitle: true,
+            showAlbum: "n",
+            showAllArtists: true,
+            icons: false,
+            titleMovingIcon: false,
+            enableFade: true,
+            enableFullscreen: true,
+            extraControls: true,
+            upnextDisplay: true,
+            contextDisplay: "m",
+            volumeDisplay: "o",
+            themedButtons: true,
+            invertColors: "n",
+            backAnimationTime: 1,
+            upnextTimeToShow: 30,
+            blurSize: 24,
+            backgroundBrightness: 0.7,
+            themedIcons: false,
+            upNextAnim: "sp",
+            lyricsAlignment: "right",
+        },
+        tvMode: false,
+    };
     const CONFIG = getConfig();
     if (localStorage.getItem("full-screen:inverted") === null) {
         localStorage.setItem("full-screen:inverted", "{}");
@@ -2017,20 +2069,29 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     function getConfig() {
-        const baseConfig = { tv: {}, def: {}, tvMode: false };
         try {
             const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config"));
-            if (parsed && typeof parsed === "object") {
-                if (parsed.tv === undefined || parsed.def === undefined) {
-                    Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(baseConfig));
-                    return baseConfig;
-                }
+            if (!!parsed && typeof parsed === "object") {
+                Object.keys(DEFAULTS).forEach((key) => {
+                    if (parsed[key] === undefined) {
+                        parsed[key] = DEFAULTS[key];
+                    } else {
+                        if (typeof DEFAULTS[key] === "object") {
+                            Object.keys(DEFAULTS[key])
+                                .filter((subkey) => parsed[key][subkey] === undefined)
+                                .forEach((subkey) => {
+                                    parsed[key][subkey] = DEFAULTS[key][subkey];
+                                });
+                        }
+                    }
+                });
+                Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(parsed));
                 return parsed;
             }
             throw "";
         } catch {
-            Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(baseConfig));
-            return baseConfig;
+            Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(DEFAULTS));
+            return DEFAULTS;
         }
     }
 
@@ -2430,7 +2491,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                   <button class="main-buttons-button main-button-secondary" id="reload-switch">Reload Client</button>
                 </div>`;
                 container.querySelector("#reset-switch").onclick = () => {
-                    CONFIG[ACTIVE] = {};
+                    CONFIG[ACTIVE] = DEFAULTS[ACTIVE];
                     saveConfig();
                     render();
                     if (document.body.classList.contains("fsd-activated")) {
