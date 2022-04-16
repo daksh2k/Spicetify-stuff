@@ -35,7 +35,7 @@
 
     const fetchAlbum = async (uri) => {
         const arg = uri.split(":")[2];
-        const res = await Spicetify.CosmosAsync.get(`hm://album/v1/album-app/album/${arg}/desktop`);
+        const res = await Spicetify.CosmosAsync.get(`wg://album/v1/album-app/album/${arg}/desktop`);
         const items = [];
         for (const disc of res.discs) {
             const availables = disc.tracks.filter((track) => track.playable);

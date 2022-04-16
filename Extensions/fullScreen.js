@@ -1274,6 +1274,19 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         else return dur - showBefore - curProg;
     }
 
+    async function colorExtractor(uri) {
+        const body = await Spicetify.CosmosAsync.get(`wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`);
+        if (body.entries && body.entries.length) {
+            const list = {};
+            for (const color of body.entries[0].color_swatches) {
+                list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
+            }
+            return list;
+        } else {
+            throw "No colors returned.";
+        }
+    }
+
     async function updateInfo() {
         const meta = Spicetify.Player.data.track.metadata;
 
@@ -1379,7 +1392,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255";
                 } else {
                     let imageProminentColor;
-                    const imageColors = await Spicetify.colorExtractor(imageURL).catch((err) => console.warn(err));
+                    const imageColors = await colorExtractor(imageURL).catch((err) => console.warn(err));
                     if (!imageColors?.PROMINENT) imageProminentColor = "0,0,0";
                     else imageProminentColor = hexToRgb(imageColors.PROMINENT);
 
@@ -1412,7 +1425,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             container.classList.toggle("themed-buttons", !!CONFIG[ACTIVE].themedButtons);
             container.classList.toggle("themed-icons", !!CONFIG[ACTIVE].themedIcons);
             let themeVibrantColor;
-            const artColors = await Spicetify.colorExtractor(imageURL).catch((err) => console.warn(err));
+            const artColors = await colorExtractor(imageURL).catch((err) => console.warn(err));
             if (!artColors?.VIBRANT) themeVibrantColor = "175,175,175";
             else themeVibrantColor = hexToRgb(artColors.VIBRANT);
             container.style.setProperty("--theme-color", themeVibrantColor);
