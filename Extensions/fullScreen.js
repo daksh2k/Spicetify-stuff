@@ -1502,25 +1502,36 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         const { innerWidth: width, innerHeight: height } = window;
         back.width = width;
         back.height = height;
-        const dim = width > height ? width : height;
 
         const ctx = back.getContext("2d");
         ctx.imageSmoothingEnabled = false;
         ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness ?? 0.6}) blur(${CONFIG[ACTIVE].blurSize ?? 20}px)`;
         const blur = CONFIG[ACTIVE].blurSize === undefined ? 20 : CONFIG[ACTIVE].blurSize;
 
+        const x = -blur * 2;
+
+        let y, dim;
+        if (width > height) {
+            dim = width;
+            y = x - (width - height) / 2;
+        } else {
+            dim = height;
+            y = x;
+        }
+        const size = dim + 4 * blur;
+
         if (!CONFIG[ACTIVE].enableFade) {
             ctx.globalAlpha = 1;
-            ctx.drawImage(nextImg, -blur * 2, -blur * 2 - (width - height) / 2, dim + 4 * blur, dim + 4 * blur);
+            ctx.drawImage(nextImg, x, y, size, size);
             return;
         }
 
         let factor = 0.0;
         const animate = () => {
             ctx.globalAlpha = 1;
-            ctx.drawImage(prevImg, -blur * 2, -blur * 2 - (width - height) / 2, dim + 4 * blur, dim + 4 * blur);
+            ctx.drawImage(prevImg, x, y, size, size);
             ctx.globalAlpha = Math.sin((Math.PI / 2) * factor);
-            ctx.drawImage(nextImg, -blur * 2, -blur * 2 - (width - height) / 2, dim + 4 * blur, dim + 4 * blur);
+            ctx.drawImage(nextImg, x, y, size, size);
 
             if (factor < 1.0) {
                 factor += 0.03 / Math.pow(FSTRANSITION, 4);
