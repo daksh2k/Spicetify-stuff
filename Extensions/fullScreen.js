@@ -881,6 +881,10 @@ body.fsd-activated #full-screen-display {
         container.removeEventListener("mousemove", hideContext);
         container.removeEventListener("mousemove", hideVolume);
 
+        if (curTimer) clearTimeout(curTimer);
+        if (ctxTimer) clearTimeout(ctxTimer);
+        if (volTimer) clearTimeout(volTimer);
+
         style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG[ACTIVE].icons ? 1 : 0];
 
         container.innerHTML = `
