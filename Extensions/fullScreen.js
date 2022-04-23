@@ -6,13 +6,26 @@
 
 /// <reference path="../globals.d.ts" />
 
-(function fullScreen() {
-    const extraBar = document.querySelector(".ExtraControls");
+let INIT_RETRIES = 0;
+function fullScreen() {
+    const extraBar = document.querySelector(".ExtraControls") || document.querySelector(".ClYTTKGdd9KB7D9MXicj");
     const topBar = document.querySelector(".main-topBar-historyButtons");
     const { CosmosAsync, LocalStorage, Keyboard, ContextMenu, Player, Platform } = Spicetify;
 
-    if (!topBar || !extraBar || !CosmosAsync || !LocalStorage || !ContextMenu || !Keyboard || !Player || !Platform) {
+    let entriesToVerify = [topBar, extraBar, CosmosAsync, LocalStorage, ContextMenu, Keyboard, Player, Platform];
+
+    if (INIT_RETRIES > 50) {
+        entriesToVerify.forEach((entry) => {
+            if (!entry) {
+                console.error("Spicetify method not available. Report issue on GitHub or run Spicetify.test() to test.");
+                Spicetify.showNotification(`Error initializing "fullscreen.js" extension. Spicetify method not available. Report issue on GitHub.`);
+            }
+        });
+        return;
+    }
+    if (entriesToVerify.some((it) => !it)) {
         setTimeout(fullScreen, 300);
+        INIT_RETRIES += 1;
         return;
     }
     Spicetify.Keyboard.registerShortcut(
@@ -2545,4 +2558,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     };
 
     render();
-})();
+}
+
+fullScreen();
