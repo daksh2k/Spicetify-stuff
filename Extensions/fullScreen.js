@@ -1175,11 +1175,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     if (getComputedStyle(container).getPropertyValue("--main-color").startsWith("0")) {
                         container.style.setProperty("--main-color", "255,255,255");
                         container.style.setProperty("--contrast-color", "0,0,0");
-                        INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = false;
+                        if (!CONFIG.tvMode && CONFIG.def.backgroundChoice === "a")
+                            INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = false;
                     } else {
                         container.style.setProperty("--main-color", "0,0,0");
                         container.style.setProperty("--contrast-color", "255,255,255");
-                        INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = true;
+                        if (!CONFIG.tvMode && CONFIG.def.backgroundChoice === "a")
+                            INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = true;
                     }
                     localStorage.setItem("full-screen:inverted", JSON.stringify(INVERTED));
                 };
@@ -1345,17 +1347,23 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         else return dur - showBefore - curProg;
     }
 
+    let colorsCache = {};
     async function colorExtractor(uri) {
+        if (uri in colorsCache) return colorsCache[uri];
         const body = await Spicetify.CosmosAsync.get(`wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`);
         if (body.entries && body.entries.length) {
             const list = {};
             for (const color of body.entries[0].color_swatches) {
                 list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
             }
-            return list;
-        } else {
-            throw "No colors returned.";
+            if (Object.keys(colorsCache).length > 15) {
+                delete colorsCache;
+                colorsCache = {};
+            }
+            colorsCache[uri] = list;
+            return colorsCache[uri];
         }
+        throw "No colors returned.";
     }
 
     async function updateInfo() {
@@ -1470,14 +1478,18 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 break;
             case "d":
                 let mainColor, contrastColor;
-                if (meta.album_uri.split(":")[2] in INVERTED) {
+                if (!CONFIG.tvMode && CONFIG.def.backgroundChoice === "a" && meta.album_uri.split(":")[2] in INVERTED) {
                     mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255";
                 } else {
                     let imageProminentColor;
                     const imageColors = await colorExtractor(imageURL).catch((err) => console.warn(err));
-                    if (!imageColors?.PROMINENT) imageProminentColor = "0,0,0";
-                    else imageProminentColor = hexToRgb(imageColors.PROMINENT);
-
+                    if (CONFIG.tvMode || CONFIG.def.backgroundChoice == "a") {
+                        if (!imageColors?.PROMINENT) imageProminentColor = "0,0,0";
+                        else imageProminentColor = hexToRgb(imageColors.PROMINENT);
+                    } else {
+                        if (!imageColors || !imageColors[CONFIG.def.coloredBackChoice]) imageProminentColor = hexToRgb("#444444");
+                        else imageProminentColor = hexToRgb(imageColors[CONFIG.def.coloredBackChoice]);
+                    }
                     const thresholdValue = 260 - CONFIG[ACTIVE].backgroundBrightness * 100;
                     const isLightBG =
                         imageProminentColor.split(",")[0] * 0.299 +
@@ -1503,7 +1515,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
     //Set main theme color for the display
     async function updateThemeColor(imageURL) {
-        if (CONFIG[ACTIVE].themedButtons || CONFIG[ACTIVE].themedIcons) {
+        if (
+            !(!CONFIG.tvMode && CONFIG.def.backgroundChoice == "c" && CONFIG.def.coloredBackChoice == "VIBRANT") &&
+            (CONFIG[ACTIVE].themedButtons || CONFIG[ACTIVE].themedIcons)
+        ) {
             container.classList.toggle("themed-buttons", !!CONFIG[ACTIVE].themedButtons);
             container.classList.toggle("themed-icons", !!CONFIG[ACTIVE].themedIcons);
             let themeVibrantColor;
