@@ -1,5 +1,6 @@
 name: Feature Request
-description: Request a new feature or enhancement
+description: Request a new extension, feature or enhancement to existing extensions
+title: "[Feature Request]: "
 labels: [enhancement]
 body:
   - type: dropdown
@@ -7,7 +8,7 @@ body:
       label: Choose the extension for feature request.
       description: Choose other if not related to any extension mentioned in the dropdown.
       options:
-          - 🎆 New Extension idea
+          - 🎆 New Extension Idea
           - Save Playlists
           - Full Screen Mode
           - Auto Skip
