@@ -5,7 +5,7 @@
 ## Install Methods
 - ### Method 1(Automatic updates) **Marketplace**:
   
-  - Using [Spicetify Marketplace](https://github.com/CharlieS1103/spicetify-marketplace). Follow it's README for installation instructions.
+  - Using [Spicetify Marketplace](https://github.com/spicetify/spicetify-marketplace). Follow it's README for installation instructions.
   
   - Extensions are automatically updated.
 
@@ -29,7 +29,7 @@ Download the [zip](https://github.com/daksh2k/Spicetify-stuff/archive/refs/heads
 
 Extract the files and choose which extensions you want to install and follow the below procedure for each extension.
 
-Copy `extensionNameWrapper.js` from `Extensions/Wrappers` folder or `extensionName.js` from `Extensions` folder if you don't want automatic updates, into your [Spicetify](https://github.com/khanhas/spicetify-cli) extensions directory:
+Copy `extensionNameWrapper.js` from `Extensions/Wrappers` folder or `extensionName.js` from `Extensions` folder if you don't want automatic updates, into your [Spicetify](https://github.com/spicetify/spicetify-cli) extensions directory:
 | **Platform** | **Path**                                                                               |
 |------------|------------------------------------------------------------------------------------------|
 | **Linux**      | `~/.config/spicetify/Extensions` or `$XDG_CONFIG_HOME/.config/spicetify/Extensions/` |

@@ -127,3 +127,22 @@
 
     Spicetify.Player.addEventListener("songchange", checkSkip);
 })();
+
+
+/*
+Filter by language stuff
+
+let id = Spicetify.URI.idToHex(Spicetify.Player.data.track.uri.split(':')[2]);
+let url = "https://spclient.wg.spotify.com/metadata/4/track/" + id;
+
+let accessToken = await Spicetify.Platform.AuthorizationAPI._tokenProvider({preferCached: true}).then(res => res.accessToken);
+let resp = await fetch(url, {
+    headers: {
+        "Authorization": "Bearer " + accessToken,
+        "Accept": "application/json"
+    }
+});
+let data = await resp.json()
+console.log(data)
+*/
+
