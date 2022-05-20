@@ -110,6 +110,7 @@ function fullScreen() {
             titleMovingIcon: false,
             enableFade: true,
             enableFullscreen: true,
+            backgroundChoice: "a",
             extraControls: true,
             upnextDisplay: true,
             contextDisplay: "m",
@@ -120,6 +121,7 @@ function fullScreen() {
             backAnimationTime: 1,
             upNextAnim: "sp",
             upnextTimeToShow: 30,
+            coloredBackChoice: "DESATURATED",
             blurSize: 24,
             backgroundBrightness: 0.7,
         },
@@ -1418,11 +1420,15 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         nextTrackImg.src = meta.image_xlarge_url;
 
         // Wait until next track image is downloaded then update UI text and images
-        nextTrackImg.onload = () => {
+        nextTrackImg.onload = async () => {
             if (!CONFIG.tvMode) {
-                animateCanvas(previousImg, nextTrackImg);
                 updateMainColor(Spicetify.Player.data.track.uri, meta);
                 updateThemeColor(Spicetify.Player.data.track.uri);
+                if (CONFIG.def.backgroundChoice == "a") {
+                    animateCanvas(previousImg, nextTrackImg);
+                } else {
+                    animateColor(await getNextColor());
+                }
             }
             cover.style.backgroundImage = `url("${nextTrackImg.src}")`;
             title.innerText = rawTitle || "";
@@ -1449,6 +1455,13 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
 
+    async function getNextColor() {
+        let nextColor;
+        const imageColors = await colorExtractor(Spicetify.Player.data.track.uri).catch((err) => console.warn(err));
+        if (!imageColors || !imageColors[CONFIG.def.coloredBackChoice]) nextColor = "#444444";
+        else nextColor = imageColors[CONFIG.def.coloredBackChoice];
+        return nextColor;
+    }
     async function updateMainColor(imageURL, meta) {
         switch (CONFIG[ACTIVE].invertColors) {
             case "a":
@@ -1512,55 +1525,44 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
 
-    function animateCanvas2(prevImg, nextImg) {
+    let prevColor = "#000000";
+    async function animateColor(nextColor) {
+        const configTransitionTime = CONFIG[ACTIVE].backAnimationTime;
         const { innerWidth: width, innerHeight: height } = window;
         back.width = width;
         back.height = height;
-        const dim = width > height ? width : height;
 
         const ctx = back.getContext("2d");
-        ctx.imageSmoothingEnabled = false;
-        ctx.filter = `brightness(${CONFIG[ACTIVE].backgroundBrightness}) blur(${CONFIG[ACTIVE].blurSize}px)`;
-
-        const center_X = width / 2;
-        const center_Y = height / 2;
-        const img_center_X = nextImg.width / 2;
-        const img_center_Y = nextImg.height / 2;
 
         if (!CONFIG[ACTIVE].enableFade) {
             ctx.globalAlpha = 1;
-            ctx.drawImage(
-                nextImg,
-                width > nextImg.width ? 0 : -(img_center_X - center_X),
-                height > nextImg.height ? 0 : -(img_center_Y - center_Y),
-                width > nextImg.width ? width : nextImg.width,
-                height > nextImg.height ? height : nextImg.height
-            );
+            ctx.fillStyle = nextColor;
+            ctx.fillRect(0, 0, width, height);
             return;
         }
 
-        let factor = 0.0;
-        const animate = () => {
-            ctx.globalAlpha = 1;
-            ctx.drawImage(
-                prevImg,
-                width > prevImg.width ? 0 : -(img_center_X - center_X),
-                height > prevImg.height ? 0 : -(img_center_Y - center_Y),
-                width > prevImg.width ? width : prevImg.width,
-                height > prevImg.height ? height : prevImg.height
-            );
-            ctx.globalAlpha = Math.sin((Math.PI / 2) * factor);
-            ctx.drawImage(
-                nextImg,
-                width > nextImg.width ? 0 : -(img_center_X - center_X),
-                height > nextImg.height ? 0 : -(img_center_Y - center_Y),
-                width > nextImg.width ? width : nextImg.width,
-                height > nextImg.height ? height : nextImg.height
-            );
+        let previousTimeStamp,
+            done = false,
+            start;
+        const animate = (timestamp) => {
+            if (start === undefined) start = timestamp;
+            const elapsed = timestamp - start;
 
-            if (factor < 1.0) {
-                factor += 0.03 / Math.pow(FSTRANSITION, 4);
-                requestAnimationFrame(animate);
+            if (previousTimeStamp !== timestamp) {
+                const factor = Math.min(elapsed / (configTransitionTime * 1000), 1.0);
+                ctx.globalAlpha = 1;
+                ctx.fillStyle = prevColor;
+                ctx.fillRect(0, 0, width, height);
+                ctx.globalAlpha = Math.sin((Math.PI / 2) * factor);
+                ctx.fillStyle = nextColor;
+                ctx.fillRect(0, 0, width, height);
+                if (factor === 1.0) done = true;
+            }
+            if (elapsed < configTransitionTime * 1000) {
+                previousTimeStamp = timestamp;
+                !done && requestAnimationFrame(animate);
+            } else {
+                prevColor = nextColor;
             }
         };
 
@@ -2424,8 +2426,19 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             createToggle("Show All Artists", "showAllArtists"),
             createToggle("Icons", "icons"),
             createToggle("Song Change Animation", "enableFade"),
-            document.fullscreenEnabled && createToggle("Fullscreen", "enableFullscreen"),
+            document.fullscreenEnabled ? createToggle("Fullscreen", "enableFullscreen") : "",
             headerText("Extra Functionality"),
+            ACTIVE !== "tv"
+                ? createOptions(
+                      "Background Choice",
+                      {
+                          c: "Colored Background",
+                          a: "Blurred Album art",
+                      },
+                      CONFIG.def.backgroundChoice,
+                      (value) => saveOption("backgroundChoice", value)
+                  )
+                : "",
             createToggle("Extra Controls", "extraControls"),
             createToggle("Upnext Display", "upnextDisplay"),
             createOptions(
@@ -2450,6 +2463,21 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 (value) => saveOption("volumeDisplay", value)
             ),
             headerText("Advanced/Appearance", "Only change if you know what you are doing!"),
+            ACTIVE !== "tv"
+                ? createOptions(
+                      "Color choice on colored background",
+                      {
+                          VIBRANT: "Vibrant",
+                          PROMINENT: "Prominent",
+                          DESATURATED: "Desaturated (Recommended)",
+                          LIGHT_VIBRANT: "Light Vibrant",
+                          DARK_VIBRANT: "Dark Vibrant",
+                          VIBRANT_NON_ALARMING: "Vibrant Non ALarming",
+                      },
+                      CONFIG.def.coloredBackChoice,
+                      (value) => saveOption("coloredBackChoice", value)
+                  )
+                : "",
             createToggle("Themed Buttons", "themedButtons"),
             createToggle("Themed Icons", "themedIcons"),
             createOptions(
