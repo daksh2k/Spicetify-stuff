@@ -558,10 +558,12 @@ button.dot-after{
 }
 #full-screen-display .fs-button:hover{
     transform: scale(1.2);
+    filter: saturate(1.5) contrast(1.5) !important;
     background: var(--theme-hover-color);
 }
 #full-screen-display .fs-button.button-active{
     background: var(--theme-background-color) !important;
+    filter: saturate(1.5) contrast(1.5) !important;
 }
 
 #fsd-foreground svg{
@@ -1566,6 +1568,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     function animateCanvas(prevImg, nextImg) {
+        const configTransitionTime = CONFIG[ACTIVE].backAnimationTime;
         const { innerWidth: width, innerHeight: height } = window;
         back.width = width;
         back.height = height;
@@ -1593,16 +1596,26 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             return;
         }
 
-        let factor = 0.0;
-        const animate = () => {
-            ctx.globalAlpha = 1;
-            ctx.drawImage(prevImg, x, y, size, size);
-            ctx.globalAlpha = Math.sin((Math.PI / 2) * factor);
-            ctx.drawImage(nextImg, x, y, size, size);
+        let prevTimeStamp,
+            start,
+            done = false;
 
-            if (factor < 1.0) {
-                factor += 0.03 / Math.pow(FSTRANSITION, 4);
-                requestAnimationFrame(animate);
+        const animate = (timestamp) => {
+            if (start === undefined) start = timestamp;
+
+            const elapsed = timestamp - start;
+
+            if (prevTimeStamp !== timestamp) {
+                const factor = Math.min(elapsed / (configTransitionTime * 1000), 1.0);
+                ctx.globalAlpha = 1;
+                ctx.drawImage(prevImg, x, y, size, size);
+                ctx.globalAlpha = Math.sin((Math.PI / 2) * factor);
+                ctx.drawImage(nextImg, x, y, size, size);
+                if (factor === 1.0) done = true;
+            }
+            if (elapsed < configTransitionTime * 1000) {
+                prevTimeStamp = timestamp;
+                !done && requestAnimationFrame(animate);
             }
         };
 
@@ -1915,13 +1928,12 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         volTimer = setTimeout(() => volumeContainer.classList.add("v-hidden"), 3000);
     }
 
-    FSTRANSITION = CONFIG[ACTIVE].backAnimationTime;
     let origLoc, progressListener;
     const heartObserver = new MutationObserver(updateHeart);
 
     function activate() {
         button.classList.add("control-button--active", "control-button--active-dot");
-        container.style.setProperty("--fs-transition", `${FSTRANSITION - 0.05}s`);
+        container.style.setProperty("--fs-transition", `${CONFIG[ACTIVE].backAnimationTime}s`);
         updateInfo();
         Spicetify.Player.addEventListener("songchange", updateInfo);
         container.addEventListener("mousemove", hideCursor);
@@ -2450,10 +2462,9 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 CONFIG[ACTIVE].invertColors,
                 (value) => saveOption("invertColors", value)
             ),
-            createAdjust("Background Animation Time", "backAnimationTime", "s", 0.8, 0.1, 0, 1, (state) => {
+            createAdjust("Background Animation Time", "backAnimationTime", "s", 0.8, 0.1, 0, 5, (state) => {
                 CONFIG[ACTIVE]["backAnimationTime"] = state;
                 saveConfig();
-                FSTRANSITION = CONFIG[ACTIVE]["backAnimationTime"];
                 render();
                 if (document.body.classList.contains("fsd-activated")) activate();
             }),
