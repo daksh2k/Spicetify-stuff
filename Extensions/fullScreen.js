@@ -8,7 +8,7 @@
 
 let INIT_RETRIES = 0;
 function fullScreen() {
-    const extraBar = document.querySelector(".ExtraControls") || document.querySelector(".ClYTTKGdd9KB7D9MXicj");
+    const extraBar = document.querySelector(".main-nowPlayingBar-right")?.childNodes[0] || document.querySelector(".ExtraControls") || document.querySelector(".ClYTTKGdd9KB7D9MXicj");
     const topBar = document.querySelector(".main-topBar-historyButtons");
     const { CosmosAsync, LocalStorage, Keyboard, ContextMenu, Player, Platform } = Spicetify;
 
