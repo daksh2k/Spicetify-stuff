@@ -6,243 +6,6 @@
 
 /// <reference path="../globals.d.ts" />
 
-const translations = {
-    "en-US": {
-        langName: "English",
-        context: {
-            queue: "Playing from queue",
-            track: "Playing track",
-            album: "Playing album",
-            artist: "Playing artist",
-            playlist: "Playing playlist",
-            playlistFolder: "Playing from playlist folder",
-            search: "Playing from search",
-            searchDest: "Songs",
-            collection: "Playing from collection",
-            likedSongs: "Liked songs",
-            trackRadio: "Playing from track radio",
-            artistRadio: "Playing from artist radio",
-            albumRadio: "Playing from album radio",
-            playlistRadio: "Playing from playlist radio",
-        },
-        upnext: "Queue",
-        unknownArtist: "Unknown artist",
-        settings: {
-            switchToTV: "Switch to TV mode",
-            switchToFullscreen: "Switch to default mode",
-            tvModeConfig: "TV mode configuration",
-            fullscreenConfig: "Fullscreen configuration",
-            exit: "Exit",
-
-            pluginSettings: "Plugin settings",
-            fsButtonPosition: {
-                setting: "Fullscreen button (needs reload)",
-                none: "Stock",
-                near: "Both",
-                replace: "Plugin"
-            },
-            language: "Language",
-
-            lyricsHeader: "Lyrics settings",
-            lyrics: "Show lyrics",
-            lyricsAlignment: {
-                setting: "Lyrics alignment",
-                left: "Left",
-                center: "Center",
-                right: "Right"
-            },
-            lyricsAnimationTempo: "Lyrics animation tempo",
-
-            generalHeader: "General settings",
-            progressBar: "Progress bar",
-            playerControls: "Player controls",
-            trimTitle: "Trim title",
-            trimTitleUpNext: "Trim title in Up Next",
-            showAlbum: {
-                setting: "Show album",
-                never: "Never",
-                always: "Always",
-                date: "Show with Release Date"
-            },
-            showAllArtists: "Show all artists",
-            showAllArtistsUpNext: "Show all artists in Up Next",
-            icons: "Icons",
-            songChangeAnimation: "Song change animation",
-            fullscreen: "Fullscreen",
-
-            extraHeader: "Extra functionality",
-            backgroundChoice: {
-                setting: "Background choice",
-                color: "Solid color",
-                artwork: "Artwork"
-            },
-            extraControls: "Extra controls",
-            upnextDisplay: "Up next display",
-            contextDisplay: {
-                setting: "Context display",
-                always: "Always",
-                never: "Never",
-                mouse: "On mouse movement"
-            },
-            volumeDisplay: {
-                setting: "Volume bar display",
-                always: "Always",
-                never: "Never",
-                mouse: "On mouse movement",
-                volume: "On volume change"
-            },
-
-            appearanceHeader: "Appearance",
-            backgroundColor: {
-                setting: "Color choice on colored background",
-                vibrant: "Vibrant",
-                prominent: "Prominent",
-                desaturated: "Desaturated (recommended)",
-                lightVibrant: "Light Vibrant",
-                darkVibrant: "Dark Vibrant",
-                vibrantNonAlarming: "Vibrant non alarming"
-            },
-            themedButtons: "Themed buttons",
-            themedIcons: "Themed icons",
-            invertColors: {
-                setting: "Invert colors",
-                never: "Never",
-                always: "Always",
-                auto: "Automatic (based on BG)",
-            },
-            backAnimationTime: "Background animation time",
-            upnextScroll: {
-                setting: "Up next scroll animation",
-                mq: "Marquee/Scrolling",
-                sp: "Spotify/Translating",
-            },
-            upnextTime: "Up next time to show",
-            backgroundBlur: "Background blur",
-            backgroundBrightness: "Background brightness",
-            
-            cgfReset: "Reset config",
-            reload: "Reload client"
-        }
-    },
-    "it-IT": {
-        langName: "Italiano",
-        context: {
-            queue: "Riproduzione da coda",
-            track: "Riproduzione brano",
-            album: "Riproduzione album",
-            artist: "Riproduzione artista",
-            playlist: "Riproduzione playlist",
-            playlistFolder: "Riproduzione da cartella playlist",
-            search: "Riproduzione da ricerca",
-            searchDest: "Brani",
-            collection: "Riproduzione dalla libreria",
-            likedSongs: "Brani che ti piacciono",
-            trackRadio: "Radio dal brano",
-            artistRadio: "Radio da artista",
-            albumRadio: "Radio da album",
-            playlistRadio: "Radio da playlist",
-        },
-        upnext: "In coda",
-        unknownArtist: "Artista sconosciuto",
-        settings: {
-            switchToTV: "Passa a modalità TV",
-            switchToFullscreen: "Passa a modalità default",
-            tvModeConfig: "Modalità TV",
-            fullscreenConfig: "Modalità fullscreen",
-            exit: "Esci",
-
-            pluginSettings: "Impostazioni plugin",
-            fsButtonPosition: {
-                setting: "Pulsante fullscreen (richiede ricaricamento)",
-                none: "Originale",
-                near: "Affiancati",
-                replace: "Plugin"
-            },         
-            language: "Lingua",
-
-            lyricsHeader: "Impostazioni testo",
-            lyrics: "Mostra testo",
-            lyricsAlignment: {
-                setting: "Allineamento testo",
-                left: "Sinistra",
-                center: "Centro",
-                right: "Destra"
-            },
-            lyricsAnimationTempo: "Durata animazione testo",
-
-            generalHeader: "Impostazioni generali",
-            progressBar: "Barra di avanzamento",
-            playerControls: "Controlli player",
-            trimTitle: "Accorcia titolo",
-            trimTitleUpNext: "Accorcia titolo in Up next",
-            showAlbum: {
-                setting: "Mostra album",
-                never: "Mai",
-                always: "Sempre",
-                date: "Mostra con data di uscita"
-            },
-            showAllArtists: "Mostra tutti gli artisti",
-            showAllArtistsUpNext: "Mostra tutti gli artisti in Up next",
-            icons: "Icone",
-            songChangeAnimation: "Animazione cambio brano",
-            fullscreen: "Fullscreen",
-
-            extraHeader: "Funzionalità aggiuntive",
-            backgroundChoice: {
-                setting: "Scelta sfondo",
-                color: "Tinta unita",
-                artwork: "Artwork"
-            },
-            extraControls: "Controlli aggiuntivi",
-            upnextDisplay: "Mostra Up next",
-            contextDisplay: {
-                setting: "Mostra contesto",
-                always: "Sempre",
-                never: "Mai",
-                mouse: "Al movimento del mouse"
-            },
-            volumeDisplay: {
-                setting: "Mostra barra volume",
-                always: "Sempre",
-                never: "Mai",
-                mouse: "Al movimento del mouse",
-                volume: "Al cambio volume"
-            },
-
-            appearanceHeader: "Aspetto",
-            backgroundColor: {
-                setting: "Colore su sfondo tinta unita",
-                vibrant: "Vibrant",
-                prominent: "Prominent",
-                desaturated: "Desaturato (raccomandato)",
-                lightVibrant: "Vibrant chiaro",
-                darkVibrant: "Vibrant scuro",
-                vibrantNonAlarming: "Vibrant delicato"
-            },
-            themedButtons: "Pulsanti a tema",
-            themedIcons: "Icone a tema",
-            invertColors: {
-                setting: "Inverti colori",
-                never: "Mai",
-                always: "Sempre",
-                auto: "Automatico (basato su sfondo)",
-            },
-            backAnimationTime: "Durata animazione sfondo",
-            upnextScroll: {
-                setting: "Scorrimento Up next",
-                mq: "Scorrimento",
-                sp: "Traslazione",
-            },
-            upnextTime: "Tempo per mostrare Up next",
-            backgroundBlur: "Sfocamento sfondo",
-            backgroundBrightness: "Luminosità sfondo",
-            
-            cgfReset: "Resetta configurazione",
-            reload: "Ricarica client"
-        }
-    }
-}
-
 let INIT_RETRIES = 0;
 function fullScreen() {
     const extraBar = document.querySelector(".main-nowPlayingBar-right")?.childNodes[0] || document.querySelector(".ExtraControls") || document.querySelector(".ClYTTKGdd9KB7D9MXicj");
@@ -315,10 +78,8 @@ function fullScreen() {
             progressBarDisplay: false,
             playerControls: false,
             trimTitle: true,
-            trimTitleUpNext: true,
             showAlbum: "d",
             showAllArtists: true,
-            showAllArtistsUpNext: true,
             icons: true,
             titleMovingIcon: false,
             enableFade: true,
@@ -343,10 +104,8 @@ function fullScreen() {
             progressBarDisplay: true,
             playerControls: true,
             trimTitle: true,
-            trimTitleUpNext: true,
-            showAlbum: "d",
+            showAlbum: "n",
             showAllArtists: true,
-            showAllArtistsUpNext: true,
             icons: false,
             titleMovingIcon: false,
             enableFade: true,
@@ -367,8 +126,6 @@ function fullScreen() {
             backgroundBrightness: 0.7,
         },
         tvMode: false,
-        locale: "en-US",
-        fsButtonPosition: "none",
     };
     const CONFIG = getConfig();
     if (localStorage.getItem("full-screen:inverted") === null) {
@@ -376,8 +133,6 @@ function fullScreen() {
     }
     const INVERTED = JSON.parse(localStorage.getItem("full-screen:inverted"));
     let ACTIVE = CONFIG.tvMode ? "tv" : "def";
-    let LOCALE = CONFIG.locale;
-    console.log(LOCALE);
 
     const OFFLINESVG = `data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCI+CiAgPHJlY3Qgc3R5bGU9ImZpbGw6I2ZmZmZmZiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiB4PSIwIiB5PSIwIiAvPgogIDxwYXRoIGZpbGw9IiNCM0IzQjMiIGQ9Ik0yNi4yNSAxNi4xNjJMMjEuMDA1IDEzLjEzNEwyMS4wMTIgMjIuNTA2QzIwLjU5NCAyMi4xOTIgMjAuMDgxIDIxLjk5OSAxOS41MTkgMjEuOTk5QzE4LjE0MSAyMS45OTkgMTcuMDE5IDIzLjEyMSAxNy4wMTkgMjQuNDk5QzE3LjAxOSAyNS44NzggMTguMTQxIDI2Ljk5OSAxOS41MTkgMjYuOTk5QzIwLjg5NyAyNi45OTkgMjIuMDE5IDI1Ljg3OCAyMi4wMTkgMjQuNDk5QzIyLjAxOSAyNC40MjIgMjIuMDA2IDE0Ljg2NyAyMi4wMDYgMTQuODY3TDI1Ljc1IDE3LjAyOUwyNi4yNSAxNi4xNjJaTTE5LjUxOSAyNS45OThDMTguNjkyIDI1Ljk5OCAxOC4wMTkgMjUuMzI1IDE4LjAxOSAyNC40OThDMTguMDE5IDIzLjY3MSAxOC42OTIgMjIuOTk4IDE5LjUxOSAyMi45OThDMjAuMzQ2IDIyLjk5OCAyMS4wMTkgMjMuNjcxIDIxLjAxOSAyNC40OThDMjEuMDE5IDI1LjMyNSAyMC4zNDYgMjUuOTk4IDE5LjUxOSAyNS45OThaIi8+Cjwvc3ZnPgo=`;
 
@@ -1137,14 +892,16 @@ body.fsd-activated #full-screen-display {
         style.innerHTML = styleBase + styleChoices[CONFIG.tvMode ? 1 : 0] + iconStyleChoices[CONFIG[ACTIVE].icons ? 1 : 0];
 
         container.innerHTML = `
-${CONFIG.tvMode
-                ? `<div id="fsd-background">
+${
+    CONFIG.tvMode
+        ? `<div id="fsd-background">
   <div id="fsd-background-image"></div>
 </div>`
-                : `<canvas id="fsd-background"></canvas>`
-            }
-  ${CONFIG[ACTIVE].contextDisplay !== "n"
-                ? `
+        : `<canvas id="fsd-background"></canvas>`
+}
+  ${
+      CONFIG[ACTIVE].contextDisplay !== "n"
+          ? `
    <div id="fsd-ctx-container">
       <div id="fsd-ctx-icon"></div>
       <div id="fsd-ctx-details">
@@ -1152,10 +909,11 @@ ${CONFIG.tvMode
         <div id="fsd-ctx-name"></div>
       </div>
     </div>`
-                : ""
-            }
- ${CONFIG[ACTIVE].upnextDisplay
-                ? `
+          : ""
+  }
+ ${
+     CONFIG[ACTIVE].upnextDisplay
+         ? `
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">
         <div id="fsd_next_art_image"></div>
@@ -1169,17 +927,18 @@ ${CONFIG.tvMode
         </div></div>
       </div>
     </div>`
-                : ""
-            }
-${CONFIG[ACTIVE].volumeDisplay !== "n"
-                ? `
+         : ""
+ }
+${
+    CONFIG[ACTIVE].volumeDisplay !== "n"
+        ? `
 <div id="fsd-volume-container">
      <span id="fsd-volume"></span>
      <div id="fsd-volume-bar"><div id="fsd-volume-bar-inner"></div></div>
      <button class="fs-button" id="fsd-volume-icon"></button>
 </div>`
-                : ""
-            }
+        : ""
+}
 ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
     <div id="fsd-art">
@@ -1197,17 +956,20 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 <svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.artist}</svg>
                 <span></span>
             </div>
-            ${CONFIG[ACTIVE].showAlbum !== "n"
-                ? `<div id="fsd-album">
+            ${
+                CONFIG[ACTIVE].showAlbum !== "n"
+                    ? `<div id="fsd-album">
                 ${CONFIG[ACTIVE].icons ? `<svg height="30" width="30" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.album}</svg>` : ""}
                  <span></span>
             </div>`
-                : ""
+                    : ""
             } 
-            <div id="fsd-status" class="${CONFIG[ACTIVE].playerControls || CONFIG[ACTIVE].extraControls || CONFIG[ACTIVE].progressBarDisplay ? "active" : ""
+            <div id="fsd-status" class="${
+                CONFIG[ACTIVE].playerControls || CONFIG[ACTIVE].extraControls || CONFIG[ACTIVE].progressBarDisplay ? "active" : ""
             }">
-                ${CONFIG[ACTIVE].extraControls
-                ? `<div class="fsd-controls-left fsd-controls extra-controls">
+                ${
+                    CONFIG[ACTIVE].extraControls
+                        ? `<div class="fsd-controls-left fsd-controls extra-controls">
                        <button class="fs-button" id="fsd-heart">
                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>
                        </button>
@@ -1215,10 +977,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["shuffle"]}</svg>
                        </button>
                     </div>`
-                : ""
-            }
-                    ${CONFIG[ACTIVE].playerControls
-                ? `
+                        : ""
+                }
+                    ${
+                        CONFIG[ACTIVE].playerControls
+                            ? `
                     <div class="fsd-controls-center fsd-controls">
                         <button class="fs-button" id="fsd-back">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-back"]}</svg>
@@ -1230,72 +993,83 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["skip-forward"]}</svg>
                         </button>
                     </div>`
-                : ""
-            }
-                ${CONFIG[ACTIVE].extraControls
-                ? `<div class="fsd-controls-right fsd-controls extra-controls">
-                        ${CONFIG[ACTIVE].invertColors === "d"
-                    ? `<button class="fs-button" id="fsd-invert">
+                            : ""
+                    }
+                ${
+                    CONFIG[ACTIVE].extraControls
+                        ? `<div class="fsd-controls-right fsd-controls extra-controls">
+                        ${
+                            CONFIG[ACTIVE].invertColors === "d"
+                                ? `<button class="fs-button" id="fsd-invert">
                             <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>
                         </button>`
-                    : ""
-                }
+                                : ""
+                        }
                        <button class="fs-button" id="fsd-repeat">
                             <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>
                        </button>
-                       ${CONFIG[ACTIVE].lyricsDisplay
-                    ? `<button id="fsd-lyrics" class="fs-button ${container.classList.contains("lyrics-hide-force") ? "" : "button-active"
-                    }">
-                          ${container.classList.contains("lyrics-hide-force")
-                        ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                       ${
+                           CONFIG[ACTIVE].lyricsDisplay
+                               ? `<button id="fsd-lyrics" class="fs-button ${
+                                     container.classList.contains("lyrics-hide-force") ? "" : "button-active"
+                                 }">
+                          ${
+                              container.classList.contains("lyrics-hide-force")
+                                  ? `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
                                  <path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-2.5a2 2 0 0 0-1.6.8L8 14.333 6.1 11.8a2 2 0 0 0-1.6-.8H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
                                  <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
                               </svg>`
-                        : `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                  : `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                               <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/>
                           </svg>`
-                    }
+                          }
                        </button>`
-                    : ""
+                               : ""
+                       }
+                    </div>`
+                        : ""
                 }
-                    </div>`
-                : ""
-            }
-                ${CONFIG.tvMode && !(CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls)
-                ? `${CONFIG[ACTIVE].progressBarDisplay
-                    ? `<div id="fsd-progress-container">
+                ${
+                    CONFIG.tvMode && !(CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls)
+                        ? `${
+                              CONFIG[ACTIVE].progressBarDisplay
+                                  ? `<div id="fsd-progress-container">
                         <span id="fsd-elapsed"></span>
                         <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
                         <span id="fsd-duration"></span>
                     </div>`
-                    : ""
-                }`
-                : ""
-            }
+                                  : ""
+                          }`
+                        : ""
+                }
             </div>
-            ${CONFIG.tvMode && CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls
-                ? `${CONFIG[ACTIVE].progressBarDisplay
-                    ? `<div id="fsd-progress-container">
+            ${
+                CONFIG.tvMode && CONFIG[ACTIVE].playerControls && CONFIG[ACTIVE].extraControls
+                    ? `${
+                          CONFIG[ACTIVE].progressBarDisplay
+                              ? `<div id="fsd-progress-container">
                         <span id="fsd-elapsed"></span>
                         <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
                         <span id="fsd-duration"></span>
                     </div>`
+                              : ""
+                      }`
                     : ""
-                }`
-                : ""
             }
     </div>
-    ${CONFIG.tvMode
-                ? ""
-                : `${CONFIG[ACTIVE].progressBarDisplay
-                    ? `<div id="fsd-progress-container">
+    ${
+        CONFIG.tvMode
+            ? ""
+            : `${
+                  CONFIG[ACTIVE].progressBarDisplay
+                      ? `<div id="fsd-progress-container">
             <span id="fsd-elapsed"></span>
             <div id="fsd-progress"><div id="fsd-progress-inner"></div></div>
             <span id="fsd-duration"></span>
         </div>`
-                    : ""
-                }`
-            }
+                      : ""
+              }`
+    }
 </div>`;
         if (CONFIG.tvMode) back = container.querySelector("#fsd-background-image");
         else {
@@ -1634,10 +1408,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                         const recentDate = new Date();
                         recentDate.setMonth(recentDate.getMonth() - 18);
                         const dateStr = albumDate.toLocaleString(
-                            LOCALE,
+                            "default",
                             albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" }
                         );
-                        albumText += " • " + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+                        albumText += " • " + dateStr;
                         if (album) album.innerText = albumText || "";
                     })
                     .catch((err) => console.error(err));
@@ -1719,8 +1493,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     const thresholdValue = 260 - CONFIG[ACTIVE].backgroundBrightness * 100;
                     const isLightBG =
                         imageProminentColor.split(",")[0] * 0.299 +
-                        imageProminentColor.split(",")[1] * 0.587 +
-                        imageProminentColor.split(",")[2] * 0.114 >
+                            imageProminentColor.split(",")[1] * 0.587 +
+                            imageProminentColor.split(",")[2] * 0.114 >
                         thresholdValue;
                     mainColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "0,0,0" : "255,255,255";
                     contrastColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "255,255,255" : "0,0,0";
@@ -1872,7 +1646,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             ctxName;
         if (Spicetify.Player.data.track.provider === "queue") {
             ctxIcon = `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`;
-            ctxSource = translations[LOCALE].context.queue;
+            ctxSource = "queue";
             ctxName = "";
         } else {
             const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri);
@@ -1882,22 +1656,22 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             switch (uriObj.type) {
                 case Spicetify.URI.Type.TRACK:
                     ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`;
-                    ctxSource = translations[LOCALE].context.track;
+                    ctxSource = uriObj.type;
                     await getTrackInfo(uriObj._base62Id).then((meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`));
                     break;
                 case Spicetify.URI.Type.SEARCH:
                     ctxIcon = Spicetify.SVGIcons["search-active"];
-                    ctxSource = translations[LOCALE].context.search;
-                    ctxName = `"${uriObj.query}" in ${translations[LOCALE].context.searchDest}`;
+                    ctxSource = uriObj.type;
+                    ctxName = `"${uriObj.query}" in Songs`;
                     break;
                 case Spicetify.URI.Type.COLLECTION:
                     ctxIcon = Spicetify.SVGIcons["heart-active"];
-                    ctxSource = translations[LOCALE].context.collection;
-                    ctxName = translations[LOCALE].context.likedSongs;
+                    ctxSource = uriObj.type;
+                    ctxName = "Liked Songs";
                     break;
                 case Spicetify.URI.Type.PLAYLIST_V2:
                     ctxIcon = Spicetify.SVGIcons["playlist"];
-                    ctxSource = translations[LOCALE].context.playlist;
+                    ctxSource = "playlist";
                     ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
                     break;
 
@@ -1905,50 +1679,28 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 case Spicetify.URI.Type.RADIO:
                     ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M19.359 18.57C21.033 16.818 22 14.461 22 11.89s-.967-4.93-2.641-6.68c-.276-.292-.653-.26-.868-.023-.222.246-.176.591.085.868 1.466 1.535 2.272 3.593 2.272 5.835 0 2.241-.806 4.3-2.272 5.835-.261.268-.307.621-.085.86.215.245.592.276.868-.016zm-13.85.014c.222-.238.176-.59-.085-.86-1.474-1.535-2.272-3.593-2.272-5.834 0-2.242.798-4.3 2.272-5.835.261-.277.307-.622.085-.868-.215-.238-.592-.269-.868.023C2.967 6.96 2 9.318 2 11.89s.967 4.929 2.641 6.68c.276.29.653.26.868.014zm1.957-1.873c.223-.253.162-.583-.1-.867-.951-1.068-1.473-2.45-1.473-3.954 0-1.505.522-2.887 1.474-3.954.26-.284.322-.614.1-.876-.23-.26-.622-.26-.891.039-1.175 1.274-1.827 2.963-1.827 4.79 0 1.82.652 3.517 1.827 4.784.269.3.66.307.89.038zm9.958-.038c1.175-1.267 1.827-2.964 1.827-4.783 0-1.828-.652-3.517-1.827-4.791-.269-.3-.66-.3-.89-.039-.23.262-.162.592.092.876.96 1.067 1.481 2.449 1.481 3.954 0 1.504-.522 2.886-1.481 3.954-.254.284-.323.614-.092.867.23.269.621.261.89-.038zm-8.061-1.966c.23-.26.13-.568-.092-.883-.415-.522-.63-1.197-.63-1.934 0-.737.215-1.413.63-1.943.222-.307.322-.614.092-.875s-.653-.261-.906.054a4.385 4.385 0 00-.968 2.764 4.38 4.38 0 00.968 2.756c.253.322.675.322.906.061zm6.18-.061a4.38 4.38 0 00.968-2.756 4.385 4.385 0 00-.968-2.764c-.253-.315-.675-.315-.906-.054-.23.261-.138.568.092.875.415.53.63 1.206.63 1.943 0 .737-.215 1.412-.63 1.934-.23.315-.322.622-.092.883s.653.261.906-.061zm-3.547-.967c.96 0 1.789-.814 1.789-1.797s-.83-1.789-1.789-1.789c-.96 0-1.781.806-1.781 1.789 0 .983.821 1.797 1.781 1.797z" fill-rule="nonzero"></path></svg>`;
                     const rType = uriObj.args[0];
-                    switch (rType) {
-                        case "album":
-                            ctxSource = translations[LOCALE].context.albumRadio;
-                            await getAlbumInfo(uriObj.args[1]).then((meta) => (ctxName = meta.name));
-                            break;
-                        case "track":
-                            ctxSource = translations[LOCALE].context.trackRadio;
-                            await getTrackInfo(uriObj.args[1]).then((meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`));
-                            break;
-                        case "artist":
-                            ctxSource = translations[LOCALE].context.artistRadio;
-                            await getArtistInfo(uriObj.args[1]).then((meta) => (ctxName = meta?.profile?.name));
-                            break;
-                        case "playlist":
-                        case "playlist-v2":
-                            ctxSource = translations[LOCALE].context.playlistRadio;
-                            ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
-                            await getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then((meta) => (ctxName = meta.playlist.name));
-                            break;
-                        default:
-                            ctxName = "";
-                    }
+                    ctxSource = `${rType} radio`;
+                    if (rType === "album") await getAlbumInfo(uriObj.args[1]).then((meta) => (ctxName = meta.name));
+                    else if (rType === "track")
+                        await getTrackInfo(uriObj.args[1]).then((meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`));
+                    else if (rType === "artist") await getArtistInfo(uriObj.args[1]).then((meta) => (ctxName = meta?.profile?.name));
+                    else if (rType === "playlist" || rType === "playlist-v2") {
+                        ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
+                        await getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then((meta) => (ctxName = meta.playlist.name));
+                    } else ctxName = "";
                     break;
 
                 case Spicetify.URI.Type.PLAYLIST:
-                    ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                    ctxSource = translations[LOCALE].context.playlist;
-                    ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                    break;
                 case Spicetify.URI.Type.ALBUM:
-                    ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                    ctxSource = translations[LOCALE].context.album;
-                    ctxName = Spicetify.Player.data.context_metadata.context_description || "";
-                    break;
-
                 case Spicetify.URI.Type.ARTIST:
                     ctxIcon = Spicetify.SVGIcons[uriObj.type];
-                    ctxSource = translations[LOCALE].context.artist;
+                    ctxSource = uriObj.type;
                     ctxName = Spicetify.Player.data.context_metadata.context_description || "";
                     break;
 
                 case Spicetify.URI.Type.FOLDER:
                     ctxIcon = Spicetify.SVGIcons["playlist-folder"];
-                    ctxSource = translations[LOCALE].context.playlistFolder;
+                    ctxSource = "playlist folder";
                     const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/rootlist`, {
                         policy: { folder: { rows: true, link: true, name: true } },
                     });
@@ -1980,17 +1732,17 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
         //Only change the DOM if context is changed
         if (
-            ctx_source.innerText.toLowerCase() !== `${ctxSource}`.toLowerCase() ||
+            ctx_source.innerText.toLowerCase() !== `playing from ${ctxSource}`.toLowerCase() ||
             ctx_name.innerText.toLowerCase() !== ctxName.toLowerCase()
         ) {
-            ctx_source.innerText = `${ctxSource}`;
+            ctx_source.innerText = `playing from ${ctxSource}`;
             ctx_name.innerText = ctxName;
             if (CONFIG[ACTIVE].contextDisplay === "m") hideContext();
         }
     }
 
     function updateUpNextInfo() {
-        fsd_up_next_text.innerText = translations[LOCALE].upnext.toUpperCase();
+        fsd_up_next_text.innerText = "UP NEXT";
         let metadata = {};
         const queue_metadata = Spicetify.Queue.nextTracks[0];
         if (queue_metadata) {
@@ -1999,32 +1751,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             metadata["artist_name"] = "";
             metadata["title"] = "";
         }
-
-        let rawTitle = metadata.title;
-        if (CONFIG[ACTIVE].trimTitleUpNext) {
-            rawTitle = rawTitle
-                .replace(/\(.+?\)/g, "")
-                .replace(/\[.+?\]/g, "")
-                .replace(/\s\-\s.+?$/, "")
-                .trim();
-            if (!rawTitle) rawTitle = metadata.title;
-        }
-        let artistNameNext;
-        if (CONFIG[ACTIVE].showAllArtistsUpNext) {
-             artistNameNext = Object.keys(metadata)
-                .filter((key) => key.startsWith("artist_name"))
-                .sort()
-                .map((key) => metadata[key])
-                .join(", ");
-        } else {
-             artistNameNext = metadata.artist_name;
-        }
-
+        const artistNameNext = Object.keys(metadata)
+            .filter((key) => key.startsWith("artist_name"))
+            .sort()
+            .map((key) => metadata[key])
+            .join(", ");
         let next_artist;
         if (artistNameNext) {
             next_artist = artistNameNext;
         } else {
-            next_artist = "Artista sconosciuto";
+            next_artist = "Artist (Unavailable)";
         }
         const next_image = metadata.image_xlarge_url;
         if (next_image) {
@@ -2035,8 +1771,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 fsd_nextCover.style.backgroundImage = `url("${OFFLINESVG}")`;
             }
         }
-        fsd_first_span.innerText = rawTitle + "  •  " + next_artist;
-        fsd_second_span.innerText = rawTitle + "  •  " + next_artist;
+        fsd_first_span.innerText = metadata.title + "  •  " + next_artist;
+        fsd_second_span.innerText = metadata.title + "  •  " + next_artist;
     }
 
     async function updateUpNext() {
@@ -2376,15 +2112,6 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         }
     }
 
-    function getAvailableLanguages(translations) { 
-        let languages = {};
-        for (const lang in translations) {
-            languages[lang] = translations[lang].langName;
-        }
-        console.log(languages);
-        return languages;
-    }
-
     function getConfig() {
         try {
             const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config"));
@@ -2423,16 +2150,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if (document.body.classList.contains("fsd-activated")) activate();
     }
 
-    // Saves an option independent from TV or Fullscreen mode
-    function saveGlobalOption(key, value) {
-        CONFIG[key] = value;
-        LOCALE = CONFIG.locale;  // Update locale (avoids reloading client to apply setting)
-        saveConfig();
-        render();
-        if (document.body.classList.contains("fsd-activated")) activate();
-    }
-
-    function createAdjust(name, key, unit = "", defaultValue, step, min, max, onChange = () => { }) {
+    function createAdjust(name, key, unit = "", defaultValue, step, min, max, onChange = () => {}) {
         let value = key in CONFIG[ACTIVE] ? CONFIG[ACTIVE][key] : defaultValue;
 
         function adjustValue(dir) {
@@ -2476,11 +2194,11 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             <div class="col action">
               <select>
                ${Object.keys(options)
-                .map(
-                    (item) => `
+                   .map(
+                       (item) => `
                   <option value="${item}" dir="auto">${options[item]}</option>`
-                )
-                .join("\n")}
+                   )
+                   .join("\n")}
              </select>
             </div>
           </div>`;
@@ -2492,7 +2210,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         return container;
     }
 
-    function createToggle(name, key, callback = () => { }) {
+    function createToggle(name, key, callback = () => {}) {
         const container = document.createElement("div");
         container.innerHTML = `
           <div class="setting-row">
@@ -2669,9 +2387,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 const container = document.createElement("div");
                 container.innerHTML = `
                 <div class="setting-row-but">
-                  <button class="main-buttons-button main-button-primary" id="mode-switch">${CONFIG.tvMode ? translations[LOCALE].settings.switchToFullscreen : translations[LOCALE].settings.switchToTV
-                    }</button>
-                  <button class="main-buttons-button main-button-primary" id="mode-exit">${translations[LOCALE].settings.exit}</button>
+                  <button class="main-buttons-button main-button-primary" id="mode-switch">${
+                      CONFIG.tvMode ? "Switch to Default Mode" : "Switch to TV Mode"
+                  }</button>
+                  <button class="main-buttons-button main-button-primary" id="mode-exit">Exit</button>
                 </div>`;
                 container.querySelector("#mode-exit").onclick = deactivate;
                 container.querySelector("#mode-switch").onclick = () => {
@@ -2680,26 +2399,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 };
                 return document.body.classList.contains("fsd-activated") ? container : "";
             })(),
-            headerText(translations[LOCALE].settings.pluginSettings),
-
-            createOptions(
-                translations[LOCALE].settings.fsButtonPosition.setting,
-                {
-                    none: translations[LOCALE].settings.fsButtonPosition.none,
-                    near: translations[LOCALE].settings.fsButtonPosition.near,
-                    replace: translations[LOCALE].settings.fsButtonPosition.replace
-                },
-                CONFIG["fsButtonPosition"],
-                (value) => saveGlobalOption("fsButtonPosition", value)
-            ),
-            createOptions(
-                translations[LOCALE].settings.language,
-                getAvailableLanguages(translations),
-                CONFIG["locale"],
-                (value) => saveGlobalOption("locale", value)
-            ),
-            headerText(translations[LOCALE].settings.lyricsHeader),
-            createToggle(translations[LOCALE].settings.lyrics, "lyricsDisplay", (row, status) => {
+            headerText("Lyrics Settings"),
+            createToggle("Lyrics", "lyricsDisplay", (row, status) => {
                 container.classList.remove("lyrics-unavailable");
                 let nextEle = row.nextElementSibling;
                 while (!nextEle.classList.contains("subhead")) {
@@ -2708,120 +2409,118 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 }
             }),
             createOptions(
-                translations[LOCALE].settings.lyricsAlignment.setting,
+                "Lyrics Alignment",
                 {
-                    left: translations[LOCALE].settings.lyricsAlignment.left,
-                    center: translations[LOCALE].settings.lyricsAlignment.center,
-                    right: translations[LOCALE].settings.lyricsAlignment.right,
+                    left: "Left",
+                    center: "Center",
+                    right: "Right",
                 },
                 CONFIG[ACTIVE].lyricsAlignment,
                 (value) => saveOption("lyricsAlignment", value)
             ),
-            createAdjust(translations[LOCALE].settings.lyricsAnimationTempo, "animationTempo", "s", 0.3, 0.1, 0, 1, (state) => {
+            createAdjust("Lyrics Animation Tempo", "animationTempo", "s", 0.3, 0.1, 0, 1, (state) => {
                 CONFIG[ACTIVE]["animationTempo"] = state;
                 saveConfig();
                 render();
                 if (document.body.classList.contains("fsd-activated")) activate();
             }),
-            headerText(translations[LOCALE].settings.generalHeader),
-            createToggle(translations[LOCALE].settings.progressBar, "progressBarDisplay"),
-            createToggle(translations[LOCALE].settings.playerControls, "playerControls"),
-            createToggle(translations[LOCALE].settings.trimTitle, "trimTitle"),
-            createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
+            headerText("General"),
+            createToggle("Progress Bar", "progressBarDisplay"),
+            createToggle("Player Controls", "playerControls"),
+            createToggle("Trim Title", "trimTitle"),
             createOptions(
-                translations[LOCALE].settings.showAlbum.setting,
+                "Show Album",
                 {
-                    n: translations[LOCALE].settings.showAlbum.never,
-                    a: translations[LOCALE].settings.showAlbum.always,
-                    d: translations[LOCALE].settings.showAlbum.date,
+                    n: "Never",
+                    a: "Show",
+                    d: "Show with Release Date",
                 },
                 CONFIG[ACTIVE].showAlbum,
                 (value) => saveOption("showAlbum", value)
             ),
-            createToggle(translations[LOCALE].settings.showAllArtists, "showAllArtists"),
-            createToggle(translations[LOCALE].settings.showAllArtistsUpNext, "showAllArtistsUpNext"),
-            createToggle(translations[LOCALE].settings.icons, "icons"),
-            createToggle(translations[LOCALE].settings.songChangeAnimation, "enableFade"),
-            document.fullscreenEnabled ? createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen") : "",
-            headerText(translations[LOCALE].settings.extraHeader),
+            createToggle("Show All Artists", "showAllArtists"),
+            createToggle("Icons", "icons"),
+            createToggle("Song Change Animation", "enableFade"),
+            document.fullscreenEnabled ? createToggle("Fullscreen", "enableFullscreen") : "",
+            headerText("Extra Functionality"),
             ACTIVE !== "tv"
                 ? createOptions(
-                    translations[LOCALE].settings.backgroundChoice.setting,
-                    {
-                        c: translations[LOCALE].settings.backgroundChoice.color,
-                        a: translations[LOCALE].settings.backgroundChoice.artwork,
-                    },
-                    CONFIG.def.backgroundChoice,
-                    (value) => saveOption("backgroundChoice", value)
-                )
+                      "Background Choice",
+                      {
+                          c: "Colored Background",
+                          a: "Blurred Album art",
+                      },
+                      CONFIG.def.backgroundChoice,
+                      (value) => saveOption("backgroundChoice", value)
+                  )
                 : "",
-            createToggle(translations[LOCALE].settings.extraControls, "extraControls"),
-            createToggle(translations[LOCALE].settings.upnextDisplay, "upnextDisplay"),
+            createToggle("Extra Controls", "extraControls"),
+            createToggle("Upnext Display", "upnextDisplay"),
             createOptions(
-                translations[LOCALE].settings.contextDisplay.setting,
+                "Context Display",
                 {
-                    n: translations[LOCALE].settings.contextDisplay.never,
-                    m: translations[LOCALE].settings.contextDisplay.mouse,
-                    a: translations[LOCALE].settings.contextDisplay.always,
+                    n: "Never",
+                    m: "On Mousemove",
+                    a: "Always",
                 },
                 CONFIG[ACTIVE].contextDisplay,
                 (value) => saveOption("contextDisplay", value)
             ),
             createOptions(
-                translations[LOCALE].settings.volumeDisplay.setting,
+                "Volume Bar Display",
                 {
-                    a: translations[LOCALE].settings.volumeDisplay.always,
-                    n: translations[LOCALE].settings.volumeDisplay.never,
-                    m: translations[LOCALE].settings.volumeDisplay.mouse,
-                    o: translations[LOCALE].settings.volumeDisplay.volume,
+                    a: "Always",
+                    n: "Never",
+                    m: "On Mousemove",
+                    o: "On Volumechange",
                 },
                 CONFIG[ACTIVE].volumeDisplay,
                 (value) => saveOption("volumeDisplay", value)
             ),
-            headerText(translations[LOCALE].settings.appearanceHeader),
+            headerText("Advanced/Appearance", "Only change if you know what you are doing!"),
             ACTIVE !== "tv"
                 ? createOptions(
-                    translations[LOCALE].settings.backgroundColor.setting,
-                    {
-                        VIBRANT: translations[LOCALE].settings.backgroundColor.vibrant,
-                        PROMINENT: translations[LOCALE].settings.backgroundColor.prominent,
-                        DESATURATED: translations[LOCALE].settings.backgroundColor.desaturated,
-                        LIGHT_VIBRANT: translations[LOCALE].settings.backgroundColor.lightVibrant,
-                        DARK_VIBRANT: translations[LOCALE].settings.backgroundColor.darkVibrant,
-                        VIBRANT_NON_ALARMING: translations[LOCALE].settings.backgroundColor.vibrantNonAlarming,
-                    },
-                    CONFIG.def.coloredBackChoice,
-                    (value) => saveOption("coloredBackChoice", value)
-                )
+                      "Color choice on colored background",
+                      {
+                          VIBRANT: "Vibrant",
+                          PROMINENT: "Prominent",
+                          DESATURATED: "Desaturated (Recommended)",
+                          LIGHT_VIBRANT: "Light Vibrant",
+                          DARK_VIBRANT: "Dark Vibrant",
+                          VIBRANT_NON_ALARMING: "Vibrant Non ALarming",
+                      },
+                      CONFIG.def.coloredBackChoice,
+                      (value) => saveOption("coloredBackChoice", value)
+                  )
                 : "",
-            createToggle(translations[LOCALE].settings.themedButtons, "themedButtons"),
-            createToggle(translations[LOCALE].settings.themedIcons, "themedIcons"),
+            createToggle("Themed Buttons", "themedButtons"),
+            createToggle("Themed Icons", "themedIcons"),
             createOptions(
-                translations[LOCALE].settings.invertColors.setting,
+                "Invert Colors",
                 {
-                    n: translations[LOCALE].settings.invertColors.never,
-                    a: translations[LOCALE].settings.invertColors.always,
-                    d: translations[LOCALE].settings.invertColors.auto,
+                    n: "Never",
+                    a: "Always",
+                    d: "Automatic(Based on BG)",
                 },
                 CONFIG[ACTIVE].invertColors,
                 (value) => saveOption("invertColors", value)
             ),
-            createAdjust(translations[LOCALE].settings.backAnimationTime, "backAnimationTime", "s", 0.8, 0.1, 0, 5, (state) => {
+            createAdjust("Background Animation Time", "backAnimationTime", "s", 0.8, 0.1, 0, 5, (state) => {
                 CONFIG[ACTIVE]["backAnimationTime"] = state;
                 saveConfig();
                 render();
                 if (document.body.classList.contains("fsd-activated")) activate();
             }),
             createOptions(
-                translations[LOCALE].settings.upnextScroll.setting,
+                "Upnext Scroll Animation",
                 {
-                    mq: translations[LOCALE].settings.upnextScroll.mq,
-                    sp: translations[LOCALE].settings.upnextScroll.sp
+                    mq: "Marquee/Scrolling",
+                    sp: "Spotify/Translating",
                 },
                 CONFIG[ACTIVE].upNextAnim,
                 (value) => saveOption("upNextAnim", value)
             ),
-            createAdjust(translations[LOCALE].settings.upnextTime, "upnextTimeToShow", "s", 30, 1, 5, 60, (state) => {
+            createAdjust("Upnext Time to Show", "upnextTimeToShow", "s", 30, 1, 5, 60, (state) => {
                 CONFIG[ACTIVE]["upnextTimeToShow"] = state;
                 saveConfig();
                 updateUpNextShow();
@@ -2829,14 +2528,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 // if (document.body.classList.contains('fsd-activated'))
                 // activate()
             }),
-            createAdjust(translations[LOCALE].settings.backgroundBlur, "blurSize", "px", 20, 4, 0, 100, (state) => {
+            createAdjust("Background Blur", "blurSize", "px", 20, 4, 0, 100, (state) => {
                 CONFIG[ACTIVE]["blurSize"] = state;
                 saveConfig();
                 render();
                 if (document.body.classList.contains("fsd-activated")) activate();
             }),
             createOptions(
-                translations[LOCALE].settings.backgroundBrightness,
+                "Background Brightness",
                 {
                     0: "0%",
                     0.1: "10%",
@@ -2848,7 +2547,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     0.7: "70%",
                     0.8: "80%",
                     0.9: "90%",
-                    1: "100%",
+                    1: "Full",
                 },
                 CONFIG[ACTIVE].backgroundBrightness,
                 (value) => saveOption("backgroundBrightness", Number(value))
@@ -2857,8 +2556,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 const container = document.createElement("div");
                 container.innerHTML = `
                 <div class="setting-row-but">
-                  <button class="main-buttons-button main-button-secondary" id="reset-switch">${translations[LOCALE].settings.cgfReset}</button>
-                  <button class="main-buttons-button main-button-secondary" id="reload-switch">${translations[LOCALE].settings.reload}</button>
+                  <button class="main-buttons-button main-button-secondary" id="reset-switch">Reset Config</button>
+                  <button class="main-buttons-button main-button-secondary" id="reload-switch">Reload Client</button>
                 </div>`;
                 container.querySelector("#reset-switch").onclick = () => {
                     CONFIG[ACTIVE] = DEFAULTS[ACTIVE];
@@ -2877,46 +2576,35 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             })()
         );
         Spicetify.PopupModal.display({
-            title: ACTIVE === "tv" ? translations[LOCALE].settings.tvModeConfig : translations[LOCALE].settings.fullscreenConfig,
+            title: ACTIVE === "tv" ? "TV Mode Config" : "Full Screen Config",
             content: configContainer,
         });
     }
 
-    // container.ondblclick = deactivatemenu
+    // container.ondblclick = deactivate
 
     // Add Full Screen Button on bottom bar
     const button = document.createElement("button");
     button.classList.add("button", "fsd-button", "control-button", "InvalidDropTarget");
+    button.innerHTML = `<svg role="img" height="20" width="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10.5 3L16.5428 3.00182L16.6281 3.01661L16.691 3.03779L16.767 3.07719L16.8221 3.11759L16.8824 3.17788L16.9112 3.21534L16.9533 3.2886L16.9834 3.37186L16.9979 3.45421L17 3.5V9.5C17 9.77614 16.7761 10 16.5 10C16.2545 10 16.0504 9.82312 16.0081 9.58988L16 9.5V4.706L4.706 16H9.5C9.74546 16 9.94961 16.1769 9.99194 16.4101L10 16.5C10 16.7455 9.82312 16.9496 9.58988 16.9919L9.5 17L3.47964 16.9996L3.4112 16.9921L3.30896 16.9622L3.23299 16.9228L3.17786 16.8824L3.11758 16.8221L3.08884 16.7847L3.04674 16.7114L3.01661 16.6281L3.01109 16.605C3.00383 16.5713 3 16.5361 3 16.5L3.00546 16.5739L3.00182 16.5428L3 10.5C3 10.2239 3.22386 10 3.5 10C3.74546 10 3.94961 10.1769 3.99194 10.4101L4 10.5V15.292L15.292 4H10.5C10.2545 4 10.0504 3.82312 10.0081 3.58988L10 3.5C10 3.22386 10.2239 3 10.5 3Z"></path><path class="" d="M16 3C16.5523 3 17 3.44772 17 4V9.25C17 9.66421 16.6642 10 16.25 10C15.8358 10 15.5 9.66421 15.5 9.25V5.559L5.559 15.5H9.25C9.66421 15.5 10 15.8358 10 16.25C10 16.6642 9.66421 17 9.25 17H4C3.44772 17 3 16.5523 3 16V10.75C3 10.3358 3.33579 10 3.75 10C4.16421 10 4.5 10.3358 4.5 10.75V14.439L14.439 4.5H10.75C10.3358 4.5 10 4.16421 10 3.75C10 3.33579 10.3358 3 10.75 3H16Z"></path></svg>`;
     button.id = "fs-button";
-    button.setAttribute("title", "Schermo intero");
+    button.setAttribute("title", "Full Screen");
 
     button.onclick = openwithDef;
 
+    extraBar.append(button);
     button.oncontextmenu = (evt) => {
         evt.preventDefault();
         ACTIVE = "def";
         openConfig();
     };
 
-    switch (CONFIG.fsButtonPosition) {
-        case "replace":
-            // Set the original icon
-            button.innerHTML = extraBar.lastChild.querySelector("svg").outerHTML;
-            extraBar.replaceChild(button, extraBar.lastChild);
-            break;
-        case "near":
-            // Alternative icon
-            button.innerHTML = `<svg role="img" height="20" width="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10.5 3L16.5428 3.00182L16.6281 3.01661L16.691 3.03779L16.767 3.07719L16.8221 3.11759L16.8824 3.17788L16.9112 3.21534L16.9533 3.2886L16.9834 3.37186L16.9979 3.45421L17 3.5V9.5C17 9.77614 16.7761 10 16.5 10C16.2545 10 16.0504 9.82312 16.0081 9.58988L16 9.5V4.706L4.706 16H9.5C9.74546 16 9.94961 16.1769 9.99194 16.4101L10 16.5C10 16.7455 9.82312 16.9496 9.58988 16.9919L9.5 17L3.47964 16.9996L3.4112 16.9921L3.30896 16.9622L3.23299 16.9228L3.17786 16.8824L3.11758 16.8221L3.08884 16.7847L3.04674 16.7114L3.01661 16.6281L3.01109 16.605C3.00383 16.5713 3 16.5361 3 16.5L3.00546 16.5739L3.00182 16.5428L3 10.5C3 10.2239 3.22386 10 3.5 10C3.74546 10 3.94961 10.1769 3.99194 10.4101L4 10.5V15.292L15.292 4H10.5C10.2545 4 10.0504 3.82312 10.0081 3.58988L10 3.5C10 3.22386 10.2239 3 10.5 3Z"></path><path class="" d="M16 3C16.5523 3 17 3.44772 17 4V9.25C17 9.66421 16.6642 10 16.25 10C15.8358 10 15.5 9.66421 15.5 9.25V5.559L5.559 15.5H9.25C9.66421 15.5 10 15.8358 10 16.25C10 16.6642 9.66421 17 9.25 17H4C3.44772 17 3 16.5523 3 16V10.75C3 10.3358 3.33579 10 3.75 10C4.16421 10 4.5 10.3358 4.5 10.75V14.439L14.439 4.5H10.75C10.3358 4.5 10 4.16421 10 3.75C10 3.33579 10.3358 3 10.75 3H16Z"></path></svg>`;
-            extraBar.append(button);
-            break;
-    }
-
     // Add TV Mode Button on top bar
     const button2 = document.createElement("button");
     button2.classList.add("button", "tm-button", "main-topBar-button", "InvalidDropTarget");
     button2.innerHTML = `<svg role="img" height="16" width="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2.5 13.5A.5.5 0 0 1 3 13h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM13.991 3l.024.001a1.46 1.46 0 0 1 .538.143.757.757 0 0 1 .302.254c.067.1.145.277.145.602v5.991l-.001.024a1.464 1.464 0 0 1-.143.538.758.758 0 0 1-.254.302c-.1.067-.277.145-.602.145H2.009l-.024-.001a1.464 1.464 0 0 1-.538-.143.758.758 0 0 1-.302-.254C1.078 10.502 1 10.325 1 10V4.009l.001-.024a1.46 1.46 0 0 1 .143-.538.758.758 0 0 1 .254-.302C1.498 3.078 1.675 3 2 3h11.991zM14 2H2C0 2 0 4 0 4v6c0 2 2 2 2 2h12c2 0 2-2 2-2V4c0-2-2-2-2-2z"/></svg>`;
     button2.id = "TV-button";
-    button2.setAttribute("title", "Modalità TV");
+    button2.setAttribute("title", "TV Mode Display");
 
     button2.onclick = openwithTV;
 
