@@ -2661,6 +2661,32 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                height: 22px;
                padding: 3px;
            }
+           .main-buttons-button{
+               border: 2px solid transparent;
+               border-radius: 500px;
+               color: var(--spice-text);
+               cursor: pointer;
+               display: inline-block;
+               font-size: 12px;
+               font-weight: 700;
+               letter-spacing: 1.76px;
+               line-height: 18px;
+               padding: 8px 34px;
+               text-align: center;
+               text-transform: uppercase;
+               -webkit-transition: all 33ms cubic-bezier(.3,0,0,1);
+               transition: all 33ms cubic-bezier(.3,0,0,1);
+               white-space: nowrap;
+               will-change: transform;
+           }
+           .main-button-primary{
+               background-color: var(--spice-button);
+           }
+           .main-button-secondary{
+               background-color: transparent;
+               color: var(--spice-button);
+               border: 2px solid var(--spice-button);
+           }
            #full-screen-config-container .adjust-value {
                margin-inline: 12px;
                width: 22px;
