@@ -17,33 +17,38 @@
     const SKIPS = {
         skipAcoustic: {
             menuTitle: "Acoustic Songs",
-            check: ({ title }) => checkByName("acoustic", title),
+            check: (meta) => {
+                return checkByName("acoustic", meta.metadata.title) || meta.features.acousticness > 0.85;
+            },
         },
-        skipUnplugged: {
-            menuTitle: "Unplugged Songs",
-            check: ({ title }) => checkByName("unplugged", title),
+        skipInstrumental: {
+            menuTitle: "Instrumental Songs",
+            check: (meta) => {
+                return checkByName("instrumental", meta.metadata.title) || meta.features.instrumentalness > 0.4;
+            },
         },
         skipRemix: {
             menuTitle: "Remix Songs",
-            check: ({ title }) => checkByName("remix", title),
+            check: (meta) => checkByName("remix", meta.metadata.title),
         },
         skipLive: {
             menuTitle: "Live Songs",
-            check: ({ title }) => ["- live", "live version", "(live)"].some((value) => title.toLowerCase().includes(value)),
+            check: (meta) => {
+                return (
+                    ["- live", "live version", "(live)"].some((value) => meta.metadata.title.toLowerCase().includes(value)) ||
+                    meta.features.liveliness > 0.8
+                );
+            },
         },
         skipExplicit: {
             menuTitle: "Explicit Songs",
-            check: ({ is_explicit }) => is_explicit === "true",
-        },
-        skipStripped: {
-            menuTitle: "Stripped Songs",
-            check: ({ title }) => checkByName("stripped", title),
+            check: (meta) => meta.metadata.is_explicit === "true",
         },
         skipChristmas: {
             menuTitle: "Christmas Songs",
-            check: ({ title }) =>
+            check: (meta) =>
                 ["xmas", "christmas", "jingle", "mistletoe", "merry", "santa", "feliz", "navidad"].some((value) =>
-                    title.toLowerCase().includes(value)
+                    meta.metadata.title.toLowerCase().includes(value)
                 ),
         },
     };
@@ -91,29 +96,49 @@
         return title.toLowerCase().includes(key);
     }
 
+    function getToken() {
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+            preferCached: true,
+        }).then((res) => res.accessToken);
+    }
+
+    async function getTrackFeatures(id) {
+        return fetch(`https://api.spotify.com/v1/audio-features/${id}`, {
+            headers: {
+                Authorization: `Bearer ${await getToken()}`,
+            },
+        }).then((res) => res.json());
+    }
+
     // Main function to check skip of current song
     let skippedSong = {};
-    function checkSkip() {
+    async function checkSkip() {
         const meta = Player?.data?.track;
         if (!meta) return;
 
+        const features = await getTrackFeatures(meta.uri.split(":")[2]).catch((err) => console.log(err));
+        if (features) {
+            meta.features = features;
+        }
         const skipReasonsKeys = Object.entries(CONFIG)
-            .filter(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(meta.metadata))
+            .filter(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(meta))
             .map((reason) => reason[0]);
         if (skipReasonsKeys.length > 0) {
             const skipReasons = skipReasonsKeys.map((key) => SKIPS[key].menuTitle).join(", ");
             /* Check if the current song was skipped just before
                if it was then dont't skip it.*/
             if (meta?.uri === skippedSong?.uri && meta?.uid === skippedSong?.uid) {
-                Spicetify.showNotification(`${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`);
-                console.log(`${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`);
+                const message = `${meta.metadata.title} was auto skipped due to ${skipReasons} filters.`;
+                Spicetify.showNotification(message);
+                console.log(message);
                 skippedSong = {};
             } else {
                 skipReasonsKeys.forEach((key) => STATS[key]++);
                 localStorage.setItem("auto-skip:stats", JSON.stringify(STATS));
                 const totalSkips = Object.values(STATS).reduce((a, b) => a + b, 0);
-                Spicetify.showNotification(`${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`);
-                console.log(`${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`);
+                const message = `${meta.metadata.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`;
+                Spicetify.showNotification(message);
+                console.log(message);
                 Player.next();
                 skippedSong = meta;
             }
@@ -127,7 +152,6 @@
 
     Spicetify.Player.addEventListener("songchange", checkSkip);
 })();
-
 
 /*
 Filter by language stuff
@@ -145,4 +169,3 @@ let resp = await fetch(url, {
 let data = await resp.json()
 console.log(data)
 */
-
