@@ -4,7 +4,8 @@
 // VERSION: 1.0
 // DESCRIPTION: Add the current track to the top of the queue
 
-/// <reference path="../spicetify-cli/globals.d.ts" />
+/// <reference path="../globals.d.ts" />
+
 (function playNext() {
     if (!(Spicetify.CosmosAsync && Spicetify.Queue && Spicetify.ContextMenu && Spicetify.URI)) {
         setTimeout(playNext, 200);

@@ -1,7 +1,10 @@
+// @ts-check
 // NAME: Save Playlists
 // AUTHOR: daksh2k
 // VERSION 1.0
 // DESCRIPTION: Save any playlist by right click > Save Playlist
+
+/// <reference path="../globals.d.ts" />
 
 (function savePlaylists() {
     if (!(Spicetify.CosmosAsync && Spicetify.ContextMenu)) {
@@ -33,14 +36,17 @@
                 let canvas = document.createElement("canvas");
                 let ctx = canvas.getContext("2d");
                 let dataURL;
+                // @ts-ignore
                 canvas.height = this.naturalHeight;
+                // @ts-ignore
                 canvas.width = this.naturalWidth;
-                ctx.drawImage(this, 0, 0);
+                // @ts-ignore
+                ctx?.drawImage(this, 0, 0);
                 dataURL = canvas.toDataURL(outputFormat);
                 resolve(dataURL);
             };
             image.onerror = (err) => {
-                reject(new Error("Failed to load image.", err));
+                reject(new Error("Failed to load image."+ err));
             };
             image.src = src;
         });
@@ -48,12 +54,13 @@
     /**
      * Update the image of the new playlist created with the original playlist.
      * @param encodedImg base64 encoded jpeg image
-     * @param playlisturi the uri of the newly created playlist
+     * @param playlistUri the uri of the newly created playlist
      */
     async function updatePlaylistImage(encodedImg, playlistUri) {
         let accessToken = await Spicetify.Platform.AuthorizationAPI._tokenProvider({ preferCached: true }).then((res) => res.accessToken);
         const URL = `https://api.spotify.com/v1/playlists/${playlistUri}/images`;
-        let resp = await fetch(URL, {
+
+        await fetch(URL, {
             method: "PUT",
             body: encodedImg,
             headers: {
@@ -101,6 +108,8 @@
     async function createPlaylist(meta) {
         Spicetify.showNotification("Creating new Playlist....");
         let playlistDate = meta.data.lastModification ? new Date(meta.data.lastModification * 1000) : new Date();
+
+        // @ts-ignore
         const playlistDateFormatted = playlistDate.toLocaleDateString(LOCALE, OPTIONS).replaceAll(" ", "-");
         const playlistName = `Copy- ${meta.data.name} (${playlistDateFormatted})`;
 
@@ -116,7 +125,7 @@
         setTimeout(() => {
             Spicetify.CosmosAsync.put(`https://api.spotify.com/v1/playlists/${newPlaylist.uri.split(":")[2]}`, {
                 description: `Copy of ${meta.data.name} by ${meta.data.owner.name}. ${meta.data.description}`,
-            }).then(Spicetify.showNotification("Description updated successfully!"));
+            }).then(() => Spicetify.showNotification("Description updated successfully!"));
             if (/^spotify:image:\w{40}$|^https:\/\/.*$/.test(meta.data.picture)) {
                 const imageUrl = meta.data.picture.startsWith("https://")
                     ? meta.data.picture
@@ -124,7 +133,7 @@
                 encodeImgFromUrl(imageUrl)
                     .then((encodedImg) => {
                         updatePlaylistImage(encodedImg.split("base64,")[1], newPlaylist.uri.split(":")[2])
-                            .then(Spicetify.showNotification("Image updated successfully!"))
+                            .then(() => Spicetify.showNotification("Image updated successfully!"))
                             .catch((err) => console.error("Image Update Error: ", err));
                     })
                     .catch((err) => console.error("Image conversion: ", err));

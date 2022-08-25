@@ -1,4 +1,4 @@
-// @ts-no-check
+// @ts-nocheck
 // NAME: Full Screen Mode
 // AUTHOR: daksh2k
 // VERSION: 1.0
@@ -369,7 +369,8 @@ function fullScreen() {
     if (localStorage.getItem("full-screen:inverted") === null) {
         localStorage.setItem("full-screen:inverted", "{}");
     }
-    const INVERTED = JSON.parse(localStorage.getItem("full-screen:inverted"));
+
+    const INVERTED = JSON.parse(localStorage.getItem("full-screen:inverted") ?? "{}");
     let ACTIVE = CONFIG.tvMode ? "tv" : "def";
     let LOCALE = CONFIG.locale;
 
@@ -394,12 +395,26 @@ function fullScreen() {
         ctx_icon,
         ctx_source,
         ctx_name,
+        fsd_myUp,
         fsd_nextCover,
         fsd_up_next_text,
         fsd_next_tit_art,
         fsd_next_tit_art_inner,
         fsd_first_span,
-        fsd_second_span;
+        fsd_second_span,
+        volumeContainer,
+        volumeCurr,
+        volumeBarInner,
+        volumeIcon,
+        playingIcon,
+        pausedIcon,
+        nextControl,
+        backControl,
+        heart,
+        shuffle,
+        repeat,
+        invertButton,
+        lyrics;
     const nextTrackImg = new Image();
     const artistImg = new Image();
 
@@ -1313,8 +1328,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if (CONFIG.tvMode) back = container.querySelector("#fsd-background-image");
         else {
             back = container.querySelector("canvas");
-            back.width = window.innerWidth;
-            back.height = window.innerHeight;
+            back && (back.width = window.innerWidth);
+            back && (back.height = window.innerHeight);
         }
         cover = container.querySelector("#fsd-art-image");
         title = container.querySelector("#fsd-title span");
@@ -1342,7 +1357,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             volumeCurr = container.querySelector("#fsd-volume");
             volumeBarInner = container.querySelector("#fsd-volume-bar-inner");
             volumeIcon = container.querySelector("#fsd-volume-icon");
-            volumeIcon.onclick = Spicetify.Player.toggleMute;
+            volumeIcon && (volumeIcon.onclick = Spicetify.Player.toggleMute);
         }
         if (CONFIG[ACTIVE].progressBarDisplay) {
             prog = container.querySelector("#fsd-progress-inner");
@@ -1353,58 +1368,58 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             playingIcon = container.querySelector("#playing-icon");
 
             //Clicking on playing icon disables it and remembers the config
-            playingIcon.onclick = () => {
+            playingIcon && (playingIcon.onclick = () => {
                 CONFIG[ACTIVE]["titleMovingIcon"] = false;
                 saveConfig();
                 playingIcon.classList.add("hidden");
                 pausedIcon.classList.remove("hidden");
-            };
+            });
             pausedIcon = container.querySelector("#paused-icon");
-            pausedIcon.onclick = () => {
+            pausedIcon && (pausedIcon.onclick = () => {
                 CONFIG[ACTIVE]["titleMovingIcon"] = true;
                 saveConfig();
                 playingIcon.classList.remove("hidden");
                 pausedIcon.classList.add("hidden");
                 updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
-            };
+            });
         }
         if (CONFIG[ACTIVE].playerControls) {
             play = container.querySelector("#fsd-play");
-            play.onclick = () => {
+            play && (play.onclick = () => {
                 fadeAnimation(play);
                 Spicetify.Player.togglePlay();
-            };
+            });
             nextControl = container.querySelector("#fsd-next");
-            nextControl.onclick = () => {
+            nextControl && (nextControl.onclick = () => {
                 fadeAnimation(nextControl, "fade-ri");
                 Spicetify.Player.next();
-            };
+            });
             backControl = container.querySelector("#fsd-back");
-            backControl.onclick = () => {
+            backControl && (backControl.onclick = () => {
                 fadeAnimation(backControl, "fade-le");
                 Spicetify.Player.back();
-            };
+            });
         }
         if (CONFIG[ACTIVE].extraControls) {
             heart = container.querySelector("#fsd-heart");
             shuffle = container.querySelector("#fsd-shuffle");
             repeat = container.querySelector("#fsd-repeat");
 
-            heart.onclick = () => {
+            heart && (heart.onclick = () => {
                 fadeAnimation(heart);
                 Spicetify.Player.toggleHeart();
-            };
-            shuffle.onclick = () => {
+            });
+            shuffle && (shuffle.onclick = () => {
                 fadeAnimation(shuffle);
                 Spicetify.Player.toggleShuffle();
-            };
-            repeat.onclick = () => {
+            });
+            repeat && (repeat.onclick = () => {
                 fadeAnimation(repeat);
                 Spicetify.Player.toggleRepeat();
-            };
+            });
             if (CONFIG[ACTIVE].invertColors === "d") {
                 invertButton = container.querySelector("#fsd-invert");
-                invertButton.onclick = () => {
+                invertButton && (invertButton.onclick = () => {
                     fadeAnimation(invertButton);
                     if (invertButton.classList.contains("button-active"))
                         invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`;
@@ -1415,19 +1430,19 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                         container.style.setProperty("--main-color", "255,255,255");
                         container.style.setProperty("--contrast-color", "0,0,0");
                         if (!CONFIG.tvMode && CONFIG.def.backgroundChoice === "a")
-                            INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = false;
+                            INVERTED[Spicetify.Player.data.track?.metadata?.album_uri?.split(":")[2]] = false;
                     } else {
                         container.style.setProperty("--main-color", "0,0,0");
                         container.style.setProperty("--contrast-color", "255,255,255");
                         if (!CONFIG.tvMode && CONFIG.def.backgroundChoice === "a")
-                            INVERTED[Spicetify.Player.data.track.metadata.album_uri.split(":")[2]] = true;
+                            INVERTED[Spicetify.Player.data.track?.metadata?.album_uri?.split(":")[2]] = true;
                     }
                     localStorage.setItem("full-screen:inverted", JSON.stringify(INVERTED));
-                };
+                });
             }
             if (CONFIG[ACTIVE].lyricsDisplay) {
                 lyrics = container.querySelector("#fsd-lyrics");
-                lyrics.onclick = () => {
+                lyrics && (lyrics.onclick = () => {
                     fadeAnimation(lyrics);
                     container.classList.toggle("lyrics-hide-force");
                     lyrics.classList.toggle("button-active");
@@ -1438,7 +1453,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                                  <path d="M7.066 4.76A1.665 1.665 0 0 0 4 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112zm4 0A1.665 1.665 0 0 0 8 5.668a1.667 1.667 0 0 0 2.561 1.406c-.131.389-.375.804-.777 1.22a.417.417 0 1 0 .6.58c1.486-1.54 1.293-3.214.682-4.112z"/>
                               </svg>`
                             : `<svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm7.194 2.766a1.688 1.688 0 0 0-.227-.272 1.467 1.467 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 5.734 4C4.776 4 4 4.746 4 5.667c0 .92.776 1.666 1.734 1.666.343 0 .662-.095.931-.26-.137.389-.39.804-.81 1.22a.405.405 0 0 0 .011.59c.173.16.447.155.614-.01 1.334-1.329 1.37-2.758.941-3.706a2.461 2.461 0 0 0-.227-.4zM11 7.073c-.136.389-.39.804-.81 1.22a.405.405 0 0 0 .012.59c.172.16.446.155.613-.01 1.334-1.329 1.37-2.758.942-3.706a2.466 2.466 0 0 0-.228-.4 1.686 1.686 0 0 0-.227-.273 1.466 1.466 0 0 0-.469-.324l-.008-.004A1.785 1.785 0 0 0 10.07 4c-.957 0-1.734.746-1.734 1.667 0 .92.777 1.666 1.734 1.666.343 0 .662-.095.931-.26z"/></svg>`;
-                };
+                });
             }
         }
     }
@@ -1606,19 +1621,19 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
 
     async function updateInfo() {
-        const meta = Spicetify.Player.data.track.metadata;
+        const meta = Spicetify.Player.data.track?.metadata;
 
         if (CONFIG[ACTIVE].contextDisplay !== "n") updateContext().catch((err) => console.error("Error getting context: ", err));
 
         // prepare title
-        let rawTitle = meta.title;
+        let rawTitle = meta?.title;
         if (CONFIG[ACTIVE].trimTitle) {
             rawTitle = rawTitle
                 .replace(/\(.+?\)/g, "")
                 .replace(/\[.+?\]/g, "")
                 .replace(/\s\-\s.+?$/, "")
                 .trim();
-            if (!rawTitle) rawTitle = meta.title;
+            if (!rawTitle) rawTitle = meta?.title;
         }
 
         // prepare artist
@@ -1630,15 +1645,15 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 .map((key) => meta[key])
                 .join(", ");
         } else {
-            artistName = meta.artist_name;
+            artistName = meta?.artist_name;
         }
 
         // prepare album
         let albumText;
         if (CONFIG[ACTIVE].showAlbum !== "n") {
-            albumText = meta.album_title || "";
+            albumText = meta?.album_title || "";
             if (album) album.innerText = albumText || "";
-            const albumURI = meta.album_uri;
+            const albumURI = meta?.album_uri;
             if (albumURI?.startsWith("spotify:album:") && CONFIG[ACTIVE].showAlbum === "d") {
                 getAlbumInfo(albumURI.replace("spotify:album:", ""))
                     .then((albumInfo) => {
@@ -1660,17 +1675,17 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         // prepare duration
         let durationText;
         if (CONFIG[ACTIVE].progressBarDisplay) {
-            durationText = Spicetify.Player.formatTime(meta.duration);
+            durationText = Spicetify.Player.formatTime(meta?.duration);
         }
         const previousImg = nextTrackImg.cloneNode();
 
-        nextTrackImg.src = meta.image_xlarge_url;
+        nextTrackImg.src = meta?.image_xlarge_url;
 
         // Wait until next track image is downloaded then update UI text and images
         nextTrackImg.onload = async () => {
             if (!CONFIG.tvMode) {
-                updateMainColor(Spicetify.Player.data.track.uri, meta);
-                updateThemeColor(Spicetify.Player.data.track.uri);
+                updateMainColor(Spicetify.Player.data.track?.uri, meta);
+                updateThemeColor(Spicetify.Player.data.track?.uri);
                 if (CONFIG.def.backgroundChoice == "a") {
                     animateCanvas(previousImg, nextTrackImg);
                 } else {
@@ -1704,7 +1719,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     async function getNextColor() {
         let nextColor;
-        const imageColors = await colorExtractor(Spicetify.Player.data.track.uri).catch((err) => console.warn(err));
+        const imageColors = await colorExtractor(Spicetify.Player.data.track?.uri).catch((err) => console.warn(err));
         if (!imageColors || !imageColors[CONFIG.def.coloredBackChoice]) nextColor = "#444444";
         else nextColor = imageColors[CONFIG.def.coloredBackChoice];
         return nextColor;
@@ -1731,15 +1746,15 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                     }
                     const thresholdValue = 260 - CONFIG[ACTIVE].backgroundBrightness * 100;
                     const isLightBG =
-                        imageProminentColor.split(",")[0] * 0.299 +
-                            imageProminentColor.split(",")[1] * 0.587 +
-                            imageProminentColor.split(",")[2] * 0.114 >
+                    Number(imageProminentColor?.split(",")[0]) * 0.299 +
+                            Number(imageProminentColor?.split(",")[1]) * 0.587 +
+                            Number(imageProminentColor?.split(",")[2]) * 0.114 >
                         thresholdValue;
                     mainColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "0,0,0" : "255,255,255";
                     contrastColor = isLightBG && CONFIG[ACTIVE].backgroundBrightness > 0.3 ? "255,255,255" : "0,0,0";
                 }
                 container.style.setProperty("--main-color", mainColor);
-                container.style.setProperty("--contrast-color", contrastColor);
+                container.style.setProperty("--contrast-color", contrastColor ?? "0,0,0");
                 if (CONFIG[ACTIVE].extraControls) {
                     invertButton.classList.remove("button-active");
                     invertButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="20px" width="20px" viewBox="0 0 20 20" fill="currentColor"><rect fill="none" height="20" width="20"/><path d="M7.08,4.96L10,2l4.53,4.6l0,0c1.07,1.1,1.72,2.6,1.72,4.24c0,0.96-0.23,1.86-0.62,2.67L10,7.88V4.14L8.14,6.02L7.08,4.96z M16.01,18.13l-2.33-2.33C12.65,16.55,11.38,17,10,17c-3.45,0-6.25-2.76-6.25-6.16c0-1.39,0.47-2.67,1.26-3.7L1.87,3.99l1.06-1.06 l14.14,14.14L16.01,18.13z M10,12.12L6.09,8.21c-0.54,0.77-0.84,1.68-0.84,2.63c0,2.57,2.13,4.66,4.75,4.66V12.12z"/></svg>`;
@@ -1883,7 +1898,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         let ctxIcon = "",
             ctxSource,
             ctxName;
-        if (Spicetify.Player.data.track.provider === "queue") {
+        if (Spicetify.Player.data.track?.provider === "queue") {
             ctxIcon = `<svg width="48" height="48" viewBox="1 1.2 16 16" fill="currentColor"><path d="M2 2v5l4.33-2.5L2 2zm0 12h14v-1H2v1zm0-4h14V9H2v1zm7-5v1h7V5H9z"></path></svg>`;
             ctxSource = translations[LOCALE].context.queue;
             ctxName = "";
@@ -1982,6 +1997,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     // Get the context and update it
     async function updateContext() {
+        let ctxIcon, ctxSource, ctxName;
         [ctxIcon, ctxSource, ctxName] = await getContext().catch((err) => console.error(err));
         ctx_source.classList.toggle("ctx-no-name", !ctxName);
 
@@ -2052,22 +2068,23 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             await updateUpNextInfo();
             fsd_myUp.style.transform = "translateX(0px)";
             upNextShown = true;
+            let animTime;
             if (fsd_second_span.offsetWidth > fsd_next_tit_art.offsetWidth - 2) {
                 switch (CONFIG[ACTIVE].upNextAnim) {
                     case "mq":
                         fsd_first_span.style.paddingRight = "80px";
-                        anim_time = 5000 * (fsd_first_span.offsetWidth / 400);
+                        animTime = 5000 * (fsd_first_span.offsetWidth / 400);
                         fsd_myUp.style.setProperty("--translate_width_fsd", `-${fsd_first_span.offsetWidth + 3.5}px`);
-                        fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee " + anim_time + "ms linear 800ms infinite";
+                        fsd_next_tit_art_inner.style.animation = "fsd_cssmarquee " + animTime + "ms linear 800ms infinite";
                         break;
                     case "sp":
                     default:
                         fsd_first_span.style.paddingRight = "0px";
                         fsd_second_span.innerText = "";
-                        anim_time = (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
-                        // anim_time= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
+                        animTime = (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
+                        // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
                         fsd_myUp.style.setProperty("--translate_width_fsd", `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`);
-                        fsd_next_tit_art_inner.style.animation = `fsd_translate ${anim_time > 1500 ? anim_time : 1500}ms linear 800ms infinite`;
+                        fsd_next_tit_art_inner.style.animation = `fsd_translate ${animTime > 1500 ? animTime : 1500}ms linear 800ms infinite`;
                         break;
                 }
             } else {
@@ -2087,7 +2104,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     let prevVolume = Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume;
 
     function updateVolume(data) {
-        volume = !data ? Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume : data.data.volume;
+        const volume = !data ? Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume : data.data.volume;
         if (volume !== prevVolume || !data) {
             //Only update volume when there is a change or on initial fire
             prevVolume = volume;
@@ -2273,7 +2290,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         document.body.classList.add(...classes);
         if (CONFIG[ACTIVE].enableFullscreen) fullScreenOn();
         else fullScreenOff();
-        document.querySelector(".Root__top-container").append(style, container);
+        document.querySelector(".Root__top-container")?.append(style, container);
         if (CONFIG[ACTIVE].lyricsDisplay) {
             window.addEventListener("lyrics-plus-update", handleLyricsUpdate);
             origLoc = Spicetify.Platform.History.location.pathname;
@@ -2396,14 +2413,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 objectToMergeIn[key] = defaultObject[key];
             } else {
                 if (typeof defaultObject[key] === "object") {
-                    mergeDefaultsinConfig(defaultObject[key], objectToMergeIn[key]);
+                    mergeDefaultsInConfig(defaultObject[key], objectToMergeIn[key]);
                 }
             }
         });
     }
     function getConfig() {
         try {
-            const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config"));
+            const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config") ?? "{}");
             if (!!parsed && typeof parsed === "object") {
                 // mergeDefaultsInConfig(DEFAULTS, parsed);
                 Object.keys(DEFAULTS).forEach((key) => {
@@ -2449,7 +2466,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         if (document.body.classList.contains("fsd-activated")) activate();
     }
 
-    function createAdjust(name, key, unit = "", defaultValue, step, min, max, onChange = () => {}) {
+    function createAdjust(name, key, unit = "", defaultValue, step, min, max, onChange = (val) => {}) {
         let value = key in CONFIG[ACTIVE] ? CONFIG[ACTIVE][key] : defaultValue;
 
         function adjustValue(dir) {
@@ -2461,8 +2478,8 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             }
             value = Number(Number(temp).toFixed(step >= 1 ? 0 : 1));
             container.querySelector(".adjust-value").innerText = `${value}${unit}`;
-            plus.classList.toggle("disabled", value === max);
-            minus.classList.toggle("disabled", value === min);
+            plus && plus.classList.toggle("disabled", value === max);
+            minus && minus.classList.toggle("disabled", value === min);
             onChange(value);
         }
         const container = document.createElement("div");
@@ -2478,10 +2495,10 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         `;
         const minus = container.querySelector(".minus");
         const plus = container.querySelector(".plus");
-        minus.classList.toggle("disabled", value === min);
-        plus.classList.toggle("disabled", value === max);
-        minus.onclick = () => adjustValue(-1);
-        plus.onclick = () => adjustValue(1);
+        minus  && minus.classList.toggle("disabled", value === min);
+        plus && plus.classList.toggle("disabled", value === max);
+        minus && (minus.onclick = () => adjustValue(-1));
+        plus && (plus.onclick = () => adjustValue(1));
         return container;
     }
 
@@ -2502,14 +2519,14 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
             </div>
           </div>`;
         const select = container.querySelector("select");
-        select.value = defaultValue;
-        select.onchange = (e) => {
-            callback(e.target.value);
-        };
+        select && (select.value = defaultValue);
+        select && (select.onchange = (e) => {
+            callback(e?.target?.value);
+        });
         return container;
     }
 
-    function createToggle(name, key, callback = () => {}) {
+    function createToggle(name, key, callback = (a,b) => {}) {
         const container = document.createElement("div");
         container.innerHTML = `
           <div class="setting-row">
@@ -2523,16 +2540,16 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
           </div>`;
 
         const toggle = container.querySelector("input");
-        toggle.checked = CONFIG[ACTIVE][key];
-        toggle.onchange = (evt) => {
-            CONFIG[ACTIVE][key] = evt.target.checked;
+        toggle && (toggle.checked = CONFIG[ACTIVE][key]);
+        toggle && (toggle.onchange = (evt) => {
+            CONFIG[ACTIVE][key] = evt?.target?.checked;
             saveConfig();
             render();
-            callback(container, evt.target.checked);
+            callback(container, evt?.target?.checked);
             if (document.body.classList.contains("fsd-activated")) {
                 activate();
             }
-        };
+        });
         return container;
     }
 
@@ -2934,7 +2951,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     //     if (extraBar.lastChild.classList.contains("control-button") || extraBar.lastChild.title == "Full screen") extraBar.lastChild.remove();
     // }
 
-    extraBar.append(defButton);
+    extraBar?.append(defButton);
 
     // Add TV Mode Button on top bar
     const tvButton = document.createElement("button");
@@ -2945,7 +2962,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
 
     tvButton.onclick = openwithTV;
 
-    topBar.append(tvButton);
+    topBar?.append(tvButton);
     tvButton.oncontextmenu = (evt) => {
         evt.preventDefault();
         ACTIVE = "tv";
