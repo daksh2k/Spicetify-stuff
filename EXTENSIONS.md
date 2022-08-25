@@ -61,16 +61,18 @@
     **Description:** Auto Skip Certain Songs such as remixes, acoustics etc.\
     Toggle in Profile menu for each skipping option you want.
 
+    **New:** Will try to search and auto play original songs.
+
     <img src="https://i.imgur.com/GxdGp9t.png" alt="Auto Skip" width="300" height="auto"/>
 
     Current options:
 
     -   Accoustic Songs
-    -   Unplugged Songs
+    -   Instrumental Songs
     -   Remix Songs
     -   Live Songs
+    -   Radio/Censored Songs
     -   Explicit Songs
-    -   Stripped Songs
     -   Christmas Songs
 
 -   ## [Play Next](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/playNext.js)

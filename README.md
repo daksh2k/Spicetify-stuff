@@ -34,7 +34,7 @@ Copy `extensionNameWrapper.js` from `Extensions/Wrappers` folder or `extensionNa
 |------------|------------------------------------------------------------------------------------------|
 | **Linux**      | `~/.config/spicetify/Extensions` or `$XDG_CONFIG_HOME/.config/spicetify/Extensions/` |
 | **MacOS**      | `~/.config/spicetify/Extensions` or `$SPICETIFY_CONFIG/Extensions`                   |
-| **Windows**    | `%userprofile%/.spicetify/Extensions/`                                               |
+| **Windows**    | `%appdata%/spicetify/Extensions/`                                               |
 
 After putting the extension file into the correct folder, run the following command to install the extension:
 ```
