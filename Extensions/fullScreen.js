@@ -1,7 +1,7 @@
 // @ts-nocheck
+
 // NAME: Full Screen Mode
 // AUTHOR: daksh2k
-// VERSION: 1.0
 // DESCRIPTION: Fancy artwork and track status display.
 
 /// <reference path="../globals.d.ts" />
@@ -1601,21 +1601,19 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
         else return dur - showBefore - curProg;
     }
 
-    let colorsCache = {};
+    let colorsCache = [];
     async function colorExtractor(uri) {
-        if (uri in colorsCache) return colorsCache[uri];
+        const presentInCache = colorsCache.filter(obj => obj.uri === uri)
+        if(presentInCache.length > 0) return presentInCache[0].colors;
         const body = await Spicetify.CosmosAsync.get(`wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`);
         if (body.entries && body.entries.length) {
             const list = {};
             for (const color of body.entries[0].color_swatches) {
                 list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
             }
-            if (Object.keys(colorsCache).length > 15) {
-                delete colorsCache;
-                colorsCache = {};
-            }
-            colorsCache[uri] = list;
-            return colorsCache[uri];
+            if(colorsCache.length > 20) colorsCache.shift();
+            colorsCache.push({uri, colors: list});
+            return list;
         }
         throw "No colors returned.";
     }
