@@ -1,7 +1,7 @@
 // @ts-check
+
 // NAME: Save Playlists
 // AUTHOR: daksh2k
-// VERSION 1.0
 // DESCRIPTION: Save any playlist by right click > Save Playlist
 
 /// <reference path="../globals.d.ts" />

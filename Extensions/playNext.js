@@ -1,7 +1,7 @@
 // @ts-check
+
 // NAME: Play Next
 // AUTHOR: daksh2k
-// VERSION: 1.0
 // DESCRIPTION: Add the current track to the top of the queue
 
 /// <reference path="../globals.d.ts" />

@@ -78,7 +78,7 @@
     const CONFIG = getConfig();
     function getConfig() {
         try {
-            const parsed = JSON.parse(localStorage.getItem("auto-skip:skips"));
+            const parsed = JSON.parse(localStorage.getItem("auto-skip:skips") ?? "{}");
             if (parsed && typeof parsed === "object") {
                 return parsed;
             }
@@ -97,7 +97,7 @@
     if (localStorage.getItem("auto-skip:stats") === null) {
         localStorage.setItem("auto-skip:stats", "{}");
     }
-    const STATS = JSON.parse(localStorage.getItem("auto-skip:stats"));
+    const STATS = JSON.parse(localStorage.getItem("auto-skip:stats") ?? "{}");
     Object.keys(SKIPS)
         .filter((key) => STATS[key] === undefined)
         .forEach((key) => (STATS[key] = 0));

@@ -1,7 +1,7 @@
 // @ts-check
+
 // NAME: Add Volume Percentage
 // AUTHOR: daksh2k
-// VERSION: 1.0
 // DESCRIPTION: Add the Volume Percentage to the Volume Bar
 
 /// <reference path="../globals.d.ts" />
