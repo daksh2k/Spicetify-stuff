@@ -298,7 +298,7 @@ const translations = {
                 color: "纯色",
                 artwork: "艺术画",
             },
-            extraControls: "额外空间",
+            extraControls: "额外控件",
             upnextDisplay: "下一首提示",
             contextDisplay: {
                 setting: "内容来源显示",
