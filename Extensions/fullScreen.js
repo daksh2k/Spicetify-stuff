@@ -358,7 +358,7 @@ function fullScreen() {
         document.querySelector(".ExtraControls") ||
         document.querySelector(".ClYTTKGdd9KB7D9MXicj");
     const topBar = document.querySelector(".main-topBar-historyButtons");
-    const { CosmosAsync, LocalStorage, Keyboard, ContextMenu, Player, Platform } = Spicetify;
+    const { CosmosAsync, Keyboard, Player, Platform } = Spicetify;
 
     let entriesToVerify = [topBar, extraBar, CosmosAsync, LocalStorage, ContextMenu, Keyboard, Player, Platform];
 
@@ -2532,7 +2532,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
     }
     function getConfig() {
         try {
-            const parsed = JSON.parse(Spicetify.LocalStorage.get("full-screen-config") ?? "{}");
+            const parsed = JSON.parse(localStorage.getItem("full-screen-config") ?? "{}");
             if (!!parsed && typeof parsed === "object") {
                 // mergeDefaultsInConfig(DEFAULTS, parsed);
                 Object.keys(DEFAULTS).forEach((key) => {
@@ -2548,18 +2548,18 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                         }
                     }
                 });
-                Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(parsed));
+                localStorage.setItem("full-screen-config", JSON.stringify(parsed));
                 return parsed;
             }
             throw "";
         } catch {
-            Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(DEFAULTS));
+            localStorage.setItem("full-screen-config", JSON.stringify(DEFAULTS));
             return DEFAULTS;
         }
     }
 
     function saveConfig() {
-        Spicetify.LocalStorage.set("full-screen-config", JSON.stringify(CONFIG));
+        localStorage.setItem("full-screen-config", JSON.stringify(CONFIG));
     }
 
     function saveOption(key, value) {
