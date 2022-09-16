@@ -360,7 +360,7 @@ function fullScreen() {
     const topBar = document.querySelector(".main-topBar-historyButtons");
     const { CosmosAsync, Keyboard, Player, Platform } = Spicetify;
 
-    let entriesToVerify = [topBar, extraBar, CosmosAsync, LocalStorage, ContextMenu, Keyboard, Player, Platform];
+    let entriesToVerify = [topBar, extraBar, CosmosAsync, Keyboard, Player, Platform];
 
     if (INIT_RETRIES > 50) {
         entriesToVerify.forEach((entry) => {
