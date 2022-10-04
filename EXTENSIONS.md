@@ -3,7 +3,7 @@
 -   ## [Save Playlists](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/savePlaylists.js)
 
     **Description:** Save any playlist by right clicking on a playlist > Save Playlist.\
-    A new playlist will be created with the same name+last updated date of the parent playlist.
+    A new playlist will be created with the same name + same image + last updated date of the parent playlist.
 
     ![Save Playlist](https://i.imgur.com/2AEyRrs.png)
 
