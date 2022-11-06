@@ -7,7 +7,7 @@
 /// <reference path="../globals.d.ts" />
 
 (function playNext() {
-    if (!(Spicetify.CosmosAsync && Spicetify.Queue && Spicetify.ContextMenu && Spicetify.URI)) {
+    if (!(Spicetify.CosmosAsync && Spicetify.ContextMenu && Spicetify.URI)) {
         setTimeout(playNext, 200);
         return;
     }
@@ -131,19 +131,20 @@
                 is_queued: true,
             },
         }));
+        const theQueue = await Spicetify.CosmosAsync.get("sp://player/v2/main/queue");
         await Spicetify.CosmosAsync.put("sp://player/v2/main/queue", {
-            queue_revision: Spicetify.Queue?.queueRevision,
+            queue_revision: theQueue?.revision,
             next_tracks: [
                 ...newTracks,
-                ...Spicetify.Queue?.nextTracks.map((track) => ({
-                    uri: track.contextTrack.uri,
+                ...theQueue?.next_tracks.map((track) => ({
+                    uri: track.uri,
                     provider: track.provider,
                     metadata: {
                         is_queued: track.provider === "queue",
                     },
                 })),
             ],
-            prev_tracks: Spicetify.Queue?.prevTracks,
+            prev_tracks: theQueue?.prev_tracks,
         })
             .then(() => Spicetify.showNotification("Added to Play Next"))
             .catch((err) => {
