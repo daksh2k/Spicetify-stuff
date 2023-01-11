@@ -48,7 +48,7 @@ async function main() {
             apiMeta = nextSongMeta;
         }
         if (apiMeta === null) return;
-        const skipReasonsKeys = getSkipReasons(apiMeta);
+        const skipReasonsKeys = getSkipReasons(apiMeta, meta);
 
         if (skipReasonsKeys.length > 0) {
             const skipReasons = skipReasonsKeys

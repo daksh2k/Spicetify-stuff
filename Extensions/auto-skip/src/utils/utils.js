@@ -62,11 +62,12 @@ export async function loadMetadata(uri) {
 /**
  * Check for valid skip reasons based on current song metadata
  * Only checks for reasons that are enabled in the config
- * @param {object} meta
+ * @param {object} apiMeta
+ * @param {object} localMeta
  * @returns {string[]} List of keys which are valid skip reasons
  */
-export function getSkipReasons(meta) {
+export function getSkipReasons(apiMeta, localMeta = null) {
     return Object.entries(getConfig())
-        .filter(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(meta))
+        .filter(([key, shouldCheck]) => shouldCheck && SKIPS[key].check(apiMeta, localMeta))
         .map((reason) => reason[0]);
 }
