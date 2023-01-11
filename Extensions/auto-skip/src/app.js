@@ -1,4 +1,4 @@
-import SKIPS from "./constants/SKIPS.js";
+import SKIPS from "./constants/skips.js";
 import { getConfig, saveConfig, loadStats } from "./config.js";
 import { loadMetadata, getSkipReasons } from "./utils/utils";
 
@@ -51,15 +51,10 @@ async function main() {
         const skipReasonsKeys = getSkipReasons(apiMeta, meta);
 
         if (skipReasonsKeys.length > 0) {
-            const skipReasons = skipReasonsKeys
-                .map((key) => SKIPS[key].menuTitle)
-                .join(", ");
+            const skipReasons = skipReasonsKeys.map((key) => SKIPS[key].menuTitle).join(", ");
             // Check if the current song was skipped just before
             // if it was then dont't skip it.
-            if (
-                meta?.uri === skippedSong?.uri &&
-                meta?.uid === skippedSong?.uid
-            ) {
+            if (meta?.uri === skippedSong?.uri && meta?.uid === skippedSong?.uid) {
                 const message = `${meta?.metadata?.title} was auto skipped due to ${skipReasons} filters.`;
                 Spicetify.showNotification(message);
                 console.log(message);
@@ -70,22 +65,14 @@ async function main() {
 
                 Spicetify.Player.toggleMute();
 
-                const keyCallback = skipReasonsKeys.filter(
-                    (key) => SKIPS[key].callback !== undefined
-                );
+                const keyCallback = skipReasonsKeys.filter((key) => SKIPS[key].callback !== undefined);
                 if (keyCallback.length) {
                     nextSongMeta =
-                        (await SKIPS[
-                            keyCallback[
-                                Math.floor(Math.random() * keyCallback.length)
-                            ]
-                        ].callback(apiMeta)) ?? nextSongMeta;
+                        (await SKIPS[keyCallback[Math.floor(Math.random() * keyCallback.length)]].callback(apiMeta)) ??
+                        nextSongMeta;
                 }
 
-                const totalSkips = Object.values(STATS).reduce(
-                    (a, b) => a + b,
-                    0
-                );
+                const totalSkips = Object.values(STATS).reduce((a, b) => a + b, 0);
                 const message = `${meta?.metadata?.title} skipped!Reasons: ${skipReasons}. Total skips = ${totalSkips}`;
                 Spicetify.showNotification(message);
                 console.log(message);
@@ -119,9 +106,7 @@ async function main() {
 
     new Spicetify.Menu.SubMenu(
         "Auto Skip",
-        Object.entries(SKIPS).map(([key, value]) =>
-            createMenu(value.menuTitle, key)
-        )
+        Object.entries(SKIPS).map(([key, value]) => createMenu(value.menuTitle, key))
     ).register();
 }
 

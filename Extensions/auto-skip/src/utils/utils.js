@@ -1,6 +1,6 @@
 import { WebApi } from "../web-api";
 import { getConfig } from "../config";
-import SKIPS from "../constants/SKIPS.js";
+import SKIPS from "../constants/skips.js";
 
 /**
  * Trims the title of the song to remove the remix, live, etc. from the title
@@ -24,15 +24,11 @@ export function getTrimmedTitle(title) {
 export async function addOriginalSongToQueue(searchQuery) {
     const searchSongs = await WebApi.searchSpotify(searchQuery);
     const allFeatures = await WebApi.getTrackFeatures(
-        `?ids=${searchSongs.tracks.items
-            .map((track) => track.uri.split(":")[2])
-            .join()}`
+        `?ids=${searchSongs.tracks.items.map((track) => track.uri.split(":")[2]).join()}`
     ).catch((err) => console.error(err));
 
     for (const track of searchSongs.tracks.items) {
-        track.features = allFeatures.audio_features.filter(
-            (e) => e.uri === track.uri
-        )[0];
+        track.features = allFeatures.audio_features.filter((e) => e.uri === track.uri)[0];
         if (getSkipReasons(track).length == 0) {
             console.log("Adding to queue", track);
             await WebApi.addTrackToQueue(track.uri);
@@ -49,13 +45,9 @@ export async function addOriginalSongToQueue(searchQuery) {
  */
 export async function loadMetadata(uri) {
     const base62Id = uri.split(":")[2];
-    const meta = await WebApi.getTrackDetails(base62Id).catch((err) =>
-        console.error(err)
-    );
+    const meta = await WebApi.getTrackDetails(base62Id).catch((err) => console.error(err));
     if (!meta || !meta.name) return null;
-    meta.features = await WebApi.getTrackFeatures(base62Id).catch((err) =>
-        console.error(err)
-    );
+    meta.features = await WebApi.getTrackFeatures(base62Id).catch((err) => console.error(err));
     return meta;
 }
 

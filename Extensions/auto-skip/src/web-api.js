@@ -40,14 +40,11 @@ export class WebApi {
      * @returns
      */
     static async searchSpotify(query, type = "track") {
-        return fetch(
-            `https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=15`,
-            {
-                headers: {
-                    Authorization: `Bearer ${await WebApi.getToken()}`,
-                },
-            }
-        ).then((res) => res.json());
+        return fetch(`https://api.spotify.com/v1/search?q=${query}&type=${type}&limit=15`, {
+            headers: {
+                Authorization: `Bearer ${await WebApi.getToken()}`,
+            },
+        }).then((res) => res.json());
     }
 
     /**

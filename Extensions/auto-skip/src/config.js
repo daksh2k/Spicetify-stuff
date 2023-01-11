@@ -7,9 +7,7 @@ let CONFIG;
 export function getConfig() {
     if (CONFIG) return CONFIG;
     try {
-        const parsed = JSON.parse(
-            localStorage.getItem("auto-skip:skips") ?? "{}"
-        );
+        const parsed = JSON.parse(localStorage.getItem("auto-skip:skips") ?? "{}");
         if (parsed && typeof parsed === "object") {
             CONFIG = parsed;
             return CONFIG;
