@@ -16,3 +16,15 @@ Themes/Comfy*
 CustomApps
 node_modules
 .DS_Store
+Extensions/fullscreen
+Extensions/full-screen-old
+Extensions/miscExt.js
+Extensions/fluent.js
+Extensions/fluent2.js
+Extensions/fullScreen3.js
+Extensions/Comfy.js
+Extensions/tvMode.js
+Extensions/savePlaylist.js
+Extensions/autoSavePlaylists.js
+Extensions/spotifyFullscreenCanvas.js
+Extensions/autoSkip.js

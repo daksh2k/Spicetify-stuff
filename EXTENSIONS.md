@@ -74,6 +74,7 @@
     -   Radio/Censored Songs
     -   Explicit Songs
     -   Christmas Songs
+    -   Liked Songs
 
 -   ## [Play Next](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/playNext.js)
 
