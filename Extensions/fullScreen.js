@@ -2251,7 +2251,7 @@ ${CONFIG[ACTIVE].lyricsDisplay ? `<div id="fad-lyrics-plus-container"></div>` : 
                 case Spicetify.URI.Type.TRACK:
                     ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M9.732 19.241c1.077 0 2.688-.79 2.688-2.922V9.617c0-.388.074-.469.418-.542l3.347-.732a.48.48 0 00.403-.484V5.105c0-.388-.315-.637-.689-.563l-3.764.82c-.47.102-.725.359-.725.769l.014 8.144c.037.36-.132.594-.454.66l-1.164.241c-1.465.308-2.154 1.055-2.154 2.16 0 1.122.864 1.905 2.08 1.905z" fill-rule="nonzero"></path></svg>`;
                     ctxSource = translations[LOCALE].context.track;
-                    await getTrackInfo(uriObj._base62Id).then((meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`));
+                    await getTrackInfo(uriObj._base62Id ? uriObj._base62Id : uriObj.id ).then((meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`));
                     break;
                 case Spicetify.URI.Type.SEARCH:
                     ctxIcon = Spicetify.SVGIcons["search-active"];
