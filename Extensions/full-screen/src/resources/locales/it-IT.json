@@ -1,0 +1,114 @@
+{
+    "langName": "Italiano",
+    "context": {
+        "queue": "Riproduzione da coda",
+        "track": "Riproduzione brano",
+        "album": "Riproduzione album",
+        "artist": "Riproduzione artista",
+        "playlist": "Riproduzione playlist",
+        "playlistFolder": "Riproduzione da cartella playlist",
+        "search": "Riproduzione da ricerca",
+        "searchDest": "Brani",
+        "collection": "Riproduzione dalla libreria",
+        "likedSongs": "Brani che ti piacciono",
+        "trackRadio": "Radio dal brano",
+        "artistRadio": "Radio da artista",
+        "albumRadio": "Radio da album",
+        "playlistRadio": "Radio da playlist"
+    },
+    "upnext": "In coda",
+    "unknownArtist": "Artista sconosciuto",
+    "settings": {
+        "switchToTV": "Passa a modalità TV",
+        "switchToFullscreen": "Passa a modalità fullscreen",
+        "tvModeConfig": "Modalità TV",
+        "fullscreenConfig": "Modalità fullscreen",
+        "exit": "Esci",
+
+        "pluginSettings": "Impostazioni plugin",
+        "fsHideOriginal": "Pulsante Nascondi Stock (Spotify Premium)",
+        "language": "Lingua",
+
+        "lyricsHeader": "Impostazioni testo",
+        "lyrics": "Mostra testo",
+        "lyricsAlignment": {
+            "setting": "Allineamento testo",
+            "left": "Sinistra",
+            "center": "Centro",
+            "right": "Destra"
+        },
+        "lyricsAnimationTempo": "Durata animazione testo",
+
+        "generalHeader": "Impostazioni generali",
+        "progressBar": "Barra di avanzamento",
+        "playerControls": "Controlli player",
+        "trimTitle": "Accorcia titolo",
+        "trimTitleUpNext": "Accorcia titolo in Up next",
+        "showAlbum": {
+            "setting": "Mostra album",
+            "never": "Mai",
+            "always": "Sempre",
+            "date": "Mostra con data di uscita"
+        },
+        "showAllArtists": "Mostra tutti gli artisti",
+        "icons": "Icone",
+        "songChangeAnimation": "Animazione cambio brano",
+        "fullscreen": "Schermo intero",
+
+        "extraHeader": "Funzionalità aggiuntive",
+        "backgroundChoice": {
+            "setting": "Scelta sfondo",
+            "color": "Tinta unita",
+            "artwork": "Artwork"
+        },
+        "extraControls": "Controlli aggiuntivi",
+        "upnextDisplay": "Mostra Up next",
+        "contextDisplay": {
+            "setting": "Mostra contesto",
+            "always": "Sempre",
+            "never": "Mai",
+            "mouse": "Al movimento del mouse"
+        },
+        "volumeDisplay": {
+            "setting": "Mostra barra volume",
+            "always": "Sempre",
+            "never": "Mai",
+            "mouse": "Al movimento del mouse",
+            "volume": "Al cambio volume"
+        },
+
+        "appearanceHeader": "Avanzato/Aspetto",
+        "appearanceSubHeader": "Cambia solo se sai cosa stai facendo!",
+        "backgroundColor": {
+            "setting": "Colore su sfondo tinta unita",
+            "vibrant": "Vibrant",
+            "prominent": "Prominent",
+            "desaturated": "Desaturato (raccomandato)",
+            "lightVibrant": "Vibrant chiaro",
+            "darkVibrant": "Vibrant scuro",
+            "vibrantNonAlarming": "Vibrant delicato"
+        },
+        "themedButtons": "Pulsanti a tema",
+        "themedIcons": "Icone a tema",
+        "invertColors": {
+            "setting": "Inverti colori",
+            "never": "Mai",
+            "always": "Sempre",
+            "auto": "Automatico (basato su sfondo)"
+        },
+        "backAnimationTime": "Durata animazione sfondo",
+        "upnextScroll": {
+            "setting": "Scorrimento Up next",
+            "mq": "Scorrimento",
+            "sp": "Traslazione"
+        },
+        "upnextTime": "Tempo per mostrare Up next",
+        "backgroundBlur": "Sfocamento sfondo",
+        "backgroundBrightness": "Luminosità sfondo",
+
+        "cgfReset": "Resetta configurazione",
+        "reload": "Ricarica client"
+    },
+    "tvBtnDesc": "Modalità TV",
+    "fullscreenBtnDesc": "Schermo intero"
+}

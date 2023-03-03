@@ -1,0 +1,114 @@
+{
+    "langName": "简体中文",
+    "context": {
+        "queue": "正在从队列播放",
+        "track": "正在播放",
+        "album": "正在从专辑播放",
+        "artist": "正在从艺人播放",
+        "playlist": "正在从歌单播放",
+        "playlistFolder": "正在从歌单文件夹播放",
+        "search": "正在从搜索结果播放",
+        "searchDest": "歌曲",
+        "collection": "正在从合辑播放",
+        "likedSongs": "已点赞的歌曲",
+        "trackRadio": "正在从歌曲电台播放",
+        "artistRadio": "正在从艺人电台播放",
+        "albumRadio": "正在从专辑电台播放",
+        "playlistRadio": "正在从歌单电台播放"
+    },
+    "upnext": "下一首",
+    "unknownArtist": "未知歌手",
+    "settings": {
+        "switchToTV": "切换至电视模式",
+        "switchToFullscreen": "切换至默认模式",
+        "tvModeConfig": "电视模式配置",
+        "fullscreenConfig": "全屏模式配置",
+        "exit": "退出",
+
+        "pluginSettings": "插件设置",
+        "fsHideOriginal": "隐藏切换至原版按钮 (Spotify Premium)",
+        "language": "语言",
+
+        "lyricsHeader": "歌词设置",
+        "lyrics": "歌词",
+        "lyricsAlignment": {
+            "setting": "歌词对齐方式",
+            "left": "靠左",
+            "center": "居中",
+            "right": "靠右"
+        },
+        "lyricsAnimationTempo": "歌词动画速度",
+
+        "generalHeader": "通用设置",
+        "progressBar": "播放进度条",
+        "playerControls": "播放控制",
+        "trimTitle": "缩短标题",
+        "trimTitleUpNext": "缩短标题 (下一首提示)",
+        "showAlbum": {
+            "setting": "显示标题",
+            "never": "永不",
+            "always": "总是",
+            "date": "与发布日期一起显示"
+        },
+        "showAllArtists": "显示所有艺人",
+        "icons": "显示图标",
+        "songChangeAnimation": "切歌动画",
+        "fullscreen": "全屏",
+
+        "extraHeader": "额外功能",
+        "backgroundChoice": {
+            "setting": "背景",
+            "color": "纯色",
+            "artwork": "艺术画"
+        },
+        "extraControls": "额外控件",
+        "upnextDisplay": "下一首提示",
+        "contextDisplay": {
+            "setting": "内容来源显示",
+            "always": "总是",
+            "never": "从不",
+            "mouse": "当鼠标移动时"
+        },
+        "volumeDisplay": {
+            "setting": "音量显示",
+            "always": "总是",
+            "never": "从不",
+            "mouse": "当鼠标移动时",
+            "volume": "当音量调节时"
+        },
+
+        "appearanceHeader": "高级/外观",
+        "appearanceSubHeader": "不要动除非你知道自己在做什么",
+        "backgroundColor": {
+            "setting": "纯色背景的颜色配置",
+            "vibrant": "Vibrant",
+            "prominent": "Prominent",
+            "desaturated": "Desaturated (推荐)",
+            "lightVibrant": "Light Vibrant",
+            "darkVibrant": "Dark Vibrant",
+            "vibrantNonAlarming": "Vibrant Non Alarming"
+        },
+        "themedButtons": "主题色按钮",
+        "themedIcons": "主题色图标",
+        "invertColors": {
+            "setting": "反转颜色",
+            "never": "从不",
+            "always": "总是",
+            "auto": "自动(基于背景)"
+        },
+        "backAnimationTime": "背景动画时间",
+        "upnextScroll": {
+            "setting": "下一首提示滚动",
+            "mq": "Marquee/滚动",
+            "sp": "Spotify/变换"
+        },
+        "upnextTime": "下一首提示显示时间",
+        "backgroundBlur": "背景模糊",
+        "backgroundBrightness": "背景亮度",
+
+        "cgfReset": "重置配置",
+        "reload": "重新载入应用"
+    },
+    "tvBtnDesc": "电视模式显示",
+    "fullscreenBtnDesc": "全屏"
+}

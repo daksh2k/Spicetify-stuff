@@ -1,0 +1,85 @@
+#fsd-volume-container {
+    position: fixed;
+    text-align: center;
+    background-color: transparent;
+    color: var(--primary-color);
+    float: left;
+    top: 30%;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    height: 250px;
+    max-height: 33vh;
+    transition: transform 0.6s var(--transition-function);
+    &.v-hidden {
+        transform: translateX(-100px) scale(0.1);
+    }
+    &.dragging,
+    &:hover{
+        transform: translateX(0px) scale(1)
+    }
+    #fsd-volume {
+        width: 50px;
+        font-size: 18px;
+    }
+    #fsd-volume-bar {
+        margin: 8px 0;
+        border-radius: 4px;
+        background-color: rgba(var(--main-color), 0.35);
+        width: 8px;
+        height: 100%;
+        display: flex;
+        align-items: end;
+        &:hover,
+        &.dragging {
+            #fsd-volume-bar-inner,
+            #volume-thumb {
+                background: var(--theme-main-color);
+                filter: saturate(1.5) contrast(1.5);
+                transition: none;
+            }
+            #volume-thumb {
+                display: block;
+            }
+        }
+        &.dragging {
+            #volume-thumb {
+                transform: scale(1.1);
+            }
+        }
+    }
+    #fsd-volume-bar-inner {
+        width: 100%;
+        border-radius: 4px;
+        background-color: var(--primary-color);
+        // box-shadow: 0 -4px 8px 0 rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+        transition: height 0.1s var(--transition-function);
+    }
+    #fsd-volume-icon svg {
+        fill: var(--primary-color) !important;
+    }
+    #volume-thumb {
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        position: relative;
+        left: -2px;
+        top: -5px;
+        display: none;
+        pointer-events: none;
+    }
+    &.unavailable {
+        #fsd-volume-bar {
+            pointer-events: none;
+        }
+        #fsd-volume-bar-inner {
+            height: 100%;
+            background-color: var(--tertiary-color);
+        }
+    }
+}

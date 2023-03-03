@@ -1,0 +1,29 @@
+{
+  "name": "full-screen",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "build": "spicetify-creator",
+    "build-local": "spicetify-creator --out=dist --minify",
+    "watch": "spicetify-creator --watch"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/lodash.defaultsdeep": "^4.6.7",
+    "@types/lodash.debounce": "^4.0.7",
+    "@types/marked": "^4.0.7",
+    "@types/react": "^18.0.19",
+    "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint": "^8.26.0",
+    "spicetify-creator": "^1.0.11"
+  },
+  "dependencies": {
+    "classnames": "^2.3.2",
+    "lodash.debounce": "^4.0.8",
+    "lodash.defaultsdeep": "^4.6.1",
+    "marked": "^4.1.1",
+    "semver": "^7.3.8"
+  }
+}
