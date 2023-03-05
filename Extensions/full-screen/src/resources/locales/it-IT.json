@@ -1,12 +1,12 @@
 {
     "langName": "Italiano",
     "context": {
-        "queue": "Riproduzione da coda",
+        "queue": "Riproduzione coda",
         "track": "Riproduzione brano",
         "album": "Riproduzione album",
         "artist": "Riproduzione artista",
         "playlist": "Riproduzione playlist",
-        "playlistFolder": "Riproduzione da cartella playlist",
+        "playlistFolder": "Riproduzione da cartella di playlist",
         "search": "Riproduzione da ricerca",
         "searchDest": "Brani",
         "collection": "Riproduzione dalla libreria",
@@ -19,18 +19,27 @@
     "upnext": "In coda",
     "unknownArtist": "Artista sconosciuto",
     "settings": {
-        "switchToTV": "Passa a modalità TV",
-        "switchToFullscreen": "Passa a modalità fullscreen",
+        "switchToTV": "Passa alla modalità TV",
+        "switchToFullscreen": "Passa alla modalità schermo intero",
         "tvModeConfig": "Modalità TV",
-        "fullscreenConfig": "Modalità fullscreen",
+        "fullscreenConfig": "Modalità schermo intero",
         "exit": "Esci",
 
         "pluginSettings": "Impostazioni plugin",
-        "fsHideOriginal": "Pulsante Nascondi Stock (Spotify Premium)",
+        "fsHideOriginal": "Nascondi pulsante Schermo Intero di Premium",
+        "fsHideOriginalDescription": "Nascondi il pulsante Schermo Intero degli utenti **Spotify Premium**. Richiede un riavvio.",
         "language": "Lingua",
-
+        "autoLaunch": {
+            "setting": "Apri automaticamente (all'apertura di Spotify)",
+            "description": "**Limitazione:** La finestra di Spotify non può entrare in modalità schermo intero durante l'avvio all'accensione.",
+            "never": "Mai (Predefinito)",
+            "default": "Apri in modalità default",
+            "tvmode": "Apri in modalità TV",
+            "lastused": "Apri con l'ultima modalità usata"
+        },
         "lyricsHeader": "Impostazioni testo",
         "lyrics": "Mostra testo",
+        "lyricsDescription": ["**Nota:** Serve [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) per usare questa funzione.","Segui le instruzioni nel link per installare l'app."],
         "lyricsAlignment": {
             "setting": "Allineamento testo",
             "left": "Sinistra",
@@ -43,12 +52,12 @@
         "progressBar": "Barra di avanzamento",
         "playerControls": "Controlli player",
         "trimTitle": "Accorcia titolo",
-        "trimTitleUpNext": "Accorcia titolo in Up next",
+        "trimTitleUpNext": "Accorcia titolo nel visualizzatore coda",
         "showAlbum": {
             "setting": "Mostra album",
             "never": "Mai",
             "always": "Sempre",
-            "date": "Mostra con data di uscita"
+            "date": "Con data di uscita"
         },
         "showAllArtists": "Mostra tutti gli artisti",
         "icons": "Icone",
@@ -58,11 +67,13 @@
         "extraHeader": "Funzionalità aggiuntive",
         "backgroundChoice": {
             "setting": "Scelta sfondo",
-            "color": "Tinta unita",
-            "artwork": "Artwork"
+            "dynamicColor": "Tinta unita dinamica",
+            "staticColor": "Tinta unita fissa (scegli sotto)",
+            "artwork": "Immagine dell'album",
+            "artist": "Immagine dell'artista"
         },
         "extraControls": "Controlli aggiuntivi",
-        "upnextDisplay": "Mostra Up next",
+        "upnextDisplay": "Mostra il brano in coda",
         "contextDisplay": {
             "setting": "Mostra contesto",
             "always": "Sempre",
@@ -71,23 +82,24 @@
         },
         "volumeDisplay": {
             "setting": "Mostra barra volume",
+            "description": ["In modalità `smart` la barra del volume sarà mostrata quando:","  - muovi il mouse nella parte sinistra dello schermo."," - il volume viene cambiato."],
             "always": "Sempre",
             "never": "Mai",
-            "mouse": "Al movimento del mouse",
-            "volume": "Al cambio volume"
+            "smart": "Smart"
         },
 
         "appearanceHeader": "Avanzato/Aspetto",
         "appearanceSubHeader": "Cambia solo se sai cosa stai facendo!",
         "backgroundColor": {
             "setting": "Colore su sfondo tinta unita",
-            "vibrant": "Vibrant",
-            "prominent": "Prominent",
+            "vibrant": "Vivace",
+            "prominent": "Evidente",
             "desaturated": "Desaturato (raccomandato)",
-            "lightVibrant": "Vibrant chiaro",
-            "darkVibrant": "Vibrant scuro",
-            "vibrantNonAlarming": "Vibrant delicato"
+            "lightVibrant": "Vivace chiaro",
+            "darkVibrant": "Vivace scuro",
+            "vibrantNonAlarming": "Vivace delicato"
         },
+        "staticColor": "Scelta del colore per lo sfondo statico a tinta unita",
         "themedButtons": "Pulsanti a tema",
         "themedIcons": "Icone a tema",
         "invertColors": {
@@ -105,6 +117,8 @@
         "upnextTime": "Tempo per mostrare Up next",
         "backgroundBlur": "Sfocamento sfondo",
         "backgroundBrightness": "Luminosità sfondo",
+
+        "aboutHeader": "A proposito",
 
         "cgfReset": "Resetta configurazione",
         "reload": "Ricarica client"
