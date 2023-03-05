@@ -57,16 +57,6 @@
     #fsd-album svg {
         flex: 0 0 auto;
     }
-    #fsd-album {
-        position: relative;
-    }
-    #fsd-album svg {
-        position: absolute;
-        top: 7px;
-    }
-    #fsd-album svg + span {
-        margin-left: 40px;
-    }
     #fsd-title {
         font-size: 62px;
         font-weight: 900;
