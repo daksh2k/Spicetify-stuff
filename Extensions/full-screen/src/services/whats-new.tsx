@@ -1,20 +1,40 @@
 import ReactDOM from "react-dom";
 import { version } from "../../package.json";
-import changelog from "../constants/changelog";
+import changelog, { VersionedChangelog } from "../constants/changelog";
 import semverGt from "semver/functions/gt";
 import { marked } from "marked";
 
 export default function showWhatsNew(forcedShow = false) {
+    const [title, content] = getChangelogContent(forcedShow);
     showWhatsNewModal(
         "full-screen",
         version,
         {
-            title: `New in Full Screen v${version}`,
-            content: marked.parse(changelog, { gfm: true, breaks: true }),
+            title: title,
+            content: content,
             isLarge: true,
         },
         forcedShow
     );
+}
+
+function getChangelogContent(forcedShow = false) {
+    let title: string, content: string;
+    if (forcedShow) {
+        title = "New in Full Screen";
+        content = marked.parse(
+            Object.entries(VersionedChangelog)
+                .map(([version, changes]) => {
+                    return `# v${version}\n${changes}`;
+                })
+                .join("\n\n"),
+            { gfm: true, breaks: true }
+        );
+    } else {
+        title = `New in Full Screen v${version}`;
+        content = marked.parse(changelog, { gfm: true, breaks: true });
+    }
+    return [title, content];
 }
 
 interface ModalContent extends Omit<Spicetify.PopupModal.Content, "content"> {
@@ -41,7 +61,11 @@ async function showWhatsNewModal(
 
     try {
         // If versionFromLocalstorage isn't a semver version, it will throw an error
-        if (versionFromLocalstorage === "" || semverGt(currentVersion, versionFromLocalstorage) || forcedShow) {
+        if (
+            versionFromLocalstorage === "" ||
+            semverGt(currentVersion, versionFromLocalstorage) ||
+            forcedShow
+        ) {
             Spicetify.LocalStorage.set(LS_KEY, currentVersion);
             showModal();
         }
