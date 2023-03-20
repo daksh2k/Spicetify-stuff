@@ -16,7 +16,7 @@ Themes/Comfy*
 CustomApps
 node_modules
 .DS_Store
-Extensions/fullscreen
+Extensions/fullscreen-react
 Extensions/full-screen-old
 Extensions/miscExt.js
 Extensions/fluent.js
