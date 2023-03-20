@@ -20,7 +20,7 @@ export default function showWhatsNew(forcedShow = false) {
 
 function getChangelogContent(forcedShow = false) {
     let title: string, content: string;
-    if (forcedShow) {
+    if (forcedShow || localStorage.getItem("whats-new_full-screen-version") === null) {
         title = "New in Full Screen";
         content = marked.parse(
             Object.entries(VersionedChangelog)

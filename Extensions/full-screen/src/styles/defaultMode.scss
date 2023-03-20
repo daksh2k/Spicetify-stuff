@@ -17,6 +17,98 @@
         --fsd-sec-size: 23px;
     }
 
+    @media (max-width: 1400px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 550px;
+            --fsd-items-max-width: 530px;
+            --fsd-title-size: 45px;
+            --fsd-sec-size: 26px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 450px;
+            --fsd-items-max-width: 430px;
+            --fsd-title-size: 38px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 500px;
+            --fsd-items-max-width: 480px;
+            --fsd-title-size: 40px;
+            --fsd-sec-size: 23px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 400px;
+            --fsd-items-max-width: 380px;
+            --fsd-title-size: 38px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 450px;
+            --fsd-items-max-width: 430px;
+            --fsd-title-size: 38px;
+            --fsd-sec-size: 21px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 350px;
+            --fsd-items-max-width: 330px;
+            --fsd-title-size: 36px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 400px;
+            --fsd-items-max-width: 380px;
+            --fsd-title-size: 40px;
+            --fsd-sec-size: 23px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 300px;
+            --fsd-items-max-width: 280px;
+            --fsd-title-size: 36px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
     #fsd-art,
     #fsd-details,
     #fsd-status,
@@ -67,7 +159,7 @@
         align-items: center;
         justify-content: space-between;
         flex-direction: row;
-        &.active{
+        &.active {
             margin: 5px auto 0;
             gap: 10px;
         }
@@ -93,7 +185,7 @@
         width: 35px;
         height: 35px;
     }
-    &.lyrics-active{
+    &.lyrics-active {
         #fsd-title svg {
             width: 30px;
             height: 30px;
