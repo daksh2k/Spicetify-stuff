@@ -1,11 +1,16 @@
 const changelog = `## General
+  - Add support for changing activation methods.
+  - Add support for narrow screens(responsive styling).
+  - Show full changelog for new users.
+  `;
+
+export const VersionedChangelog = {
+    "2.0.2": changelog,
+    "2.0.1": `## General
   - Add a versioned changelog
   - Update Italian translations
   - Bug fixes
-`;
-
-export const VersionedChangelog = {
-    "2.0.1": changelog,
+  `,
     "2.0.0": `## General
   - Rewritten the entire codebase in TypeScript. It is now modular and easier to maintain.
   - Added a changelog for new features.
