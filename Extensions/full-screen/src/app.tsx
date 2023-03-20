@@ -42,8 +42,10 @@ async function main() {
     // Start from here
     showWhatsNew();
 
-    Spicetify.Mousetrap.bind("t", openwithTV);
-    Spicetify.Mousetrap.bind("f", openwithDef);
+    if (CFM.getGlobal("activationTypes") != "btns") {
+        Spicetify.Mousetrap.bind("t", openwithTV);
+        Spicetify.Mousetrap.bind("f", openwithDef);
+    }
 
     function openwithTV() {
         if (!Utils.isModeActivated() || !CFM.getGlobal("tvMode") || CFM.getMode() !== "tv") {
@@ -996,6 +998,21 @@ async function main() {
                 },
                 translations[LOCALE].settings.autoLaunch.description
             ),
+            createOptions(
+                translations[LOCALE].settings.activationTypes.setting,
+                {
+                    both: translations[LOCALE].settings.activationTypes.both,
+                    btns: translations[LOCALE].settings.activationTypes.btns,
+                    keys: translations[LOCALE].settings.activationTypes.keys,
+                },
+                CFM.getGlobal("activationTypes") as Config["activationTypes"],
+                "activationTypes",
+                (value: string) => {
+                    saveGlobalOption("activationTypes", value);
+                    location.reload();
+                },
+                translations[LOCALE].settings.activationTypes.description
+            ),
             headerText(translations[LOCALE].settings.lyricsHeader),
             createToggle(
                 translations[LOCALE].settings.lyrics,
@@ -1273,20 +1290,6 @@ async function main() {
         });
     }
 
-    // Add Full Screen Button on bottom bar
-    const defButton = document.createElement("button");
-    defButton.classList.add("button", "fsd-button", "control-button", "InvalidDropTarget");
-    defButton.id = "fs-button";
-    defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
-
-    defButton.innerHTML = ICONS.FULLSCREEN;
-    defButton.onclick = openwithDef;
-
-    defButton.oncontextmenu = (evt) => {
-        evt.preventDefault();
-        CFM.setMode("def");
-        openConfig();
-    };
     const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0] as HTMLElement;
     if (CFM.getGlobal("fsHideOriginal")) {
         if (
@@ -1295,24 +1298,39 @@ async function main() {
         )
             extraBar?.lastChild?.remove();
     }
+    if (CFM.getGlobal("activationTypes") != "keys") {
+        // Add Full Screen Button on bottom bar
+        const defButton = document.createElement("button");
+        defButton.classList.add("button", "fsd-button", "control-button", "InvalidDropTarget");
+        defButton.id = "fs-button";
+        defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
 
-    (extraBar as HTMLElement)?.append(defButton);
+        defButton.innerHTML = ICONS.FULLSCREEN;
+        defButton.onclick = openwithDef;
 
-    // Add TV Mode Button on top bar
-    const tvButton = document.createElement("button");
-    tvButton.classList.add("button", "tm-button", "main-topBar-button", "InvalidDropTarget");
-    tvButton.innerHTML = ICONS.TV_MODE;
-    tvButton.id = "TV-button";
-    tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
+        defButton.oncontextmenu = (evt) => {
+            evt.preventDefault();
+            CFM.setMode("def");
+            openConfig();
+        };
+        (extraBar as HTMLElement)?.append(defButton);
 
-    tvButton.onclick = openwithTV;
+        // Add TV Mode Button on top bar
+        const tvButton = document.createElement("button");
+        tvButton.classList.add("button", "tm-button", "main-topBar-button", "InvalidDropTarget");
+        tvButton.innerHTML = ICONS.TV_MODE;
+        tvButton.id = "TV-button";
+        tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
 
-    document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
-    tvButton.oncontextmenu = (evt) => {
-        evt.preventDefault();
-        CFM.setMode("tv");
-        openConfig();
-    };
+        tvButton.onclick = openwithTV;
+
+        document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
+        tvButton.oncontextmenu = (evt) => {
+            evt.preventDefault();
+            CFM.setMode("tv");
+            openConfig();
+        };
+    }
 
     render();
 

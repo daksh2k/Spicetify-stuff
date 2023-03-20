@@ -37,6 +37,13 @@
             "tvmode": "Open TV Mode",
             "lastused": "Last Used Mode"
         },
+        "activationTypes":{
+            "setting": "Activation Methods",
+            "description": "Choose the methods you want to use to activate the plugin. <kbd>F</kbd> and <kbd>T</kbd> keys, or buttons on topbar and bottom bar. **Requires reload**",
+            "both": "Buttons and Keyboard Shortcuts",
+            "btns": "Buttons Only",
+            "keys": "Keyboard Shortcuts Only"
+        },
         "lyricsHeader": "Lyrics Settings",
         "lyrics": "Lyrics",
         "lyricsDescription": ["**Note:** You need the [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) custom app to use this feature.","Follow the instructions in the link to install the custom app."],

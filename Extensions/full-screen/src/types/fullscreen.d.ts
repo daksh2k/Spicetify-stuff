@@ -5,6 +5,7 @@ export type Config = {
     locale: string;
     fsHideOriginal: boolean;
     autoLaunch: "never" | "tvmode" | "default" | "lastused";
+    activationTypes: "both" | "btns" | "keys";
 };
 
 export type Settings = {

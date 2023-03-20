@@ -67,4 +67,5 @@ export const DEFAULTS: Config = {
     locale: "en-US",
     fsHideOriginal: false,
     autoLaunch: "never",
+    activationTypes: "both",
 };
