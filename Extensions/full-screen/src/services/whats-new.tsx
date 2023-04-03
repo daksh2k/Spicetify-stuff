@@ -87,37 +87,28 @@ async function showWhatsNewModal(
 }
 
 function wrapHTMLElement(htmlElement: string): Element {
-    const wrapper = document.createElement("div");
-    wrapper.setAttribute("id", "whats-new-content-wrapper");
-
-    const style = document.createElement("style");
-    style.textContent = `
-      #whats-new-content-wrapper ul, #whats-new-content-wrapper ol {
-         list-style: inherit;
-         margin-left: 1em;
-      }
-   `;
-
+    const [wrapper, style] = getWhatsNewElements();
     wrapper.innerHTML = htmlElement;
     wrapper.append(style);
-
     return wrapper;
 }
 
 function wrapReactElement(reactElement: JSX.Element): Element {
+    const [wrapper, style] = getWhatsNewElements();
+    ReactDOM.render(reactElement, wrapper);
+    wrapper.appendChild(style);
+    return wrapper;
+}
+
+function getWhatsNewElements() {
     const wrapper = document.createElement("div");
     wrapper.setAttribute("id", "whats-new-content-wrapper");
-
     const style = document.createElement("style");
     style.textContent = `
       #whats-new-content-wrapper ul, #whats-new-content-wrapper ol {
          list-style: inherit;
-         margin-left: 1em;
+         margin-left: 1.5em;
       }
    `;
-
-    ReactDOM.render(reactElement, wrapper);
-    wrapper.appendChild(style);
-
-    return wrapper;
+    return [wrapper, style];
 }

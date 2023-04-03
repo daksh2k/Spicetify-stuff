@@ -1,11 +1,15 @@
 const changelog = `## General
-  - Add support for changing activation methods.
-  - Add support for narrow screens(responsive styling).
+  - Support for changing activation methods.
+  - Support for customizing activation buttons and keys.
+  - Support for narrow screens(responsive styling).
+  - Context aware reset of settings.
+    - Reset all settings when not active in any mode.
+    - Reset only mode specific settings when active in that mode.
   - Show full changelog for new users.
   `;
 
 export const VersionedChangelog = {
-    "2.0.2": changelog,
+    "2.1.0": changelog,
     "2.0.1": `## General
   - Add a versioned changelog
   - Update Italian translations
