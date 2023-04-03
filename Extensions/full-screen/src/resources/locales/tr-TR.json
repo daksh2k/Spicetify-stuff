@@ -106,7 +106,7 @@
         "backgroundBlur": "Arkaplan'ı bulanıklaştır",
         "backgroundBrightness": "Arka plan parlaklığı",
 
-        "cgfReset": "Ayarları sıfırla",
+        "configReset": "Ayarları sıfırla",
         "reload": "İstemciyi (Spotify) yenile (F5)"
     },
     "tvBtnDesc": "TV Modu'nu göster",

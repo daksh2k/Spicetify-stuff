@@ -106,7 +106,7 @@
         "backgroundBlur": "背景模糊",
         "backgroundBrightness": "背景亮度",
 
-        "cgfReset": "重置配置",
+        "configReset": "重置配置",
         "reload": "重新载入应用"
     },
     "tvBtnDesc": "电视模式显示",

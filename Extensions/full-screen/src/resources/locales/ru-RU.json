@@ -106,7 +106,7 @@
         "backgroundBlur": "Размытие фона",
         "backgroundBrightness": "Яркость фона",
 
-        "cgfReset": "Сбросить настройки",
+        "configReset": "Сбросить настройки",
         "reload": "Перезагрузить приложение"
     },
     "tvBtnDesc": "ТВ-режим",

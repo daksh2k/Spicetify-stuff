@@ -79,18 +79,22 @@ const ConfigManager = {
     setMode(modeValue: "tv" | "def") {
         ACTIVE = modeValue;
     },
-    resetSettings(key: keyof Settings | null = null) {
+    resetSettings(key: keyof Settings | null = null, isGlobal = false) {
         if (CONFIG === null) {
             CONFIG = getConfig(DEFAULTS);
         }
-        if (ACTIVE === null) {
-            ACTIVE = CONFIG.tvMode ? "tv" : "def";
-        }
-        if (key === null) {
-            CONFIG[ACTIVE] = DEFAULTS[ACTIVE];
+        if (isGlobal) {
+            CONFIG = DEFAULTS;
         } else {
-            //@ts-ignore: using bracket notation to access key
-            CONFIG[ACTIVE][key] = DEFAULTS[ACTIVE][key];
+            if (ACTIVE === null) {
+                ACTIVE = CONFIG.tvMode ? "tv" : "def";
+            }
+            if (key === null) {
+                CONFIG[ACTIVE] = DEFAULTS[ACTIVE];
+            } else {
+                //@ts-ignore: using bracket notation to access key
+                CONFIG[ACTIVE][key] = DEFAULTS[ACTIVE][key];
+            }
         }
         saveConfig(CONFIG);
     },

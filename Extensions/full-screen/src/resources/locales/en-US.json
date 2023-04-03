@@ -141,7 +141,7 @@
 
         "aboutHeader": "About",
 
-        "cgfReset": "Reset Config",
+        "configReset": "Reset Config",
         "reload": "Reload Client"
     },
     "tvBtnDesc": "TV Mode Display",

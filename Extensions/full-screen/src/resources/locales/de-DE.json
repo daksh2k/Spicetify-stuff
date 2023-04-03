@@ -106,7 +106,7 @@
         "backgroundBlur": "Hintergrund Blur",
         "backgroundBrightness": "Hintergrund Brightness",
 
-        "cgfReset": "Konfig zurücksetzen",
+        "configReset": "Konfig zurücksetzen",
         "reload": "Client neu laden"
     },
     "tvBtnDesc": "TV Modus",

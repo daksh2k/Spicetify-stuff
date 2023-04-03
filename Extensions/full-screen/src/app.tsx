@@ -846,17 +846,20 @@ async function main() {
         const container = document.createElement("div");
         container.innerHTML = `
         <div class="setting-button-row">
-          <button class="main-buttons-button main-button-secondary" id="reset-switch">${translations[LOCALE].settings.cgfReset}</button>
+          <button class="main-buttons-button main-button-secondary" id="reset-switch">${translations[LOCALE].settings.configReset}</button>
           <button class="main-buttons-button main-button-secondary" id="reload-switch">${translations[LOCALE].settings.reload}</button>
         </div>`;
         container.querySelector<HTMLElement>("#reset-switch")!.onclick = () => {
-            CFM.resetSettings();
-            render();
             if (Utils.isModeActivated()) {
+                CFM.resetSettings();
+                render();
                 activate();
+                configContainer = "";
+                setTimeout(openConfig, 5);
+            } else {
+                CFM.resetSettings(null, true);
+                location.reload();
             }
-            configContainer = "";
-            setTimeout(openConfig, 5);
         };
         container.querySelector<HTMLElement>("#reload-switch")!.onclick = () => {
             location.reload();

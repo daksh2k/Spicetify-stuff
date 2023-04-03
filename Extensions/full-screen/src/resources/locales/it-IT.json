@@ -120,7 +120,7 @@
 
         "aboutHeader": "A proposito",
 
-        "cgfReset": "Resetta configurazione",
+        "configReset": "Resetta configurazione",
         "reload": "Ricarica client"
     },
     "tvBtnDesc": "Modalità TV",
