@@ -68,4 +68,6 @@ export const DEFAULTS: Config = {
     fsHideOriginal: false,
     autoLaunch: "never",
     activationTypes: "both",
+    buttonActivation: "both",
+    keyActivation: "both",
 };

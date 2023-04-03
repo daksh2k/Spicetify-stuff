@@ -44,6 +44,20 @@
             "btns": "Buttons Only",
             "keys": "Keyboard Shortcuts Only"
         },
+        "buttonActivation":{
+            "setting": "Customize Activation Buttons",
+            "description": "Choose the buttons you want for activation, on topbar(*TV Mode*) and bottom bar(*Default Mode*). **Requires reload**",
+            "both": "Buttons for both modes",
+            "tv": "Button only for TV Mode",
+            "def": "Button only for Default Mode"
+        },
+        "keyActivation":{
+            "setting": "Customize Activation Keys",
+            "description": "Choose the keys you want for activation. <kbd>F</kbd> for *Default Mode* and <kbd>T</kbd> for *TV Mode*  **Requires reload**",
+            "both": "Keys for both modes",
+            "tv": "Key only for TV Mode",
+            "def": "Key only for Default Mode"
+        },
         "lyricsHeader": "Lyrics Settings",
         "lyrics": "Lyrics",
         "lyricsDescription": ["**Note:** You need the [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) custom app to use this feature.","Follow the instructions in the link to install the custom app."],

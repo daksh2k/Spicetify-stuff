@@ -6,6 +6,8 @@ export type Config = {
     fsHideOriginal: boolean;
     autoLaunch: "never" | "tvmode" | "default" | "lastused";
     activationTypes: "both" | "btns" | "keys";
+    buttonActivation: "both" | "tv" | "def";
+    keyActivation: "both" | "tv" | "def";
 };
 
 export type Settings = {

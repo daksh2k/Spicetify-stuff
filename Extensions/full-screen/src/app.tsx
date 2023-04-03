@@ -42,9 +42,9 @@ async function main() {
     // Start from here
     showWhatsNew();
 
-    if (CFM.getGlobal("activationTypes") != "btns") {
-        Spicetify.Mousetrap.bind("t", openwithTV);
-        Spicetify.Mousetrap.bind("f", openwithDef);
+    if (CFM.getGlobal("activationTypes") !== "btns") {
+        if (CFM.getGlobal("keyActivation") !== "def") Spicetify.Mousetrap.bind("t", openwithTV);
+        if (CFM.getGlobal("keyActivation") !== "tv") Spicetify.Mousetrap.bind("f", openwithDef);
     }
 
     function openwithTV() {
@@ -1013,6 +1013,36 @@ async function main() {
                 },
                 translations[LOCALE].settings.activationTypes.description
             ),
+            createOptions(
+                translations[LOCALE].settings.buttonActivation.setting,
+                {
+                    both: translations[LOCALE].settings.buttonActivation.both,
+                    tv: translations[LOCALE].settings.buttonActivation.tv,
+                    def: translations[LOCALE].settings.buttonActivation.def,
+                },
+                CFM.getGlobal("buttonActivation") as Config["buttonActivation"],
+                "buttonActivation",
+                (value: string) => {
+                    saveGlobalOption("buttonActivation", value);
+                    location.reload();
+                },
+                translations[LOCALE].settings.buttonActivation.description
+            ),
+            createOptions(
+                translations[LOCALE].settings.keyActivation.setting,
+                {
+                    both: translations[LOCALE].settings.keyActivation.both,
+                    tv: translations[LOCALE].settings.keyActivation.tv,
+                    def: translations[LOCALE].settings.keyActivation.def,
+                },
+                CFM.getGlobal("keyActivation") as Config["keyActivation"],
+                "keyActivation",
+                (value: string) => {
+                    saveGlobalOption("keyActivation", value);
+                    location.reload();
+                },
+                translations[LOCALE].settings.keyActivation.description
+            ),
             headerText(translations[LOCALE].settings.lyricsHeader),
             createToggle(
                 translations[LOCALE].settings.lyrics,
@@ -1299,37 +1329,46 @@ async function main() {
             extraBar?.lastChild?.remove();
     }
     if (CFM.getGlobal("activationTypes") != "keys") {
-        // Add Full Screen Button on bottom bar
-        const defButton = document.createElement("button");
-        defButton.classList.add("button", "fsd-button", "control-button", "InvalidDropTarget");
-        defButton.id = "fs-button";
-        defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
+        if (CFM.getGlobal("buttonActivation") !== "tv") {
+            // Add Full Screen Button on bottom bar
+            const defButton = document.createElement("button");
+            defButton.classList.add("button", "fsd-button", "control-button", "InvalidDropTarget");
+            defButton.id = "fs-button";
+            defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
 
-        defButton.innerHTML = ICONS.FULLSCREEN;
-        defButton.onclick = openwithDef;
+            defButton.innerHTML = ICONS.FULLSCREEN;
+            defButton.onclick = openwithDef;
 
-        defButton.oncontextmenu = (evt) => {
-            evt.preventDefault();
-            CFM.setMode("def");
-            openConfig();
-        };
-        (extraBar as HTMLElement)?.append(defButton);
+            defButton.oncontextmenu = (evt) => {
+                evt.preventDefault();
+                CFM.setMode("def");
+                openConfig();
+            };
+            (extraBar as HTMLElement)?.append(defButton);
+        }
 
-        // Add TV Mode Button on top bar
-        const tvButton = document.createElement("button");
-        tvButton.classList.add("button", "tm-button", "main-topBar-button", "InvalidDropTarget");
-        tvButton.innerHTML = ICONS.TV_MODE;
-        tvButton.id = "TV-button";
-        tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
+        if (CFM.getGlobal("buttonActivation") !== "def") {
+            // Add TV Mode Button on top bar
+            const tvButton = document.createElement("button");
+            tvButton.classList.add(
+                "button",
+                "tm-button",
+                "main-topBar-button",
+                "InvalidDropTarget"
+            );
+            tvButton.innerHTML = ICONS.TV_MODE;
+            tvButton.id = "TV-button";
+            tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
 
-        tvButton.onclick = openwithTV;
+            tvButton.onclick = openwithTV;
 
-        document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
-        tvButton.oncontextmenu = (evt) => {
-            evt.preventDefault();
-            CFM.setMode("tv");
-            openConfig();
-        };
+            document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
+            tvButton.oncontextmenu = (evt) => {
+                evt.preventDefault();
+                CFM.setMode("tv");
+                openConfig();
+            };
+        }
     }
 
     render();
