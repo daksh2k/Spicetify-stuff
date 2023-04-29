@@ -63,13 +63,13 @@ async function main() {
                 skipReasonsKeys.forEach((key) => STATS[key]++);
                 localStorage.setItem("auto-skip:stats", JSON.stringify(STATS));
 
-                Spicetify.Player.toggleMute();
-
                 const keyCallback = skipReasonsKeys.filter((key) => SKIPS[key].callback !== undefined);
                 if (keyCallback.length) {
+                    Spicetify.Player.toggleMute();
                     nextSongMeta =
                         (await SKIPS[keyCallback[Math.floor(Math.random() * keyCallback.length)]].callback(apiMeta)) ??
                         nextSongMeta;
+                    Spicetify.Player.toggleMute();    
                 }
 
                 const totalSkips = Object.values(STATS).reduce((a, b) => a + b, 0);
@@ -77,7 +77,6 @@ async function main() {
                 Spicetify.showNotification(message);
                 console.log(message);
 
-                Spicetify.Player.toggleMute();
                 Spicetify.Player.next();
                 skippedSong = meta;
             }
