@@ -4,6 +4,7 @@ import zhCN from "./locales/zh-CN.json";
 import deDE from "./locales/de-DE.json";
 import trTR from "./locales/tr-TR.json";
 import ruRU from "./locales/ru-RU.json";
+import viVN from "./locales/vi-VN.json";
 
 import defaultsDeep from "lodash.defaultsdeep";
 
@@ -16,6 +17,7 @@ const translations: Record<string, any> = {
     "de-DE": defaultsDeep(deDE, enUS),
     "tr-TR": defaultsDeep(trTR, enUS),
     "ru-RU": defaultsDeep(ruRU, enUS),
+    "vi-VN": defaultsDeep(viVN, enUS),
 };
 
 export default translations;
