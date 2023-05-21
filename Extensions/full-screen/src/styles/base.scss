@@ -249,7 +249,7 @@
         transition: transform var(--transition-duration) var(--transition-function);
         position: absolute;
         right: -50px;
-        max-width: 50%;
+        width: 50%;
         top: 7.5vh;
         .lyrics-lyricsContainer-LyricsContainer {
             --lyrics-color-active: var(--primary-color) !important;
