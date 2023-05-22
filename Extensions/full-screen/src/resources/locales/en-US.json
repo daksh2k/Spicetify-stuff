@@ -37,21 +37,21 @@
             "tvmode": "Open TV Mode",
             "lastused": "Last Used Mode"
         },
-        "activationTypes":{
+        "activationTypes": {
             "setting": "Activation Methods",
             "description": "Choose the methods you want to use to activate the plugin. <kbd>F</kbd> and <kbd>T</kbd> keys, or buttons on topbar and bottom bar. **Requires reload**",
             "both": "Buttons and Keyboard Shortcuts",
             "btns": "Buttons Only",
             "keys": "Keyboard Shortcuts Only"
         },
-        "buttonActivation":{
+        "buttonActivation": {
             "setting": "Customize Activation Buttons",
             "description": "Choose the buttons you want for activation, on topbar(*TV Mode*) and bottom bar(*Default Mode*). **Requires reload**",
             "both": "Buttons for both modes",
             "tv": "Button only for TV Mode",
             "def": "Button only for Default Mode"
         },
-        "keyActivation":{
+        "keyActivation": {
             "setting": "Customize Activation Keys",
             "description": "Choose the keys you want for activation. <kbd>F</kbd> for *Default Mode* and <kbd>T</kbd> for *TV Mode*  **Requires reload**",
             "both": "Keys for both modes",
@@ -60,7 +60,10 @@
         },
         "lyricsHeader": "Lyrics Settings",
         "lyrics": "Lyrics",
-        "lyricsDescription": ["**Note:** You need the [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) custom app to use this feature.","Follow the instructions in the link to install the custom app."],
+        "lyricsDescription": [
+            "**Note:** You need the [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) custom app to use this feature.",
+            "Follow the instructions in the link to install the custom app."
+        ],
         "lyricsAlignment": {
             "setting": "Lyrics Alignment",
             "left": "Left",
@@ -88,9 +91,14 @@
         "extraHeader": "Extra Functionality",
         "backgroundChoice": {
             "setting": "Background Choice",
+            "description": [
+                "**New:** Try out the **animated album art** option! [Insipiration](https://github.com/surfbryce/beautiful-lyrics)",
+                "**Warning:** Looks very beautiful but may be resource intensive, and is experimental."
+            ],
             "dynamicColor": "Dynamic solid color",
             "staticColor": "Static solid color(Choose below)",
             "artwork": "Album art",
+            "animatedArt": "Animated Album Art (Experimental)",
             "artist": "Artist artwork"
         },
         "extraControls": "Extra Controls",
@@ -103,7 +111,11 @@
         },
         "volumeDisplay": {
             "setting": "Volume Bar Display",
-            "description": ["In `smart` mode the volume bar will be displayed when:","  - you move your mouse to the left side of the screen."," - when the volume is changed."],
+            "description": [
+                "In `smart` mode the volume bar will be displayed when:",
+                "  - you move your mouse to the left side of the screen.",
+                " - when the volume is changed."
+            ],
             "always": "Always",
             "never": "Never",
             "smart": "Smart"

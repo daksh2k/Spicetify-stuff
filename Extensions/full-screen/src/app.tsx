@@ -5,7 +5,13 @@ import React from "react";
 
 import Utils from "./utils/utils";
 import CFM from "./utils/config";
-import { animateCanvas, animateColor } from "./utils/animation";
+import {
+    animateCanvas,
+    animateColor,
+    animatedRotatedCanvas,
+    // resetCanvas,
+    modifyIsAnimationRunning,
+} from "./utils/animation";
 import { headerText, getSettingCard, createAdjust, getAboutSection } from "./utils/setting";
 
 import translations from "./resources/strings";
@@ -130,6 +136,9 @@ async function main() {
         Spicetify.Player.origin._events.removeListener("update", updateUpNextShow);
         window.removeEventListener("resize", resizeEvents);
         upNextShown = false;
+
+        modifyIsAnimationRunning(false);
+        // resetCanvas(back);
 
         if (origLoc !== "/lyrics-plus" && Utils.isModeActivated()) {
             Utils.revertPathHistory(origLoc);
@@ -343,7 +352,13 @@ async function main() {
 
     async function updateBackground(meta: Partial<Record<string, unknown>>, fromResize = false) {
         const previousImg = backgroundImg.cloneNode() as HTMLImageElement;
-        switch (CFM.get("backgroundChoice")) {
+
+        const settingValue = CFM.get("backgroundChoice") as Settings["backgroundChoice"];
+
+        back.classList.toggle("animated", settingValue === "animated_album");
+        modifyIsAnimationRunning(settingValue === "animated_album");
+
+        switch (settingValue) {
             case "dynamic_color": {
                 const nextColor = await Utils.getNextColor(
                     CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]
@@ -366,6 +381,16 @@ async function main() {
                     animateCanvas(previousImg, backgroundImg, back, fromResize);
                 };
                 break;
+            case "animated_album": {
+                backgroundImg.src = meta?.image_xlarge_url as string;
+                backgroundImg.onload = () => {
+                    updateMainColor(Spicetify.Player.data.track?.uri, meta);
+                    updateThemeColor(Spicetify.Player.data.track?.uri);
+                    animatedRotatedCanvas(back, backgroundImg);
+                };
+
+                break;
+            }
             case "album_art":
             default:
                 backgroundImg.src = meta?.image_xlarge_url as string;
@@ -751,6 +776,7 @@ async function main() {
     }
 
     function deactivate() {
+        modifyIsAnimationRunning(false);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         container.removeEventListener("mousemove", hideCursor);
         window.removeEventListener("resize", resizeEvents);
@@ -1122,9 +1148,10 @@ async function main() {
             createOptions(
                 translations[LOCALE].settings.backgroundChoice.setting,
                 {
+                    album_art: translations[LOCALE].settings.backgroundChoice.artwork,
+                    animated_album: translations[LOCALE].settings.backgroundChoice.animatedArt,
                     dynamic_color: translations[LOCALE].settings.backgroundChoice.dynamicColor,
                     static_color: translations[LOCALE].settings.backgroundChoice.staticColor,
-                    album_art: translations[LOCALE].settings.backgroundChoice.artwork,
                     artist_art: translations[LOCALE].settings.backgroundChoice.artist,
                 },
                 CFM.get("backgroundChoice") as Settings["backgroundChoice"],
@@ -1134,7 +1161,8 @@ async function main() {
                     if (Utils.isModeActivated()) {
                         updateBackground(Spicetify.Player.data.track?.metadata);
                     }
-                }
+                },
+                translations[LOCALE].settings.backgroundChoice.description.join("<br>")
             ),
             createToggle(translations[LOCALE].settings.extraControls, "extraControls"),
             createToggle(translations[LOCALE].settings.upnextDisplay, "upnextDisplay"),

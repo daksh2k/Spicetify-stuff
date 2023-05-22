@@ -24,7 +24,12 @@ export type Settings = {
     titleMovingIcon: boolean;
     enableFade: boolean;
     enableFullscreen: boolean;
-    backgroundChoice: "static_color" | "dynamic_color" | "album_art" | "artist_art";
+    backgroundChoice:
+        | "static_color"
+        | "dynamic_color"
+        | "album_art"
+        | "artist_art"
+        | "animated_album";
     extraControls: boolean;
     upnextDisplay: boolean;
     contextDisplay: "never" | "mousemove" | "always";

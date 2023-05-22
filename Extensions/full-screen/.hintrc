@@ -4,5 +4,14 @@
   ],
   "hints": {
     "no-inline-styles": "off"
-  }
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not and_chr <= 111",
+    "not chrome <= 111",
+    "not edge <= 111",
+    "not opera <= 95",
+    "not samsung <= 20"
+  ]
 }

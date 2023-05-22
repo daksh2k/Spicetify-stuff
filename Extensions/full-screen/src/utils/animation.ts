@@ -99,6 +99,179 @@ export async function animateColor(nextColor: string, back: HTMLCanvasElement, f
     requestAnimationFrame(animate);
 }
 
+let isAnimationRunning = false;
+
+export const modifyIsAnimationRunning = (value: boolean) => {
+    isAnimationRunning = value;
+};
+
+export function animatedRotatedCanvas(back: HTMLCanvasElement, bgImg: HTMLImageElement) {
+    const ctx = back.getContext("2d") as CanvasRenderingContext2D;
+
+    back.width = window.innerWidth;
+    back.height = window.innerHeight;
+
+    const blur = Math.max(CFM.get("blurSize") as Settings["blurSize"], 28);
+    const brightness = Math.min(
+        CFM.get("backgroundBrightness") as Settings["backgroundBrightness"],
+        0.7
+    );
+
+    ctx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
+
+    const radius = Math.min(back.width, back.height);
+
+    let rotationAngle = 0;
+    const rotationSpeed = 0.25; // Adjust the rotation speed here (smaller value for slower rotation)
+
+    // let lastFrameTime = performance.now();
+    // let frameCount = 0;
+
+    function draw() {
+        ctx.clearRect(0, 0, back.width, back.height);
+
+        ctx.save();
+        ctx.translate(0, 0);
+        ctx.rotate(((2 * Math.PI) / 360) * rotationAngle);
+        ctx.drawImage(bgImg, -radius, -radius, radius * 2, radius * 2);
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(back.width / 2, 0);
+        ctx.rotate(((2 * Math.PI) / 360) * rotationAngle + Math.PI);
+        ctx.drawImage(bgImg, -radius, -radius, radius * 2, radius * 2);
+        ctx.restore();
+
+        rotationAngle += rotationSpeed;
+
+        // Calculate the frame rate
+        // const now = performance.now();
+        // const deltaTime = now - lastFrameTime;
+        // frameCount++;
+        // if (deltaTime >= 1000) {
+        //     const fps = Math.round((frameCount * 1000) / deltaTime);
+        //     console.log(`Frame rate: ${fps} fps`);
+        //     frameCount = 0;
+        //     lastFrameTime = now;
+        // }
+
+        if (isAnimationRunning) requestAnimationFrame(draw);
+    }
+    isAnimationRunning = true;
+    draw();
+}
+
+// export function resetCanvas(canvas: HTMLCanvasElement) {
+//     if (canvas === null || canvas === undefined) return;
+//     console.log("frame resetting canvas");
+//     modifyIsAnimationRunning(false);
+//     const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+// }
+
+// export function animatedRotatedCanvasWebWorker(back: HTMLCanvasElement, bgImg: HTMLImageElement) {
+//     const ctx = back.getContext("2d") as CanvasRenderingContext2D;
+
+//     back.width = window.innerWidth;
+//     back.height = window.innerHeight;
+
+//     const blur = Math.max(CFM.get("blurSize") as Settings["blurSize"], 32);
+//     const brightness = Math.min(
+//         CFM.get("backgroundBrightness") as Settings["backgroundBrightness"],
+//         0.7
+//     );
+
+//     ctx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
+
+//     const radius = Math.min(back.width, back.height);
+
+//     let rotationAngle = 0;
+//     const rotationSpeed = 0.25; // Adjust the rotation speed here (smaller value for slower rotation)
+
+//     // Create a new worker thread
+//     const worker = new Worker("worker.js");
+
+//     // Send the canvas and image data to the worker thread
+//     worker.postMessage({ canvas: back, image: bgImg });
+
+//     // Listen for messages from the worker thread
+//     worker.onmessage = (event) => {
+//         // Copy the off-screen canvas onto the visible canvas
+//         ctx.clearRect(0, 0, back.width, back.height);
+//         ctx.drawImage(event.data, 0, 0);
+//     };
+
+//     isAnimationRunning = true;
+// }
+
+// const offscreenCanvas = document.createElement("canvas");
+// // TODO Test this
+// export function animatedRotatedCanvasOptimized(back: HTMLCanvasElement, bgImg: HTMLImageElement) {
+//     const offscreenCtx = offscreenCanvas.getContext("2d") as CanvasRenderingContext2D;
+//     const ctx = back.getContext("2d") as CanvasRenderingContext2D;
+
+//     offscreenCanvas.width = window.innerWidth;
+//     offscreenCanvas.height = window.innerHeight;
+
+//     back.width = window.innerWidth;
+//     back.height = window.innerHeight;
+
+//     const blur = Math.max(CFM.get("blurSize") as Settings["blurSize"], 32);
+//     const brightness = Math.min(
+//         CFM.get("backgroundBrightness") as Settings["backgroundBrightness"],
+//         0.7
+//     );
+
+//     offscreenCtx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
+
+//     const radius = Math.min(offscreenCanvas.width, offscreenCanvas.height);
+
+//     let rotationAngle = 0;
+//     const rotationSpeed = 0.25; // Adjust the rotation speed here (smaller value for slower rotation)
+
+//     let lastFrameTime = performance.now();
+//     let frameCount = 0;
+
+//     function draw() {
+//         offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height);
+
+//         // Draw the background image
+//         offscreenCtx.save();
+//         offscreenCtx.translate(0, 0);
+//         offscreenCtx.rotate(((2 * Math.PI) / 360) * rotationAngle);
+//         offscreenCtx.drawImage(bgImg, -radius, -radius, radius * 2, radius * 2);
+//         offscreenCtx.restore();
+
+//         // Draw the colored image
+//         offscreenCtx.save();
+//         offscreenCtx.translate(offscreenCanvas.width, 0);
+//         offscreenCtx.rotate(((2 * Math.PI) / 360) * rotationAngle);
+//         offscreenCtx.drawImage(bgImg, -radius, -radius, radius * 2, radius * 2);
+//         offscreenCtx.restore();
+
+//         rotationAngle += rotationSpeed;
+
+//         // Calculate the frame rate
+//         const now = performance.now();
+//         const deltaTime = now - lastFrameTime;
+//         frameCount++;
+//         if (deltaTime >= 1000) {
+//             const fps = Math.round((frameCount * 1000) / deltaTime);
+//             console.log(`Frame rate: ${fps} fps`);
+//             frameCount = 0;
+//             lastFrameTime = now;
+//         }
+
+//         // Copy the off-screen canvas onto the visible canvas
+//         ctx.clearRect(0, 0, back.width, back.height);
+//         ctx.drawImage(offscreenCanvas, 0, 0);
+
+//         if (isAnimationRunning) requestAnimationFrame(draw);
+//     }
+//     isAnimationRunning = true;
+//     draw();
+// }
+
 function getSizeValues(
     parentWidth: number,
     parentHeight: number,
