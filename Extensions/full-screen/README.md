@@ -28,6 +28,7 @@ spicetify apply
 
 ## Screenshots
 
+<img align="center" width="712" height="auto" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjFlOWI1MmEzMDdhNjI5YTY5OWY3YzhlMDJiNGE2OTA4MzMzMDkwZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/EIuHnuq1XIDg4Tt2hx/giphy.gif"><hr>
 <img align="center" src="https://i.imgur.com/9PokE2Q.png" alt="Default Mode" width="712" height="auto"/><hr>
 <img align="center" src="https://i.imgur.com/iyJ6vhm.png" alt="Default Mode" width="712" height="auto"/><hr>
 <img align="center" src="https://i.imgur.com/fvKNSC4.png" alt="Default Mode" width="712" height="auto"/><hr>

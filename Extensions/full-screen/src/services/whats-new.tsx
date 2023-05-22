@@ -109,6 +109,10 @@ function getWhatsNewElements() {
          list-style: inherit;
          margin-left: 1.5em;
       }
+      #whats-new-content-wrapper a{
+            color: var(--spice-button);
+            text-decoration: underline;
+      }
    `;
     return [wrapper, style];
 }
