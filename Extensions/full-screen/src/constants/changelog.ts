@@ -15,11 +15,13 @@ const changelog = `## Animated Background Mode
   
 ## General
   - add Vietnamese translations
+  - update russian translations
+  - update tv mode lyrics width
   - fix lyrics jumping around when choosing center or left alignment
   `;
 
 export const VersionedChangelog = {
-    "2.2.0": changelog,
+    "2.2.1": changelog,
     "2.1.0": `## General
 - Support for changing activation methods.
 - Support for customizing activation buttons and keys.
@@ -29,15 +31,13 @@ export const VersionedChangelog = {
   - Reset only mode specific settings when active in that mode.
 - Show full changelog for new users.`,
     "2.0.1": `## General
-  - Add a versioned changelog
-  - Update Italian translations
-  - Bug fixes
-  `,
-    "2.0.0": `## General
   - Rewritten the entire codebase in TypeScript. It is now modular and easier to maintain.
   - Added a changelog for new features.
   - ⭐New Progress Bar and Volume Bar which are now seekable. Drag away!
   - Overhauled the background and animations to be more fluent in transitions.
+  - Add a versioned changelog
+  - Update Italian translations
+  - Bug fixes
   - Choice of 4 backgrounds to choose from
      - Artist Image
      - Album Image
