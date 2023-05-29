@@ -3,11 +3,11 @@
 -   ## [Save Playlists](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/savePlaylists.js)
 
     **Description:** Save any playlist by right clicking on a playlist > Save Playlist.\
-    A new playlist will be created with the same name+last updated date of the parent playlist.
+    A new playlist will be created with the same name + same image + last updated date of the parent playlist.
 
     ![Save Playlist](https://i.imgur.com/2AEyRrs.png)
 
--   ## [Full Screen Mode](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/fullScreen.js)
+-   ## [Full Screen Mode](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/full-screen)
 
     **Description:** Modified from the [fullAppDisplay.js](https://github.com/spicetify/spicetify-cli/blob/master/Extensions/fullAppDisplay.js) with added features.\
     Fancy artwork and track status display.\
@@ -56,7 +56,7 @@
       <img align="center" src="https://i.imgur.com/LtYLHiv.jpg" alt="TV Mode2" width="712" height="auto"/>
     </details>
 
--   ## [Auto Skip](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/autoSkip.js)
+-   ## [Auto Skip](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/auto-skip)
 
     **Description:** Auto Skip Certain Songs such as remixes, acoustics etc.\
     Toggle in Profile menu for each skipping option you want.
@@ -74,6 +74,7 @@
     -   Radio/Censored Songs
     -   Explicit Songs
     -   Christmas Songs
+    -   Liked Songs
 
 -   ## [Play Next](https://github.com/daksh2k/Spicetify-stuff/blob/master/Extensions/playNext.js)
 

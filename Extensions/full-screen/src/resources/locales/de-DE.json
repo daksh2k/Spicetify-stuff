@@ -1,0 +1,114 @@
+{
+    "langName": "Deutsch",
+    "context": {
+        "queue": "Wiedergabe aus der Warteschlange",
+        "track": "Titel spielen",
+        "album": "Abspielen von Album",
+        "artist": "Abspielen von Künstler",
+        "playlist": "Abspielen von Playlist",
+        "playlistFolder": "Wiedergabe aus dem Playlist-Ordner",
+        "search": "Wiedergabe aus Suche",
+        "searchDest": "Lieder",
+        "collection": "Abspielen aus Sammlung",
+        "likedSongs": "Lieblingssongs",
+        "trackRadio": "Abspielen von Titel Radio",
+        "artistRadio": "Abspielen von Künstler Radio",
+        "albumRadio": "Abspielen von Alben Radio",
+        "playlistRadio": "Abspielen von Playlist Radio"
+    },
+    "upnext": "ALS NÄCHSTES",
+    "unknownArtist": "Künstler (nicht verfügbar)",
+    "settings": {
+        "switchToTV": "Wechseln zu TV-Modus",
+        "switchToFullscreen": "Einstellungen des Vollbildmodis",
+        "tvModeConfig": "Konfiguration des TV-Modus",
+        "fullscreenConfig": "Vollbildmodus konfiguration",
+        "exit": "Exit",
+
+        "pluginSettings": "Plugin Einstellungen",
+        "fsHideOriginal": "Stock-Schaltfläche ausblenden (Spotify Premium)",
+        "language": "Sprache",
+
+        "lyricsHeader": "Ausrichtung des Liedtextes",
+        "lyrics": "Liedtext",
+        "lyricsAlignment": {
+            "setting": "Liedtext Ausrichtung",
+            "left": "Links",
+            "center": "Center",
+            "right": "Rechts"
+        },
+        "lyricsAnimationTempo": "Liedtext Animationtempo",
+
+        "generalHeader": "Allgemeine Einstellungen",
+        "progressBar": "Fortschritt anzeige",
+        "playerControls": "Wiedegergabe steuerung",
+        "trimTitle": "Titel trimmen",
+        "trimTitleUpNext": "Trim Title(Up Next)",
+        "showAlbum": {
+            "setting": "Album anzeigen",
+            "never": "Niemals",
+            "always": "Immer",
+            "date": "Veröffentlichungsdatum anzeigen"
+        },
+        "showAllArtists": "Alle Künstler anzeigen",
+        "icons": "Symbole",
+        "songChangeAnimation": "Songwechsel-Animation",
+        "fullscreen": "Vollbildmodus",
+
+        "extraHeader": "Zusätzliche Funktionalität",
+        "backgroundChoice": {
+            "setting": "Hintergrundauswahl",
+            "color": "Einfarbig",
+            "artwork": "Titelbild"
+        },
+        "extraControls": "Zusätzliche Steuerelemente",
+        "upnextDisplay": "Nächste-titel Anzeige",
+        "contextDisplay": {
+            "setting": "Kontextanzeige",
+            "always": "Immer",
+            "never": "Niemals",
+            "mouse": "Bei Mausbewegung"
+        },
+        "volumeDisplay": {
+            "setting": "Anzeige der Lautstärkenleiste",
+            "always": "Immer",
+            "never": "Niemals",
+            "mouse": "Bei Mausbewegung",
+            "volume": "Bei Lautstärkeänderung"
+        },
+
+        "appearanceHeader": "Erweitert/Aussehen",
+        "appearanceSubHeader": "Achtung! Ändern diese Einstellungen, wenn Sie wissen, was Sie tun!",
+        "backgroundColor": {
+            "setting": "Farbwahl auf farbigem Hintergrund",
+            "vibrant": "Beschwingt",
+            "prominent": "Prominente",
+            "desaturated": "Entsättigt (empfohlen)",
+            "lightVibrant": "Hell lebendig",
+            "darkVibrant": "Dunkel lebendig",
+            "vibrantNonAlarming": "Lebhaft, nicht alarmierend"
+        },
+        "themedButtons": "Themed Tasten",
+        "themedIcons": "Themed Symbole",
+        "invertColors": {
+            "setting": "Farben umkehren",
+            "never": "Niemals",
+            "always": "Immer",
+            "auto": "Automatisch (basierend auf Hintergrund)"
+        },
+        "backAnimationTime": "Background Animation Time",
+        "upnextScroll": {
+            "setting": "Nächstes Lied Scroll-Animation",
+            "mq": "Marquee/Scrolling",
+            "sp": "Spotify/Translating"
+        },
+        "upnextTime": "Nächster Titel Anzeigedauer",
+        "backgroundBlur": "Hintergrund Blur",
+        "backgroundBrightness": "Hintergrund Brightness",
+
+        "configReset": "Konfig zurücksetzen",
+        "reload": "Client neu laden"
+    },
+    "tvBtnDesc": "TV Modus",
+    "fullscreenBtnDesc": "Vollbild"
+}

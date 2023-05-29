@@ -4,7 +4,7 @@
     "description": "Fancy artwork display. Modified from FAD with extra features.",
     "preview": "https://i.imgur.com/uPbnZkz.png",
     "main": "Extensions/Wrappers/fullScreenWrapper.js",
-    "readme": "EXTENSIONS.md#full-screen-mode"
+    "readme": "Extensions/full-screen/README.md"
   },
   {
     "name": "Save Playlists",

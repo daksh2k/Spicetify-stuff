@@ -1,0 +1,48 @@
+$text-color: #fff;
+$background-color: #121212;
+$card-background-color: #282828;
+$border-radius: 7px;
+
+.fsd-settings-overlay {
+    z-index: 1000 !important;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.fsd-settings-container {
+    background-color: $background-color;
+    border-radius: $border-radius;
+    border: 2px solid #555;
+    color: $text-color;
+    flex-direction: column;
+    padding: 7px;
+    height: 75vh;
+    max-height: 600px;
+    width: clamp(700px, 75vw, 800px);
+}
+
+.fsd-settings-header {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.fsd-settings-closeBtn {
+    color: $text-color;
+    background: none;
+    outline: none;
+    border: none;
+    border-radius: $border-radius;
+    padding: 7px;
+    &:hover {
+        background-color: $card-background-color;
+    }
+}

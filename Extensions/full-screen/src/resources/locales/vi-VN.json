@@ -1,0 +1,153 @@
+{
+    "langName": "Tiếng Việt",
+    "context": {
+        "queue": "Đang phát từ hàng chờ",
+        "track": "Đang phát từ bài hát",
+        "album": "Đang phát từ album",
+        "artist": "Đang phát từ nghệ sĩ",
+        "playlist": "Đang phát từ danh sách phát",
+        "playlistFolder": "Đang phát từ thư mục danh sách phát",
+        "search": "Đang phát từ tìm kiếm",
+        "searchDest": "Bài hát",
+        "collection": "Đang phát từ bộ sưu tập",
+        "likedSongs": "Bài hát đã thích",
+        "trackRadio": "Đang phát từ đài phát của bài hát",
+        "artistRadio": "Đang phát từ đài phát của nghệ sĩ",
+        "albumRadio": "Đang phát từ đài phát của album",
+        "playlistRadio": "Đang phát từ đài phát của danh sách phát"
+    },
+    "upnext": "TIẾP THEO",
+    "unknownArtist": "Nghệ sĩ (Không khả dụng)",
+    "settings": {
+        "switchToTV": "Chuyển sang chế độ TV",
+        "switchToFullscreen": "Chuyển sang chế độ mặc định",
+        "tvModeConfig": "Tùy chỉnh chế độ TV",
+        "fullscreenConfig": "Tùy chính chế độ toàn màn hình",
+        "exit": "Thoát",
+
+        "pluginSettings": "Cài đặt Plugin",
+        "fsHideOriginal": "Ẩn nút mặc định",
+        "fsHideOriginalDescription": "Ẩn nút toàn màn hình mặc định của Spotify (yêu cầu là người dùng **Premium**). Yêu cầu tải lại.",
+        "language": "Ngôn ngữ",
+        "autoLaunch": {
+            "setting": "Tự khởi động (khi Spotify khởi động)",
+            "description": "**Hạn chế:** Cửa sổ Spotify sẽ không thể mở toàn màn hình khi được tự động khởi chạy với hệ thống.",
+            "never": "Không bao giờ (Mặc định)",
+            "default": "Mở chế độ mặc định",
+            "tvmode": "Mở chế độ TV",
+            "lastused": "Chế độ dùng lần cuối"
+        },
+        "activationTypes": {
+            "setting": "Phương thức kích hoạt",
+            "description": "Chọn phương thức bạn muốn để kích hoạt Plugin. Phím <kbd>F</kbd> và <kbd>T</kbd>, hoặc là nút ở trên thanh điều hướng và thanh trình phát. **Yêu cầu tải lại**",
+            "both": "Nút và phím tắt",
+            "btns": "Chỉ nút",
+            "keys": "Chỉ phím tắt"
+        },
+        "buttonActivation": {
+            "setting": "Tùy chính nút kích hoạt",
+            "description": "Chọn nút bạn muốn để kích hoạt, trên thanh điều hướng (*Chế độ TV*) và thanh trình phát (*Chế độ mặc định*). **Yêu cầu tải lại**",
+            "both": "Nút cho cả hai chế độ",
+            "tv": "Chỉ cho chế độ TV",
+            "def": "Chỉ cho chế độ mặc định"
+        },
+        "keyActivation": {
+            "setting": "Tùy chỉnh phím kích hoạt",
+            "description": "Chọn phím bạn muốn để kích hoạt. <kbd>F</kbd> cho *Chế độ mặc định* và <kbd>T</kbd> cho *Chế độ TV*  **Yêu cầu tải lại**",
+            "both": "Phím cho cả hai chế độ",
+            "tv": "Chỉ cho chế độ TV",
+            "def": "Chỉ cho chế độ mặc định"
+        },
+        "lyricsHeader": "Cài đặt lời bài hát",
+        "lyrics": "Lời bài hát",
+        "lyricsDescription": [
+            "**Ghi chú:** Bạn sẽ cần ứng dụng [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) để dùng tính năng này.",
+            "Làm theo các bước trên chỉ dẫn để cài đặt ứng dụng."
+        ],
+        "lyricsAlignment": {
+            "setting": "Căn chỉnh lời bài hát",
+            "left": "Trái",
+            "center": "Giữa",
+            "right": "Phải"
+        },
+        "lyricsAnimationTempo": "Nhịp điệu hoạt họa",
+        "generalHeader": "Cài đặt tổng quát",
+        "progressBar": "Thanh tiến trình",
+        "playerControls": "Điều khiển trình phát",
+        "trimTitle": "Lược bỏ tiêu đề",
+        "trimTitleUpNext": "Lược bỏ tiêu đề (Bài hát kế tiếp)",
+        "showAlbum": {
+            "setting": "Hiện album",
+            "never": "Không bao giờ",
+            "always": "Luôn hiện",
+            "date": "Hiện với ngày phát hành"
+        },
+        "showAllArtists": "Hiện toàn bộ nghệ sĩ",
+        "icons": "Icon",
+        "songChangeAnimation": "Hoạt họa chuyển bài hát",
+        "fullscreen": "Toàn màn hình",
+        "extraHeader": "Tính năng bổ sung",
+        "backgroundChoice": {
+            "setting": "Tùy chọn hình nền",
+            "dynamicColor": "Hình nền màu động",
+            "staticColor": "Hình nền màu tĩnh (Chọn bên dưới)",
+            "artwork": "Ảnh bìa album",
+            "artist": "Ảnh bìa nghệ sĩ"
+        },
+        "extraControls": "Điều khiển bổ sung",
+        "upnextDisplay": "Hiện bài hát tiếp theo",
+        "contextDisplay": {
+            "setting": "Hiện tùy chọn",
+            "always": "Luôn hiện",
+            "never": "Không bao giờ",
+            "mouse": "Khi chuột di chuyển"
+        },
+        "volumeDisplay": {
+            "setting": "Hiển thị thanh âm lượng",
+            "description": [
+                "Trong chế độ `thông minh`, thanh âm lượng sẽ được hiển thị khi:",
+                "  - bạn di chuyển chuột về phía trái màn hình.",
+                " - âm lượng thay đổi."
+            ],
+            "always": "Luôn hiện",
+            "never": "Không bao giờ",
+            "smart": "Thông minh"
+        },
+        "appearanceHeader": "Nâng cao/Giao diện",
+        "appearanceSubHeader": "*(Chỉ thay đổi nếu bạn biết bạn đang làm gì!)*",
+        "backgroundColor": {
+            "setting": "Tùy chọn màu cho hình nền màu động",
+            "vibrant": "Sống động",
+            "prominent": "Nổi bật",
+            "desaturated": "Khử bão hòa (được khuyến nghị)",
+            "lightVibrant": "Sống động (sáng)",
+            "darkVibrant": "Sống động (tối)",
+            "vibrantNonAlarming": "Không quá sống động"
+        },
+        "staticColor": "Tùy chọn màu cho hình nền màu tĩnh",
+        "themedButtons": "Nút được chỉnh theo màu",
+        "themedIcons": "Icon được chỉnh theo màu",
+        "invertColors": {
+            "setting": "Đảo ngược màu",
+            "never": "Không bao giờ",
+            "always": "Luôn đảo ngược",
+            "auto": "Tự động (Dựa trên hình nền)"
+        },
+        "backAnimationTime": "Thời gian hoạt họa của hình nền",
+        "upnextScroll": {
+            "setting": "Hoạt họa của bài hát tiếp theo",
+            "mq": "Marquee/Scrolling",
+            "sp": "Spotify/Translating"
+        },
+        "upnextTime": "Thời gian hiện thông báo bài hát tiếp theo",
+        "backgroundBlur": "Làm mờ hình nền",
+        "backgroundBrightness": "Độ sáng hình nền",
+
+        "aboutHeader": "Thông tin",
+
+        "configReset": "Đặt lại cài đặt",
+        "reload": "Tải lại Client"
+    },
+    "tvBtnDesc": "Chế độ TV",
+    "fullscreenBtnDesc": "Toàn màn hình"
+}

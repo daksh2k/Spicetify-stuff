@@ -1,0 +1,33 @@
+#fsd-status {
+    position: absolute;
+    width: 100%;
+    padding: 0 75px;
+    max-width: 100vw;
+    margin: 0 auto;
+    bottom: 7vh;
+}
+#full-screen-display[mode=tv] #fsd-progress-parent {
+    position: absolute;
+    width: 100%;
+    padding: 0 50px;
+    max-width: 100vw;
+    margin: 0 auto;
+    bottom: 15vh;
+}
+#full-screen-display .fs-button {
+    margin: 0 3px;
+    background: transparent;
+    border: 0;
+    border-radius: 25%;
+    color: var(--primary-color);
+    padding: 3px 5px 0 5px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s var(--transition-function), transform 0.1s var(--transition-function);
+    width: 60px;
+    height: 60px;
+}
+.fs-button svg {
+    width: 45px;
+    height: 45px;
+}

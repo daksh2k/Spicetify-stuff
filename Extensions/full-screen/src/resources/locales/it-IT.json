@@ -1,0 +1,128 @@
+{
+    "langName": "Italiano",
+    "context": {
+        "queue": "Riproduzione coda",
+        "track": "Riproduzione brano",
+        "album": "Riproduzione album",
+        "artist": "Riproduzione artista",
+        "playlist": "Riproduzione playlist",
+        "playlistFolder": "Riproduzione da cartella di playlist",
+        "search": "Riproduzione da ricerca",
+        "searchDest": "Brani",
+        "collection": "Riproduzione dalla libreria",
+        "likedSongs": "Brani che ti piacciono",
+        "trackRadio": "Radio dal brano",
+        "artistRadio": "Radio da artista",
+        "albumRadio": "Radio da album",
+        "playlistRadio": "Radio da playlist"
+    },
+    "upnext": "In coda",
+    "unknownArtist": "Artista sconosciuto",
+    "settings": {
+        "switchToTV": "Passa alla modalità TV",
+        "switchToFullscreen": "Passa alla modalità schermo intero",
+        "tvModeConfig": "Modalità TV",
+        "fullscreenConfig": "Modalità schermo intero",
+        "exit": "Esci",
+
+        "pluginSettings": "Impostazioni plugin",
+        "fsHideOriginal": "Nascondi pulsante Schermo Intero di Premium",
+        "fsHideOriginalDescription": "Nascondi il pulsante Schermo Intero degli utenti **Spotify Premium**. Richiede un riavvio.",
+        "language": "Lingua",
+        "autoLaunch": {
+            "setting": "Apri automaticamente (all'apertura di Spotify)",
+            "description": "**Limitazione:** La finestra di Spotify non può entrare in modalità schermo intero durante l'avvio all'accensione.",
+            "never": "Mai (Predefinito)",
+            "default": "Apri in modalità default",
+            "tvmode": "Apri in modalità TV",
+            "lastused": "Apri con l'ultima modalità usata"
+        },
+        "lyricsHeader": "Impostazioni testo",
+        "lyrics": "Mostra testo",
+        "lyricsDescription": ["**Nota:** Serve [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) per usare questa funzione.","Segui le instruzioni nel link per installare l'app."],
+        "lyricsAlignment": {
+            "setting": "Allineamento testo",
+            "left": "Sinistra",
+            "center": "Centro",
+            "right": "Destra"
+        },
+        "lyricsAnimationTempo": "Durata animazione testo",
+
+        "generalHeader": "Impostazioni generali",
+        "progressBar": "Barra di avanzamento",
+        "playerControls": "Controlli player",
+        "trimTitle": "Accorcia titolo",
+        "trimTitleUpNext": "Accorcia titolo nel visualizzatore coda",
+        "showAlbum": {
+            "setting": "Mostra album",
+            "never": "Mai",
+            "always": "Sempre",
+            "date": "Con data di uscita"
+        },
+        "showAllArtists": "Mostra tutti gli artisti",
+        "icons": "Icone",
+        "songChangeAnimation": "Animazione cambio brano",
+        "fullscreen": "Schermo intero",
+
+        "extraHeader": "Funzionalità aggiuntive",
+        "backgroundChoice": {
+            "setting": "Scelta sfondo",
+            "dynamicColor": "Tinta unita dinamica",
+            "staticColor": "Tinta unita fissa (scegli sotto)",
+            "artwork": "Immagine dell'album",
+            "artist": "Immagine dell'artista"
+        },
+        "extraControls": "Controlli aggiuntivi",
+        "upnextDisplay": "Mostra il brano in coda",
+        "contextDisplay": {
+            "setting": "Mostra contesto",
+            "always": "Sempre",
+            "never": "Mai",
+            "mouse": "Al movimento del mouse"
+        },
+        "volumeDisplay": {
+            "setting": "Mostra barra volume",
+            "description": ["In modalità `smart` la barra del volume sarà mostrata quando:","  - muovi il mouse nella parte sinistra dello schermo."," - il volume viene cambiato."],
+            "always": "Sempre",
+            "never": "Mai",
+            "smart": "Smart"
+        },
+
+        "appearanceHeader": "Avanzato/Aspetto",
+        "appearanceSubHeader": "Cambia solo se sai cosa stai facendo!",
+        "backgroundColor": {
+            "setting": "Colore su sfondo tinta unita",
+            "vibrant": "Vivace",
+            "prominent": "Evidente",
+            "desaturated": "Desaturato (raccomandato)",
+            "lightVibrant": "Vivace chiaro",
+            "darkVibrant": "Vivace scuro",
+            "vibrantNonAlarming": "Vivace delicato"
+        },
+        "staticColor": "Scelta del colore per lo sfondo statico a tinta unita",
+        "themedButtons": "Pulsanti a tema",
+        "themedIcons": "Icone a tema",
+        "invertColors": {
+            "setting": "Inverti colori",
+            "never": "Mai",
+            "always": "Sempre",
+            "auto": "Automatico (basato su sfondo)"
+        },
+        "backAnimationTime": "Durata animazione sfondo",
+        "upnextScroll": {
+            "setting": "Scorrimento Up next",
+            "mq": "Scorrimento",
+            "sp": "Traslazione"
+        },
+        "upnextTime": "Tempo per mostrare Up next",
+        "backgroundBlur": "Sfocamento sfondo",
+        "backgroundBrightness": "Luminosità sfondo",
+
+        "aboutHeader": "A proposito",
+
+        "configReset": "Resetta configurazione",
+        "reload": "Ricarica client"
+    },
+    "tvBtnDesc": "Modalità TV",
+    "fullscreenBtnDesc": "Schermo intero"
+}

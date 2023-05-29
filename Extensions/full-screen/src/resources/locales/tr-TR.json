@@ -1,0 +1,114 @@
+{
+    "langName": "Turkish",
+    "context": {
+        "queue": "Çalma sırasından çalınıyor",
+        "track": "Parça çalınıyor",
+        "album": "Albümden oynatılıyor",
+        "artist": "Sanatçı'dan oynatılıyor",
+        "playlist": "Çalma Listesi'den oynatılıyor",
+        "playlistFolder": "Çalma Listesi Klasöründen oynatılıyor",
+        "search": "Arama'dan oynatılıyor",
+        "searchDest": "Parçalar",
+        "collection": "Koleksiyon'dan oynatılıyor",
+        "likedSongs": "Beğenilen şarkılar",
+        "trackRadio": "Parça Radyosu'ndan oynatılıyor",
+        "artistRadio": "Sanatçı Radyosu'ndan oynatılıyor",
+        "albumRadio": "Albüm Radyosu'ndan oynatılıyor",
+        "playlistRadio": "Çalma Listesi Radyosu'ndan oynatılıyor"
+    },
+    "upnext": "SONRAKİ",
+    "unknownArtist": "Sanatçı (Mevcut değil)",
+    "settings": {
+        "switchToTV": "TV Moduna geç",
+        "switchToFullscreen": "Tam ekran moduna geç",
+        "tvModeConfig": "TV Modu ayarları",
+        "fullscreenConfig": "Tam ekran modu ayarları",
+        "exit": "Çık",
+
+        "pluginSettings": "Eklenti ayarları",
+        "fsHideOriginal": "Tam ekran tuşunu gizle(Spotify Premium kullanıcıları için)",
+        "language": "Dil",
+
+        "lyricsHeader": "Şarkı sözleri ayarları",
+        "lyrics": "Şarkı sözleri",
+        "lyricsAlignment": {
+            "setting": "Şarkı sözleri konumu",
+            "left": "Sol",
+            "center": "Orta",
+            "right": "Sağ"
+        },
+        "lyricsAnimationTempo": "Şarkı sözleri animasyonu hızı",
+
+        "generalHeader": "Genel ayarlar",
+        "progressBar": "İlerleme çubuğu",
+        "playerControls": "Oynatıcı kontrolleri",
+        "trimTitle": "Başlığı kırp",
+        "trimTitleUpNext": "Başlığı kırp (Sonraki şarkı gösterimi)",
+        "showAlbum": {
+            "setting": "Albüm'ü göster",
+            "never": "Asla",
+            "always": "Her zaman",
+            "date": "Albüm'ün yayınlanma tarihini göster"
+        },
+        "showAllArtists": "Şarkıya katkısı olan tüm sanatçıları göster",
+        "icons": "Simgeler",
+        "songChangeAnimation": "Şarkı değiştirme animasyonu",
+        "fullscreen": "Tam ekran",
+
+        "extraHeader": "Ekstra özellikler",
+        "backgroundChoice": {
+            "setting": "Arka plan özellikleri",
+            "color": "Tek renk",
+            "artwork": "Albüm kapağı"
+        },
+        "extraControls": "Ekstra Kontroller",
+        "upnextDisplay": "Sonraki şarkıyı gösterme",
+        "contextDisplay": {
+            "setting": "Ayrıntıları gösterme",
+            "always": "Her zaman",
+            "never": "Asla",
+            "mouse": "Yalnızca mause hareketinde"
+        },
+        "volumeDisplay": {
+            "setting": "Ses çubuğunu gösterme",
+            "always": "Her zaman",
+            "never": "Asla",
+            "mouse": "Yalnızca mause hareketinde",
+            "volume": "Yalnızca ses düzeyi değiştiği zaman"
+        },
+
+        "appearanceHeader": "Gelişmiş/Görünüm",
+        "appearanceSubHeader": "Dikkat! Yalnızca ne yaptığını biliyorsan değiştir.",
+        "backgroundColor": {
+            "setting": "Arkaplan özel renk tercihi",
+            "vibrant": "Parlak",
+            "prominent": "Öne çıkan",
+            "desaturated": "Soluk (önerilir)",
+            "lightVibrant": "Açık parlak",
+            "darkVibrant": "Karanlık parlak",
+            "vibrantNonAlarming": "Göz almayan parlak"
+        },
+        "themedButtons": "Albüm resminin renklerine göre tuşlar",
+        "themedIcons": "Albüm resminin renklerine göre simgeler",
+        "invertColors": {
+            "setting": "Renkleri ters çevir",
+            "never": "Asla",
+            "always": "Her zaman",
+            "auto": "Otomatik (Arka plana göre)"
+        },
+        "backAnimationTime": "Arkaplan animasyon stili",
+        "upnextScroll": {
+            "setting": "Sonraki şarkı yazı animasyonu",
+            "mq": "Marquee/Kayan",
+            "sp": "Spotify/Sağa sola giden"
+        },
+        "upnextTime": "Sonraki şarkı kaçıncı saniyeden sonra gösterilsin? ",
+        "backgroundBlur": "Arkaplan'ı bulanıklaştır",
+        "backgroundBrightness": "Arka plan parlaklığı",
+
+        "configReset": "Ayarları sıfırla",
+        "reload": "İstemciyi (Spotify) yenile (F5)"
+    },
+    "tvBtnDesc": "TV Modu'nu göster",
+    "fullscreenBtnDesc": "Tam ekran"
+}

@@ -1,0 +1,237 @@
+#full-screen-display[mode="def"] {
+    &,
+    &.lyrics-unavailable,
+    &.lyrics-hide-force {
+        --fsd-foreground-transform: 50%;
+        --fsd-art-max-width: 600px;
+        --fsd-items-max-width: 580px;
+        --fsd-title-size: 50px;
+        --fsd-sec-size: 28px;
+    }
+    &.lyrics-active
+        :not(#full-screen-display.lyrics-unavailable *, #full-screen-display.lyrics-hide-force *) {
+        --fsd-foreground-transform: 0px;
+        --fsd-art-max-width: 500px;
+        --fsd-items-max-width: 480px;
+        --fsd-title-size: 40px;
+        --fsd-sec-size: 23px;
+    }
+
+    @media (max-width: 1400px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 550px;
+            --fsd-items-max-width: 530px;
+            --fsd-title-size: 45px;
+            --fsd-sec-size: 26px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 450px;
+            --fsd-items-max-width: 430px;
+            --fsd-title-size: 38px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    @media (max-width: 1200px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 500px;
+            --fsd-items-max-width: 480px;
+            --fsd-title-size: 40px;
+            --fsd-sec-size: 23px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 400px;
+            --fsd-items-max-width: 380px;
+            --fsd-title-size: 38px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 450px;
+            --fsd-items-max-width: 430px;
+            --fsd-title-size: 38px;
+            --fsd-sec-size: 21px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 350px;
+            --fsd-items-max-width: 330px;
+            --fsd-title-size: 36px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        &,
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 50%;
+            --fsd-art-max-width: 400px;
+            --fsd-items-max-width: 380px;
+            --fsd-title-size: 40px;
+            --fsd-sec-size: 23px;
+        }
+        &.lyrics-active
+            :not(
+                #full-screen-display.lyrics-unavailable *,
+                #full-screen-display.lyrics-hide-force *
+            ) {
+            --fsd-foreground-transform: 0px;
+            --fsd-art-max-width: 300px;
+            --fsd-items-max-width: 280px;
+            --fsd-title-size: 36px;
+            --fsd-sec-size: 20px;
+        }
+    }
+
+    #fsd-art,
+    #fsd-details,
+    #fsd-status,
+    #fsd-progress-parent {
+        transition: all var(--transition-duration) var(--transition-function);
+    }
+
+    #fsd-foreground {
+        transform: translateX(var(--fsd-foreground-transform));
+        width: 50%;
+        flex-direction: column;
+        text-align: center;
+    }
+    #fsd-art {
+        width: calc(100vh - 300px);
+        max-width: var(--fsd-art-max-width);
+        min-width: 300px;
+    }
+
+    #fsd-title {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+    }
+    #fsd-album,
+    #fsd-artist {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+    #fsd-progress-parent {
+        width: 28vw;
+        max-width: var(--fsd-items-max-width);
+    }
+    #fsd-details {
+        padding-top: 30px;
+        line-height: initial;
+        max-width: var(--fsd-items-max-width);
+        color: var(--primary-color);
+    }
+    #fsd-status {
+        display: flex;
+        width: 28vw;
+        max-width: var(--fsd-items-max-width);
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: row;
+        &.active {
+            margin: 5px auto 0;
+            gap: 10px;
+        }
+    }
+    #fsd-title {
+        font-size: var(--fsd-title-size);
+        font-weight: 900;
+        transition: all var(--transition-duration) var(--transition-function);
+    }
+    #fsd-artist,
+    #fsd-album {
+        font-size: var(--fsd-sec-size);
+        transition: all var(--transition-duration) var(--transition-function);
+    }
+    @media (max-width: 900px), (max-height: 900px) {
+        #fsd-title {
+            font-size: 35px;
+            font-weight: 600;
+        }
+    }
+
+    #fsd-title svg {
+        width: 35px;
+        height: 35px;
+    }
+    &.lyrics-active {
+        #fsd-title svg {
+            width: 30px;
+            height: 30px;
+        }
+        #playing-icon {
+            margin-right: 2px;
+        }
+    }
+    &.lyrics-unavailable,
+    &.lyrics-hide-force {
+        #fsd-title svg {
+            width: 35px;
+            height: 35px;
+        }
+        #playing-icon {
+            margin-right: 7px;
+        }
+    }
+    #playing-icon {
+        width: 28px !important;
+        height: 28px !important;
+        margin-right: 7px;
+    }
+
+    #fsd-artist svg,
+    #fsd-album svg {
+        width: calc(var(--fsd-sec-size) - 6px);
+        height: calc(var(--fsd-sec-size) - 6px);
+        margin-right: 5px;
+    }
+
+    .fsd-controls {
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+    .fsd-controls-left {
+        width: 30%;
+        justify-content: flex-start;
+    }
+    .fsd-controls-center {
+        width: 40%;
+        justify-content: center;
+        margin: 10px auto 5px;
+    }
+    .fsd-controls-right {
+        width: 30%;
+        justify-content: flex-end;
+    }
+}

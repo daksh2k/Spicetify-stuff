@@ -1,0 +1,378 @@
+#full-screen-display {
+    display: none;
+    z-index: 100;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    left: 0;
+    top: 0;
+    --transition-duration: 0.8s;
+    --transition-function: ease-in-out;
+    --main-color: 255, 255, 255;
+    --contrast-color: 0, 0, 0;
+    --primary-color: rgba(var(--main-color), 1);
+    --secondary-color: rgba(var(--main-color), 0.7);
+    --tertiary-color: rgba(var(--main-color), 0.5);
+    --theme-color: 175, 175, 175;
+    --theme-background-color: rgba(175, 175, 175, 0.6);
+    --theme-hover-color: rgba(175, 175, 175, 0.3);
+    --theme-main-color: rgba(var(--theme-color), 1);
+    &.themed-buttons {
+        --theme-background-color: rgba(var(--theme-color), 0.6);
+        --theme-hover-color: rgba(var(--theme-color), 0.3);
+    }
+    #fsd-title svg,
+    #fsd-artist svg,
+    #fsd-album svg {
+        transition: all var(--transition-duration) var(--transition-function);
+        display: var(--icons-display);
+    }
+    .unavailable {
+        color: var(--tertiary-color) !important;
+        pointer-events: none !important;
+        opacity: 0.5 !important;
+        background: transparent !important;
+    }
+    /*
+    .unavailable::after{
+        content: "";
+        display: block;
+        background-color: #FFF;
+        bottom: 50%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        transform: rotateZ(45deg);
+        width: 25px;
+        height: 1.5px;
+    }
+    .unavailable::before{
+        content: "";
+        display: block;
+        background-color: #FFF;
+        bottom: 50%;
+        left: 0;
+        right: 0;
+        position: absolute;
+        transform: rotateZ(-45deg);
+        width: 25px;
+        height: 1.5px;
+    }
+    */
+    @keyframes fadeUp {
+        0% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes fadeDo {
+        0% {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    @keyframes fadeRi {
+        0% {
+            opacity: 0;
+            transform: translateX(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    @keyframes fadeLe {
+        0% {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    .fade-do {
+        animation: fadeDo 0.5s cubic-bezier(0.3, 0, 0, 1);
+    }
+    .fade-up {
+        animation: fadeUp 0.5s cubic-bezier(0.3, 0, 0, 1);
+    }
+    .fade-ri {
+        animation: fadeRi 0.5s cubic-bezier(0.3, 0, 0, 1);
+    }
+    .fade-le {
+        animation: fadeLe 0.5s cubic-bezier(0.3, 0, 0, 1);
+    }
+    button.dot-after {
+        padding-bottom: 3px !important;
+    }
+    .dot-after:after {
+        background-color: currentColor;
+        border-radius: 50%;
+        bottom: 3px;
+        content: "";
+        display: block;
+        height: 4px;
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
+        width: 4px;
+    }
+    #fsd-ctx-container {
+        background-color: transparent;
+        color: var(--secondary-color);
+        position: fixed;
+        float: left;
+        top: 30px;
+        left: 50px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        text-align: left;
+        z-index: 50;
+        transition: all 1s ease-in-out;
+        opacity: 1;
+        max-width: 40%;
+    }
+    #fsd-ctx-details {
+        padding-left: 18px;
+        line-height: initial;
+        font-size: 18px;
+        overflow: hidden;
+    }
+    #fsd-ctx-icon {
+        width: 48px;
+        height: 48px;
+    }
+    #fsd-progress-container {
+        --theme-main-color: rgba(var(--main-color), 1);
+    }
+    &.themed-buttons #fsd-progress-container,
+    &.themed-icons #fsd-progress-container {
+        --theme-main-color: rgba(var(--theme-color), 1);
+    }
+    #fsd-ctx-icon svg {
+        fill: var(--primary-color) !important;
+    }
+    #fsd-ctx-source {
+        text-transform: uppercase;
+    }
+    #fsd-ctx-name {
+        font-weight: 700;
+        font-size: 20px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+    .ctx-no-name {
+        padding-bottom: 2px;
+        font-size: 24px;
+        font-weight: 600;
+    }
+    #fsd-upnext-container {
+        float: right;
+        width: 472px;
+        height: 102px;
+        max-width: 45%;
+        position: fixed;
+        top: 45px;
+        right: 60px;
+        display: flex;
+        border: 1px solid rgba(130, 130, 130, 0.7);
+        border-radius: 10px;
+        background-color: rgba(20, 20, 20, 1);
+        flex-direction: row;
+        text-align: left;
+        z-index: 50;
+        transition: transform 0.8s ease-in-out;
+        transform: translateX(600px);
+    }
+    #fsd_next_art_image {
+        background-size: cover;
+        background-position: center;
+        width: 100px;
+        height: 100px;
+        border-radius: 9px 0 0 9px;
+    }
+    #fsd_next_details {
+        padding-left: 18px;
+        padding-top: 17px;
+        line-height: initial;
+        width: calc(100% - 115px);
+        color: rgba(255, 255, 255, 1);
+        font-size: 19px;
+        overflow: hidden;
+    }
+    #fsd_next_tit_art {
+        padding-top: 9px;
+        font-size: 22px;
+        font-weight: 700;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    @keyframes fsd_cssmarquee {
+        0% {
+            transform: translateX(0%);
+        }
+        18% {
+            transform: translateX(0%);
+        }
+        100% {
+            transform: translateX(var(--translate_width_fsd));
+        }
+    }
+    @keyframes fsd_translate {
+        0%,
+        10% {
+            transform: translateX(0%);
+        }
+        50%,
+        55% {
+            transform: translateX(var(--translate_width_fsd));
+        }
+        100% {
+            transform: translateX(0%);
+        }
+    }
+    #fad-lyrics-plus-container {
+        transition: transform var(--transition-duration) var(--transition-function);
+        position: absolute;
+        right: -50px;
+        width: 50%;
+        top: 7.5vh;
+        .lyrics-lyricsContainer-LyricsContainer {
+            --lyrics-color-active: var(--primary-color) !important;
+            --lyrics-color-inactive: var(--tertiary-color) !important;
+            --lyrics-highlight-background: rgba(var(--contrast-color), 0.7) !important;
+            --lyrics-align-text: var(--lyrics-alignment) !important;
+            --animation-tempo: var(--lyrics-animation-tempo) !important;
+            height: 85vh !important;
+        }
+        .lyrics-config-button {
+            margin-right: 20px;
+        }
+    }
+    &.lyrics-unavailable,
+    &.lyrics-hide-force {
+        #fad-lyrics-plus-container {
+            transform: translateX(1000px) scale3d(0.1, 0.1, 0.1) rotate(45deg);
+        }
+    }
+    #fsd-foreground {
+        position: relative;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        transition: all var(--transition-duration) var(--transition-function);
+    }
+    #fsd-art-image {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding-bottom: 100%;
+        border-radius: 8px;
+        background-size: cover;
+    }
+    #fsd-art-inner {
+        position: absolute;
+        left: 3%;
+        bottom: 0;
+        width: 94%;
+        height: 94%;
+        z-index: -1;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+        transform: translateZ(0);
+    }
+    #fsd-artist {
+        font-weight: 500;
+        color: var(--secondary-color);
+    }
+    #fsd-album {
+        font-weight: 400;
+        color: var(--tertiary-color);
+    }
+    .fsd-controls {
+        display: flex;
+        flex-direction: row;
+        column-gap: 10px;
+    }
+    #fsd-background {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: -2;
+    }
+
+    #fsd-background.animated {
+        scale: 300% 350%;
+        transform-origin: left top;
+    }
+
+    .fs-button {
+        background: transparent;
+        border: 0;
+        border-radius: 8px;
+        color: var(--primary-color);
+        padding: 3px 5px 0 5px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.3s var(--transition-function), transform 0.1s var(--transition-function);
+        &:hover {
+            transform: scale(1.2);
+            filter: saturate(1.5) contrast(1.5) !important;
+            background: var(--theme-hover-color);
+        }
+        &.button-active {
+            background: var(--theme-background-color) !important;
+            filter: saturate(1.5) contrast(1.5) !important;
+        }
+    }
+    #fsd-foreground svg {
+        fill: var(--primary-color);
+        transition: all 0.3s var(--transition-function);
+    }
+    &.themed-icons #fsd-foreground svg {
+        fill: var(--theme-main-color);
+        filter: saturate(1.5) contrast(1.5);
+    }
+    &.themed-icons.themed-buttons .fs-button.button-active svg {
+        fill: var(--primary-color) !important;
+    }
+    .fsd-background-fade {
+        transition: background-image var(--fs-transition) linear;
+    }
+}
+
+body.fsd-activated #full-screen-display {
+    display: block;
+}
+.fsd-activated .Root__top-bar,
+.fsd-activated .Root__nav-bar,
+.fsd-activated .Root__main-view,
+.fsd-activated .Root__now-playing-bar {
+    visibility: hidden;
+    display: none;
+}
+.main-notificationBubbleContainer-NotificationBubbleContainer {
+    z-index: 1000;
+}

@@ -1,0 +1,108 @@
+#full-screen-display[mode="tv"] {
+    #fsd-foreground {
+        flex-direction: row;
+        text-align: left;
+        justify-content: left;
+        align-items: flex-end;
+        position: absolute;
+        top: auto;
+        bottom: 75px;
+    }
+    #fad-lyrics-plus-container {
+        width: 45%;
+    }
+    &.lyrics-active #fsd-foreground {
+        width: max-content;
+        max-width: 60%;
+    }
+
+    #fsd-art {
+        width: calc(100vw - 840px);
+        min-width: 180px;
+        max-width: 220px;
+        margin-left: 65px;
+    }
+
+    #fsd-progress-parent {
+        width: 100%;
+        max-width: 450px;
+    }
+    .fsd-controls + #fsd-progress-parent {
+        padding-left: 10px;
+    }
+    #fsd-details {
+        padding-left: 30px;
+        line-height: initial;
+        width: 80%;
+        color: var(--primary-color);
+    }
+    #fsd-title,
+    #fsd-album,
+    #fsd-artist {
+        display: flex;
+        justify-content: flex-start;
+        align-items: baseline;
+        gap: 5px;
+    }
+    #fsd-title span,
+    #fsd-album span,
+    #fsd-artist span {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+    #fsd-title span {
+        -webkit-line-clamp: 3;
+    }
+    #fsd-title svg,
+    #fsd-artist svg,
+    #fsd-album svg {
+        flex: 0 0 auto;
+    }
+    #fsd-title {
+        font-size: 62px;
+        font-weight: 900;
+    }
+    @media (max-width: 900px), (max-height: 800px) {
+        #fsd-title {
+            font-size: 40px;
+            font-weight: 600;
+        }
+        #fsd-artist,
+        #fsd-album {
+            font-size: 20px;
+        }
+    }
+    #fsd-artist,
+    #fsd-album {
+        font-size: 28px;
+    }
+    #fsd-title svg {
+        width: 35px;
+        height: 45px;
+    }
+    #playing-icon {
+        width: 30px !important;
+        height: 40px !important;
+        margin-right: 5px;
+    }
+    #fsd-artist svg,
+    #fsd-album svg {
+        margin-right: 15px;
+        width: 22px;
+        height: 22px;
+    }
+    #fsd-status {
+        display: flex;
+        flex-direction: row;
+        min-width: 450px;
+        max-width: 450px;
+        align-items: center;
+        justify-content: space-between;
+        &.active {
+            column-gap: 10px;
+            margin: 10px 0;
+        }
+    }
+}
