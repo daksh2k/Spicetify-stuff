@@ -9,8 +9,8 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/lodash.defaultsdeep": "^4.6.7",
         "@types/lodash.debounce": "^4.0.7",
+        "@types/lodash.defaultsdeep": "^4.6.7",
         "@types/marked": "^4.0.8",
         "@types/react": "^18.0.32",
         "@types/react-dom": "^18.0.11",
@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "classnames": "^2.3.2",
+        "lodash": "^4.17.21",
         "lodash.debounce": "^4.0.8",
         "lodash.defaultsdeep": "^4.6.1",
         "marked": "^4.3.0",
