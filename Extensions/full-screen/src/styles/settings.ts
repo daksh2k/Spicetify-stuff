@@ -12,7 +12,7 @@ export const settingsStyles = `
     background-color: #121212;
     height: 75vh;
     max-height: 800px;
-    width: clamp(500px,50vw,650px);
+    width: clamp(550px,50vw,680px);
 }        
 .main-trackCreditsModal-mainSection{
     padding: 16px 16px 0;
