@@ -318,13 +318,12 @@
         top: 0;
         width: 100%;
         height: 100%;
-        pointer-events: none;
         overflow: hidden;
         z-index: -2;
     }
 
     #fsd-background.animated {
-        scale: 300% 350%;
+        transform: scale(3, 3.5);
         transform-origin: left top;
     }
 
