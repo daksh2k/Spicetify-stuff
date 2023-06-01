@@ -833,14 +833,14 @@ async function main() {
         }
     }
 
-    function saveOption(key: keyof Settings, value: any) {
+    function saveOption(key: keyof Settings, value: Settings[keyof Settings]) {
         CFM.set(key, value);
         render();
         if (Utils.isModeActivated()) activate();
     }
 
     // Saves an option independent from TV or Fullscreen mode
-    function saveGlobalOption(key: keyof Config, value: any) {
+    function saveGlobalOption(key: keyof Config, value: Config[keyof Config] ) {
         CFM.setGlobal(key, value);
         LOCALE = CFM.getGlobal("locale") as Config["locale"]; // Update locale (avoids reloading client to apply setting)
         render();
@@ -919,7 +919,7 @@ async function main() {
                 saveOption(key as keyof Settings, configValue);
             } else if (key in DEFAULTS) {
                 configValue = DEFAULTS[key as keyof Config] as string | number;
-                saveGlobalOption(key as keyof Config, configValue);
+                saveGlobalOption(key as keyof Config, configValue as Config[keyof Config]);
             }
         }
         select.value = configValue.toString();
@@ -960,7 +960,7 @@ async function main() {
         type: string,
         callback = (value: string) => saveOption(key as keyof Settings, value),
         description = ""
-    ) {
+    ): HTMLDivElement {
         const settingCard = getSettingCard(
             `<label class="gen-input">
                 <input type="${type}">
@@ -982,7 +982,7 @@ async function main() {
     let configContainer;
     let overlayTimout: NodeJS.Timeout;
 
-    function openConfig(evt: Event | null = null) {
+    function openConfig(evt: Event | null = null): void {
         evt?.preventDefault();
         configContainer = document.createElement("div");
         configContainer.id = "full-screen-config-container";
