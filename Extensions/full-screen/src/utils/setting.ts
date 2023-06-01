@@ -74,7 +74,7 @@ export function createAdjust(
         } else if (temp > max) {
             temp = max;
         }
-        value = Number(Number(temp).toFixed(step >= 1 ? 0 : 1));
+        value = Number(Number(temp).toFixed(step >= 1 ? 0 : 2));
         (settingCard.querySelector(".adjust-value") as HTMLElement).innerText = `${value}${unit}`;
         plus && plus.classList.toggle("disabled", value === max);
         minus && minus.classList.toggle("disabled", value === min);
