@@ -9,8 +9,8 @@ import {
     animateCanvas,
     animateColor,
     animatedRotatedCanvas,
-    // resetCanvas,
     modifyIsAnimationRunning,
+    modifyRotationSpeed,
 } from "./utils/animation";
 import { headerText, getSettingCard, createAdjust, getAboutSection } from "./utils/setting";
 
@@ -1125,8 +1125,6 @@ async function main() {
                 }
             ),
             createToggle(translations[LOCALE].settings.playerControls, "playerControls"),
-            createToggle(translations[LOCALE].settings.trimTitle, "trimTitle"),
-            createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
             createOptions(
                 translations[LOCALE].settings.showAlbum.setting,
                 {
@@ -1138,32 +1136,14 @@ async function main() {
                 "showAlbum",
                 (value: string) => saveOption("showAlbum", value)
             ),
-            createToggle(translations[LOCALE].settings.showAllArtists, "showAllArtists"),
             createToggle(translations[LOCALE].settings.icons, "icons"),
+            createToggle(translations[LOCALE].settings.showAllArtists, "showAllArtists"),
+            createToggle(translations[LOCALE].settings.trimTitle, "trimTitle"),
             createToggle(translations[LOCALE].settings.songChangeAnimation, "enableFade"),
             document.fullscreenEnabled
                 ? createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen")
                 : "",
             headerText(translations[LOCALE].settings.extraHeader),
-            createOptions(
-                translations[LOCALE].settings.backgroundChoice.setting,
-                {
-                    album_art: translations[LOCALE].settings.backgroundChoice.artwork,
-                    animated_album: translations[LOCALE].settings.backgroundChoice.animatedArt,
-                    dynamic_color: translations[LOCALE].settings.backgroundChoice.dynamicColor,
-                    static_color: translations[LOCALE].settings.backgroundChoice.staticColor,
-                    artist_art: translations[LOCALE].settings.backgroundChoice.artist,
-                },
-                CFM.get("backgroundChoice") as Settings["backgroundChoice"],
-                "backgroundChoice",
-                (value: string) => {
-                    CFM.set("backgroundChoice", value);
-                    if (Utils.isModeActivated()) {
-                        updateBackground(Spicetify.Player.data.track?.metadata);
-                    }
-                },
-                translations[LOCALE].settings.backgroundChoice.description.join("<br>")
-            ),
             createToggle(translations[LOCALE].settings.extraControls, "extraControls"),
             createToggle(translations[LOCALE].settings.upnextDisplay, "upnextDisplay"),
             createOptions(
@@ -1202,8 +1182,53 @@ async function main() {
                 translations[LOCALE].settings.volumeDisplay.description.join("\n")
             ),
             headerText(
-                translations[LOCALE].settings.appearanceHeader,
-                translations[LOCALE].settings.appearanceSubHeader
+                translations[LOCALE].settings.backgroundHeader,
+                translations[LOCALE].settings.backgroundSubHeader
+            ),
+            createOptions(
+                translations[LOCALE].settings.backgroundChoice.setting,
+                {
+                    album_art: translations[LOCALE].settings.backgroundChoice.artwork,
+                    animated_album: translations[LOCALE].settings.backgroundChoice.animatedArt,
+                    dynamic_color: translations[LOCALE].settings.backgroundChoice.dynamicColor,
+                    static_color: translations[LOCALE].settings.backgroundChoice.staticColor,
+                    artist_art: translations[LOCALE].settings.backgroundChoice.artist,
+                },
+                CFM.get("backgroundChoice") as Settings["backgroundChoice"],
+                "backgroundChoice",
+                (value: string) => {
+                    CFM.set("backgroundChoice", value);
+                    if (Utils.isModeActivated()) {
+                        updateBackground(Spicetify.Player.data.track?.metadata);
+                    }
+                },
+                translations[LOCALE].settings.backgroundChoice.description.join("<br>")
+            ),
+            createAdjust(
+                translations[LOCALE].settings.animationSpeed,
+                "animationSpeed",
+                "%",
+                (CFM.get("animationSpeed") as Settings["animationSpeed"]) * 100,
+                5,
+                5,
+                150,
+                (state) => {
+                    CFM.set("animationSpeed", Number(state) / 100);
+                    modifyRotationSpeed(Number(state) / 100);
+                }
+            ),
+            createAdjust(
+                translations[LOCALE].settings.backAnimationTime,
+                "backAnimationTime",
+                "s",
+                CFM.get("backAnimationTime") as Settings["backAnimationTime"],
+                0.1,
+                0,
+                5,
+                (state) => {
+                    CFM.set("backAnimationTime", Number(state));
+                    container.style.setProperty("--fs-transition", `${state}s`);
+                }
             ),
             createOptions(
                 translations[LOCALE].settings.backgroundColor.setting,
@@ -1243,55 +1268,6 @@ async function main() {
                             Utils.overlayBack(false);
                         }, 1500);
                     }
-                }
-            ),
-            createToggle(translations[LOCALE].settings.themedButtons, "themedButtons"),
-            createToggle(translations[LOCALE].settings.themedIcons, "themedIcons"),
-            createOptions(
-                translations[LOCALE].settings.invertColors.setting,
-                {
-                    never: translations[LOCALE].settings.invertColors.never,
-                    always: translations[LOCALE].settings.invertColors.always,
-                    auto: translations[LOCALE].settings.invertColors.auto,
-                },
-                CFM.get("invertColors") as Settings["invertColors"],
-                "invertColors",
-                (value: string) => saveOption("invertColors", value)
-            ),
-            createAdjust(
-                translations[LOCALE].settings.backAnimationTime,
-                "backAnimationTime",
-                "s",
-                CFM.get("backAnimationTime") as Settings["backAnimationTime"],
-                0.1,
-                0,
-                5,
-                (state) => {
-                    CFM.set("backAnimationTime", Number(state));
-                    container.style.setProperty("--fs-transition", `${state}s`);
-                }
-            ),
-            createOptions(
-                translations[LOCALE].settings.upnextScroll.setting,
-                {
-                    mq: translations[LOCALE].settings.upnextScroll.mq,
-                    sp: translations[LOCALE].settings.upnextScroll.sp,
-                },
-                CFM.get("upNextAnim") as Settings["upNextAnim"],
-                "upNextAnim",
-                (value: string) => saveOption("upNextAnim", value)
-            ),
-            createAdjust(
-                translations[LOCALE].settings.upnextTime,
-                "upnextTimeToShow",
-                "s",
-                CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"],
-                1,
-                5,
-                60,
-                (state) => {
-                    CFM.set("upnextTimeToShow", Number(state));
-                    updateUpNextShow();
                 }
             ),
             createAdjust(
@@ -1336,6 +1312,47 @@ async function main() {
                     if (Utils.isModeActivated()) {
                         updateBackground(Spicetify.Player.data.track?.metadata, true);
                     }
+                }
+            ),
+            headerText(
+                translations[LOCALE].settings.appearanceHeader,
+                translations[LOCALE].settings.appearanceSubHeader
+            ),
+            createToggle(translations[LOCALE].settings.themedButtons, "themedButtons"),
+            createToggle(translations[LOCALE].settings.themedIcons, "themedIcons"),
+            createOptions(
+                translations[LOCALE].settings.invertColors.setting,
+                {
+                    never: translations[LOCALE].settings.invertColors.never,
+                    always: translations[LOCALE].settings.invertColors.always,
+                    auto: translations[LOCALE].settings.invertColors.auto,
+                },
+                CFM.get("invertColors") as Settings["invertColors"],
+                "invertColors",
+                (value: string) => saveOption("invertColors", value)
+            ),
+            createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
+            createOptions(
+                translations[LOCALE].settings.upnextScroll.setting,
+                {
+                    mq: translations[LOCALE].settings.upnextScroll.mq,
+                    sp: translations[LOCALE].settings.upnextScroll.sp,
+                },
+                CFM.get("upNextAnim") as Settings["upNextAnim"],
+                "upNextAnim",
+                (value: string) => saveOption("upNextAnim", value)
+            ),
+            createAdjust(
+                translations[LOCALE].settings.upnextTime,
+                "upnextTimeToShow",
+                "s",
+                CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"],
+                1,
+                5,
+                60,
+                (state) => {
+                    CFM.set("upnextTimeToShow", Number(state));
+                    updateUpNextShow();
                 }
             ),
             headerText(translations[LOCALE].settings.aboutHeader),

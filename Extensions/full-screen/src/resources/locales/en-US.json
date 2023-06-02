@@ -27,7 +27,7 @@
 
         "pluginSettings": "Plugin Settings",
         "fsHideOriginal": "Hide Stock Button",
-        "fsHideOriginalDescription": "Hide the spotify's stock fullscreen button(available to **Premium** users). Requires reload.",
+        "fsHideOriginalDescription": "Hide the spotify's stock fullscreen button(available to **Premium** users)",
         "language": "Language",
         "autoLaunch": {
             "setting": "Auto launch(on spotify startup)",
@@ -39,21 +39,21 @@
         },
         "activationTypes": {
             "setting": "Activation Methods",
-            "description": "Choose the methods you want to use to activate the plugin. <kbd>F</kbd> and <kbd>T</kbd> keys, or buttons on topbar and bottom bar. **Requires reload**",
+            "description": "Choose the methods you want to use to activate the plugin. <kbd>F</kbd> and <kbd>T</kbd> keys, or buttons on topbar and bottom bar.",
             "both": "Buttons and Keyboard Shortcuts",
             "btns": "Buttons Only",
             "keys": "Keyboard Shortcuts Only"
         },
         "buttonActivation": {
             "setting": "Customize Activation Buttons",
-            "description": "Choose the buttons you want for activation, on topbar(*TV Mode*) and bottom bar(*Default Mode*). **Requires reload**",
+            "description": "Choose the buttons you want for activation, on topbar(*TV Mode*) and bottom bar(*Default Mode*).",
             "both": "Buttons for both modes",
             "tv": "Button only for TV Mode",
             "def": "Button only for Default Mode"
         },
         "keyActivation": {
             "setting": "Customize Activation Keys",
-            "description": "Choose the keys you want for activation. <kbd>F</kbd> for *Default Mode* and <kbd>T</kbd> for *TV Mode*  **Requires reload**",
+            "description": "Choose the keys you want for activation. <kbd>F</kbd> for *Default Mode* and <kbd>T</kbd> for *TV Mode*",
             "both": "Keys for both modes",
             "tv": "Key only for TV Mode",
             "def": "Key only for Default Mode"
@@ -90,13 +90,13 @@
 
         "extraHeader": "Extra Functionality",
         "backgroundChoice": {
-            "setting": "Background Choice",
+            "setting": "⭐ Background Choice",
             "description": [
-                "**New:** Try out the **animated album art** option! [Insipiration](https://github.com/surfbryce/beautiful-lyrics)",
-                "**Warning:** Looks very beautiful but may be resource intensive, and is experimental."
+                "**New:** Try out the **animated album art** option!",
+                "**Warning:** Looks beautiful but may be resource intensive, and is experimental."
             ],
             "dynamicColor": "Dynamic solid color",
-            "staticColor": "Static solid color(Choose below)",
+            "staticColor": "Static solid color",
             "artwork": "Album art",
             "animatedArt": "Animated Album Art (Experimental)",
             "artist": "Artist artwork"
@@ -123,8 +123,10 @@
 
         "appearanceHeader": "Advanced/Appearance",
         "appearanceSubHeader": "*(Only change if you know what you are doing!)*",
+        "backgroundHeader": "Background Modifications",
+        "backgroundSubHeader": "Comes with reasonable defaults, *(Only change if you know what you are doing!)*",
         "backgroundColor": {
-            "setting": "Color Choice for dynamic colored background",
+            "setting": "Color Choice (for dynamic colored background)",
             "vibrant": "Vibrant",
             "prominent": "Prominent",
             "desaturated": "Desaturated (recommended)",
@@ -132,7 +134,7 @@
             "darkVibrant": "Dark Vibrant",
             "vibrantNonAlarming": "Vibrant Non Alarming"
         },
-        "staticColor": "Color Choice for static colored background",
+        "staticColor": "Color Choice (for static colored background)",
         "themedButtons": "Themed Buttons",
         "themedIcons": "Themed Icons",
         "invertColors": {
@@ -141,7 +143,8 @@
             "always": "Always",
             "auto": "Automatic (Based on BG)"
         },
-        "backAnimationTime": "Background Animation Time",
+        "backAnimationTime": "Background Animation Time (for image background)",
+        "animationSpeed": "⭐ Animation Speed (for animated background)",
         "upnextScroll": {
             "setting": "Upnext Scroll Animation",
             "mq": "Marquee/Scrolling",

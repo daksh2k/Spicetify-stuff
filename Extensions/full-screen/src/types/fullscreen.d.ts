@@ -38,6 +38,7 @@ export type Settings = {
     themedIcons: boolean;
     invertColors: "never" | "always" | "auto";
     backAnimationTime: number;
+    animationSpeed: number;
     upNextAnim: "sp" | "mq";
     upnextTimeToShow: number;
     coloredBackChoice: string;
