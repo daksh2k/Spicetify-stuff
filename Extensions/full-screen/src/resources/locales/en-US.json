@@ -70,6 +70,7 @@
             "center": "Center",
             "right": "Right"
         },
+        "autoHideLyrics": "Auto Hide Lyrics (when unavailable)",
         "lyricsAnimationTempo": "Lyrics Animation Tempo",
 
         "generalHeader": "General Settings",

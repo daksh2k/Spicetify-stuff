@@ -290,6 +290,8 @@ async function main() {
         }, 100);
     }
 
+    let previousLyrics: string | undefined;
+
     async function updateInfo() {
         const meta = Spicetify.Player.data.track?.metadata;
 
@@ -341,6 +343,15 @@ async function main() {
             if (album) {
                 album.innerText = albumText || "";
                 updatedAlbum = true;
+            }
+            if (CFM.get("lyricsDisplay") && CFM.get("autoHideLyrics")) {
+                const lyricsContainer = container.querySelector<HTMLElement>(
+                    "#fad-lyrics-plus-container"
+                );
+                if (lyricsContainer) {
+                    previousLyrics = lyricsContainer.innerText.slice(0, 15);
+                    autoHideLyrics();
+                }
             }
         };
 
@@ -465,10 +476,29 @@ async function main() {
         if (evt.detail.isLoading) return;
         container.classList.toggle(
             "lyrics-unavailable",
-            !(evt.detail.available && evt.detail?.synced?.length > 1)
+            !(evt.detail.available && (evt.detail?.synced?.length ?? 5) > 1)
         );
         if (CFM.get("extraControls")) {
             lyrics.classList.toggle("hidden", container.classList.contains("lyrics-unavailable"));
+        }
+    }
+
+    function autoHideLyrics() {
+        const lyricsContainer = container.querySelector(
+            "#fad-lyrics-plus-container"
+        ) as HTMLElement;
+        if (
+            !lyricsContainer.innerText ||
+            lyricsContainer.innerText.slice(0, 15) == previousLyrics
+        ) {
+            handleLyricsUpdate({ detail: { isLoading: true, available: false } });
+            setTimeout(autoHideLyrics, 100);
+        } else {
+            if (lyricsContainer.innerText == "(• _ • )") {
+                handleLyricsUpdate({ detail: { isLoading: false, available: false } });
+            } else {
+                handleLyricsUpdate({ detail: { isLoading: false, available: true } });
+            }
         }
     }
 
@@ -1087,6 +1117,7 @@ async function main() {
                 },
                 translations[LOCALE].settings.lyricsDescription.join("<br>")
             ),
+            createToggle(translations[LOCALE].settings.autoHideLyrics, "autoHideLyrics"),
             createOptions(
                 translations[LOCALE].settings.lyricsAlignment.setting,
                 {

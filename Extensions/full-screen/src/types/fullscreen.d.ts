@@ -13,6 +13,7 @@ export type Config = {
 export type Settings = {
     lyricsDisplay: boolean;
     lyricsAlignment: "right" | "left" | "center";
+    autoHideLyrics: boolean;
     animationTempo: number;
     progressBarDisplay: boolean;
     playerControls: boolean;
@@ -71,4 +72,12 @@ export type TokenType = {
     accessToken: string;
     accessTokenExpirationTimestampMs: number;
     isAnonymous: boolean;
+};
+
+export type LyricsEvent = {
+    detail: {
+        isLoading: boolean;
+        available: boolean;
+        synced?: { startTime: Number; text: string }[];
+    };
 };
