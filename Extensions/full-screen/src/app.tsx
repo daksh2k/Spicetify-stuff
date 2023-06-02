@@ -245,16 +245,7 @@ async function main() {
             }
             if (CFM.get("lyricsDisplay")) {
                 lyrics = container.querySelector("#fsd-lyrics")!;
-                lyrics.onclick = () => {
-                    Utils.fadeAnimation(lyrics);
-                    container.classList.toggle("lyrics-hide-force");
-                    lyrics.classList.toggle("button-active");
-                    lyrics.innerHTML =
-                        container.classList.contains("lyrics-unavailable") ||
-                        container.classList.contains("lyrics-hide-force")
-                            ? ICONS.LYRICS_ACTIVE
-                            : ICONS.LYRICS_INACTIVE;
-                };
+                lyrics.onclick = () => toggleLyrics();
             }
         }
     }
@@ -263,6 +254,16 @@ async function main() {
     let upnextTimer: NodeJS.Timeout,
         upNextShown = false;
 
+    function toggleLyrics() {
+        Utils.fadeAnimation(lyrics);
+        container.classList.toggle("lyrics-hide-force");
+        lyrics.classList.toggle("button-active");
+        lyrics.innerHTML =
+            container.classList.contains("lyrics-unavailable") ||
+            container.classList.contains("lyrics-hide-force")
+                ? ICONS.LYRICS_ACTIVE
+                : ICONS.LYRICS_INACTIVE;
+    }
     function updateUpNextShow() {
         setTimeout(() => {
             const timetogo = Utils.getShowTime(
@@ -773,6 +774,9 @@ async function main() {
         }
         Spicetify.Mousetrap.bind("f11", fsToggle);
         Spicetify.Mousetrap.bind("esc", deactivate);
+        if (CFM.get("lyricsDisplay")) {
+            Spicetify.Mousetrap.bind("l", toggleLyrics);
+        }
     }
 
     function deactivate() {
@@ -819,6 +823,7 @@ async function main() {
 
         Spicetify.Mousetrap.unbind("f11");
         Spicetify.Mousetrap.unbind("esc");
+        Spicetify.Mousetrap.unbind("l");
     }
 
     function fsToggle() {
@@ -840,7 +845,7 @@ async function main() {
     }
 
     // Saves an option independent from TV or Fullscreen mode
-    function saveGlobalOption(key: keyof Config, value: Config[keyof Config] ) {
+    function saveGlobalOption(key: keyof Config, value: Config[keyof Config]) {
         CFM.setGlobal(key, value);
         LOCALE = CFM.getGlobal("locale") as Config["locale"]; // Update locale (avoids reloading client to apply setting)
         render();

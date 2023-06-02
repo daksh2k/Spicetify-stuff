@@ -205,9 +205,9 @@ class Utils {
                 Number(imageProminentColor?.split(",")[2]) * 0.114 >
             thresholdValue;
         const mainColor =
-            isLightBG && CFM.get("backgroundBrightness") > 0.3 ? "0,0,0" : "255,255,255";
+            isLightBG && Number(CFM.get("backgroundBrightness")) > 0.3 ? "0,0,0" : "255,255,255";
         const contrastColor =
-            isLightBG && CFM.get("backgroundBrightness") > 0.3 ? "255,255,255" : "0,0,0";
+            isLightBG && Number(CFM.get("backgroundBrightness")) > 0.3 ? "255,255,255" : "0,0,0";
         return [mainColor, contrastColor];
     }
 
