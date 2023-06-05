@@ -1,4 +1,17 @@
-const changelog = `## Animated Background Mode
+const changelog = `## New Features
+  - ⭐Add ability to modify animation speed of the animated background
+  - add keyboard shortcut for lyrics toggling (toggle by key <kbd>L</kbd>)
+  - add auto hide lyrics functionality (experimental)
+
+ ## General 
+  - update adjust settings design and reorganize settings
+  - update chinese translations
+  - fix right click getting blocked on background for opening settings menu
+  `;
+
+export const VersionedChangelog = {
+    "2.3.0": changelog,
+    "2.2.1": `## Animated Background Mode
   **⭐NEW:** add a new background choice option  - "Animated Album Art" which contains a beautiful animation of color blobs.
   Inspired by [this repo for lyrics](https://github.com/surfbryce/beautiful-lyrics) and Apple music background animation. 
   <br>
@@ -12,16 +25,13 @@ const changelog = `## Animated Background Mode
   <img align="center" width="480" height="auto" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjFlOWI1MmEzMDdhNjI5YTY5OWY3YzhlMDJiNGE2OTA4MzMzMDkwZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/EIuHnuq1XIDg4Tt2hx/giphy.gif">
   
   <hr>
-  
+    
 ## General
   - add Vietnamese translations
   - update russian translations
   - update tv mode lyrics width
   - fix lyrics jumping around when choosing center or left alignment
-  `;
-
-export const VersionedChangelog = {
-    "2.2.1": changelog,
+    `,
     "2.1.0": `## General
 - Support for changing activation methods.
 - Support for customizing activation buttons and keys.

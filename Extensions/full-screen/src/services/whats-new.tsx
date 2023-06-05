@@ -113,6 +113,20 @@ function getWhatsNewElements() {
             color: var(--spice-button);
             text-decoration: underline;
       }
+      #whats-new-content-wrapper kbd {
+        display: inline-block;
+        padding: 3px 5px;
+        margin: 0 4px;
+        font: 15px ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono,
+            monospace;
+        line-height: 10px;
+        color: #c9d1d9;
+        vertical-align: middle;
+        background-color: #3b5746;
+        border: solid 1px rgba(110, 118, 129, 0.4);
+        border-radius: 6px;
+        box-shadow: inset 0 -1px 0 rgba(110, 118, 129, 0.4);
+    }
    `;
     return [wrapper, style];
 }
