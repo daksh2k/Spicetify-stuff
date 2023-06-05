@@ -27,10 +27,44 @@
 
         "pluginSettings": "插件设置",
         "fsHideOriginal": "隐藏切换至原版按钮 (Spotify Premium)",
+        "fsHideOriginalDescription": "隐藏原版的全屏按钮(仅对**Premium**用户有效). 需要重启",
         "language": "语言",
+        "autoLaunch": {
+            "setting": "自动启动(当Spotify启动时)",
+            "description": "**限制:** 自动启动时Spotify窗口不能自动全屏",
+            "never": "从不(默认)",
+            "default": "进入默认模式",
+            "tvmode": "电视模式",
+            "lastused": "记忆上次使用状态"
+        },
+        "activationTypes": {
+            "setting": "激活方式",
+            "description": "选择你要激活全屏的方式 <kbd>F</kbd> 和 <kbd>T</kbd> 键, 或者顶栏和底栏的按钮. **需要重启**",
+            "both": "按钮和键盘快捷方式",
+            "btns": "仅按钮",
+            "keys": "仅键盘快捷方式"
+        },
+        "buttonActivation": {
+            "setting": "自定义激活按钮",
+            "description": "选择你要激活全屏的按钮模式，顶栏(*电视模式*)和底栏(*默认模式) **需要重启**",
+            "both": "两者都要",
+            "tv": "仅电视模式",
+            "def": "仅普通模式"
+        },
+        "keyActivation": {
+            "setting": "自定义激活快捷键",
+            "description": "选择激活全屏的快捷键模式 <kbd>F</kbd>  切换到*默认模式*， <kbd>T</kbd> 切换到*电视模式*  **需要重启**",
+            "both": "两者都要",
+            "tv": "仅电视模式",
+            "def": "仅普通模式"
+        },
 
         "lyricsHeader": "歌词设置",
         "lyrics": "歌词",
+        "lyricsDescription": [
+            "**注意:**你需要[lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus)插件来启用歌词",
+            "根据连接里的指示来安装这个插件"
+        ],
         "lyricsAlignment": {
             "setting": "歌词对齐方式",
             "left": "靠左",
@@ -57,9 +91,16 @@
 
         "extraHeader": "额外功能",
         "backgroundChoice": {
-            "setting": "背景",
-            "color": "纯色",
-            "artwork": "艺术画"
+            "setting": "背景选择",
+            "description": [
+                "**最新最热:** 试一下**带动画的专辑图** 选项 [灵感](https://github.com/surfbryce/beautiful-lyrics)",
+                "**警告:** 很漂亮，但是这可能占用较多资源，而且这是实验性的"
+            ],
+            "dynamicColor": "动态纯色",
+            "staticColor": "静态纯色(从下面选择)",
+            "artwork": "专辑图",
+            "animatedArt": "带动画的专辑图(实验性)",
+            "artist": "艺人照片"
         },
         "extraControls": "额外控件",
         "upnextDisplay": "下一首提示",
@@ -71,14 +112,18 @@
         },
         "volumeDisplay": {
             "setting": "音量显示",
+            "description": [
+                "自动模式下音量条将会在以下情况显示:",
+                " - 鼠标移动到屏幕左侧",
+                " - 音量有变化"
+            ],
             "always": "总是",
             "never": "从不",
-            "mouse": "当鼠标移动时",
-            "volume": "当音量调节时"
+            "smart": "自动"
         },
 
         "appearanceHeader": "高级/外观",
-        "appearanceSubHeader": "不要动除非你知道自己在做什么",
+        "appearanceSubHeader": "*(不要动除非你知道自己在做什么)*",
         "backgroundColor": {
             "setting": "纯色背景的颜色配置",
             "vibrant": "Vibrant",
@@ -105,6 +150,8 @@
         "upnextTime": "下一首提示显示时间",
         "backgroundBlur": "背景模糊",
         "backgroundBrightness": "背景亮度",
+
+        "aboutHeader": "关于",
 
         "configReset": "重置配置",
         "reload": "重新载入应用"
