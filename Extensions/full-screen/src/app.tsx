@@ -255,14 +255,16 @@ async function main() {
         upNextShown = false;
 
     function toggleLyrics() {
-        Utils.fadeAnimation(lyrics);
         container.classList.toggle("lyrics-hide-force");
-        lyrics.classList.toggle("button-active");
-        lyrics.innerHTML =
-            container.classList.contains("lyrics-unavailable") ||
-            container.classList.contains("lyrics-hide-force")
-                ? ICONS.LYRICS_ACTIVE
-                : ICONS.LYRICS_INACTIVE;
+        if (lyrics) {
+            Utils.fadeAnimation(lyrics);
+            lyrics.classList.toggle("button-active");
+            lyrics.innerHTML =
+                container.classList.contains("lyrics-unavailable") ||
+                container.classList.contains("lyrics-hide-force")
+                    ? ICONS.LYRICS_ACTIVE
+                    : ICONS.LYRICS_INACTIVE;
+        }
     }
     function updateUpNextShow() {
         setTimeout(() => {
