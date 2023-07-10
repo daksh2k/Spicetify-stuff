@@ -45,13 +45,46 @@ async function main() {
         INIT_RETRIES += 1;
     }
 
+    let isFadActive: boolean;
+
     // Start from here
     showWhatsNew();
 
-    if (CFM.getGlobal("activationTypes") !== "btns") {
-        if (CFM.getGlobal("keyActivation") !== "def") Spicetify.Mousetrap.bind("t", openwithTV);
-        if (CFM.getGlobal("keyActivation") !== "tv") Spicetify.Mousetrap.bind("f", openwithDef);
+    function handleKeyDown(event: KeyboardEvent) {
+        const { target } = event;
+        if (target instanceof HTMLElement && target.nodeName === "INPUT") return;
+        switch (event.code) {
+            case "KeyT":
+                if (
+                    CFM.getGlobal("activationTypes") !== "btns" &&
+                    CFM.getGlobal("keyActivation") !== "tv"
+                )
+                    openwithDef();
+                break;
+            case "KeyF":
+                if (
+                    CFM.getGlobal("activationTypes") !== "btns" &&
+                    CFM.getGlobal("keyActivation") !== "def"
+                )
+                    openwithTV();
+                break;
+            case "F11":
+                if (isFadActive) fsToggle();
+                break;
+            case "Escape":
+                if (isFadActive) deactivate();
+                break;
+            case "KeyL":
+                if (CFM.get("lyricsDisplay") && isFadActive) toggleLyrics();
+                break;
+            default:
+                break;
+        }
     }
+
+    document.addEventListener("keydown", (event) => {
+        handleKeyDown(event);
+    });
 
     function openwithTV() {
         if (!Utils.isModeActivated() || !CFM.getGlobal("tvMode") || CFM.getMode() !== "tv") {
@@ -804,11 +837,7 @@ async function main() {
             }
             window.dispatchEvent(new Event("fad-request"));
         }
-        Spicetify.Mousetrap.bind("f11", fsToggle);
-        Spicetify.Mousetrap.bind("esc", deactivate);
-        if (CFM.get("lyricsDisplay")) {
-            Spicetify.Mousetrap.bind("l", toggleLyrics);
-        }
+        isFadActive = true;
     }
 
     function deactivate() {
@@ -852,10 +881,7 @@ async function main() {
             }
             window.dispatchEvent(new Event("fad-request"));
         }
-
-        Spicetify.Mousetrap.unbind("f11");
-        Spicetify.Mousetrap.unbind("esc");
-        Spicetify.Mousetrap.unbind("l");
+        isFadActive = false;
     }
 
     function fsToggle() {
