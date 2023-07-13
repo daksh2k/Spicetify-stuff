@@ -31,7 +31,7 @@ const SKIPS = {
         check: (meta) => {
             return (
                 ["- live", "live version", "(live)"].some((value) => meta.name.toLowerCase().includes(value)) ||
-                meta?.features?.liveliness > 0.8
+                meta?.features?.liveness > 0.8
             );
         },
         callback: async (meta) => {
