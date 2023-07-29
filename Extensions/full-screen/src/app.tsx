@@ -740,8 +740,14 @@ async function main() {
     let origLoc: string;
     const heartObserver = new MutationObserver(updateHeart);
 
-    function activate() {
-        updateInfo();
+    async function activate() {
+        document.body.classList.add(...CLASSES_TO_ADD);
+        if (CFM.get("enableFullscreen")) await Utils.fullScreenOn();
+        else await Utils.fullScreenOff();
+        setTimeout(() => {
+            updateInfo();
+            window.addEventListener("resize", resizeEvents);
+        }, 200);
         Spicetify.Player.addEventListener("songchange", updateInfo);
         container.addEventListener("mousemove", hideCursor);
         hideCursor();
@@ -749,7 +755,6 @@ async function main() {
         container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = deactivate;
         back.oncontextmenu = openConfig;
         back.ondblclick = deactivate;
-        window.addEventListener("resize", resizeEvents);
         if (CFM.get("contextDisplay") === "mousemove") {
             container.addEventListener("mousemove", hideContext);
             hideContext();
@@ -792,9 +797,6 @@ async function main() {
             });
             Spicetify.Player.origin._events.addListener("update", updateExtraControls);
         }
-        document.body.classList.add(...CLASSES_TO_ADD);
-        if (CFM.get("enableFullscreen")) Utils.fullScreenOn();
-        else Utils.fullScreenOff();
         document.querySelector(".Root__top-container")?.append(style, container);
         if (CFM.get("lyricsDisplay")) {
             window.addEventListener("lyrics-plus-update", handleLyricsUpdate);
@@ -811,7 +813,7 @@ async function main() {
         }
     }
 
-    function deactivate() {
+    async function deactivate() {
         modifyIsAnimationRunning(false);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         container.removeEventListener("mousemove", hideCursor);
@@ -839,7 +841,7 @@ async function main() {
         document.body.classList.remove(...CLASSES_TO_ADD);
         upNextShown = false;
         if (CFM.get("enableFullscreen")) {
-            Utils.fullScreenOff();
+            await Utils.fullScreenOff();
         }
         const popup = document.querySelector("body > generic-modal");
         if (popup) popup.remove();

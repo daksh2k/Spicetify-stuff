@@ -36,11 +36,11 @@ class Utils {
     }
 
     static fullScreenOn() {
-        if (!document.fullscreen) document.documentElement.requestFullscreen();
+        if (!document.fullscreen) return document.documentElement.requestFullscreen();
     }
 
     static fullScreenOff() {
-        if (document.fullscreen) document.exitFullscreen();
+        if (document.fullscreen) return document.exitFullscreen();
     }
 
     /**
