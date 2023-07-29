@@ -50,7 +50,10 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
             );
             const newPercentage = Math.round((newPosY / sliderHeight) * 100);
             setVolume(newPercentage);
-            const debouncedVolume = debounce(() => Spicetify.Player.setVolume(newPercentage / 100), 20);
+            const debouncedVolume = debounce(
+                () => Spicetify.Player.setVolume(newPercentage / 100),
+                20
+            );
             debouncedVolume();
             setChangingProgress({
                 isChanging: true,
@@ -130,7 +133,7 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
                 "v-hidden": state !== "always" && !visibility,
                 dragging: changingProgress.isChanging,
             })}>
-            <div id="fsd-volume">{curVolume === -100 ? "%" : curVolume}%</div>
+            <div id="fsd-volume">{curVolume === -100 ? "" : `${curVolume}%`}</div>
             <div
                 id="fsd-volume-bar"
                 ref={progSlider}

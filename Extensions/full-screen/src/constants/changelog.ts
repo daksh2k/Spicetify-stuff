@@ -1,16 +1,20 @@
-const changelog = `## New Features
-  - ⭐Add ability to modify animation speed of the animated background
-  - add keyboard shortcut for lyrics toggling (toggle by key <kbd>L</kbd>)
-  - add auto hide lyrics functionality (experimental)
-
- ## General 
-  - update adjust settings design and reorganize settings
-  - update chinese translations
-  - fix right click getting blocked on background for opening settings menu
+const changelog = `## General 
+  - fix background tearing up sometimes on first launch
+  - add spanish translations (thanks to [@DavKiller](https://github.com/DavKiller))
   `;
 
 export const VersionedChangelog = {
-    "2.3.0": changelog,
+    "2.3.1": changelog,
+    "2.3.0": `## New Features
+  - ⭐Add ability to modify animation speed of the animated background
+  - add keyboard shortcut for lyrics toggling (toggle by key <kbd>L</kbd>)
+  - add auto hide lyrics functionality (experimental)
+  
+   ## General 
+  - update adjust settings design and reorganize settings
+  - update chinese translations
+  - fix right click getting blocked on background for opening settings menu
+    `,
     "2.2.1": `## Animated Background Mode
   **⭐NEW:** add a new background choice option  - "Animated Album Art" which contains a beautiful animation of color blobs.
   Inspired by [this repo for lyrics](https://github.com/surfbryce/beautiful-lyrics) and Apple music background animation. 
