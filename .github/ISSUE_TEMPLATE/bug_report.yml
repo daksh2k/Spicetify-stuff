@@ -34,12 +34,12 @@ body:
     attributes:
       label: ℹ Environment / Computer Info
       description: Please provide the details of the system Spicetify is running on.
-      value: |
-        - Spotify version: 
-        - Spicetify version: 
       placeholder: |
-        - Spotify version: Spotify for macOS (Apple Silicon) 1.1.77.643.g3c4c6fc6
-        - Spicetify version: 2.8.5
+        Spotify for macOS (Intel) 1.2.18.999.g9b38fc27
+        Spicetify v2.22.2
+        Theme: SpotifyNoPremium / Base
+        Extensions: keyboardShortcutMy.js, fullScreen.js, full-screen.js, hidePodcasts.js, autoSkipWrapper.js, playNextWrapper.js, volumePercentageWrapper.js, savePlaylistsWrapper.js, css-editor.js, queuePanel.js, CoverAmbience.js, QueueTime.js, adblock.js
+        Custom apps: marketplace, lyrics-plus
       render: Markdown
     validations:
       required: true
