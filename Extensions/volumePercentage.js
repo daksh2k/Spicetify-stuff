@@ -7,7 +7,7 @@
 /// <reference path="../globals.d.ts" />
 
 (function addVolumep() {
-    const volumeBar = document.querySelector(".volume-bar");
+    const volumeBar = document.querySelector(".main-nowPlayingBar-volumeBar");
     if (!(volumeBar && Spicetify.Player)) {
         setTimeout(addVolumep, 200);
         return;
