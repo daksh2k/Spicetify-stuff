@@ -222,7 +222,7 @@ class Utils {
             ctxSource = STRINGS.context.queue;
             ctxName = "";
         } else {
-            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context_uri);
+            const uriObj = Spicetify.URI.fromString(Spicetify.Player.data.context.uri);
             if (
                 JSON.stringify(uriObj) === JSON.stringify(prevUriObj) &&
                 ctxSource != undefined &&
@@ -251,7 +251,7 @@ class Utils {
                 case Spicetify.URI.Type.PLAYLIST_V2:
                     ctxIcon = Spicetify.SVGIcons["playlist"];
                     ctxSource = STRINGS.context.playlist;
-                    ctxName = Spicetify.Player.data.context_metadata?.context_description || "";
+                    ctxName = Spicetify.Player.data.context?.metadata?.context_description || "";
                     break;
 
                 case Spicetify.URI.Type.STATION:
@@ -292,18 +292,18 @@ class Utils {
                 case Spicetify.URI.Type.PLAYLIST:
                     ctxIcon = Spicetify.SVGIcons[uriObj.type];
                     ctxSource = STRINGS.context.playlist;
-                    ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                    ctxName = Spicetify.Player.data.context?.metadata.context_description || "";
                     break;
                 case Spicetify.URI.Type.ALBUM:
                     ctxIcon = Spicetify.SVGIcons[uriObj.type];
                     ctxSource = STRINGS.context.album;
-                    ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                    ctxName = Spicetify.Player.data.context?.metadata.context_description || "";
                     break;
 
                 case Spicetify.URI.Type.ARTIST:
                     ctxIcon = Spicetify.SVGIcons[uriObj.type];
                     ctxSource = STRINGS.context.artist;
-                    ctxName = Spicetify.Player.data.context_metadata.context_description || "";
+                    ctxName = Spicetify.Player.data.context?.metadata.context_description || "";
                     break;
 
                 case Spicetify.URI.Type.FOLDER: {
@@ -315,7 +315,7 @@ class Utils {
                     for (const item of res.rows) {
                         if (
                             item.type === "folder" &&
-                            item.link === Spicetify.Player.data.context_uri
+                            item.link === Spicetify.Player.data.context.uri
                         ) {
                             ctxName = item.name;
                             break;
@@ -325,7 +325,7 @@ class Utils {
                 }
                 default:
                     ctxSource = uriObj.type;
-                    ctxName = Spicetify.Player.data?.context_metadata?.context_description || "";
+                    ctxName = Spicetify.Player.data?.context?.metadata?.context_description || "";
             }
         }
         return { ctxIcon, ctxSource, ctxName };

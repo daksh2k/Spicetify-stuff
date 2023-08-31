@@ -28,7 +28,7 @@ declare namespace Spicetify {
     }
     type PlayerState = {
         timestamp: number;
-        context_uri: string;
+        context: { uri: string; metadata: Metadata };
         context_url: string;
         context_restrictions: Record<string, string>;
         index?: {
@@ -66,7 +66,6 @@ declare namespace Spicetify {
         };
         prev_tracks: ProvidedTrack[];
         next_tracks: ProvidedTrack[];
-        context_metadata: Metadata;
         page_metadata: Metadata;
         session_id: string;
         queue_revision: string;
@@ -295,7 +294,7 @@ declare namespace Spicetify {
             headers: Headers;
             status: number;
             uri: string;
-            static isSuccessStatus(status: number): boolean;
+            isSuccessStatus(status: number): boolean;
         }
 
         function head(url: string, headers?: Headers): Promise<Headers>;
