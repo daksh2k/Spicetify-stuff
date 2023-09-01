@@ -52,25 +52,23 @@ export class WebApi {
      * @param {string} uri
      */
     static async addTrackToQueue(uri) {
-        await Spicetify.CosmosAsync.put("sp://player/v2/main/queue", {
-            queue_revision: Spicetify.Queue?.queueRevision,
-            next_tracks: [
-                {
-                    uri: uri,
-                    provider: "queue",
-                    metadata: {
-                        is_queued: true,
-                    },
-                },
-                ...Spicetify.Queue?.nextTracks.map((track) => ({
-                    uri: track.contextTrack.uri,
-                    provider: track.provider,
-                    metadata: {
-                        is_queued: track.provider === "queue",
-                    },
-                })),
-            ],
-            prev_tracks: Spicetify.Queue?.prevTracks,
+        const currentQueueLength = (Spicetify.Queue.nextTracks || []).filter(
+            (track) => track.provider !== "context"
+        ).length;
+
+        await Spicetify.addToQueue([uri].map((uri) => ({ uri }))).catch((err) => {
+            console.error("Failed to add to queue", err);
         });
+
+        const newTracks = Spicetify.Queue.nextTracks
+            .filter((track) => track.provider !== "context")
+            .filter((_, index) => index >= currentQueueLength);
+
+        if (currentQueueLength) {
+            await Spicetify.Platform.PlayerAPI.reorderQueue(
+                newTracks.map((track) => track.contextTrack),
+                { before: Spicetify.Queue.nextTracks[0].contextTrack }
+            );
+        }
     }
 }
