@@ -1,0 +1,166 @@
+{
+    "langName": "Français",
+    "context": {
+        "queue": "Lecture de la file d'attente",
+        "track": "Lecture de la piste",
+        "album": "Lecture de l'album",
+        "artist": "Lecture de l'artiste",
+        "playlist": "Lecture de la playlist",
+        "playlistFolder": "Lecture du dossier de playlist",
+        "search": "Lecture de la recherche",
+        "searchDest": "Chansons",
+        "collection": "Lecture de la collection",
+        "likedSongs": "Chansons aimées",
+        "trackRadio": "Lecture de la radio de la piste",
+        "artistRadio": "Lecture de la radio de l'artiste",
+        "albumRadio": "Lecture de la radio de l'album",
+        "playlistRadio": "Lecture de la radio de la playlist"
+    },
+    "upnext": "À SUIVRE",
+    "unknownArtist": "Artiste (Indisponible)",
+    "settings": {
+        "switchToTV": "Passer en mode TV",
+        "switchToFullscreen": "Revenir au mode par défaut",
+        "tvModeConfig": "Configuration du mode TV",
+        "fullscreenConfig": "Configuration en plein écran",
+        "exit": "Quitter",
+
+        "pluginSettings": "Paramètres du plugin",
+        "fsHideOriginal": "Masquer le bouton d'origine",
+        "fsHideOriginalDescription": "Masquez le bouton de plein écran d'origine de Spotify (disponible pour les utilisateurs **Premium**)",
+        "language": "Langue",
+        "autoLaunch": {
+            "setting": "Lancement automatique (au démarrage de Spotify)",
+            "description": "**Limitation :** La fenêtre de Spotify ne peut pas passer en mode plein écran lors du démarrage automatique.",
+            "never": "Jamais (Par défaut)",
+            "default": "Ouvrir en mode par défaut",
+            "tvmode": "Ouvrir en mode TV",
+            "lastused": "Dernier mode utilisé"
+        },
+        "activationTypes": {
+            "setting": "Méthodes d'activation",
+            "description": "Choisissez les méthodes que vous souhaitez utiliser pour activer le plugin. Touches <kbd>F</kbd> et <kbd>T</kbd>, ou boutons dans la barre supérieure et la barre inférieure.",
+            "both": "Boutons et raccourcis clavier",
+            "btns": "Boutons uniquement",
+            "keys": "Raccourcis clavier uniquement"
+        },
+        "buttonActivation": {
+            "setting": "Personnaliser les boutons d'activation",
+            "description": "Choisissez les boutons que vous souhaitez utiliser pour l'activation, dans la barre supérieure (*Mode TV*) et la barre inférieure (*Mode par défaut*).",
+            "both": "Boutons pour les deux modes",
+            "tv": "Bouton uniquement pour le mode TV",
+            "def": "Bouton uniquement pour le mode par défaut"
+        },
+        "keyActivation": {
+            "setting": "Personnaliser les touches d'activation",
+            "description": "Choisissez les touches que vous souhaitez utiliser pour l'activation. Touche <kbd>F</kbd> pour le *Mode par défaut* et <kbd>T</kbd> pour le *Mode TV*",
+            "both": "Touches pour les deux modes",
+            "tv": "Touche uniquement pour le mode TV",
+            "def": "Touche uniquement pour le mode par défaut"
+        },
+        "lyricsHeader": "Paramètres des paroles",
+        "lyrics": "Paroles",
+        "lyricsDescription": [
+            "**Remarque :** Vous avez besoin de l'application personnalisée [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) pour utiliser cette fonctionnalité.",
+            "Suivez les instructions du lien pour installer l'application personnalisée."
+        ],
+        "lyricsAlignment": {
+            "setting": "Alignement des paroles",
+            "left": "Gauche",
+            "center": "Centre",
+            "right": "Droite"
+        },
+        "autoHideLyrics": "Masquer automatiquement les paroles (lorsque pas disponibles)",
+        "lyricsAnimationTempo": "Tempo de l'animation des paroles",
+
+        "generalHeader": "Paramètres généraux",
+        "progressBar": "Barre de progression",
+        "playerControls": "Contrôles du lecteur",
+        "trimTitle": "Réduire le titre",
+        "trimTitleUpNext": "Réduire le titre (À suivre)",
+        "showAlbum": {
+            "setting": "Afficher l'album",
+            "never": "Jamais",
+            "always": "Toujours",
+            "date": "Afficher avec la date de sortie"
+        },
+        "showAllArtists": "Afficher tous les artistes",
+        "icons": "Icônes",
+        "songChangeAnimation": "Animation de changement de chanson",
+        "fullscreen": "Plein écran",
+
+        "extraHeader": "Fonctionnalités supplémentaires",
+        "backgroundChoice": {
+            "setting": "⭐ Choix de l'arrière-plan",
+            "description": [
+                "**Nouveau :** Essayez l'option **image d'album animée** !",
+                "**Avertissement :** Cela peut être très beau, mais peut consommer des ressources et est expérimental."
+            ],
+            "dynamicColor": "Couleur solide dynamique",
+            "staticColor": "Couleur solide statique",
+            "artwork": "Image d'album",
+            "animatedArt": "Image d'album animée (Expérimental)",
+            "artist": "Image de l'artiste"
+        },
+        "extraControls": "Contrôles supplémentaires",
+        "upnextDisplay": "Affichage À suivre",
+        "contextDisplay": {
+            "setting": "Affichage du contexte",
+            "always": "Toujours",
+            "never": "Jamais",
+            "mouse": "Lors du mouvement de la souris"
+        },
+        "volumeDisplay": {
+            "setting": "Affichage de la barre de volume",
+            "description": [
+                "En mode `intelligent`, la barre de volume s'affichera lorsque :",
+                "  - vous déplacez votre souris vers le côté gauche de l'écran.",
+                "  - lorsque le volume est modifié."
+            ],
+            "always": "Toujours",
+            "never": "Jamais",
+            "smart": "Intelligent"
+        },
+
+        "appearanceHeader": "Paramètres avancés/Aspect",
+        "appearanceSubHeader": "*(À changer uniquement si vous savez ce que vous faites !)*",
+        "backgroundHeader": "Modifications de l'arrière-plan",
+        "backgroundSubHeader": "Fournit des valeurs par défaut raisonnables, *(À changer uniquement si vous savez ce que vous faites !)*",
+        "backgroundColor": {
+            "setting": "Choix de la couleur (pour un arrière-plan coloré dynamique)",
+            "vibrant": "Vibrante",
+            "prominent": "Prominente",
+            "desaturated": "Désaturée (recommandée)",
+            "lightVibrant": "Légèrement vibrante",
+            "darkVibrant": "Foncé vibrante",
+            "vibrantNonAlarming": "Vibrante non alarmante"
+        },
+        "staticColor": "Choix de la couleur (pour un arrière-plan coloré statique)",
+        "themedButtons": "Boutons thématiques",
+        "themedIcons": "Icônes thématiques",
+        "invertColors": {
+            "setting": "Inverser les couleurs",
+            "never": "Jamais",
+            "always": "Toujours",
+            "auto": "Automatique (basé sur le fond)"
+        },
+        "backAnimationTime": "Temps d'animation de l'arrière-plan (pour l'arrière-plan image)",
+        "animationSpeed": "⭐ Vitesse d'animation (pour l'arrière-plan animé)",
+        "upnextScroll": {
+            "setting": "Animation de défilement À suivre",
+            "mq": "Marquee/Defilement",
+            "sp": "Spotify/Translation"
+        },
+        "upnextTime": "Temps pour afficher À suivre",
+        "backgroundBlur": "Flou de l'arrière-plan",
+        "backgroundBrightness": "Luminosité de l'arrière-plan",
+
+        "aboutHeader": "À propos",
+
+        "configReset": "Réinitialiser la configuration",
+        "reload": "Recharger le client"
+    },
+    "tvBtnDesc": "Affichage du mode TV",
+    "fullscreenBtnDesc": "Plein écran"
+}
+
