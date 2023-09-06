@@ -297,8 +297,6 @@ async function main() {
         }, 100);
     }
 
-    let previousLyrics: string | undefined;
-
     async function updateInfo() {
         const meta = Spicetify.Player.data.track?.metadata;
 
@@ -356,7 +354,6 @@ async function main() {
                     "#fad-lyrics-plus-container"
                 );
                 if (lyricsContainer) {
-                    previousLyrics = lyricsContainer.innerText.slice(0, 15);
                     autoHideLyrics();
                 }
             }
@@ -494,10 +491,7 @@ async function main() {
         const lyricsContainer = container.querySelector(
             "#fad-lyrics-plus-container"
         ) as HTMLElement;
-        if (
-            !lyricsContainer.innerText ||
-            lyricsContainer.innerText.slice(0, 15) == previousLyrics
-        ) {
+        if (!lyricsContainer.innerText) {
             handleLyricsUpdate({ detail: { isLoading: true, available: false } });
             setTimeout(autoHideLyrics, 100);
         } else {
