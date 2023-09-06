@@ -629,7 +629,7 @@ async function main() {
     }
 
     function updatePlayingIcon(evt: any) {
-        if (evt.data.is_paused) {
+        if (evt.data.is_paused || evt.data.isPaused) {
             pausedIcon.classList.remove("hidden");
             playingIcon.classList.add("hidden");
         } else {
@@ -640,7 +640,7 @@ async function main() {
 
     function updatePlayerControls(evt: any) {
         Utils.fadeAnimation(play);
-        if (evt.data.is_paused) {
+        if (evt.data.is_paused || evt.data.isPaused) {
             play.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.play}</svg>`;
         } else {
             play.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.pause}</svg>`;
