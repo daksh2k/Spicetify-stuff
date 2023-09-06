@@ -1,10 +1,15 @@
 const changelog = `## General 
-  - fix background tearing up sometimes on first launch
-  - add spanish translations (thanks to [@DavKiller](https://github.com/DavKiller))
+  - add support for vertical monitor(with lyrics on bottom)
+  - add compatibility with latest spotify and spicetify
+  - add french translations (thanks to [@ShirowLeBG](https://github.com/ShirowLeBG))
   `;
 
 export const VersionedChangelog = {
-    "2.3.1": changelog,
+    "2.4.0": changelog,
+    "2.3.1": `## General 
+  - fix background tearing up sometimes on first launch
+  - add spanish translations (thanks to [@DavKiller](https://github.com/DavKiller))
+    `,
     "2.3.0": `## New Features
   - ⭐Add ability to modify animation speed of the animated background
   - add keyboard shortcut for lyrics toggling (toggle by key <kbd>L</kbd>)
@@ -15,7 +20,7 @@ export const VersionedChangelog = {
   - update chinese translations
   - fix right click getting blocked on background for opening settings menu
     `,
-    "2.2.1": `## Animated Background Mode
+    "2.2.0": `## Animated Background Mode
   **⭐NEW:** add a new background choice option  - "Animated Album Art" which contains a beautiful animation of color blobs.
   Inspired by [this repo for lyrics](https://github.com/surfbryce/beautiful-lyrics) and Apple music background animation. 
   <br>
@@ -44,7 +49,7 @@ export const VersionedChangelog = {
   - Reset all settings when not active in any mode.
   - Reset only mode specific settings when active in that mode.
 - Show full changelog for new users.`,
-    "2.0.1": `## General
+    "2.0.0": `## General
   - Rewritten the entire codebase in TypeScript. It is now modular and easier to maintain.
   - Added a changelog for new features.
   - ⭐New Progress Bar and Volume Bar which are now seekable. Drag away!
