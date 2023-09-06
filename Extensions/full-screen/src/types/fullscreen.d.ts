@@ -47,6 +47,7 @@ export type Settings = {
     blurSize: number;
     backgroundBrightness: number;
     showRemainingTime: boolean;
+    verticalMonitorSupport: boolean;
 };
 
 export type Cache = {
@@ -78,6 +79,6 @@ export type LyricsEvent = {
     detail: {
         isLoading: boolean;
         available: boolean;
-        synced?: { startTime: Number; text: string }[];
+        synced?: { startTime: number; text: string }[];
     };
 };

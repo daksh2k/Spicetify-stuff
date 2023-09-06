@@ -121,6 +121,11 @@ async function main() {
 
     function render() {
         container.classList.toggle("lyrics-active", Boolean(CFM.get("lyricsDisplay")));
+        container.classList.toggle(
+            "vertical-mode",
+            (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
+                window.innerWidth < window.innerHeight
+        );
         container.setAttribute("data-locale", LOCALE);
         container.setAttribute("mode", CFM.getMode());
         if (!CFM.get("lyricsDisplay") || !CFM.get("extraControls"))
@@ -507,6 +512,11 @@ async function main() {
     function resizeEvents() {
         if (CFM.get("upnextDisplay")) updateUpNext();
         updateBackground(Spicetify.Player.data.track?.metadata, true);
+        container.classList.toggle(
+            "vertical-mode",
+            (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
+                window.innerWidth < window.innerHeight
+        );
     }
 
     // Get the context and update it
@@ -747,6 +757,7 @@ async function main() {
         setTimeout(() => {
             updateInfo();
             window.addEventListener("resize", resizeEvents);
+            resizeEvents();
         }, 200);
         Spicetify.Player.addEventListener("songchange", updateInfo);
         container.addEventListener("mousemove", hideCursor);
@@ -1370,6 +1381,12 @@ async function main() {
                 CFM.get("invertColors") as Settings["invertColors"],
                 "invertColors",
                 (value: string) => saveOption("invertColors", value)
+            ),
+            createToggle(
+                translations[LOCALE].settings.verticalMonitorSupport,
+                "verticalMonitorSupport",
+                (value: boolean) => saveOption("verticalMonitorSupport", value),
+                translations[LOCALE].settings.verticalMonitorSupportDescription
             ),
             createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
             createOptions(

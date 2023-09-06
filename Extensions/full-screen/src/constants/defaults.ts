@@ -33,6 +33,7 @@ export const DEFAULTS: Config = {
         blurSize: 0,
         backgroundBrightness: 0.4,
         showRemainingTime: false,
+        verticalMonitorSupport: false,
     },
     def: {
         lyricsDisplay: true,
@@ -66,6 +67,7 @@ export const DEFAULTS: Config = {
         blurSize: 32,
         backgroundBrightness: 0.7,
         showRemainingTime: false,
+        verticalMonitorSupport: true,
     },
     tvMode: false,
     locale: "en-US",

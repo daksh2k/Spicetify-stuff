@@ -16,6 +16,43 @@
         --fsd-title-size: 40px;
         --fsd-sec-size: 23px;
     }
+    &.vertical-mode.lyrics-active {
+        // show lyrics container in the bottom instead of to the side
+        --lyrics-alignment: center;
+        #fsd-foreground {
+            width: 100%;
+            height: 50%;
+            margin-top: 20px;
+            #fsd-art {
+                --fsd-art-max-width: 350px;
+            }
+        }
+
+        #fad-lyrics-plus-container {
+            right: 0;
+            left: 0;
+            width: 100%;
+            top: 50%;
+            height: 50%;
+            .lyrics-lyricsContainer-LyricsContainer {
+                height: 95% !important;
+            }
+        }
+        &.lyrics-unavailable,
+        &.lyrics-hide-force {
+            --fsd-foreground-transform: 0%;
+            #fsd-foreground {
+                width: 100%;
+                height: 100%;
+                #fsd-art {
+                    --fsd-art-max-width: 400px;
+                }
+            }
+            #fad-lyrics-plus-container {
+                transform: translateY(1000px) scale3d(0.1, 0.1, 0.1);
+            }
+        }
+    }
 
     @media (max-width: 1400px) {
         &,

@@ -6,6 +6,7 @@ import trTR from "./locales/tr-TR.json";
 import ruRU from "./locales/ru-RU.json";
 import viVN from "./locales/vi-VN.json";
 import esES from "./locales/es-ES.json";
+import frFR from "./locales/fr-FR.json";
 import defaultsDeep from "lodash.defaultsdeep";
 
 // Translation strings
@@ -19,6 +20,7 @@ const translations: Record<string, any> = {
     "ru-RU": defaultsDeep(ruRU, enUS),
     "vi-VN": defaultsDeep(viVN, enUS),
     "es-ES": defaultsDeep(esES, enUS),
+    "fr-FR": defaultsDeep(frFR, enUS),
 };
 
 export default translations;

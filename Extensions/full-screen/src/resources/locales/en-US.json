@@ -144,6 +144,8 @@
             "always": "Always",
             "auto": "Automatic (Based on BG)"
         },
+        "verticalMonitorSupport": "Vertical Monitor Support",
+        "verticalMonitorSupportDescription": "Enable this if you have a vertical monitor setup. Lyrics will be shown in the bottom, when the window height is greater than the width.",
         "backAnimationTime": "Background Animation Time (for image background)",
         "animationSpeed": "⭐ Animation Speed (for animated background)",
         "upnextScroll": {
