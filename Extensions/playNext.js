@@ -45,7 +45,7 @@
         return items;
     };
 
-    //took this from shuffle+, credits to the original creators
+    
     const fetchAlbumFromWebApi = async (url) => {
         const res = await fetch(url, {
             headers: {
@@ -59,6 +59,7 @@
         ];
     };
 
+    //took this from shuffle+, credits to the original creators
     const fetchAlbumTracks = async(uri, includeMetadata = false) => {
     const { queryAlbumTracks } = Spicetify.GraphQL.Definitions;
     const { data, errors } = await Spicetify.GraphQL.Request(queryAlbumTracks, {
