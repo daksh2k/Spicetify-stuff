@@ -45,6 +45,7 @@
         return items;
     };
 
+    //took this from shuffle+, credits to the original creators
     const fetchAlbumFromWebApi = async (url) => {
         const res = await fetch(url, {
             headers: {
@@ -57,6 +58,23 @@
             ...(!!albumDetails.next ? await fetchAlbumFromWebApi(albumDetails.next) : []),
         ];
     };
+
+    const fetchAlbumTracks = async(uri, includeMetadata = false) => {
+    const { queryAlbumTracks } = Spicetify.GraphQL.Definitions;
+    const { data, errors } = await Spicetify.GraphQL.Request(queryAlbumTracks, {
+      uri,
+      offset: 0,
+      limit: 500,
+    });
+
+    if (errors) throw errors[0].message;
+    if (data.albumUnion.playability.playable === false)
+      throw "Album is not playable";
+
+    return data.albumUnion.tracks.items
+      .filter(({ track }) => track.playability.playable)
+      .map(({ track }) => (includeMetadata ? track : track.uri));
+  }
 
     const fetchPlaylist = async (uri) => {
         const res = await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}/rows`, {
@@ -110,9 +128,10 @@
                 tracks = await fetchPlaylist(uri);
                 break;
             case Spicetify.URI.Type.ALBUM:
-                tracks = await fetchAlbumFromWebApi(
-                    `https://api.spotify.com/v1/albums/${uri.split(":")[2]}/tracks?limit=50`
-                );
+                // tracks = await fetchAlbumFromWebApi(
+                //     `https://api.spotify.com/v1/albums/${uri.split(":")[2]}/tracks?limit=50`
+                // );
+                tracks=await fetchAlbumTracks(uri)
                 break;
         }
         if (Spicetify.Player.getShuffle()) tracks = shuffle(tracks);
@@ -123,39 +142,40 @@
      * Add the selected track to the top of the queue and update the queue
      * @param uris List of uris/tracks to add.
      */
+
+    
+    /*    
+    efficient way of adding the tracks at the top of queue, uses insertIntoQueue 
+    instead of adding and reorderQueue
+    also other QoL changes
+    */
     async function addToNext(uris) {
-        //Check if all uris are valid track uris.
-        if (!uris.every((uri) => Spicetify.URI.fromString(uri).type === Spicetify.URI.Type.TRACK)) {
-            Spicetify.showNotification("Malformed uris!");
-            return;
-        }
-
-        const currentQueueLength = (Spicetify.Queue.nextTracks || []).filter(
-            (track) => track.provider !== "context"
-        ).length;
-
-        await Spicetify.addToQueue(uris.map((uri) => ({ uri }))).catch((err) => {
-            console.error("Failed to add to queue", err);
-        });
-
-        const newTracks = Spicetify.Queue.nextTracks
-            .filter((track) => track.provider !== "context")
-            .filter((_, index) => index >= currentQueueLength);
-
-        if (currentQueueLength) {
-            await Spicetify.Platform.PlayerAPI.reorderQueue(
-                newTracks.map((track) => track.contextTrack),
-                { before: Spicetify.Queue.nextTracks[0].contextTrack }
-            )
-                .then(() => Spicetify.showNotification("Added to Play Next"))
-                .catch((err) => {
-                    console.error("Failed to add to queue", err);
-                    Spicetify.showNotification("Unable to Add! Check Console.");
-                });
-        } else {
-            Spicetify.showNotification("Added to Play Next");
-        }
+    if (
+      !uris.every(
+        (uri) => Spicetify.URI.fromString(uri).type === Spicetify.URI.Type.TRACK
+      )
+    ) {
+      Spicetify.showNotification("Malformed uris!");
+      return;
     }
+    const uriObjects = uris.map((uri) => ({ uri }));
+    console.log("addToNext -> uriObjects:   ", uriObjects);
+    const queue = await Spicetify.Platform.PlayerAPI.getQueue();
+
+    if (queue.queued.length > 0) {
+        //not empty, add all the tracks before first track
+      const beforeTrack = {
+        uri: queue.queued[0].uri,
+        uid: queue.queued[0].uid,
+      };
+      await Spicetify.Platform.PlayerAPI.insertIntoQueue(uriObjects, {
+        before: beforeTrack,
+      });
+    } else {
+        //if queue empty, simply add to queue
+      await Spicetify.Platform.PlayerAPI.addToQueue(uriObjects);
+    }
+  }
 
     // Add option to Context Menu
     new Spicetify.ContextMenu.Item(
