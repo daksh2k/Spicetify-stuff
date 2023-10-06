@@ -28,6 +28,11 @@
         transition: all var(--transition-duration) var(--transition-function);
         display: var(--icons-display);
     }
+    .fsd-song-meta span:hover,
+    .fsd-artist-list span:hover {
+        cursor: pointer;
+        text-decoration: underline;
+    }
     .unavailable {
         color: var(--tertiary-color) !important;
         pointer-events: none !important;

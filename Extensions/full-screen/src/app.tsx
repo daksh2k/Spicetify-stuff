@@ -297,6 +297,14 @@ async function main() {
         }, 100);
     }
 
+    function handleNavigation(navigateUri: string) {
+        const formattedUri = navigateUri.replace("spotify", "").replaceAll(":", "/");
+        deactivate();
+        setTimeout(() => {
+            Spicetify.Platform.History.push(formattedUri);
+        }, 500);
+    }
+
     async function updateInfo() {
         const meta = Spicetify.Player.data.track?.metadata;
 
@@ -310,15 +318,21 @@ async function main() {
         }
 
         // prepare artist
-        let artistName: string;
+        let artistData: string[][];
         if (CFM.get("showAllArtists")) {
-            artistName = Object.keys(meta!)
+            const artistNameList = Object.keys(meta!)
                 .filter((key) => key.startsWith("artist_name"))
                 .sort()
-                .map((key) => meta?.[key])
-                .join(", ");
+                .map((key) => meta?.[key]);
+
+            const artistUriList = Object.keys(meta!)
+                .filter((key) => key.startsWith("artist_uri"))
+                .sort()
+                .map((key) => meta?.[key]);
+
+            artistData = artistNameList.map((artist, index) => [artist, artistUriList[index]]);
         } else {
-            artistName = meta?.artist_name;
+            artistData = [[meta?.artist_name, meta?.artist_uri]];
         }
 
         // prepare album
@@ -344,9 +358,22 @@ async function main() {
         coverImg.onload = () => {
             cover.style.backgroundImage = `url("${coverImg.src}")`;
             title.innerText = songName || "";
-            artist.innerText = artistName || "";
+            title.setAttribute("uri", Spicetify.Player.data?.track?.uri || "");
+
+            // combine artist in a list with each span and separated by comma
+            artist.innerHTML = `${artistData
+                .map((artist) => `<span uri=${artist[1]}>${artist[0]}</span>`)
+                .join(", ")}`;
+
+            artist.querySelectorAll("span").forEach((span) => {
+                span.onclick = () => {
+                    handleNavigation(span.getAttribute("uri")!);
+                };
+            });
+
             if (album) {
                 album.innerText = albumText || "";
+                album.setAttribute("uri", meta?.album_uri || "");
                 updatedAlbum = true;
             }
             if (CFM.get("lyricsDisplay") && CFM.get("autoHideLyrics")) {
@@ -752,6 +779,11 @@ async function main() {
             updateInfo();
             window.addEventListener("resize", resizeEvents);
             resizeEvents();
+            container.querySelectorAll(".fsd-song-meta span").forEach((span) => {
+                (span as HTMLElement).onclick = (evt: any) => {
+                    handleNavigation(evt.target?.getAttribute("uri") ?? "");
+                };
+            });
         }, 200);
         Spicetify.Player.addEventListener("songchange", updateInfo);
         container.addEventListener("mousemove", hideCursor);

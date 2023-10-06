@@ -46,7 +46,7 @@
     }
     #fsd-title span,
     #fsd-album span,
-    #fsd-artist span {
+    #fsd-artist > span {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;

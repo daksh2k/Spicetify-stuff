@@ -43,18 +43,18 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
         </div>
     </div>
     <div id="fsd-details">
-            <div id="fsd-title">
+            <div id="fsd-title" class="fsd-song-meta">
                  ${ICONS.PLAYING_ICON}
                  ${ICONS.PAUSED_ICON}
                  <span></span>
             </div>
             <div id="fsd-artist">
                 ${ICONS.ARTIST}
-                <span></span>
+                <span class="fsd-artist-list"></span>
             </div>
             ${
                 CFM.get("showAlbum") !== "never"
-                    ? `<div id="fsd-album">
+                    ? `<div id="fsd-album" class="fsd-song-meta">
                  ${ICONS.ALBUM}
                  <span></span>
             </div>`
