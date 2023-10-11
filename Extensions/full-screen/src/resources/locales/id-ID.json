@@ -1,0 +1,167 @@
+{
+    "langName": "Bahasa Indonesia",
+"context": {
+    "queue": "Memutar dari antrian",
+    "track": "Memutar lagu",
+    "album": "Memutar dari album",
+    "artist": "Memutar dari artis",
+    "playlist": "Memutar dari playlist",
+    "playlistFolder": "Memutar dari folder playlist",
+    "search": "Memutar dari hasil pencarian",
+    "searchDest": "Lagu",
+    "collection": "Memutar dari koleksi",
+    "likedSongs": "Lagu yang disukai",
+    "trackRadio": "Memutar dari trek radio",
+    "artistRadio": "Memutar dari radio artis",
+    "albumRadio": "Memutar dari album radio",
+    "playlistRadio": "Memutar dari playlist radio"
+},
+    "upnext": "SELANJUTNYA",
+    "unknownArtist": "Artis (Tidak Tersedia)",
+    "settings": {
+        "switchToTV": "Beralih ke Mode TV",
+        "switchToFullscreen": "Beralih ke Mode Default",
+        "tvModeConfig": "Konfigurasi Mode TV",
+        "fullscreenConfig": "Konfigurasi Layar Penuh",
+        "exit": "Keluar",
+    
+        "pluginSettings": "Pengaturan Plugin",
+        "fsHideOriginal": "Sembunyikan Tombol Default",
+        "fsHideOriginalDescription": "Sembunyikan tombol layar penuh bawaan Spotify (tersedia untuk pengguna **Premium**)",
+        "language": "Bahasa",
+        "autoLaunch": {
+            "setting": "Auto-launch (saat startup Spotify)",
+            "description": "**Batasan:** Jendela Spotify tidak dapat masuk ke mode layar penuh saat diluncurkan secara otomatis pada startup.",
+            "never": "Tidak Pernah (Default)",
+            "default": "Buka Mode Default",
+            "tvmode": "Buka Mode TV",
+            "lastused": "Mode Terakhir yang Digunakan"
+        },
+        "activationTypes": {
+            "setting": "Metode Aktivasi",
+            "description": "Pilih metode yang ingin Anda gunakan untuk mengaktifkan plugin. Tombol <kbd>F</kbd> dan <kbd>T</kbd>, atau tombol di bilah atas dan bawah.",
+            "both": "Tombol dan Pintasan Keyboard",
+            "btns": "Hanya Tombol",
+            "keys": "Hanya Pintasan Keyboard"
+        },
+        "buttonActivation": {
+            "setting": "Sesuaikan Tombol Aktivasi",
+            "description": "Pilih tombol yang ingin Anda gunakan untuk aktivasi, di bilah atas (*Mode TV*) dan bawah (*Mode Default*).",
+            "both": "Tombol untuk kedua mode",
+            "tv": "Tombol hanya untuk Mode TV",
+            "def": "Tombol hanya untuk Mode Default"
+        },
+        "keyActivation": {
+            "setting": "Sesuaikan Tombol Aktivasi",
+            "description": "Pilih tombol yang ingin Anda gunakan untuk aktivasi. <kbd>F</kbd> untuk *Mode Default* dan <kbd>T</kbd> untuk *Mode TV*",
+            "both": "Tombol untuk kedua mode",
+            "tv": "Tombol hanya untuk Mode TV",
+            "def": "Tombol hanya untuk Mode Default"
+        },
+        "lyricsHeader": "Pengaturan Lirik",
+        "lyrics": "Lirik",
+        "lyricsDescription": [
+            "**Catatan:** Anda memerlukan aplikasi kustom [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) untuk menggunakan fitur ini.",
+            "Ikuti petunjuk dalam tautan untuk menginstal aplikasi kustom tersebut."
+        ],
+        "lyricsAlignment": {
+            "setting": "Penjajaran Lirik",
+            "left": "Kiri",
+            "center": "Tengah",
+            "right": "Kanan"
+        },
+        "autoHideLyrics": "Sembunyikan Lirik Secara Otomatis (saat tidak tersedia)",
+        "lyricsAnimationTempo": "Kecepatan Animasi Lirik",
+    
+        "generalHeader": "Pengaturan Umum",
+        "progressBar": "Progress Bar",
+        "playerControls": "Kontrol Pemutar",
+        "trimTitle": "Potong Judul",
+        "trimTitleUpNext": "Potong Judul (Selanjutnya)",
+        "showAlbum": {
+            "setting": "Tampilkan Album",
+            "never": "Tidak Pernah",
+            "always": "Selalu",
+            "date": "Tampilkan dengan Tanggal Rilis"
+        },
+        "showAllArtists": "Tampilkan Semua Artis",
+        "icons": "Ikon",
+        "songChangeAnimation": "Animasi Perubahan Lagu",
+        "fullscreen": "Layar Penuh",
+    
+        "extraHeader": "Fungsionalitas Tambahan",
+        "backgroundChoice": {
+            "setting": "⭐ Pilihan Latar Belakang",
+            "description": [
+                "**Baru:** Cobalah opsi **album seni bergerak**!",
+                "**Peringatan:** Terlihat indah tetapi mungkin membutuhkan sumber daya yang tinggi, dan eksperimental."
+            ],
+            "dynamicColor": "Warna solid dinamis",
+            "staticColor": "Warna solid statis",
+            "artwork": "Seni Album",
+            "animatedArt": "Seni Album Bergerak (Eksperimental)",
+            "artist": "Seni Artis"
+        },
+        "extraControls": "Kontrol Tambahan",
+        "upnextDisplay": "Tampilan Selanjutnya",
+        "contextDisplay": {
+            "setting": "Tampilan Konteks",
+            "always": "Selalu",
+            "never": "Tidak Pernah",
+            "mouse": "Pada pergerakan mouse"
+        },
+        "volumeDisplay": {
+            "setting": "Tampilan Bar Volume",
+            "description": [
+                "Dalam mode `cerdas`, bar volume akan ditampilkan ketika:",
+                "  - Anda memindahkan mouse ke sisi kiri layar.",
+                "  - ketika volume diubah."
+            ],
+            "always": "Selalu",
+            "never": "Tidak Pernah",
+            "smart": "Cerdas"
+        },
+    
+        "appearanceHeader": "Lanjutan/Penampilan",
+        "appearanceSubHeader": "*(Ubah hanya jika Anda tahu apa yang Anda lakukan!)*",
+        "backgroundHeader": "Modifikasi Latar Belakang",
+        "backgroundSubHeader": "Hadir dengan standar yang wajar, *(Ubah hanya jika Anda tahu apa yang Anda lakukan!)*",
+        "backgroundColor": {
+            "setting": "Pilihan Warna (untuk latar belakang berwarna dinamis)",
+            "vibrant": "Vibrant",
+            "prominent": "Prominent",
+            "desaturated": "Desaturated (disarankan)",
+            "lightVibrant": "Light Vibrant",
+            "darkVibrant": "Dark Vibrant",
+            "vibrantNonAlarming": "Vibrant Non Alarming"
+        },
+        "staticColor": "Pilihan Warna (untuk latar belakang berwarna statis)",
+        "themedButtons": "Tombol Bertema",
+        "themedIcons": "Ikon Vertema",
+        "invertColors": {
+            "setting": "Balik Warna",
+            "never": "Tidak Pernah",
+            "always": "Selalu",
+            "auto": "Otomatis (Berdasarkan Latar)"
+        },
+        "verticalMonitorSupport": "Dukungan Monitor Vertical",
+        "verticalMonitorSupportDescription": "Aktifkan ini jika Anda memiliki pengaturan monitor vertical. Lirik akan ditampilkan di bagian bawah, ketika tinggi jendela lebih besar dari lebar.",
+        "backAnimationTime": "Waktu Animasi Latar Belakang (untuk latar belakang gambar)",
+        "animationSpeed": "⭐ Kecepatan Animasi (untuk latar belakang bergerak)",
+        "upnextScroll": {
+            "setting": "Animasi Gulir Selanjutnya",
+            "mq": "Marquee/Gulir",
+            "sp": "Spotify/Translasi"
+        },
+        "upnextTime": "Waktu Selanjutnya untuk Ditampilkan",
+        "backgroundBlur": "Blur Latar Belakang",
+        "backgroundBrightness": "Kecerahan Latar Belakang",
+    
+        "aboutHeader": "Tentang",
+    
+        "configReset": "Atur Ulang Konfigurasi",
+        "reload": "Muat Ulang Klien"
+    },    
+    "tvBtnDesc": "Tampilan Mode TV",
+    "fullscreenBtnDesc": "Layar Penuh"
+}
