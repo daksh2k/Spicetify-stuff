@@ -23,7 +23,7 @@
         "classnames": "^2.3.2",
         "lodash.debounce": "^4.0.8",
         "lodash.defaultsdeep": "^4.6.1",
-        "marked": "^6.0.0",
+        "marked": "^10.0.0",
         "semver": "^7.5.4"
     }
 }
