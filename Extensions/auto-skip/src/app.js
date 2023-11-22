@@ -38,7 +38,7 @@ async function main() {
      * Gets executed on every song change.
      */
     async function checkSkip() {
-        const meta = Spicetify.Player?.data?.track;
+        const meta = Spicetify.Player?.data?.item;
         if (!meta) return;
 
         let apiMeta;
@@ -94,7 +94,7 @@ async function main() {
 
     Spicetify.Player.addEventListener("songchange", checkSkip);
 
-    Spicetify.Player.origin._events.addListener("queue_update", updateNextMeta);
+    Spicetify.Platform.PlayerAPI._events.addListener("queue_update", updateNextMeta);
 
     checkSkip();
 

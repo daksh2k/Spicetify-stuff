@@ -1,0 +1,4 @@
+**/node_modules
+**/dist
+**/package-lock.json
+./shared/types/spicetify.d.ts

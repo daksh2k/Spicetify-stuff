@@ -36,11 +36,11 @@ class Utils {
     }
 
     static fullScreenOn() {
-        if (!document.fullscreen) return document.documentElement.requestFullscreen();
+        if (!document.fullscreenElement) return document.documentElement.requestFullscreen();
     }
 
     static fullScreenOff() {
-        if (document.fullscreen) return document.exitFullscreen();
+        if (document.fullscreenElement) return document.exitFullscreen();
     }
 
     /**
@@ -123,7 +123,7 @@ class Utils {
     static async getNextColor(colorChoice: string) {
         let nextColor = "#444444";
         const imageColors = await WebAPI.colorExtractor(
-            Spicetify.Player.data.track?.uri ?? ""
+            Spicetify.Player.data.item?.uri ?? ""
         ).catch((err) => console.warn(err));
         if (imageColors && imageColors[colorChoice]) nextColor = imageColors[colorChoice];
         return nextColor;
@@ -217,7 +217,7 @@ class Utils {
         let ctxIcon = "",
             ctxSource,
             ctxName;
-        if (Spicetify.Player.data.track?.provider === "queue") {
+        if (Spicetify.Player.data.item?.provider === "queue") {
             ctxIcon = ICONS.CTX_QUEUE;
             ctxSource = STRINGS.context.queue;
             ctxName = "";
@@ -234,7 +234,7 @@ class Utils {
                 case Spicetify.URI.Type.TRACK:
                     ctxIcon = ICONS.CTX_TRACK;
                     ctxSource = STRINGS.context.track;
-                    await WebAPI.getTrackInfo(uriObj._base62Id ? uriObj._base62Id : uriObj.id).then(
+                    await WebAPI.getTrackInfo(uriObj._base62Id ?? uriObj.id).then(
                         (meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`)
                     );
                     break;
