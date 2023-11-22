@@ -1,8 +1,13 @@
 module.exports = {
     root: true,
+    env: {
+        browser: true,
+        es2022: true,
+    },
     parser: "@typescript-eslint/parser",
     parserOptions: {
         project: ["./Extensions/full-screen/tsconfig.json"],
+        sourceType: "module",
     },
     files: ["./Extensions/full-screen/**/*"],
     plugins: ["react", "@typescript-eslint"],
