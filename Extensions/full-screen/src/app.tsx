@@ -320,17 +320,18 @@ async function main() {
         // prepare artist
         let artistData: string[][];
         if (CFM.get("showAllArtists")) {
-            const artistNameList = Object.keys(meta!)
-                .filter((key) => key.startsWith("artist_name"))
-                .sort()
-                .map((key) => meta?.[key]);
+            const artistNameList = Object.keys(meta!).filter((key) =>
+                key.startsWith("artist_name"),
+            ) as Array<keyof typeof meta>;
 
-            const artistUriList = Object.keys(meta!)
-                .filter((key) => key.startsWith("artist_uri"))
-                .sort()
-                .map((key) => meta?.[key]);
+            const artistUriList = Object.keys(meta!).filter((key) =>
+                key.startsWith("artist_uri"),
+            ) as Array<keyof typeof meta>;
 
-            artistData = artistNameList.map((artist, index) => [artist, artistUriList[index]]);
+            artistData = artistNameList.map((key, index) => [
+                meta![key],
+                meta![artistUriList[index]],
+            ]);
         } else {
             artistData = [[meta?.artist_name, meta?.artist_uri]];
         }
@@ -406,19 +407,27 @@ async function main() {
                 const nextColor = await Utils.getNextColor(
                     CFM.get("coloredBackChoice") as Settings["coloredBackChoice"],
                 );
-                updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                updateMainColor(
+                    Spicetify.Player.data.item?.uri,
+                    meta as Partial<Record<string, string>>,
+                );
                 updateThemeColor(Spicetify.Player.data.item?.uri);
                 animateColor(nextColor, back);
                 break;
             }
             case "static_color":
-                updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                updateMainColor(
+                    Spicetify.Player.data.item?.uri,
+                    meta as Partial<Record<string, string>>,
+                );
                 updateThemeColor(Spicetify.Player.data.item?.uri);
                 animateColor(CFM.get("staticBackChoice") as Settings["staticBackChoice"], back);
                 break;
             case "artist_art":
-                backgroundImg.src = await Utils.getImageAndLoad(meta);
-                updateMainColor(backgroundImg.src, meta);
+                backgroundImg.src = await Utils.getImageAndLoad(
+                    meta as Partial<Record<string, string>>,
+                );
+                updateMainColor(backgroundImg.src, meta as Partial<Record<string, string>>);
                 updateThemeColor(backgroundImg.src);
                 backgroundImg.onload = () => {
                     animateCanvas(previousImg, backgroundImg, back, fromResize);
@@ -427,7 +436,10 @@ async function main() {
             case "animated_album": {
                 backgroundImg.src = meta?.image_xlarge_url as string;
                 backgroundImg.onload = () => {
-                    updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                    updateMainColor(
+                        Spicetify.Player.data.item?.uri,
+                        meta as Partial<Record<string, string>>,
+                    );
                     updateThemeColor(Spicetify.Player.data.item?.uri);
                     animatedRotatedCanvas(back, backgroundImg);
                 };
@@ -438,7 +450,10 @@ async function main() {
             default:
                 backgroundImg.src = meta?.image_xlarge_url as string;
                 backgroundImg.onload = () => {
-                    updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                    updateMainColor(
+                        Spicetify.Player.data.item?.uri,
+                        meta as Partial<Record<string, string>>,
+                    );
                     updateThemeColor(Spicetify.Player.data.item?.uri);
                     animateCanvas(previousImg, backgroundImg, back, fromResize);
                 };
@@ -457,9 +472,11 @@ async function main() {
                     contrastColor = "0,0,0";
                 if (
                     CFM.get("backgroundChoice") === "album_art" &&
-                    meta.album_uri.split(":")[2] in INVERTED
+                    (meta?.album_uri?.split(":")[2] ?? "") in INVERTED
                 ) {
-                    mainColor = INVERTED[meta.album_uri.split(":")[2]] ? "0,0,0" : "255,255,255";
+                    mainColor = INVERTED[meta?.album_uri?.split(":")[2] ?? ""]
+                        ? "0,0,0"
+                        : "255,255,255";
                 } else {
                     [mainColor, contrastColor] = await Utils.getMainColor(imageURL);
                 }
@@ -578,7 +595,7 @@ async function main() {
         }
 
         let songName = metadata.title;
-        if (CFM.get("trimTitleUpNext")) {
+        if (CFM.get("trimTitleUpNext") && songName) {
             songName = Utils.trimTitle(songName);
         }
         const artistNameNext = Object.keys(metadata)
