@@ -26,10 +26,10 @@ class Utils {
     static printNotExistings(entriesNotPresent: [string, unknown][]) {
         entriesNotPresent.forEach((entry: [string, unknown]) => {
             console.error(
-                `${entry[0]} not available. Report issue on GitHub or run Spicetify.test() to test.`
+                `${entry[0]} not available. Report issue on GitHub or run Spicetify.test() to test.`,
             );
             Spicetify.showNotification(
-                `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`
+                `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`,
             );
         });
         console.log("Retries exceeded. Aborting.");
@@ -60,7 +60,7 @@ class Utils {
     static addObserver(
         observer: MutationObserver,
         selector: string,
-        options: MutationObserverInit
+        options: MutationObserverInit,
     ) {
         const ele = document.querySelector(selector);
         if (!ele) {
@@ -97,7 +97,7 @@ class Utils {
 
     static async getAlbumReleaseDate(albumURI: string, locale: string) {
         const albumInfo = await WebAPI.getAlbumInfo(albumURI.replace("spotify:album:", "")).catch(
-            (err) => console.error(err)
+            (err) => console.error(err),
         );
         if (!albumInfo?.release_date) return "";
         const albumDate = new Date(albumInfo.release_date);
@@ -105,7 +105,7 @@ class Utils {
         recentDate.setMonth(recentDate.getMonth() - 18);
         const dateStr = albumDate.toLocaleString(
             locale,
-            albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" }
+            albumDate > recentDate ? { year: "numeric", month: "short" } : { year: "numeric" },
         );
         return " • " + dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
     }
@@ -113,7 +113,9 @@ class Utils {
         if (meta.artist_uri == null) return meta.image_xlarge_url;
         let arUri = meta.artist_uri.split(":")[2];
         if (meta.artist_uri.split(":")[1] === "local") {
-            const res = await WebAPI.searchArt(meta.artist_name).catch((err) => console.error(err));
+            const res = await WebAPI.searchArt(meta.artist_name ?? "").catch((err) =>
+                console.error(err),
+            );
             arUri = res ? res.artists.items[0].id : "";
         }
         const artistInfo = await WebAPI.getArtistInfo(arUri).catch((err) => console.error(err));
@@ -123,7 +125,7 @@ class Utils {
     static async getNextColor(colorChoice: string) {
         let nextColor = "#444444";
         const imageColors = await WebAPI.colorExtractor(
-            Spicetify.Player.data.item?.uri ?? ""
+            Spicetify.Player.data.item?.uri ?? "",
         ).catch((err) => console.warn(err));
         if (imageColors && imageColors[colorChoice]) nextColor = imageColors[colorChoice];
         return nextColor;
@@ -192,11 +194,11 @@ class Utils {
                 imageProminentColor = Utils.hexToRgb("#444444");
             else
                 imageProminentColor = Utils.hexToRgb(
-                    imageColors[CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]]
+                    imageColors[CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]],
                 );
         } else if (CFM.get("backgroundChoice") === "static_color") {
             imageProminentColor = Utils.hexToRgb(
-                CFM.get("staticBackChoice") as Settings["staticBackChoice"]
+                CFM.get("staticBackChoice") as Settings["staticBackChoice"],
             );
         }
         const isLightBG =
@@ -234,8 +236,8 @@ class Utils {
                 case Spicetify.URI.Type.TRACK:
                     ctxIcon = ICONS.CTX_TRACK;
                     ctxSource = STRINGS.context.track;
-                    await WebAPI.getTrackInfo(uriObj._base62Id ?? uriObj.id).then(
-                        (meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`)
+                    await WebAPI.getTrackInfo(uriObj?.id ?? "").then(
+                        (meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`),
                     );
                     break;
                 case Spicetify.URI.Type.SEARCH:
@@ -261,19 +263,19 @@ class Utils {
                         case "album":
                             ctxSource = STRINGS.context.albumRadio;
                             await WebAPI.getAlbumInfo(uriObj.args[1]).then(
-                                (meta) => (ctxName = meta.name)
+                                (meta) => (ctxName = meta.name),
                             );
                             break;
                         case "track":
                             ctxSource = STRINGS.context.trackRadio;
                             await WebAPI.getTrackInfo(uriObj.args[1]).then(
-                                (meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`)
+                                (meta) => (ctxName = `${meta.name}  •  ${meta.artists[0].name}`),
                             );
                             break;
                         case "artist":
                             ctxSource = STRINGS.context.artistRadio;
                             await WebAPI.getArtistInfo(uriObj.args[1]).then(
-                                (meta) => (ctxName = meta?.profile?.name)
+                                (meta) => (ctxName = meta?.profile?.name),
                             );
                             break;
                         case "playlist":
@@ -281,7 +283,7 @@ class Utils {
                             ctxSource = STRINGS.context.playlistRadio;
                             ctxIcon = `<svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M16.94 6.9l-1.4 1.46C16.44 9.3 17 10.58 17 12s-.58 2.7-1.48 3.64l1.4 1.45C18.22 15.74 19 13.94 19 12s-.8-3.8-2.06-5.1zM23 12c0-3.12-1.23-5.95-3.23-8l-1.4 1.45C19.97 7.13 21 9.45 21 12s-1 4.9-2.64 6.55l1.4 1.45c2-2.04 3.24-4.87 3.24-8zM7.06 17.1l1.4-1.46C7.56 14.7 7 13.42 7 12s.6-2.7 1.5-3.64L7.08 6.9C5.78 8.2 5 10 5 12s.8 3.8 2.06 5.1zM1 12c0 3.12 1.23 5.95 3.23 8l1.4-1.45C4.03 16.87 3 14.55 3 12s1-4.9 2.64-6.55L4.24 4C2.24 6.04 1 8.87 1 12zm9-3.32v6.63l5-3.3-5-3.3z"></path></svg>`;
                             await WebAPI.getPlaylistInfo("spotify:playlist:" + uriObj.args[1]).then(
-                                (meta) => (ctxName = meta.playlist.name)
+                                (meta) => (ctxName = meta.playlist.name),
                             );
                             break;
                         default:

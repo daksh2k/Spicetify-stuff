@@ -14,7 +14,7 @@ export default function showWhatsNew(forcedShow = false) {
             content: content,
             isLarge: true,
         },
-        forcedShow
+        forcedShow,
     );
 }
 
@@ -28,7 +28,7 @@ function getChangelogContent(forcedShow = false) {
                     return `# v${version}\n${changes}`;
                 })
                 .join("\n\n"),
-            { gfm: true, breaks: true }
+            { gfm: true, breaks: true },
         );
     } else {
         title = `New in Full Screen v${version}`;
@@ -50,7 +50,7 @@ async function showWhatsNewModal(
     appName: string,
     currentVersion: string,
     content: ModalContent,
-    forcedShow = false
+    forcedShow = false,
 ) {
     while (!Spicetify?.PopupModal || !Spicetify?.LocalStorage) {
         await new Promise((resolve) => setTimeout(resolve, 100));

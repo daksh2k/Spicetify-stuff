@@ -111,7 +111,7 @@
                 break;
             case Spicetify.URI.Type.ALBUM:
                 tracks = await fetchAlbumFromWebApi(
-                    `https://api.spotify.com/v1/albums/${uri.split(":")[2]}/tracks?limit=50`
+                    `https://api.spotify.com/v1/albums/${uri.split(":")[2]}/tracks?limit=50`,
                 );
                 break;
         }
@@ -131,7 +131,7 @@
         }
 
         const currentQueueLength = (Spicetify.Queue.nextTracks || []).filter(
-            (track) => track.provider !== "context"
+            (track) => track.provider !== "context",
         ).length;
 
         await Spicetify.addToQueue(uris.map((uri) => ({ uri }))).catch((err) => {
@@ -145,7 +145,7 @@
         if (currentQueueLength) {
             await Spicetify.Platform.PlayerAPI.reorderQueue(
                 newTracks.map((track) => track.contextTrack),
-                { before: Spicetify.Queue.nextTracks[0].contextTrack }
+                { before: Spicetify.Queue.nextTracks[0].contextTrack },
             )
                 .then(() => Spicetify.showNotification("Added to Play Next"))
                 .catch((err) => {
@@ -162,6 +162,6 @@
         "Play Next",
         fetchAndAdd,
         uriTrack,
-        `<svg role="img" height="16" width="16" viewBox="0 0 20 20" fill="currentColor"><path d="M3.67 8.67h14V11h-14V8.67zm0-4.67h14v2.33h-14V4zm0 9.33H13v2.34H3.67v-2.34zm11.66 0v7l5.84-3.5-5.84-3.5z"></path></svg>`
+        `<svg role="img" height="16" width="16" viewBox="0 0 20 20" fill="currentColor"><path d="M3.67 8.67h14V11h-14V8.67zm0-4.67h14v2.33h-14V4zm0 9.33H13v2.34H3.67v-2.34zm11.66 0v7l5.84-3.5-5.84-3.5z"></path></svg>`,
     ).register();
 })();

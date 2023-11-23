@@ -198,9 +198,7 @@ declare namespace Spicetify {
 	type PlayerContext = {
 		uri: string;
 		url: string;
-		metadata: {
-			"player.arch": string;
-		};
+		metadata: any;
 	};
 	type PlayerIndex = {
 		pageURI?: string | null;
@@ -783,7 +781,14 @@ declare namespace Spicetify {
 	 * Spicetify.Keyboard is wrapper of this library to be compatible with legacy Spotify,
 	 * so new extension should use this library instead.
 	 */
-	function Mousetrap(element?: any): void;
+	const Mousetrap: {
+        bind: (
+            keys: string | string[],
+            callback: (event: KeyboardEvent, combo: string) => void,
+            action?: string
+        ) => void;
+        unbind: (keys: string | string[], action?: string) => void;
+    };
 
 	/**
 	 * Contains vast array of internal APIs.
@@ -1242,7 +1247,13 @@ declare namespace Spicetify {
 			 * List of valid icons to use.
 			 */
 			static readonly iconList: Icon[];
-			constructor(name: string, onClick: OnClickCallback, shouldAdd?: ShouldAddCallback, icon?: Icon, disabled?: boolean);
+			constructor(
+                name: string,
+                onClick: OnClickCallback,
+                shouldAdd?: ShouldAddCallback,
+                icon?: Icon | string,
+                disabled?: boolean
+            );
 			name: string;
 			icon: Icon | string;
 			disabled: boolean;
@@ -1987,7 +1998,8 @@ declare namespace Spicetify {
 	/**
 	 * SVG icons
 	 */
-	const SVGIcons: Record<Icon, string>;
+	// const SVGIcons: Record<Icon, string>;
+	const SVGIcons: any;
 
 	/**
 	 * Return font styling used by Spotify.

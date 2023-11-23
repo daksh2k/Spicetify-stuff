@@ -36,7 +36,7 @@ class WebAPI {
                 headers: {
                     Authorization: `Bearer ${await WebAPI.getToken()}`,
                 },
-            }
+            },
         )
             .then((res) => res.json())
             .then((res) => res.data.artist);
@@ -54,7 +54,7 @@ class WebAPI {
         const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
         if (presentInCache.length > 0) return presentInCache[0].colors;
         const body = await Spicetify.CosmosAsync.get(
-            `wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`
+            `wg://colorextractor/v1/extract-presets?uri=${uri}&format=json`,
         );
         if (body.entries && body.entries.length) {
             const list: Colors = {};

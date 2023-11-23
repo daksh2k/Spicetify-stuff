@@ -24,7 +24,7 @@ export function getSettingCard(
     actionContent: string,
     title: string,
     key: keyof Settings | keyof Config,
-    description = ""
+    description = "",
 ) {
     const settingCard = document.createElement("div");
     settingCard.classList.add("setting-card");
@@ -32,14 +32,14 @@ export function getSettingCard(
     if (key in DEFAULTS) {
         settingCard.setAttribute(
             "setting-default",
-            String(CFM.getGlobal(key as keyof Config) === DEFAULTS[key as keyof Config])
+            String(CFM.getGlobal(key as keyof Config) === DEFAULTS[key as keyof Config]),
         );
     } else {
         settingCard.setAttribute(
             "setting-default",
             String(
-                CFM.get(key as keyof Settings) === DEFAULTS[CFM.getMode()][key as keyof Settings]
-            )
+                CFM.get(key as keyof Settings) === DEFAULTS[CFM.getMode()][key as keyof Settings],
+            ),
         );
     }
     settingCard.innerHTML = `
@@ -63,7 +63,7 @@ export function createAdjust(
     min: number,
     max: number,
     onChange: (_: string | number) => void,
-    extraDescription = ""
+    extraDescription = "",
 ) {
     let value = configValue;
 
@@ -86,7 +86,7 @@ export function createAdjust(
         <button class="switch small plus"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.plus2px}</button>`,
         title,
         key,
-        extraDescription
+        extraDescription,
     );
     const minus = settingCard.querySelector<HTMLElement>(".minus");
     const plus = settingCard.querySelector<HTMLElement>(".plus");

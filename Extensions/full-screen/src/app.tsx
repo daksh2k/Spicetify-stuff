@@ -124,7 +124,7 @@ async function main() {
         container.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
-                window.innerWidth < window.innerHeight
+                window.innerWidth < window.innerHeight,
         );
         container.setAttribute("data-locale", LOCALE);
         container.setAttribute("mode", CFM.getMode());
@@ -274,7 +274,7 @@ async function main() {
     function updateUpNextShow() {
         setTimeout(() => {
             const timetogo = Utils.getShowTime(
-                CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"]
+                CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"],
             );
             if (upnextTimer) {
                 clearTimeout(upnextTimer);
@@ -378,7 +378,7 @@ async function main() {
             }
             if (CFM.get("lyricsDisplay") && CFM.get("autoHideLyrics")) {
                 const lyricsContainer = container.querySelector<HTMLElement>(
-                    "#fad-lyrics-plus-container"
+                    "#fad-lyrics-plus-container",
                 );
                 if (lyricsContainer) {
                     autoHideLyrics();
@@ -404,7 +404,7 @@ async function main() {
         switch (settingValue) {
             case "dynamic_color": {
                 const nextColor = await Utils.getNextColor(
-                    CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]
+                    CFM.get("coloredBackChoice") as Settings["coloredBackChoice"],
                 );
                 updateMainColor(Spicetify.Player.data.item?.uri, meta);
                 updateThemeColor(Spicetify.Player.data.item?.uri);
@@ -492,7 +492,7 @@ async function main() {
             container.classList.toggle("themed-icons", Boolean(CFM.get("themedIcons")));
             let themeVibrantColor;
             const artColors = await WebAPI.colorExtractor(imageURL).catch((err) =>
-                console.warn(err)
+                console.warn(err),
             );
             if (!artColors?.VIBRANT) themeVibrantColor = "175,175,175";
             else themeVibrantColor = Utils.hexToRgb(artColors.VIBRANT);
@@ -507,7 +507,7 @@ async function main() {
         if (evt.detail.isLoading) return;
         container.classList.toggle(
             "lyrics-unavailable",
-            !(evt.detail.available && (evt.detail?.synced?.length ?? 5) > 1)
+            !(evt.detail.available && (evt.detail?.synced?.length ?? 5) > 1),
         );
         if (CFM.get("extraControls")) {
             lyrics.classList.toggle("hidden", container.classList.contains("lyrics-unavailable"));
@@ -516,7 +516,7 @@ async function main() {
 
     function autoHideLyrics() {
         const lyricsContainer = container.querySelector(
-            "#fad-lyrics-plus-container"
+            "#fad-lyrics-plus-container",
         ) as HTMLElement;
         if (!lyricsContainer.innerText) {
             handleLyricsUpdate({ detail: { isLoading: true, available: false } });
@@ -536,14 +536,14 @@ async function main() {
         container.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
-                window.innerWidth < window.innerHeight
+                window.innerWidth < window.innerHeight,
         );
     }
 
     // Get the context and update it
     async function updateContext() {
         const ctxDetails = await Utils.getContext(translations[LOCALE]).catch((err) =>
-            console.error(err)
+            console.error(err),
         );
         ctx_source.classList.toggle("ctx-no-name", !ctxDetails!.ctxName);
 
@@ -624,7 +624,7 @@ async function main() {
                         animTime = 5000 * (fsd_first_span.offsetWidth / 400);
                         fsd_myUp.style.setProperty(
                             "--translate_width_fsd",
-                            `-${fsd_first_span.offsetWidth + 3.5}px`
+                            `-${fsd_first_span.offsetWidth + 3.5}px`,
                         );
                         fsd_next_tit_art_inner.style.animation =
                             "fsd_cssmarquee " + animTime + "ms linear 800ms infinite";
@@ -638,7 +638,7 @@ async function main() {
                         // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
                         fsd_myUp.style.setProperty(
                             "--translate_width_fsd",
-                            `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`
+                            `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
                         );
                         fsd_next_tit_art_inner.style.animation = `fsd_translate ${
                             animTime > 1500 ? animTime : 1500
@@ -684,7 +684,7 @@ async function main() {
     };
 
     function updateExtraControls(data: any) {
-        data = data?.data ?? Spicetify.Player.data 
+        data = data?.data ?? Spicetify.Player.data;
         updateHeart();
         if (prevControlData?.shuffle !== data?.shuffle) Utils.fadeAnimation(shuffle);
         if (prevControlData?.repeat !== data?.repeat) Utils.fadeAnimation(repeat);
@@ -707,13 +707,12 @@ async function main() {
             repeat.classList.toggle(
                 "unavailable",
                 !data?.restrictions?.canToggleRepeatTrack &&
-                    !data?.restrictions?.canToggleRepeatContext
+                    !data?.restrictions?.canToggleRepeatContext,
             );
         }
     }
 
-    let prevHeartData =
-        Spicetify.Player?.data?.item?.metadata["collection.in_collection"];
+    let prevHeartData = Spicetify.Player?.data?.item?.metadata["collection.in_collection"];
 
     function updateHeart() {
         const meta = Spicetify.Player?.data?.item;
@@ -804,7 +803,7 @@ async function main() {
         if (CFM.get("volumeDisplay") !== "never") {
             ReactDOM.render(
                 <SeekableVolumeBar state={CFM.get("volumeDisplay") as Settings["volumeDisplay"]} />,
-                container.querySelector("#fsd-volume-parent")
+                container.querySelector("#fsd-volume-parent"),
             );
         }
         if (CFM.get("enableFade")) {
@@ -819,7 +818,7 @@ async function main() {
         if (CFM.get("progressBarDisplay")) {
             ReactDOM.render(
                 <SeekableProgressBar />,
-                container.querySelector("#fsd-progress-parent")
+                container.querySelector("#fsd-progress-parent"),
             );
         }
         if (CFM.get("playerControls")) {
@@ -827,7 +826,7 @@ async function main() {
             Spicetify.Player.addEventListener("onplaypause", updatePlayerControls);
         }
         if (CFM.get("extraControls")) {
-            updateExtraControls();
+            updateExtraControls(null);
             Utils.addObserver(heartObserver, ".control-button-heart", {
                 attributes: true,
                 attributeFilter: ["aria-checked"],
@@ -975,7 +974,7 @@ async function main() {
         configValue: string | number,
         key: keyof Settings | keyof Config,
         callback: (val: string) => void,
-        description = ""
+        description = "",
     ) {
         const settingCard = getSettingCard(
             `<select>
@@ -985,7 +984,7 @@ async function main() {
             </select>`,
             title,
             key,
-            description
+            description,
         );
 
         const select = settingCard.querySelector<HTMLSelectElement>("select")!;
@@ -1009,7 +1008,7 @@ async function main() {
         title: string,
         key: keyof Settings | keyof Config,
         callback = (value: boolean) => saveOption(key as keyof Settings, value),
-        description = ""
+        description = "",
     ) {
         const settingCard = getSettingCard(
             `<label class="switch">
@@ -1018,7 +1017,7 @@ async function main() {
             </label>`,
             title,
             key,
-            description
+            description,
         );
         const toggle = settingCard.querySelector<HTMLInputElement>("input");
         if (toggle) {
@@ -1035,7 +1034,7 @@ async function main() {
         key: keyof Settings | keyof Config,
         type: string,
         callback = (value: string) => saveOption(key as keyof Settings, value),
-        description = ""
+        description = "",
     ): HTMLDivElement {
         const settingCard = getSettingCard(
             `<label class="gen-input">
@@ -1043,7 +1042,7 @@ async function main() {
             </label>`,
             title,
             key,
-            description
+            description,
         );
         const inputElement = settingCard.querySelector<HTMLInputElement>("input");
         if (inputElement) {
@@ -1077,7 +1076,7 @@ async function main() {
                     saveGlobalOption("locale", value);
                     document.querySelector("body > generic-modal")?.remove();
                     openConfig();
-                }
+                },
             ),
             createToggle(
                 translations[LOCALE].settings.fsHideOriginal,
@@ -1086,7 +1085,7 @@ async function main() {
                     saveGlobalOption("fsHideOriginal", value);
                     location.reload();
                 },
-                translations[LOCALE].settings.fsHideOriginalDescription
+                translations[LOCALE].settings.fsHideOriginalDescription,
             ),
             createOptions(
                 translations[LOCALE].settings.autoLaunch.setting,
@@ -1101,7 +1100,7 @@ async function main() {
                 (value: string) => {
                     saveGlobalOption("autoLaunch", value);
                 },
-                translations[LOCALE].settings.autoLaunch.description
+                translations[LOCALE].settings.autoLaunch.description,
             ),
             createOptions(
                 translations[LOCALE].settings.activationTypes.setting,
@@ -1116,7 +1115,7 @@ async function main() {
                     saveGlobalOption("activationTypes", value);
                     location.reload();
                 },
-                translations[LOCALE].settings.activationTypes.description
+                translations[LOCALE].settings.activationTypes.description,
             ),
             createOptions(
                 translations[LOCALE].settings.buttonActivation.setting,
@@ -1131,7 +1130,7 @@ async function main() {
                     saveGlobalOption("buttonActivation", value);
                     location.reload();
                 },
-                translations[LOCALE].settings.buttonActivation.description
+                translations[LOCALE].settings.buttonActivation.description,
             ),
             createOptions(
                 translations[LOCALE].settings.keyActivation.setting,
@@ -1146,7 +1145,7 @@ async function main() {
                     saveGlobalOption("keyActivation", value);
                     location.reload();
                 },
-                translations[LOCALE].settings.keyActivation.description
+                translations[LOCALE].settings.keyActivation.description,
             ),
             headerText(translations[LOCALE].settings.lyricsHeader),
             createToggle(
@@ -1156,7 +1155,7 @@ async function main() {
                     saveOption("lyricsDisplay", value);
                     container.classList.remove("lyrics-unavailable");
                 },
-                translations[LOCALE].settings.lyricsDescription.join("<br>")
+                translations[LOCALE].settings.lyricsDescription.join("<br>"),
             ),
             createToggle(translations[LOCALE].settings.autoHideLyrics, "autoHideLyrics"),
             createOptions(
@@ -1168,7 +1167,7 @@ async function main() {
                 },
                 CFM.get("lyricsAlignment") as Settings["lyricsAlignment"],
                 "lyricsAlignment",
-                (value: string) => saveOption("lyricsAlignment", value)
+                (value: string) => saveOption("lyricsAlignment", value),
             ),
             createAdjust(
                 translations[LOCALE].settings.lyricsAnimationTempo,
@@ -1182,7 +1181,7 @@ async function main() {
                     CFM.set("animationTempo", Number(state));
                     render();
                     if (Utils.isModeActivated()) activate();
-                }
+                },
             ),
             headerText(translations[LOCALE].settings.generalHeader),
             createToggle(
@@ -1193,13 +1192,13 @@ async function main() {
                     if (value)
                         ReactDOM.render(
                             <SeekableProgressBar />,
-                            container.querySelector("#fsd-progress-parent")
+                            container.querySelector("#fsd-progress-parent"),
                         );
                     else
                         ReactDOM.unmountComponentAtNode(
-                            container.querySelector("#fsd-progress-parent")!
+                            container.querySelector("#fsd-progress-parent")!,
                         );
-                }
+                },
             ),
             createToggle(translations[LOCALE].settings.playerControls, "playerControls"),
             createOptions(
@@ -1211,7 +1210,7 @@ async function main() {
                 },
                 CFM.get("showAlbum") as Settings["showAlbum"],
                 "showAlbum",
-                (value: string) => saveOption("showAlbum", value)
+                (value: string) => saveOption("showAlbum", value),
             ),
             createToggle(translations[LOCALE].settings.icons, "icons"),
             createToggle(translations[LOCALE].settings.showAllArtists, "showAllArtists"),
@@ -1232,7 +1231,7 @@ async function main() {
                 },
                 CFM.get("contextDisplay") as Settings["contextDisplay"],
                 "contextDisplay",
-                (value: string) => saveOption("contextDisplay", value)
+                (value: string) => saveOption("contextDisplay", value),
             ),
             createOptions(
                 translations[LOCALE].settings.volumeDisplay.setting,
@@ -1248,19 +1247,19 @@ async function main() {
                     if (value !== "never") {
                         ReactDOM.render(
                             <SeekableVolumeBar state={value} />,
-                            container.querySelector("#fsd-volume-parent")
+                            container.querySelector("#fsd-volume-parent"),
                         );
                     } else {
                         ReactDOM.unmountComponentAtNode(
-                            container.querySelector("#fsd-volume-parent")!
+                            container.querySelector("#fsd-volume-parent")!,
                         );
                     }
                 },
-                translations[LOCALE].settings.volumeDisplay.description.join("\n")
+                translations[LOCALE].settings.volumeDisplay.description.join("\n"),
             ),
             headerText(
                 translations[LOCALE].settings.backgroundHeader,
-                translations[LOCALE].settings.backgroundSubHeader
+                translations[LOCALE].settings.backgroundSubHeader,
             ),
             createOptions(
                 translations[LOCALE].settings.backgroundChoice.setting,
@@ -1279,7 +1278,7 @@ async function main() {
                         updateBackground(Spicetify.Player.data.item?.metadata);
                     }
                 },
-                translations[LOCALE].settings.backgroundChoice.description.join("<br>")
+                translations[LOCALE].settings.backgroundChoice.description.join("<br>"),
             ),
             createAdjust(
                 translations[LOCALE].settings.animationSpeed,
@@ -1292,7 +1291,7 @@ async function main() {
                 (state) => {
                     CFM.set("animationSpeed", Number(state) / 100);
                     modifyRotationSpeed(Number(state) / 100);
-                }
+                },
             ),
             createAdjust(
                 translations[LOCALE].settings.backAnimationTime,
@@ -1305,7 +1304,7 @@ async function main() {
                 (state) => {
                     CFM.set("backAnimationTime", Number(state));
                     container.style.setProperty("--fs-transition", `${state}s`);
-                }
+                },
             ),
             createOptions(
                 translations[LOCALE].settings.backgroundColor.setting,
@@ -1325,7 +1324,7 @@ async function main() {
                     if (Utils.isModeActivated()) {
                         updateBackground(Spicetify.Player.data.item?.metadata, true);
                     }
-                }
+                },
             ),
             createInputElement(
                 translations[LOCALE].settings.staticColor,
@@ -1338,14 +1337,14 @@ async function main() {
                         animateColor(value, back, true);
                         updateMainColor(
                             Spicetify.Player.data.item?.uri,
-                            Spicetify.Player.data.item?.metadata
+                            Spicetify.Player.data.item?.metadata,
                         );
                         if (overlayTimout) clearTimeout(overlayTimout);
                         overlayTimout = setTimeout(() => {
                             Utils.overlayBack(false);
                         }, 1500);
                     }
-                }
+                },
             ),
             createAdjust(
                 translations[LOCALE].settings.backgroundBlur,
@@ -1365,7 +1364,7 @@ async function main() {
                             Utils.overlayBack(false);
                         }, 2000);
                     }
-                }
+                },
             ),
             createOptions(
                 translations[LOCALE].settings.backgroundBrightness,
@@ -1389,11 +1388,11 @@ async function main() {
                     if (Utils.isModeActivated()) {
                         updateBackground(Spicetify.Player.data.item?.metadata, true);
                     }
-                }
+                },
             ),
             headerText(
                 translations[LOCALE].settings.appearanceHeader,
-                translations[LOCALE].settings.appearanceSubHeader
+                translations[LOCALE].settings.appearanceSubHeader,
             ),
             createToggle(translations[LOCALE].settings.themedButtons, "themedButtons"),
             createToggle(translations[LOCALE].settings.themedIcons, "themedIcons"),
@@ -1406,13 +1405,13 @@ async function main() {
                 },
                 CFM.get("invertColors") as Settings["invertColors"],
                 "invertColors",
-                (value: string) => saveOption("invertColors", value)
+                (value: string) => saveOption("invertColors", value),
             ),
             createToggle(
                 translations[LOCALE].settings.verticalMonitorSupport,
                 "verticalMonitorSupport",
                 (value: boolean) => saveOption("verticalMonitorSupport", value),
-                translations[LOCALE].settings.verticalMonitorSupportDescription
+                translations[LOCALE].settings.verticalMonitorSupportDescription,
             ),
             createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
             createOptions(
@@ -1423,7 +1422,7 @@ async function main() {
                 },
                 CFM.get("upNextAnim") as Settings["upNextAnim"],
                 "upNextAnim",
-                (value: string) => saveOption("upNextAnim", value)
+                (value: string) => saveOption("upNextAnim", value),
             ),
             createAdjust(
                 translations[LOCALE].settings.upnextTime,
@@ -1436,11 +1435,11 @@ async function main() {
                 (state) => {
                     CFM.set("upnextTimeToShow", Number(state));
                     updateUpNextShow();
-                }
+                },
             ),
             headerText(translations[LOCALE].settings.aboutHeader),
             getAboutSection(),
-            getSettingBottomHeader()
+            getSettingBottomHeader(),
         );
         Spicetify.PopupModal.display({
             title:
@@ -1485,7 +1484,7 @@ async function main() {
                 "button",
                 "tm-button",
                 "main-topBar-button",
-                "InvalidDropTarget"
+                "InvalidDropTarget",
             );
             tvButton.innerHTML = ICONS.TV_MODE;
             tvButton.id = "TV-button";

@@ -5,7 +5,7 @@ export function animateCanvas(
     prevImg: HTMLImageElement,
     nextImg: HTMLImageElement,
     back: HTMLCanvasElement,
-    fromResize = false
+    fromResize = false,
 ) {
     const configTransitionTime = CFM.get("backAnimationTime") as Settings["backAnimationTime"];
     const { innerWidth: width, innerHeight: height } = window;
@@ -121,7 +121,7 @@ export function animatedRotatedCanvas(back: HTMLCanvasElement, bgImg: HTMLImageE
     const blur = Math.max(CFM.get("blurSize") as Settings["blurSize"], 28);
     const brightness = Math.min(
         CFM.get("backgroundBrightness") as Settings["backgroundBrightness"],
-        0.7
+        0.7,
     );
 
     ctx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
@@ -179,7 +179,7 @@ export function animatedRotatedCanvasV2(back: HTMLCanvasElement, bgImg: HTMLImag
     const blur = Math.max(CFM.get("blurSize") as Settings["blurSize"], 28);
     const brightness = Math.min(
         CFM.get("backgroundBrightness") as Settings["backgroundBrightness"],
-        0.7
+        0.7,
     );
 
     ctx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
@@ -235,7 +235,7 @@ export function animatedRotatedCanvasOptimized(back: HTMLCanvasElement, bgImg: H
     const blur = Math.max(CFM.get("blurSize") as Settings["blurSize"], 32);
     const brightness = Math.min(
         CFM.get("backgroundBrightness") as Settings["backgroundBrightness"],
-        0.7
+        0.7,
     );
 
     offscreenCtx.filter = `saturate(2) brightness(${brightness}) blur(${blur}px)`;
@@ -292,7 +292,7 @@ function getSizeValues(
     parentWidth: number,
     parentHeight: number,
     childWidth: number,
-    childHeight: number
+    childHeight: number,
 ) {
     const doRatio = childWidth / childHeight;
     const cRatio = parentWidth / parentHeight;
