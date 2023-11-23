@@ -4,7 +4,7 @@
 // AUTHOR: dax
 // DESCRIPTION: Register a few more keybinds to support keyboard-driven navigation in Spotify client. 
 
-/// <reference path="../spicetify-cli/globals.d.ts" />
+/// <reference path="../shared/types/spicetify.d.ts" />
 
 (function KeyboardShortcutMy() {
     if (!Spicetify.Keyboard) {
@@ -131,20 +131,15 @@
     function seekBack(){
         Spicetify.Player.skipBack(10000)
     }  
-    async function decreaseVolume(){
-        if(!document.querySelector(".main-trackList-selected")){
-            if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player?.origin?.setVolume(getVolume() - 0.05)
-            else await Spicetify.Platform.PlaybackAPI.setVolume(getVolume() - 0.05)
+    function decreaseVolume(){
+        if (!document.querySelector(".main-trackList-selected")){
+            Spicetify.Player.setVolume(Spicetify.Player.getVolume() - 0.05)
         }
     }
-    async function increaseVolume(){
-        if(!document.querySelector(".main-trackList-selected")){
-            if(Spicetify.Platform?.PlaybackAPI === undefined) Spicetify.Player?.origin?.setVolume(getVolume() + 0.05)
-            else await Spicetify.Platform.PlaybackAPI.setVolume(getVolume() + 0.05)
-    }
-    }
-    function getVolume(){
-        return (Spicetify.Player?.origin?._volume?._volume ?? Spicetify.Platform?.PlaybackAPI?._volume)
+    function increaseVolume(){
+        if (!document.querySelector(".main-trackList-selected")){
+            Spicetify.Player.setVolume(Spicetify.Player.getVolume() + 0.05)
+        }
     }
 
     // ---------------------------------------------------------------------------------------

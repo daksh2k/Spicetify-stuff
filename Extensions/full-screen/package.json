@@ -9,21 +9,20 @@
     },
     "license": "MIT",
     "devDependencies": {
-        "@types/lodash.debounce": "^4.0.7",
-        "@types/lodash.defaultsdeep": "^4.6.7",
-        "@types/marked": "^5.0.1",
-        "@types/react": "^18.2.18",
-        "@types/react-dom": "^18.2.7",
-        "@typescript-eslint/eslint-plugin": "^6.2.1",
-        "@typescript-eslint/parser": "^6.2.1",
-        "eslint": "^8.46.0",
-        "spicetify-creator": "^1.0.14"
-    },
-    "dependencies": {
-        "classnames": "^2.3.2",
+        "@types/lodash.debounce": "^4.0.9",
+        "@types/lodash.defaultsdeep": "^4.6.9",
+        "@types/react": "17.0.2",
+        "@types/react-dom": "17.0.2",
+        "@typescript-eslint/eslint-plugin": "^6.12.0",
+        "@typescript-eslint/parser": "^6.12.0",
+        "eslint-plugin-react": "^7.33.2",
+        "eslint": "^8.54.0",
+        "eslint-config-prettier": "^9.0.0",
+        "typescript": "^5.3.2",
         "lodash.debounce": "^4.0.8",
         "lodash.defaultsdeep": "^4.6.1",
-        "marked": "^6.0.0",
-        "semver": "^7.5.4"
+        "marked": "^10.0.0",
+        "semver": "^7.5.4",
+        "spicetify-creator": "^1.0.16"
     }
 }

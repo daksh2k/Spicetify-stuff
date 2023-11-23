@@ -1,5 +1,4 @@
 import * as React from "react";
-import classNames from "classnames";
 import "./styles.scss";
 import { SeekbarProps } from "../../../types/fullscreen";
 import CFM from "../../../utils/config";
@@ -71,7 +70,7 @@ const SeekableProgressBar = () => {
         const progress = Spicetify.Player.getProgress();
         if (
             !changingProgress.isChanging &&
-            (!Spicetify.Player.origin._state.isPaused || curProgress !== progress)
+            (Spicetify.Player.isPlaying() || curProgress !== progress)
         ) {
             setProgress(progress);
         }
@@ -117,7 +116,7 @@ const SeekableProgressBar = () => {
             <div
                 id="fsd-progress-bar"
                 ref={progSlider}
-                className={classNames({ dragging: changingProgress.isChanging })}>
+                className={Spicetify.classnames({ dragging: changingProgress.isChanging })}>
                 <div
                     id="fsd-progress-bar-inner"
                     style={{ width: (curProgress / curDuration) * 100 + "%" }}>

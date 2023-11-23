@@ -4,7 +4,7 @@
 // AUTHOR: daksh2k
 // DESCRIPTION: Save any playlist by right click > Save Playlist
 
-/// <reference path="../globals.d.ts" />
+/// <reference path="../shared/types/spicetify.d.ts" />
 
 (function savePlaylists() {
     if (!(Spicetify.CosmosAsync && Spicetify.ContextMenu)) {
@@ -77,8 +77,7 @@
         }
         const uri = uris[0];
         const uriObj = Spicetify.URI.fromString(uri);
-        if (uriObj.type === Spicetify.URI.Type.PLAYLIST || uriObj.type === Spicetify.URI.Type.PLAYLIST_V2) return true;
-        return false;
+        return uriObj.type === Spicetify.URI.Type.PLAYLIST || uriObj.type === Spicetify.URI.Type.PLAYLIST_V2
     }
 
     function fetchAndCreate(uris) {

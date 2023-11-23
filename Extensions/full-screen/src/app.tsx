@@ -134,11 +134,11 @@ async function main() {
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls);
         Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
-        Spicetify.Player.origin._events.removeListener("update", updateExtraControls);
+        Spicetify.Platform.PlayerAPI._events.removeListener("update", updateExtraControls);
         heartObserver.disconnect();
 
-        Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext);
-        Spicetify.Player.origin._events.removeListener("update", updateUpNextShow);
+        Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", updateUpNext);
+        Spicetify.Platform.PlayerAPI._events.removeListener("update", updateUpNextShow);
         window.removeEventListener("resize", resizeEvents);
         upNextShown = false;
 
@@ -287,7 +287,7 @@ async function main() {
             } else {
                 fsd_myUp.style.transform = "translateX(600px)";
                 upNextShown = false;
-                if (!Spicetify.Player.origin._state.isPaused) {
+                if (Spicetify.Player.isPlaying()) {
                     upnextTimer = setTimeout(() => {
                         updateUpNext();
                         upNextShown = true;
@@ -306,7 +306,7 @@ async function main() {
     }
 
     async function updateInfo() {
-        const meta = Spicetify.Player.data.track?.metadata;
+        const meta = Spicetify.Player.data.item?.metadata;
 
         if (CFM.get("contextDisplay") !== "never")
             updateContext().catch((err) => console.error("Error getting context: ", err));
@@ -358,7 +358,7 @@ async function main() {
         coverImg.onload = () => {
             cover.style.backgroundImage = `url("${coverImg.src}")`;
             title.innerText = songName || "";
-            title.setAttribute("uri", Spicetify.Player.data?.track?.uri || "");
+            title.setAttribute("uri", Spicetify.Player.data?.item?.uri || "");
 
             // combine artist in a list with each span and separated by comma
             artist.innerHTML = `${artistData
@@ -406,14 +406,14 @@ async function main() {
                 const nextColor = await Utils.getNextColor(
                     CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]
                 );
-                updateMainColor(Spicetify.Player.data.track?.uri, meta);
-                updateThemeColor(Spicetify.Player.data.track?.uri);
+                updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                updateThemeColor(Spicetify.Player.data.item?.uri);
                 animateColor(nextColor, back);
                 break;
             }
             case "static_color":
-                updateMainColor(Spicetify.Player.data.track?.uri, meta);
-                updateThemeColor(Spicetify.Player.data.track?.uri);
+                updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                updateThemeColor(Spicetify.Player.data.item?.uri);
                 animateColor(CFM.get("staticBackChoice") as Settings["staticBackChoice"], back);
                 break;
             case "artist_art":
@@ -427,8 +427,8 @@ async function main() {
             case "animated_album": {
                 backgroundImg.src = meta?.image_xlarge_url as string;
                 backgroundImg.onload = () => {
-                    updateMainColor(Spicetify.Player.data.track?.uri, meta);
-                    updateThemeColor(Spicetify.Player.data.track?.uri);
+                    updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                    updateThemeColor(Spicetify.Player.data.item?.uri);
                     animatedRotatedCanvas(back, backgroundImg);
                 };
 
@@ -438,8 +438,8 @@ async function main() {
             default:
                 backgroundImg.src = meta?.image_xlarge_url as string;
                 backgroundImg.onload = () => {
-                    updateMainColor(Spicetify.Player.data.track?.uri, meta);
-                    updateThemeColor(Spicetify.Player.data.track?.uri);
+                    updateMainColor(Spicetify.Player.data.item?.uri, meta);
+                    updateThemeColor(Spicetify.Player.data.item?.uri);
                     animateCanvas(previousImg, backgroundImg, back, fromResize);
                 };
                 break;
@@ -532,7 +532,7 @@ async function main() {
 
     function resizeEvents() {
         if (CFM.get("upnextDisplay")) updateUpNext();
-        updateBackground(Spicetify.Player.data.track?.metadata, true);
+        updateBackground(Spicetify.Player.data.item?.metadata, true);
         container.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
@@ -679,12 +679,12 @@ async function main() {
     }
 
     let prevControlData = {
-        shuffle: Spicetify?.Player?.origin?._state?.shuffle,
-        repeat: Spicetify?.Player?.origin?._state?.repeat,
+        shuffle: Spicetify.Platform?.PlayerAPI?._state?.shuffle,
+        repeat: Spicetify.Platform?.PlayerAPI?._state?.repeat,
     };
 
-    function updateExtraControls(data: any = null) {
-        data = data === null ? Spicetify.Player.origin._state : data.data;
+    function updateExtraControls(data: any) {
+        data = data?.data ?? Spicetify.Player.data 
         updateHeart();
         if (prevControlData?.shuffle !== data?.shuffle) Utils.fadeAnimation(shuffle);
         if (prevControlData?.repeat !== data?.repeat) Utils.fadeAnimation(repeat);
@@ -713,10 +713,10 @@ async function main() {
     }
 
     let prevHeartData =
-        Spicetify?.Player?.origin?._state?.item?.metadata["collection.in_collection"];
+        Spicetify.Player?.data?.item?.metadata["collection.in_collection"];
 
     function updateHeart() {
-        const meta = Spicetify?.Player?.origin?._state?.item;
+        const meta = Spicetify.Player?.data?.item;
         heart.classList.toggle("unavailable", meta?.metadata["collection.can_add"] !== "true");
         if (prevHeartData !== meta?.metadata["collection.in_collection"])
             Utils.fadeAnimation(heart);
@@ -740,12 +740,12 @@ async function main() {
             container.style.setProperty("--main-color", "255,255,255");
             container.style.setProperty("--contrast-color", "0,0,0");
             if (!CFM.getGlobal("tvMode") && CFM.get("backgroundChoice") === "album_art")
-                INVERTED[Spicetify.Player.data.track?.metadata?.album_uri?.split(":")[2]] = false;
+                INVERTED[Spicetify.Player.data.item?.metadata?.album_uri?.split(":")[2]] = false;
         } else {
             container.style.setProperty("--main-color", "0,0,0");
             container.style.setProperty("--contrast-color", "255,255,255");
             if (!CFM.getGlobal("tvMode") && CFM.get("backgroundChoice") === "album_art")
-                INVERTED[Spicetify.Player.data.track?.metadata?.album_uri?.split(":")[2]] = true;
+                INVERTED[Spicetify.Player.data.item?.metadata?.album_uri?.split(":")[2]] = true;
         }
         localStorage.setItem("full-screen:inverted", JSON.stringify(INVERTED));
     }
@@ -798,8 +798,8 @@ async function main() {
         }
         if (CFM.get("upnextDisplay")) {
             updateUpNextShow();
-            Spicetify.Player.origin._events.addListener("queue_update", updateUpNext);
-            Spicetify.Player.origin._events.addListener("update", updateUpNextShow);
+            Spicetify.Platform.PlayerAPI._events.addListener("queue_update", updateUpNext);
+            Spicetify.Platform.PlayerAPI._events.addListener("update", updateUpNextShow);
         }
         if (CFM.get("volumeDisplay") !== "never") {
             ReactDOM.render(
@@ -832,7 +832,7 @@ async function main() {
                 attributes: true,
                 attributeFilter: ["aria-checked"],
             });
-            Spicetify.Player.origin._events.addListener("update", updateExtraControls);
+            Spicetify.Platform.PlayerAPI._events.addListener("update", updateExtraControls);
         }
         document.querySelector(".Root__top-container")?.append(style, container);
         if (CFM.get("lyricsDisplay")) {
@@ -860,8 +860,8 @@ async function main() {
         }
         if (CFM.get("upnextDisplay")) {
             upNextShown = false;
-            Spicetify.Player.origin._events.removeListener("queue_update", updateUpNext);
-            Spicetify.Player.origin._events.removeListener("update", updateUpNextShow);
+            Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", updateUpNext);
+            Spicetify.Platform.PlayerAPI._events.removeListener("update", updateUpNextShow);
         }
         ReactDOM.unmountComponentAtNode(container.querySelector("#fsd-volume-parent")!);
         ReactDOM.unmountComponentAtNode(container.querySelector("#fsd-progress-parent")!);
@@ -873,7 +873,7 @@ async function main() {
         }
         if (CFM.get("extraControls")) {
             heartObserver.disconnect();
-            Spicetify.Player.origin._events.removeListener("update", updateExtraControls);
+            Spicetify.Platform.PlayerAPI._events.removeListener("update", updateExtraControls);
         }
         document.body.classList.remove(...CLASSES_TO_ADD);
         upNextShown = false;
@@ -1276,7 +1276,7 @@ async function main() {
                 (value: string) => {
                     CFM.set("backgroundChoice", value);
                     if (Utils.isModeActivated()) {
-                        updateBackground(Spicetify.Player.data.track?.metadata);
+                        updateBackground(Spicetify.Player.data.item?.metadata);
                     }
                 },
                 translations[LOCALE].settings.backgroundChoice.description.join("<br>")
@@ -1323,7 +1323,7 @@ async function main() {
                 (value: string) => {
                     CFM.set("coloredBackChoice", value);
                     if (Utils.isModeActivated()) {
-                        updateBackground(Spicetify.Player.data.track?.metadata, true);
+                        updateBackground(Spicetify.Player.data.item?.metadata, true);
                     }
                 }
             ),
@@ -1337,8 +1337,8 @@ async function main() {
                         Utils.overlayBack();
                         animateColor(value, back, true);
                         updateMainColor(
-                            Spicetify.Player.data.track?.uri,
-                            Spicetify.Player.data.track?.metadata
+                            Spicetify.Player.data.item?.uri,
+                            Spicetify.Player.data.item?.metadata
                         );
                         if (overlayTimout) clearTimeout(overlayTimout);
                         overlayTimout = setTimeout(() => {
@@ -1359,7 +1359,7 @@ async function main() {
                     CFM.set("blurSize", Number(state));
                     if (Utils.isModeActivated()) {
                         Utils.overlayBack();
-                        updateBackground(Spicetify.Player.data.track?.metadata, true);
+                        updateBackground(Spicetify.Player.data.item?.metadata, true);
                         if (overlayTimout) clearTimeout(overlayTimout);
                         overlayTimout = setTimeout(() => {
                             Utils.overlayBack(false);
@@ -1387,7 +1387,7 @@ async function main() {
                 (value: string) => {
                     CFM.set("backgroundBrightness", value);
                     if (Utils.isModeActivated()) {
-                        updateBackground(Spicetify.Player.data.track?.metadata, true);
+                        updateBackground(Spicetify.Player.data.item?.metadata, true);
                     }
                 }
             ),

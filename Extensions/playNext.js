@@ -4,7 +4,7 @@
 // AUTHOR: daksh2k
 // DESCRIPTION: Add the current track to the top of the queue
 
-/// <reference path="../globals.d.ts" />
+/// <reference path="../shared/types/spicetify.d.ts" />
 
 (function playNext() {
     if (!(Spicetify.CosmosAsync && Spicetify.Queue && Spicetify.ContextMenu && Spicetify.URI)) {

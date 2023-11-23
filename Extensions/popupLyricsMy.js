@@ -4,7 +4,7 @@
 // AUTHOR: dax
 // DESCRIPTION: Pop lyrics up
 
-/// <reference path="../spicetify-cli/globals.d.ts" />
+/// <reference path="../shared/types/spicetify.d.ts" />
 
 if (!navigator.serviceWorker) {
     // Worker code
@@ -119,7 +119,7 @@ function PopupLyricsMy() {
                     .join("&");
 
             try {
-                let body = await CosmosAsync.get(finalURL, null, {
+                let body = await CosmosAsync.get(finalURL, undefined, {
                     authority: "apic-desktop.musixmatch.com",
                     cookie: "x-mxm-token-guid=",
                 });
@@ -169,7 +169,7 @@ function PopupLyricsMy() {
             const cleanTitle = LyricUtils.removeSongFeat(LyricUtils.normalize(info.title));
             const finalURL = searchURL + encodeURIComponent(`${cleanTitle} ${info.artist}`);
 
-            const searchResults = await CosmosAsync.get(finalURL, null, requestHeader);
+            const searchResults = await CosmosAsync.get(finalURL, undefined, requestHeader);
             const items = searchResults.result.songs;
             if (!items || !items.length) {
                 return { error: "Cannot find track" };
@@ -179,7 +179,7 @@ function PopupLyricsMy() {
             let itemId = items.findIndex((val) => LyricUtils.capitalize(val.album.name) === album);
             if (itemId === -1) itemId = 0;
 
-            const meta = await CosmosAsync.get(lyricURL + items[itemId].id, null, requestHeader);
+            const meta = await CosmosAsync.get(lyricURL + items[itemId].id, undefined, requestHeader);
             let lyricStr = meta.lrc;
 
             if (!lyricStr || !lyricStr.lyric) {
@@ -367,19 +367,19 @@ function PopupLyricsMy() {
             return;
         }
 
-        const meta = Player.data.track.metadata;
+        const { uri, metadata } = Player.data.item;
 
-        if (!Spicetify.URI.isTrack(Player.data.track.uri) && !Spicetify.URI.isLocalTrack(Player.data.track.uri)) {
+        if (!Spicetify.URI.isTrack(uri) && !Spicetify.URI.isLocalTrack(uri)) {
             return;
         }
 
-        largeImage.src = meta.image_url;
+        largeImage.src = metadata.image_url;
         const info = {
-            duration: Number(meta.duration),
-            album: meta.album_title,
-            artist: meta.artist_name,
-            title: meta.title,
-            uri: Player.data.track.uri,
+            duration: Number(metadata.duration),
+            album: metadata.album_title,
+            artist: metadata.artist_name,
+            title: metadata.title,
+            uri,
         };
 
         sharedData = { lyrics: [] };
