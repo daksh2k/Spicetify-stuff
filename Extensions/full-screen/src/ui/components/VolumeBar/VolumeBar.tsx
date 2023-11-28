@@ -7,7 +7,7 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
     const [curVolume, setVolume] = React.useState<number>(
         Spicetify.Platform?.PlaybackAPI?._isAvailable
             ? Math.round(Spicetify.Player.getVolume() * 100)
-            : -100
+            : -100,
     );
 
     const [changingProgress, setChangingProgress] = React.useState<SeekbarProps>({
@@ -45,13 +45,13 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
             const sliderHeight = changingProgress.data.sliderDimen;
             const newPosY = Math.min(
                 Math.max(changingProgress.data.begin + moveY, 0),
-                sliderHeight
+                sliderHeight,
             );
             const newPercentage = Math.round((newPosY / sliderHeight) * 100);
             setVolume(newPercentage);
             const debouncedVolume = debounce(
                 () => Spicetify.Player.setVolume(newPercentage / 100),
-                20
+                20,
             );
             debouncedVolume();
             setChangingProgress({
@@ -182,7 +182,11 @@ const VolumeButton = ({ volume }: { volume: number }) => {
         <button
             className="fs-button"
             id="fsd-volume-icon"
-            onClick={() => Spicetify.Player.toggleMute()}
+            onClick={() =>
+                document
+                    .querySelector<HTMLButtonElement>("div.main-nowPlayingBar-volumeBar > button")
+                    ?.click()
+            }
             title={volume == 0 ? "Unmute" : "Mute"}
             dangerouslySetInnerHTML={{ __html: getVolumeIcon() }}
         />
