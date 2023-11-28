@@ -8,7 +8,11 @@
 
 (function addVolumep() {
     const volumeBar = document.querySelector(".main-nowPlayingBar-volumeBar");
-    if (!(volumeBar instanceof HTMLElement) || !Spicetify.Player || !Spicetify.Platform?.PlayerAPI) {
+    if (
+        !(volumeBar instanceof HTMLElement) ||
+        !Spicetify.Player ||
+        !Spicetify.Platform?.PlaybackAPI
+    ) {
         setTimeout(addVolumep, 200);
         return;
     }
@@ -24,5 +28,5 @@
         const currVolume = Math.round(Spicetify.Player?.getVolume() * 100);
         ele.innerText = currVolume == -100 ? `` : `${currVolume}%`;
     }
-    Spicetify.Platform.PlayerAPI._events.addListener("volume", updatePercentage);
+    Spicetify.Platform.PlaybackAPI._events.addListener("volume", updatePercentage);
 })();
