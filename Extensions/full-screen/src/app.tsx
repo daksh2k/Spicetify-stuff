@@ -719,7 +719,7 @@ async function main() {
         } else {
             repeat.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["repeat"]}</svg>`;
         }
-        if (data.restrictions) {
+        if (data?.restrictions) {
             shuffle.classList.toggle("unavailable", !data?.restrictions?.canToggleShuffle);
             repeat.classList.toggle(
                 "unavailable",
@@ -789,8 +789,8 @@ async function main() {
 
     async function activate() {
         document.body.classList.add(...CLASSES_TO_ADD);
-        if (CFM.get("enableFullscreen")) await Utils.fullScreenOn();
-        else await Utils.fullScreenOff();
+        if (CFM.get("enableFullscreen")) await Utils.fullScreenOn()?.catch((err) => {});
+        else await Utils.fullScreenOff()?.catch((err) => {});
         setTimeout(() => {
             updateInfo();
             window.addEventListener("resize", resizeEvents);
@@ -894,7 +894,7 @@ async function main() {
         document.body.classList.remove(...CLASSES_TO_ADD);
         upNextShown = false;
         if (CFM.get("enableFullscreen")) {
-            await Utils.fullScreenOff();
+            await Utils.fullScreenOff()?.catch((err) => {});
         }
         const popup = document.querySelector("body > generic-modal");
         if (popup) popup.remove();
