@@ -61,14 +61,14 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
                     : ""
             } 
             <div id="fsd-status" class="${
-                CFM.get("playerControls") ||
-                CFM.get("extraControls") ||
+                CFM.get("playerControls") !== "never" ||
+                CFM.get("extraControls") !== "never" ||
                 CFM.get("progressBarDisplay")
                     ? "active"
                     : ""
             }">
                 ${
-                    CFM.get("extraControls")
+                    CFM.get("extraControls") !== "never"
                         ? `<div class="fsd-controls-left fsd-controls extra-controls">
                        <button class="fs-button" id="fsd-heart">
                            <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>
@@ -80,7 +80,7 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
                         : ""
                 }
                     ${
-                        CFM.get("playerControls")
+                        CFM.get("playerControls") !== "never"
                             ? `
                     <div class="fsd-controls-center fsd-controls">
                         <button class="fs-button" id="fsd-back">
@@ -96,7 +96,7 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
                             : ""
                     }
                 ${
-                    CFM.get("extraControls")
+                    CFM.get("extraControls") !== "never"
                         ? `<div class="fsd-controls-right fsd-controls extra-controls">
                         ${
                             CFM.get("invertColors") === "auto"
@@ -122,13 +122,15 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
                 }
                 ${
                     CFM.getGlobal("tvMode") &&
-                    !(CFM.get("playerControls") && CFM.get("extraControls"))
+                    !(CFM.get("playerControls") !== "never" && CFM.get("extraControls") !== "never")
                         ? `<div id="fsd-progress-parent"></div>`
                         : ""
                 }
             </div>
             ${
-                CFM.getGlobal("tvMode") && CFM.get("playerControls") && CFM.get("extraControls")
+                CFM.getGlobal("tvMode") &&
+                CFM.get("playerControls") !== "never" &&
+                CFM.get("extraControls") !== "never"
                     ? `<div id="fsd-progress-parent"></div>`
                     : ""
             }

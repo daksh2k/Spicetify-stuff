@@ -128,7 +128,7 @@ async function main() {
         );
         container.setAttribute("data-locale", LOCALE);
         container.setAttribute("mode", CFM.getMode());
-        if (!CFM.get("lyricsDisplay") || !CFM.get("extraControls"))
+        if (!CFM.get("lyricsDisplay") || CFM.get("extraControls") === "never")
             container.classList.remove("lyrics-hide-force");
 
         Spicetify.Player.removeEventListener("songchange", updateInfo);
@@ -151,11 +151,7 @@ async function main() {
         window.dispatchEvent(new Event("fad-request"));
         window.removeEventListener("lyrics-plus-update", handleLyricsUpdate);
 
-        container.removeEventListener("mousemove", hideCursor);
-        container.removeEventListener("mousemove", hideContext);
-
-        if (curTimer) clearTimeout(curTimer);
-        if (ctxTimer) clearTimeout(ctxTimer);
+        handleMouseMoveDeactivation();
 
         style.innerHTML = `
         #full-screen-display {
@@ -210,7 +206,7 @@ async function main() {
                 updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             };
         }
-        if (CFM.get("playerControls")) {
+        if (CFM.get("playerControls") !== "never") {
             play = container.querySelector("#fsd-play")!;
             play.onclick = () => {
                 Utils.fadeAnimation(play);
@@ -227,7 +223,7 @@ async function main() {
                 Spicetify.Player.back();
             };
         }
-        if (CFM.get("extraControls")) {
+        if (CFM.get("extraControls") !== "never") {
             heart = container.querySelector("#fsd-heart")!;
             shuffle = container.querySelector("#fsd-shuffle")!;
             repeat = container.querySelector("#fsd-repeat")!;
@@ -482,7 +478,7 @@ async function main() {
                 }
                 container.style.setProperty("--main-color", mainColor);
                 container.style.setProperty("--contrast-color", contrastColor);
-                if (CFM.get("extraControls")) {
+                if (CFM.get("extraControls") !== "never") {
                     invertButton.classList.remove("button-active");
                     invertButton.innerHTML = ICONS.INVERT_INACTIVE;
                 }
@@ -526,7 +522,7 @@ async function main() {
             "lyrics-unavailable",
             !(evt.detail.available && (evt.detail?.synced?.length ?? 5) > 1),
         );
-        if (CFM.get("extraControls")) {
+        if (CFM.get("extraControls") !== "never") {
             lyrics.classList.toggle("hidden", container.classList.contains("lyrics-unavailable"));
         }
     }
@@ -687,6 +683,7 @@ async function main() {
     }
 
     function updatePlayerControls(evt: any) {
+        if (CFM.get("playerControls") === "mousemove") hidePlayerControls();
         Utils.fadeAnimation(play);
         if (evt.data.is_paused || evt.data.isPaused) {
             play.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons.play}</svg>`;
@@ -732,18 +729,23 @@ async function main() {
     let prevHeartData = Spicetify.Player?.data?.item?.metadata["collection.in_collection"];
 
     function updateHeart() {
-        const meta = Spicetify.Player?.data?.item;
-        heart.classList.toggle("unavailable", meta?.metadata["collection.can_add"] !== "true");
-        if (prevHeartData !== meta?.metadata["collection.in_collection"])
-            Utils.fadeAnimation(heart);
-        prevHeartData = meta?.metadata["collection.in_collection"];
-        if (meta?.metadata["collection.in_collection"] === "true" || Spicetify.Player.getHeart()) {
-            heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`;
-            heart.classList.add("button-active");
-        } else {
-            heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>`;
-            heart.classList.remove("button-active");
-        }
+        setTimeout(() => {
+            const meta = Spicetify.Player?.data?.item;
+            heart.classList.toggle("unavailable", meta?.metadata["collection.can_add"] !== "true");
+            if (prevHeartData !== meta?.metadata["collection.in_collection"])
+                Utils.fadeAnimation(heart);
+            prevHeartData = meta?.metadata["collection.in_collection"];
+            if (
+                meta?.metadata["collection.in_collection"] === "true" ||
+                Spicetify.Player.getHeart()
+            ) {
+                heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart-active"]}</svg>`;
+                heart.classList.add("button-active");
+            } else {
+                heart.innerHTML = `<svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["heart"]}</svg>`;
+                heart.classList.remove("button-active");
+            }
+        }, 200);
     }
 
     function toggleInvert() {
@@ -766,7 +768,10 @@ async function main() {
         localStorage.setItem("full-screen:inverted", JSON.stringify(INVERTED));
     }
 
-    let curTimer: NodeJS.Timeout, ctxTimer: NodeJS.Timeout;
+    let curTimer: NodeJS.Timeout,
+        ctxTimer: NodeJS.Timeout,
+        extraControlsTimer: NodeJS.Timeout,
+        playerControlsTimer: NodeJS.Timeout;
 
     function hideCursor() {
         if (curTimer) {
@@ -782,6 +787,55 @@ async function main() {
         }
         ctx_container.style.opacity = "1";
         ctxTimer = setTimeout(() => (ctx_container.style.opacity = "0"), 3000);
+    }
+
+    function hideExtraControls() {
+        if (extraControlsTimer) {
+            clearTimeout(extraControlsTimer);
+        }
+        const elements = container.querySelectorAll(".extra-controls") as NodeListOf<HTMLElement>;
+        elements.forEach((element) => (element.style.opacity = "1"));
+        extraControlsTimer = setTimeout(() => {
+            elements.forEach((element) => (element.style.opacity = "0"));
+        }, 3000);
+    }
+
+    function hidePlayerControls() {
+        if (playerControlsTimer) {
+            clearTimeout(playerControlsTimer);
+        }
+        const element = container.querySelector(".fsd-controls-center")! as HTMLElement;
+        element.style.opacity = "1";
+        playerControlsTimer = setTimeout(() => (element.style.opacity = "0"), 3000);
+    }
+
+    function handleMouseMoveActivation() {
+        container.addEventListener("mousemove", hideCursor);
+        hideCursor();
+        if (CFM.get("contextDisplay") === "mousemove") {
+            container.addEventListener("mousemove", hideContext);
+            hideContext();
+        }
+        if (CFM.get("extraControls") === "mousemove") {
+            container.addEventListener("mousemove", hideExtraControls);
+            hideExtraControls();
+        }
+        if (CFM.get("playerControls") === "mousemove") {
+            container.addEventListener("mousemove", hidePlayerControls);
+            hidePlayerControls();
+        }
+    }
+
+    function handleMouseMoveDeactivation() {
+        container.removeEventListener("mousemove", hideCursor);
+        container.removeEventListener("mousemove", hideContext);
+        container.removeEventListener("mousemove", hideExtraControls);
+        container.removeEventListener("mousemove", hidePlayerControls);
+
+        if (curTimer) clearTimeout(curTimer);
+        if (ctxTimer) clearTimeout(ctxTimer);
+        if (extraControlsTimer) clearTimeout(extraControlsTimer);
+        if (playerControlsTimer) clearTimeout(playerControlsTimer);
     }
 
     let origLoc: string;
@@ -802,16 +856,11 @@ async function main() {
             });
         }, 200);
         Spicetify.Player.addEventListener("songchange", updateInfo);
-        container.addEventListener("mousemove", hideCursor);
-        hideCursor();
+        handleMouseMoveActivation();
         container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = openConfig;
         container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = deactivate;
         back.oncontextmenu = openConfig;
         back.ondblclick = deactivate;
-        if (CFM.get("contextDisplay") === "mousemove") {
-            container.addEventListener("mousemove", hideContext);
-            hideContext();
-        }
         if (CFM.get("upnextDisplay")) {
             updateUpNextShow();
             Spicetify.Platform.PlayerAPI._events.addListener("queue_update", updateUpNext);
@@ -832,17 +881,19 @@ async function main() {
             updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             Spicetify.Player.addEventListener("onplaypause", updatePlayingIcon);
         }
-        if (CFM.get("progressBarDisplay")) {
+        if (CFM.get("progressBarDisplay") !== "never") {
             ReactDOM.render(
-                <SeekableProgressBar />,
+                <SeekableProgressBar
+                    state={CFM.get("progressBarDisplay") as Settings["progressBarDisplay"]}
+                />,
                 container.querySelector("#fsd-progress-parent"),
             );
         }
-        if (CFM.get("playerControls")) {
+        if (CFM.get("playerControls") !== "never") {
             updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             Spicetify.Player.addEventListener("onplaypause", updatePlayerControls);
         }
-        if (CFM.get("extraControls")) {
+        if (CFM.get("extraControls") !== "never") {
             updateExtraControls(null);
             Utils.addObserver(heartObserver, ".control-button-heart", {
                 attributes: true,
@@ -869,11 +920,8 @@ async function main() {
     async function deactivate() {
         modifyIsAnimationRunning(false);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
-        container.removeEventListener("mousemove", hideCursor);
+        handleMouseMoveDeactivation();
         window.removeEventListener("resize", resizeEvents);
-        if (CFM.get("contextDisplay") === "mousemove") {
-            container.removeEventListener("mousemove", hideContext);
-        }
         if (CFM.get("upnextDisplay")) {
             upNextShown = false;
             Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", updateUpNext);
@@ -884,10 +932,10 @@ async function main() {
         if (CFM.get("icons")) {
             Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
         }
-        if (CFM.get("playerControls")) {
+        if (CFM.get("playerControls") !== "never") {
             Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls);
         }
-        if (CFM.get("extraControls")) {
+        if (CFM.get("extraControls") !== "never") {
             heartObserver.disconnect();
             Spicetify.Platform.PlayerAPI._events.removeListener("update", updateExtraControls);
         }
@@ -1201,23 +1249,40 @@ async function main() {
                 },
             ),
             headerText(translations[LOCALE].settings.generalHeader),
-            createToggle(
+            createOptions(
                 translations[LOCALE].settings.progressBar,
+                {
+                    never: translations[LOCALE].settings.contextDisplay.never,
+                    mousemove: translations[LOCALE].settings.contextDisplay.mouse,
+                    always: translations[LOCALE].settings.contextDisplay.always,
+                },
+                CFM.get("progressBarDisplay") as Settings["progressBarDisplay"],
                 "progressBarDisplay",
-                (value) => {
+                (value: string) => {
                     CFM.set("progressBarDisplay", value);
-                    if (value)
+                    if (value !== "never") {
                         ReactDOM.render(
-                            <SeekableProgressBar />,
+                            <SeekableProgressBar state={value} />,
                             container.querySelector("#fsd-progress-parent"),
                         );
-                    else
+                    } else {
                         ReactDOM.unmountComponentAtNode(
                             container.querySelector("#fsd-progress-parent")!,
                         );
+                    }
                 },
             ),
-            createToggle(translations[LOCALE].settings.playerControls, "playerControls"),
+            createOptions(
+                translations[LOCALE].settings.playerControls,
+                {
+                    never: translations[LOCALE].settings.contextDisplay.never,
+                    mousemove: translations[LOCALE].settings.contextDisplay.mouse,
+                    always: translations[LOCALE].settings.contextDisplay.always,
+                },
+                CFM.get("playerControls") as Settings["playerControls"],
+                "playerControls",
+                (value: string) => saveOption("playerControls", value),
+            ),
             createOptions(
                 translations[LOCALE].settings.showAlbum.setting,
                 {
@@ -1237,7 +1302,17 @@ async function main() {
                 ? createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen")
                 : "",
             headerText(translations[LOCALE].settings.extraHeader),
-            createToggle(translations[LOCALE].settings.extraControls, "extraControls"),
+            createOptions(
+                translations[LOCALE].settings.extraControls,
+                {
+                    never: translations[LOCALE].settings.contextDisplay.never,
+                    mousemove: translations[LOCALE].settings.contextDisplay.mouse,
+                    always: translations[LOCALE].settings.contextDisplay.always,
+                },
+                CFM.get("extraControls") as Settings["extraControls"],
+                "extraControls",
+                (value: string) => saveOption("extraControls", value),
+            ),
             createToggle(translations[LOCALE].settings.upnextDisplay, "upnextDisplay"),
             createOptions(
                 translations[LOCALE].settings.contextDisplay.setting,

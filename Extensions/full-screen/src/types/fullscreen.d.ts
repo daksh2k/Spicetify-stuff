@@ -15,8 +15,8 @@ export type Settings = {
     lyricsAlignment: "right" | "left" | "center";
     autoHideLyrics: boolean;
     animationTempo: number;
-    progressBarDisplay: boolean;
-    playerControls: boolean;
+    progressBarDisplay: "never" | "mousemove" | "always";
+    playerControls: "never" | "mousemove" | "always";
     trimTitle: boolean;
     trimTitleUpNext: boolean;
     showAlbum: "never" | "always" | "date";
@@ -31,7 +31,7 @@ export type Settings = {
         | "album_art"
         | "artist_art"
         | "animated_album";
-    extraControls: boolean;
+    extraControls: "never" | "mousemove" | "always";
     upnextDisplay: boolean;
     contextDisplay: "never" | "mousemove" | "always";
     volumeDisplay: "always" | "never" | "smart";

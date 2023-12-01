@@ -315,6 +315,7 @@
     .fsd-controls {
         display: flex;
         flex-direction: row;
+        transition: opacity 1s ease-in-out;
         column-gap: 10px;
     }
     #fsd-background {
@@ -340,7 +341,9 @@
         padding: 3px 5px 0 5px;
         cursor: pointer;
         position: relative;
-        transition: all 0.3s var(--transition-function), transform 0.1s var(--transition-function);
+        transition:
+            all 0.3s var(--transition-function),
+            transform 0.1s var(--transition-function);
         &:hover {
             transform: scale(1.2);
             filter: saturate(1.5) contrast(1.5) !important;

@@ -3,7 +3,7 @@ import "./styles.scss";
 import { SeekbarProps } from "../../../types/fullscreen";
 import CFM from "../../../utils/config";
 
-const SeekableProgressBar = () => {
+const SeekableProgressBar = ({ state }: { state: string }) => {
     const [curProgress, setProgress] = React.useState(Spicetify.Player.getProgress());
     const [curDuration, setDuration] = React.useState(Spicetify.Player.getDuration());
     const [secondaryPref, setSecondaryPref] = React.useState(CFM.get("showRemainingTime"));
@@ -14,6 +14,11 @@ const SeekableProgressBar = () => {
     });
 
     const progSlider = React.useRef(null) as React.MutableRefObject<HTMLDivElement | null>;
+
+    const [visibility, setVisibility] = React.useState(true);
+
+    const progressTimer = React.useRef(null) as React.MutableRefObject<NodeJS.Timeout | null>;
+
     const onMouseDown = (evt: MouseEvent) => {
         if (evt.button == 0) {
             const sliderWidth = progSlider.current?.getBoundingClientRect().width ?? 480;
@@ -45,6 +50,9 @@ const SeekableProgressBar = () => {
                 data: { ...changingProgress.data, positionCoord: newPosX },
             });
         }
+        if (state === "mousemove") {
+            hideProgressBar();
+        }
     };
 
     const onMouseUp = (evt: MouseEvent) => {
@@ -52,6 +60,16 @@ const SeekableProgressBar = () => {
             Spicetify.Player.seek(curProgress);
             setChangingProgress({ isChanging: false, data: null });
         }
+    };
+
+    const hideProgressBar = (timeout = 3000) => {
+        if (progressTimer.current) {
+            clearTimeout(progressTimer.current);
+        }
+        setVisibility(true);
+        progressTimer.current = setTimeout(() => {
+            setVisibility(false);
+        }, timeout);
     };
 
     const setDragListener = () => {
@@ -96,6 +114,9 @@ const SeekableProgressBar = () => {
 
     React.useEffect(() => {
         // console.log("Progress Effect called");
+        if (state === "mousemove") {
+            hideProgressBar();
+        }
         const updateInterval = setInterval(updateProgress, 500);
 
         Spicetify.Player.addEventListener("songchange", updateDuration);
@@ -106,10 +127,10 @@ const SeekableProgressBar = () => {
             Spicetify.Player.removeEventListener("songchange", updateDuration);
             resetDragListener();
         };
-    }, [changingProgress]);
+    }, [changingProgress, state]);
 
     return (
-        <div id="fsd-progress-container">
+        <div id="fsd-progress-container" style={{ opacity: visibility ? 1 : 0 }}>
             <div className="progress-number" id="fsd-elapsed">
                 {Spicetify.Player.formatTime(curProgress)}
             </div>
