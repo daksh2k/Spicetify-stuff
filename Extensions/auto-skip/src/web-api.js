@@ -52,23 +52,25 @@ export class WebApi {
      * @param {string} uri
      */
     static async addTrackToQueue(uri) {
-        const currentQueueLength = (Spicetify.Queue.nextTracks || []).filter(
-            (track) => track.provider !== "context"
-        ).length;
+        const uriObjects = [uri].map((uri) => ({ uri }));
 
-        await Spicetify.addToQueue([uri].map((uri) => ({ uri }))).catch((err) => {
-            console.error("Failed to add to queue", err);
-        });
-
-        const newTracks = Spicetify.Queue.nextTracks
-            .filter((track) => track.provider !== "context")
-            .filter((_, index) => index >= currentQueueLength);
-
-        if (currentQueueLength) {
-            await Spicetify.Platform.PlayerAPI.reorderQueue(
-                newTracks.map((track) => track.contextTrack),
-                { before: Spicetify.Queue.nextTracks[0].contextTrack }
-            );
+        const queue = await Spicetify.Platform.PlayerAPI.getQueue();
+        if (queue.queued.length > 0) {
+            //Not empty, add all the tracks before first track
+            const beforeTrack = {
+                uri: queue.queued[0].uri,
+                uid: queue.queued[0].uid,
+            };
+            await Spicetify.Platform.PlayerAPI.insertIntoQueue(uriObjects, {
+                before: beforeTrack,
+            }).catch((err) => {
+                console.error("Failed to add to queue", err);
+            });
+        } else {
+            //if queue is empty, simply add to queue
+            await Spicetify.addToQueue(uriObjects).catch((err) => {
+                console.error("Failed to add to queue", err);
+            });
         }
     }
 }

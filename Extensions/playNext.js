@@ -23,6 +23,7 @@
             case Spicetify.URI.Type.PLAYLIST:
             case Spicetify.URI.Type.PLAYLIST_V2:
             case Spicetify.URI.Type.ALBUM:
+            case Spicetify.URI.Type.LOCAL:
                 return true;
         }
         return false;
@@ -99,7 +100,11 @@
     async function fetchAndAdd(uris) {
         const uri = uris[0];
         const uriObj = Spicetify.URI.fromString(uri);
-        if (uris.length > 1 || uriObj.type === Spicetify.URI.Type.TRACK) {
+        if (
+            uris.length > 1 ||
+            uriObj.type === Spicetify.URI.Type.TRACK ||
+            uriObj.type === Spicetify.URI.Type.LOCAL
+        ) {
             addToNext(uris);
             return;
         }
@@ -124,36 +129,31 @@
      * @param uris List of uris/tracks to add.
      */
     async function addToNext(uris) {
-        //Check if all uris are valid track uris.
-        if (!uris.every((uri) => Spicetify.URI.fromString(uri).type === Spicetify.URI.Type.TRACK)) {
-            Spicetify.showNotification("Malformed uris!");
-            return;
-        }
+        const uriObjects = uris.map((uri) => ({ uri }));
 
-        const currentQueueLength = (Spicetify.Queue.nextTracks || []).filter(
-            (track) => track.provider !== "context",
-        ).length;
-
-        await Spicetify.addToQueue(uris.map((uri) => ({ uri }))).catch((err) => {
-            console.error("Failed to add to queue", err);
-        });
-
-        const newTracks = Spicetify.Queue.nextTracks
-            .filter((track) => track.provider !== "context")
-            .filter((_, index) => index >= currentQueueLength);
-
-        if (currentQueueLength) {
-            await Spicetify.Platform.PlayerAPI.reorderQueue(
-                newTracks.map((track) => track.contextTrack),
-                { before: Spicetify.Queue.nextTracks[0].contextTrack },
-            )
+        const queue = await Spicetify.Platform.PlayerAPI.getQueue();
+        if (queue.queued.length > 0) {
+            //Not empty, add all the tracks before first track
+            const beforeTrack = {
+                uri: queue.queued[0].uri,
+                uid: queue.queued[0].uid,
+            };
+            await Spicetify.Platform.PlayerAPI.insertIntoQueue(uriObjects, {
+                before: beforeTrack,
+            })
                 .then(() => Spicetify.showNotification("Added to Play Next"))
                 .catch((err) => {
                     console.error("Failed to add to queue", err);
-                    Spicetify.showNotification("Unable to Add! Check Console.");
+                    Spicetify.showNotification("Unable to Add! Check Console.", true);
                 });
         } else {
-            Spicetify.showNotification("Added to Play Next");
+            //if queue is empty, simply add to queue
+            await Spicetify.addToQueue(uriObjects)
+                .then(() => Spicetify.showNotification("Added to Play Next"))
+                .catch((err) => {
+                    console.error("Failed to add to queue", err);
+                    Spicetify.showNotification("Unable to Add! Check Console.", true);
+                });
         }
     }
 

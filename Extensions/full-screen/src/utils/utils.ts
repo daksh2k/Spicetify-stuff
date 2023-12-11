@@ -30,6 +30,7 @@ class Utils {
             );
             Spicetify.showNotification(
                 `Error initializing "fullscreen.js" extension. ${entry[0]} not available. Report issue on GitHub.`,
+                true,
             );
         });
         console.log("Retries exceeded. Aborting.");
