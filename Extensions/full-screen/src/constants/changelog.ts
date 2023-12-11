@@ -1,11 +1,18 @@
 const changelog = `## General 
-  - add support for vertical monitor(with lyrics on bottom)
-  - add compatibility with latest spotify and spicetify
-  - add french translations (thanks to [@ShirowLeBG](https://github.com/ShirowLeBG))
+  - add new settings options for progress bar and controls to only show on mousemove
+  - auto hide lyrics is more repsonsive now (should react faster)
+  - add hyperlinks to title,artists and albums
+  - misc bug fixes and quality of life improvements
+  - add indonesian translations (thanks to [@ianz56](https://github.com/ianz56))
   `;
 
 export const VersionedChangelog = {
-    "2.4.0": changelog,
+    "2.5.0": changelog,
+    "2.4.0": `## General 
+  - add support for vertical monitor(with lyrics on bottom)
+  - add compatibility with latest spotify and spicetify
+  - add french translations (thanks to [@ShirowLeBG](https://github.com/ShirowLeBG))
+    `,
     "2.3.1": `## General 
   - fix background tearing up sometimes on first launch
   - add spanish translations (thanks to [@DavKiller](https://github.com/DavKiller))
