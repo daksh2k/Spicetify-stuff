@@ -5,4 +5,4 @@ function addScript(src) {
     script.type = "text/javascript";
     document.getElementsByTagName("head")[0].appendChild(script);
 }
-addScript("https://daksh2k.me/Spicetify-stuff/Extensions/playNext.js");
+addScript("https://daksh2k.github.io/Spicetify-stuff/Extensions/playNext.js");
