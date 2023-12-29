@@ -24,6 +24,7 @@ const translations: Record<string, any> = {
     "es-ES": defaultsDeep(esES, enUS),
     "fr-FR": defaultsDeep(frFR, enUS),
     "id-ID": defaultsDeep(idID, enUS),
+    "pt-BR": defaultsDeep(ptBR, enUS),
 };
 
 export default translations;
