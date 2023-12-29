@@ -1,167 +1,167 @@
 {
-    "langName": "English",
+    "langName": "Português Brasileiro",
     "context": {
-        "queue": "Playing from queue",
-        "track": "Playing track",
-        "album": "Playing from album",
-        "artist": "Playing from artist",
-        "playlist": "Playing from playlist",
-        "playlistFolder": "Playing from playlist folder",
-        "search": "Playing from search",
-        "searchDest": "Songs",
-        "collection": "Playing from collection",
-        "likedSongs": "Liked Songs",
-        "trackRadio": "Playing from track radio",
-        "artistRadio": "Playing from artist radio",
-        "albumRadio": "Playing from album radio",
-        "playlistRadio": "Playing from playlist radio"
+        "queue": "Reproduzindo da fila",
+        "track": "Reproduzindo faixa",
+        "album": "Reproduzindo do álbum",
+        "artist": "Reproduzindo do artista",
+        "playlist": "Reproduzindo da playlist",
+        "playlistFolder": "Reproduzindo de pasta de playlist",
+        "search": "Reproduzindo da pesquisa",
+        "searchDest": "Músicas",
+        "collection": "Reproduzindo da coleção",
+        "likedSongs": "Músicas Curtidas",
+        "trackRadio": "Reproduzindo do rádio da faixa",
+        "artistRadio": "Reproduzindo do rádio do artista",
+        "albumRadio": "Reproduzindo do rádio do álbum",
+        "playlistRadio": "Reproduzindo do rádio da playlist"
     },
-    "upnext": "UP NEXT",
-    "unknownArtist": "Artist (Unavailable)",
+    "upnext": "A SEGUIR",
+    "unknownArtist": "Artista (Indisponível)",
     "settings": {
-        "switchToTV": "Switch to TV Mode",
-        "switchToFullscreen": "Switch to Default Mode",
-        "tvModeConfig": "TV Mode Configuration",
-        "fullscreenConfig": "Full Screen Configuration",
-        "exit": "Exit",
+        "switchToTV": "Mudar para Modo TV",
+        "switchToFullscreen": "Mudar para Modo Padrão",
+        "tvModeConfig": "Configuração do Modo TV",
+        "fullscreenConfig": "Configuração de Tela Cheia",
+        "exit": "Sair",
 
-        "pluginSettings": "Plugin Settings",
-        "fsHideOriginal": "Hide Stock Button",
-        "fsHideOriginalDescription": "Hide the spotify's stock fullscreen button(available to **Premium** users)",
-        "language": "Language",
+        "pluginSettings": "Configurações do Plugin",
+        "fsHideOriginal": "Ocultar Botão Padrão",
+        "fsHideOriginalDescription": "Oculta o botão de tela cheia padrão do Spotify (disponível para usuários **Premium**)",
+        "language": "Idioma",
         "autoLaunch": {
-            "setting": "Auto launch(on spotify startup)",
-            "description": "**Limitation:** The spotify window cannot go into fullscreen while automatically launching on startup.",
-            "never": "Never(Default)",
-            "default": "Open Default Mode",
-            "tvmode": "Open TV Mode",
-            "lastused": "Last Used Mode"
+            "setting": "Inicialização automática (na inicialização do Spotify))",
+            "description": "**Limitação:** A janela do Spotify não pode ser maximizada automaticamente na inicialização.",
+            "never": "Nunca (Padrão)",
+            "default": "Modo Padrão",
+            "tvmode": "Modo TV",
+            "lastused": "Último Modo Utilizado"
         },
         "activationTypes": {
-            "setting": "Activation Methods",
-            "description": "Choose the methods you want to use to activate the plugin. <kbd>F</kbd> and <kbd>T</kbd> keys, or buttons on topbar and bottom bar.",
-            "both": "Buttons and Keyboard Shortcuts",
-            "btns": "Buttons Only",
-            "keys": "Keyboard Shortcuts Only"
+            "setting": "Métodos de Ativação",
+            "description": "Escolha os métodos que deseja usar para ativar o plugin. <kbd>F</kbd> e <kbd>T</kbd> keys, ou botões na barra superior e inferior.",
+            "both": "Botões e Atalhos de Teclado",
+            "btns": "Apenas Botões",
+            "keys": "Apenas Atalhos de Teclado"
         },
         "buttonActivation": {
-            "setting": "Customize Activation Buttons",
-            "description": "Choose the buttons you want for activation, on topbar(*TV Mode*) and bottom bar(*Default Mode*).",
-            "both": "Buttons for both modes",
-            "tv": "Button only for TV Mode",
-            "def": "Button only for Default Mode"
+            "setting": "Personalizar Botões de Ativação",
+            "description": "Escolha os botões desejados para ativação, na barra superior (*Modo TV*) e inferior (*Modo Padrão*).",
+            "both": "Modo Padrão e Modo TV",
+            "tv": "Modo TV",
+            "def": "Modo Padrão"
         },
         "keyActivation": {
-            "setting": "Customize Activation Keys",
-            "description": "Choose the keys you want for activation. <kbd>F</kbd> for *Default Mode* and <kbd>T</kbd> for *TV Mode*",
-            "both": "Keys for both modes",
-            "tv": "Key only for TV Mode",
-            "def": "Key only for Default Mode"
+            "setting": "Personalizar Teclas de Ativação",
+            "description": "Escolha as teclas desejadas para ativação. Tecla <kbd>F</kbd> para *Modo Padrão* e <kbd>T</kbd> para *Modo TV*",
+            "both": "Modo Padrão e Modo TV",
+            "tv": "Modo TV",
+            "def": "Modo Padrão"
         },
-        "lyricsHeader": "Lyrics Settings",
-        "lyrics": "Lyrics",
+        "lyricsHeader": "Configurações de Letras",
+        "lyrics": "Letras",
         "lyricsDescription": [
-            "**Note:** You need the [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) custom app to use this feature.",
-            "Follow the instructions in the link to install the custom app."
+            "**Observação:** Você precisa do [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) aplicativo personalizado para usar esse recurso.",
+            "Siga as instruções no link para instalar o aplicativo personalizado."
         ],
         "lyricsAlignment": {
-            "setting": "Lyrics Alignment",
-            "left": "Left",
-            "center": "Center",
-            "right": "Right"
+            "setting": "Alinhamento de Letras",
+            "left": "Esquerda",
+            "center": "Centro",
+            "right": "Direita"
         },
-        "autoHideLyrics": "Auto Hide Lyrics (when unavailable)",
-        "lyricsAnimationTempo": "Lyrics Animation Tempo",
+        "autoHideLyrics": "Ocultar Letras Automaticamente (Quando indisponíveis)",
+        "lyricsAnimationTempo": "Tempo de Animação das Letras",
 
-        "generalHeader": "General Settings",
-        "progressBar": "Progress Bar",
-        "playerControls": "Player Controls",
-        "trimTitle": "Trim Title",
-        "trimTitleUpNext": "Trim Title(Up Next)",
+        "generalHeader": "Configurações Gerais",
+        "progressBar": "Barra de Progresso",
+        "playerControls": "Controles do Reprodutor",
+        "trimTitle": "Reduzir Título",
+        "trimTitleUpNext": "Reduzir Título (Em breve)",
         "showAlbum": {
-            "setting": "Show Album",
-            "never": "Never",
-            "always": "Always",
-            "date": "Show with Release Date"
+            "setting": "Exibição do Álbum",
+            "never": "Nunca",
+            "always": "Sempre",
+            "date": "Exibir com Data de Lançamento"
         },
-        "showAllArtists": "Show All Artists",
-        "icons": "Icons",
-        "songChangeAnimation": "Song Change Animation",
-        "fullscreen": "Fullscreen",
+        "showAllArtists": "Exibição de Todos os Artistas",
+        "icons": "Ícones",
+        "songChangeAnimation": "Animação de Troca de Música",
+        "fullscreen": "Tela Cheia",
 
-        "extraHeader": "Extra Functionality",
+        "extraHeader": "Funcionalidades Extras",
         "backgroundChoice": {
-            "setting": "⭐ Background Choice",
+            "setting": "⭐ Escolha de Fundo",
             "description": [
-                "**New:** Try out the **animated album art** option!",
-                "**Warning:** Looks beautiful but may be resource intensive, and is experimental."
+                "**Novidade:** Experimente a opção de **Arte do Álbum Animada**!",
+                "**Aviso:** Parece bonito, mas pode exigir muito desempenho e é experimental."
             ],
-            "dynamicColor": "Dynamic solid color",
-            "staticColor": "Static solid color",
-            "artwork": "Album art",
-            "animatedArt": "Animated Album Art (Experimental)",
-            "artist": "Artist artwork"
+            "dynamicColor": "Cor sólida dinâmica",
+            "staticColor": "Cor sólida estática",
+            "artwork": "Arte do álbum",
+            "animatedArt": "Arte do Álbum Animada (Experimental))",
+            "artist": "Arte do Artista"
         },
-        "extraControls": "Extra Controls",
-        "upnextDisplay": "Upnext Display",
+        "extraControls": "Controles Extras",
+        "upnextDisplay": "Exibição da Próxima Músuica",
         "contextDisplay": {
-            "setting": "Context Display",
-            "always": "Always",
-            "never": "Never",
-            "mouse": "On mouse movement"
+            "setting": "Exibição do Contexto",
+            "always": "Sempre",
+            "never": "Nunca",
+            "mouse": "Ao movimentar o mouse"
         },
         "volumeDisplay": {
-            "setting": "Volume Bar Display",
+            "setting": "Exibição da Barra de Volume",
             "description": [
-                "In `smart` mode the volume bar will be displayed when:",
-                "  - you move your mouse to the left side of the screen.",
-                " - when the volume is changed."
+                "No modo `inteligente`, a barra de volume será exibida quando:",
+                "  - você mover o mouse para o lado esquerdo da tela.",
+                " - quando o volume for alterado."
             ],
-            "always": "Always",
-            "never": "Never",
-            "smart": "Smart"
+            "always": "Sempre",
+            "never": "Nunca",
+            "smart": "Inteligente"
         },
 
-        "appearanceHeader": "Advanced/Appearance",
-        "appearanceSubHeader": "*(Only change if you know what you are doing!)*",
-        "backgroundHeader": "Background Modifications",
-        "backgroundSubHeader": "Comes with reasonable defaults, *(Only change if you know what you are doing!)*",
+        "appearanceHeader": "Avançado/Aparência",
+        "appearanceSubHeader": "**(Mude apenas se souber o que está fazendo!)*",
+        "backgroundHeader": "Modificações de Fundo",
+        "backgroundSubHeader": "Vem com padrões razoáveis, *(Mude apenas se souber o que está fazendo!)*",
         "backgroundColor": {
-            "setting": "Color Choice (for dynamic colored background)",
-            "vibrant": "Vibrant",
-            "prominent": "Prominent",
-            "desaturated": "Desaturated (recommended)",
-            "lightVibrant": "Light Vibrant",
-            "darkVibrant": "Dark Vibrant",
-            "vibrantNonAlarming": "Vibrant Non Alarming"
+            "setting": "Escolha de Cor (Para fundo colorido dinâmico)",
+            "vibrant": "Vibrante",
+            "prominent": "Destaque",
+            "desaturated": "Desaturado (Recomendado)",
+            "lightVibrant": "Vibrante Claro",
+            "darkVibrant": "Vibrante Escuro",
+            "vibrantNonAlarming": "Vibrante Não Alarmante"
         },
-        "staticColor": "Color Choice (for static colored background)",
-        "themedButtons": "Themed Buttons",
-        "themedIcons": "Themed Icons",
+        "staticColor": "Escolha de Cor (Para fundo colorido dinâmico)",
+        "themedButtons": "Botões Temáticos",
+        "themedIcons": "Ícones Temáticos",
         "invertColors": {
-            "setting": "Invert Colors",
-            "never": "Never",
-            "always": "Always",
-            "auto": "Automatic (Based on BG)"
+            "setting": "Inverter Cores",
+            "never": "Nunca",
+            "always": "Sempre",
+            "auto": "Automático (Baseado no fundo)"
         },
-        "verticalMonitorSupport": "Vertical Monitor Support",
-        "verticalMonitorSupportDescription": "Enable this if you have a vertical monitor setup. Lyrics will be shown in the bottom, when the window height is greater than the width.",
-        "backAnimationTime": "Background Animation Time (for image background)",
-        "animationSpeed": "⭐ Animation Speed (for animated background)",
+        "verticalMonitorSupport": "Suporte para Monitor Vertical",
+        "verticalMonitorSupportDescription": "Ative isso se tiver uma configuração de monitor vertical. As letras serão exibidas na parte inferior quando a altura da janela for maior que a largura.",
+        "backAnimationTime": "Tempo de Animação do Fundo (Para fundo de imagem)",
+        "animationSpeed": "⭐ Velocidade de Animação (Para fundo animado)",
         "upnextScroll": {
-            "setting": "Upnext Scroll Animation",
-            "mq": "Marquee/Scrolling",
-            "sp": "Spotify/Translating"
+            "setting": "Animação de rolagem da faixa a seguir",
+            "mq": "Marcação/Rolagem",
+            "sp": "Spotify/Tradução"
         },
-        "upnextTime": "Upnext Time to Show",
-        "backgroundBlur": "Background Blur",
-        "backgroundBrightness": "Background Brightness",
+        "upnextTime": "Tempo para exibição da faixa a seguir",
+        "backgroundBlur": "Desfoque do Fundo",
+        "backgroundBrightness": "Brilho do Fundo",
 
-        "aboutHeader": "About",
+        "aboutHeader": "Sobre",
 
-        "configReset": "Reset Config",
-        "reload": "Reload Client"
+        "configReset": "Redefinir Configuração",
+        "reload": "Recarregar Cliente"
     },
-    "tvBtnDesc": "TV Mode Display",
-    "fullscreenBtnDesc": "Full Screen"
+    "tvBtnDesc": "Exibição do Modo TV",
+    "fullscreenBtnDesc": "Tela Cheia"
 }
