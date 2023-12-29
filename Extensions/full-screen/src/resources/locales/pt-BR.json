@@ -1,0 +1,167 @@
+{
+    "langName": "English",
+    "context": {
+        "queue": "Playing from queue",
+        "track": "Playing track",
+        "album": "Playing from album",
+        "artist": "Playing from artist",
+        "playlist": "Playing from playlist",
+        "playlistFolder": "Playing from playlist folder",
+        "search": "Playing from search",
+        "searchDest": "Songs",
+        "collection": "Playing from collection",
+        "likedSongs": "Liked Songs",
+        "trackRadio": "Playing from track radio",
+        "artistRadio": "Playing from artist radio",
+        "albumRadio": "Playing from album radio",
+        "playlistRadio": "Playing from playlist radio"
+    },
+    "upnext": "UP NEXT",
+    "unknownArtist": "Artist (Unavailable)",
+    "settings": {
+        "switchToTV": "Switch to TV Mode",
+        "switchToFullscreen": "Switch to Default Mode",
+        "tvModeConfig": "TV Mode Configuration",
+        "fullscreenConfig": "Full Screen Configuration",
+        "exit": "Exit",
+
+        "pluginSettings": "Plugin Settings",
+        "fsHideOriginal": "Hide Stock Button",
+        "fsHideOriginalDescription": "Hide the spotify's stock fullscreen button(available to **Premium** users)",
+        "language": "Language",
+        "autoLaunch": {
+            "setting": "Auto launch(on spotify startup)",
+            "description": "**Limitation:** The spotify window cannot go into fullscreen while automatically launching on startup.",
+            "never": "Never(Default)",
+            "default": "Open Default Mode",
+            "tvmode": "Open TV Mode",
+            "lastused": "Last Used Mode"
+        },
+        "activationTypes": {
+            "setting": "Activation Methods",
+            "description": "Choose the methods you want to use to activate the plugin. <kbd>F</kbd> and <kbd>T</kbd> keys, or buttons on topbar and bottom bar.",
+            "both": "Buttons and Keyboard Shortcuts",
+            "btns": "Buttons Only",
+            "keys": "Keyboard Shortcuts Only"
+        },
+        "buttonActivation": {
+            "setting": "Customize Activation Buttons",
+            "description": "Choose the buttons you want for activation, on topbar(*TV Mode*) and bottom bar(*Default Mode*).",
+            "both": "Buttons for both modes",
+            "tv": "Button only for TV Mode",
+            "def": "Button only for Default Mode"
+        },
+        "keyActivation": {
+            "setting": "Customize Activation Keys",
+            "description": "Choose the keys you want for activation. <kbd>F</kbd> for *Default Mode* and <kbd>T</kbd> for *TV Mode*",
+            "both": "Keys for both modes",
+            "tv": "Key only for TV Mode",
+            "def": "Key only for Default Mode"
+        },
+        "lyricsHeader": "Lyrics Settings",
+        "lyrics": "Lyrics",
+        "lyricsDescription": [
+            "**Note:** You need the [lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus) custom app to use this feature.",
+            "Follow the instructions in the link to install the custom app."
+        ],
+        "lyricsAlignment": {
+            "setting": "Lyrics Alignment",
+            "left": "Left",
+            "center": "Center",
+            "right": "Right"
+        },
+        "autoHideLyrics": "Auto Hide Lyrics (when unavailable)",
+        "lyricsAnimationTempo": "Lyrics Animation Tempo",
+
+        "generalHeader": "General Settings",
+        "progressBar": "Progress Bar",
+        "playerControls": "Player Controls",
+        "trimTitle": "Trim Title",
+        "trimTitleUpNext": "Trim Title(Up Next)",
+        "showAlbum": {
+            "setting": "Show Album",
+            "never": "Never",
+            "always": "Always",
+            "date": "Show with Release Date"
+        },
+        "showAllArtists": "Show All Artists",
+        "icons": "Icons",
+        "songChangeAnimation": "Song Change Animation",
+        "fullscreen": "Fullscreen",
+
+        "extraHeader": "Extra Functionality",
+        "backgroundChoice": {
+            "setting": "⭐ Background Choice",
+            "description": [
+                "**New:** Try out the **animated album art** option!",
+                "**Warning:** Looks beautiful but may be resource intensive, and is experimental."
+            ],
+            "dynamicColor": "Dynamic solid color",
+            "staticColor": "Static solid color",
+            "artwork": "Album art",
+            "animatedArt": "Animated Album Art (Experimental)",
+            "artist": "Artist artwork"
+        },
+        "extraControls": "Extra Controls",
+        "upnextDisplay": "Upnext Display",
+        "contextDisplay": {
+            "setting": "Context Display",
+            "always": "Always",
+            "never": "Never",
+            "mouse": "On mouse movement"
+        },
+        "volumeDisplay": {
+            "setting": "Volume Bar Display",
+            "description": [
+                "In `smart` mode the volume bar will be displayed when:",
+                "  - you move your mouse to the left side of the screen.",
+                " - when the volume is changed."
+            ],
+            "always": "Always",
+            "never": "Never",
+            "smart": "Smart"
+        },
+
+        "appearanceHeader": "Advanced/Appearance",
+        "appearanceSubHeader": "*(Only change if you know what you are doing!)*",
+        "backgroundHeader": "Background Modifications",
+        "backgroundSubHeader": "Comes with reasonable defaults, *(Only change if you know what you are doing!)*",
+        "backgroundColor": {
+            "setting": "Color Choice (for dynamic colored background)",
+            "vibrant": "Vibrant",
+            "prominent": "Prominent",
+            "desaturated": "Desaturated (recommended)",
+            "lightVibrant": "Light Vibrant",
+            "darkVibrant": "Dark Vibrant",
+            "vibrantNonAlarming": "Vibrant Non Alarming"
+        },
+        "staticColor": "Color Choice (for static colored background)",
+        "themedButtons": "Themed Buttons",
+        "themedIcons": "Themed Icons",
+        "invertColors": {
+            "setting": "Invert Colors",
+            "never": "Never",
+            "always": "Always",
+            "auto": "Automatic (Based on BG)"
+        },
+        "verticalMonitorSupport": "Vertical Monitor Support",
+        "verticalMonitorSupportDescription": "Enable this if you have a vertical monitor setup. Lyrics will be shown in the bottom, when the window height is greater than the width.",
+        "backAnimationTime": "Background Animation Time (for image background)",
+        "animationSpeed": "⭐ Animation Speed (for animated background)",
+        "upnextScroll": {
+            "setting": "Upnext Scroll Animation",
+            "mq": "Marquee/Scrolling",
+            "sp": "Spotify/Translating"
+        },
+        "upnextTime": "Upnext Time to Show",
+        "backgroundBlur": "Background Blur",
+        "backgroundBrightness": "Background Brightness",
+
+        "aboutHeader": "About",
+
+        "configReset": "Reset Config",
+        "reload": "Reload Client"
+    },
+    "tvBtnDesc": "TV Mode Display",
+    "fullscreenBtnDesc": "Full Screen"
+}
