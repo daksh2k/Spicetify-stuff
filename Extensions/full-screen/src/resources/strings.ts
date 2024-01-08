@@ -8,6 +8,7 @@ import viVN from "./locales/vi-VN.json";
 import esES from "./locales/es-ES.json";
 import frFR from "./locales/fr-FR.json";
 import idID from "./locales/id-ID.json";
+import ptBR from "./locales/pt-BR.json";
 import defaultsDeep from "lodash.defaultsdeep";
 
 // Translation strings
@@ -23,6 +24,7 @@ const translations: Record<string, any> = {
     "es-ES": defaultsDeep(esES, enUS),
     "fr-FR": defaultsDeep(frFR, enUS),
     "id-ID": defaultsDeep(idID, enUS),
+    "pt-BR": defaultsDeep(ptBR, enUS),
 };
 
 export default translations;
