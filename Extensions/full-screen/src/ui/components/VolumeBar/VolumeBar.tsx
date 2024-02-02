@@ -1,6 +1,7 @@
 import * as React from "react";
 import debounce from "lodash.debounce";
 import "./styles.scss";
+import classNames from "classnames";
 import { SeekbarProps } from "../../../types/fullscreen";
 
 const SeekableVolumeBar = ({ state }: { state: string }) => {
@@ -127,7 +128,7 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
     return (
         <div
             id="fsd-volume-container"
-            className={Spicetify.classnames({
+            className={classNames({
                 unavailable: curVolume === -100,
                 "v-hidden": state !== "always" && !visibility,
                 dragging: changingProgress.isChanging,
@@ -136,7 +137,7 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
             <div
                 id="fsd-volume-bar"
                 ref={progSlider}
-                className={Spicetify.classnames({ dragging: changingProgress.isChanging })}>
+                className={classNames({ dragging: changingProgress.isChanging })}>
                 <div
                     id="fsd-volume-bar-inner"
                     style={{

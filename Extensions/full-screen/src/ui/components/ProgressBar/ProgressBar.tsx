@@ -1,6 +1,7 @@
 import * as React from "react";
 import "./styles.scss";
 import { SeekbarProps } from "../../../types/fullscreen";
+import classNames from "classnames";
 import CFM from "../../../utils/config";
 
 const SeekableProgressBar = ({ state }: { state: string }) => {
@@ -137,7 +138,7 @@ const SeekableProgressBar = ({ state }: { state: string }) => {
             <div
                 id="fsd-progress-bar"
                 ref={progSlider}
-                className={Spicetify.classnames({ dragging: changingProgress.isChanging })}>
+                className={classNames({ dragging: changingProgress.isChanging })}>
                 <div
                     id="fsd-progress-bar-inner"
                     style={{ width: (curProgress / curDuration) * 100 + "%" }}>
