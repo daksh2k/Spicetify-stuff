@@ -1,0 +1,167 @@
+{
+  "langName": "繁體中文",
+  "context": {
+    "queue": "正在從佇列播放",
+    "track": "正在播放",
+    "album": "正在從專輯播放",
+    "artist": "正在從藝人播放",
+    "playlist": "正在從歌單播放",
+    "playlistFolder": "正在從歌單資料夾播放",
+    "search": "正在從搜尋結果播放",
+    "searchDest": "歌曲",
+    "collection": "正在從合輯播放",
+    "likedSongs": "已按讚的歌曲",
+    "trackRadio": "正在從歌曲電台播放",
+    "artistRadio": "正在從藝人電台播放",
+    "albumRadio": "正在從專輯電台播放",
+    "playlistRadio": "正在從歌單電台播放"
+  },
+  "upnext": "下一首",
+  "unknownArtist": "未知藝人",
+  "settings": {
+    "switchToTV": "切換至電視模式",
+    "switchToFullscreen": "切換至預設模式",
+    "tvModeConfig": "電視模式設定",
+    "fullscreenConfig": "全螢幕模式設定",
+    "exit": "退出",
+
+    "pluginSettings": "插件設定",
+    "fsHideOriginal": "隱藏原版按鈕",
+    "fsHideOriginalDescription": "隱藏Spotify原版的全螢幕按鈕 (只對**Premium**使用者有效)",
+    "language": "語言",
+    "autoLaunch": {
+      "setting": "自動啟動 (當Spotify啟動時)",
+      "description": "**限制:** Spotify 視窗在自動啟動時無法進入全螢幕模式",
+      "never": "永不 (預設)",
+      "default": "進入預設模式",
+      "tvmode": "電視模式",
+      "lastused": "上次使用的模式"
+    },
+    "activationTypes": {
+      "setting": "開啟方式",
+      "description": "選擇你要開啟全螢幕的方式 <kbd>F</kbd> 和 <kbd>T</kbd> 鍵，或者在頂部和底部欄的按鈕",
+      "both": "按鈕和鍵盤快捷鍵",
+      "btns": "僅限按鈕",
+      "keys": "僅限鍵盤快捷鍵"
+    },
+    "buttonActivation": {
+      "setting": "自訂開啟按鈕",
+      "description": "選擇你要開啟全螢幕的方式，頂部(*電視模式*)和底部(*預設模式*)",
+      "both": "兩種模式的按鈕",
+      "tv": "僅限電視模式的按鈕",
+      "def": "僅限一般模式的按鈕"
+    },
+    "keyActivation": {
+      "setting": "自訂開啟快捷鍵",
+      "description": "選擇你要開啟全螢幕的方式 <kbd>F</kbd>  切換到*預設模式*， <kbd>T</kbd> 切換到*電視模式*",
+      "both": "兩種模式的按鍵",
+      "tv": "僅限電視模式的按鍵",
+      "def": "僅限一般模式的按鍵"
+    },
+    "lyricsHeader": "歌詞設定",
+    "lyrics": "歌詞",
+    "lyricsDescription": [
+      "**注意:**你需要先安裝[lyrics-plus](https://spicetify.app/docs/advanced-usage/custom-apps#lyrics-plus)插件才能使用歌詞功能",
+      "請根據連結裡的指示安裝這個插件"
+    ],
+    "lyricsAlignment": {
+      "setting": "歌詞對齊方式",
+      "left": "靠左對齊",
+      "center": "置中",
+      "right": "靠右對齊"
+    },
+    "autoHideLyrics": "自動隱藏歌詞 (當歌詞不可用時)",
+    "lyricsAnimationTempo": "歌詞動畫速度",
+
+    "generalHeader": "一般設定",
+    "progressBar": "播放進度條",
+    "playerControls": "播放控制",
+    "trimTitle": "縮短標題",
+    "trimTitleUpNext": "縮短下一首提示的標題",
+    "showAlbum": {
+      "setting": "顯示專輯標題",
+      "never": "永不顯示",
+      "always": "永遠顯示",
+      "date": "與發佈年分一起顯示"
+    },
+    "showAllArtists": "顯示所有藝人",
+    "icons": "顯示圖示",
+    "songChangeAnimation": "歌曲切換動畫",
+    "fullscreen": "全螢幕",
+
+    "extraHeader": "額外功能設定",
+    "backgroundChoice": {
+      "setting": "背景設定",
+      "description": [
+        "**新功能:** 試試看 **動化專輯照** 選項!",
+        "**警告:** 很漂亮，但可能消耗更多電腦資源，而且這是實驗性的功能"
+      ],
+      "dynamicColor": "動態純色",
+      "staticColor": "靜態純色",
+      "artwork": "專輯照",
+      "animatedArt": "動化專輯照 (實驗性)",
+      "artist": "藝人封面"
+    },
+    "extraControls": "額外控制",
+    "upnextDisplay": "下一首提示",
+    "contextDisplay": {
+      "setting": "播放來源顯示",
+      "always": "永遠顯示",
+      "never": "永不顯示",
+      "mouse": "當滑鼠移動時顯示"
+    },
+    "volumeDisplay": {
+      "setting": "音量條顯示",
+      "description": [
+        "在自動模式下，音量條將會在以下情況顯示:",
+        " - 滑鼠移動到螢幕左方",
+        " - 音量有變化"
+      ],
+      "always": "永遠顯示",
+      "never": "永不顯示",
+      "smart": "自動模式"
+    },
+
+    "appearanceHeader": "進階/外觀設定",
+    "appearanceSubHeader": "*(除非你知道你在幹嘛，不然不要改!)*",
+    "backgroundHeader": "背景修改",
+    "backgroundSubHeader": "有合理的預設，*除非你知道你在幹嘛，不然不要改!*",
+    "backgroundColor": {
+      "setting": "顏色選擇 (用於動態純色)",
+      "vibrant": "豐富多彩",
+      "prominent": "突出",
+      "desaturated": "去飽和度 (推薦)",
+      "lightVibrant": "明亮的活力",
+      "darkVibrant": "深色的活力",
+      "vibrantNonAlarming": "不引人注目的活力"
+    },
+    "staticColor": "顏色選擇 (用於靜態純色)",
+    "themedButtons": "主題色按鈕",
+    "themedIcons": "主題色圖示",
+    "invertColors": {
+      "setting": "反轉顏色",
+      "never": "永不",
+      "always": "永遠",
+      "auto": "自動 (基於背景)"
+    },
+    "verticalMonitorSupport": "垂直顯示器支援",
+    "verticalMonitorSupportDescription": "如果你有垂直顯示器，請啟用此功能。當視窗高度大於寬度時，歌詞將顯示在底部。",
+    "backAnimationTime": "背景動畫時間 (用於圖片背景)",
+    "animationSpeed": "⭐ 動畫速度 (用於動畫背景)",
+    "upnextScroll": {
+      "setting": "下一首提示動畫",
+      "mq": "跑馬燈/滾動",
+      "sp": "Spotify/變換"
+    },
+    "upnextTime": "下一首提示顯示時間",
+    "backgroundBlur": "背景模糊",
+    "backgroundBrightness": "背景亮度",
+
+    "aboutHeader": "關於",
+
+    "configReset": "重設設定",
+    "reload": "重新載入插件"
+  },
+  "tvBtnDesc": "電視模式",
+  "fullscreenBtnDesc": "全螢幕模式"
+}
