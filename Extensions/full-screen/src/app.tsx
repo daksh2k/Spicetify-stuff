@@ -316,13 +316,13 @@ async function main() {
         // prepare artist
         let artistData: string[][];
         if (CFM.get("showAllArtists")) {
-            const artistNameList = Object.keys(meta!).filter((key) =>
-                key.startsWith("artist_name"),
-            ) as Array<keyof typeof meta>;
+            const artistNameList = Object.keys(meta!)
+                .filter((key) => key.startsWith("artist_name"))
+                .sort() as Array<keyof typeof meta>;
 
-            const artistUriList = Object.keys(meta!).filter((key) =>
-                key.startsWith("artist_uri"),
-            ) as Array<keyof typeof meta>;
+            const artistUriList = Object.keys(meta!)
+                .filter((key) => key.startsWith("artist_uri"))
+                .sort() as Array<keyof typeof meta>;
 
             artistData = artistNameList.map((key, index) => [
                 meta![key],
