@@ -1,13 +1,21 @@
 const changelog = `## General 
+  - **Info** -: dynamic color theme and backgrounds is not working anymore in new Spotify
+  - fix classnames library error(use own version)
+  - fix wrong artist order when showing multiple artists
+  - add brazilian translations (thanks to [@vinizent](https://github.com/vinizent))
+  - add chinese traditional translations (thanks to [@york9675](https://github.com/york9675))
+### P.S - update your spicetify if you are facing issues with lyrics
+  `;
+
+export const VersionedChangelog = {
+    "2.6.0": changelog,
+    "2.5.0": `## General 
   - add new settings options for progress bar and controls to only show on mousemove
   - auto hide lyrics is more repsonsive now (should react faster)
   - add hyperlinks to title,artists and albums
   - misc bug fixes and quality of life improvements
   - add indonesian translations (thanks to [@ianz56](https://github.com/ianz56))
-  `;
-
-export const VersionedChangelog = {
-    "2.5.0": changelog,
+    `,
     "2.4.0": `## General 
   - add support for vertical monitor(with lyrics on bottom)
   - add compatibility with latest spotify and spicetify
