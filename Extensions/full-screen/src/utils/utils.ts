@@ -12,8 +12,8 @@ class Utils {
         const topBar = document.querySelector(TOP_BAR_SELECTOR);
 
         const entriesToVerify = {
-            "Top Bar Component": topBar,
-            "Extra Bar Component": extraBar,
+            // "Top Bar Component": topBar,
+            // "Extra Bar Component": extraBar,
             "Spicetify CosmosAsync": Spicetify.CosmosAsync,
             "Spicetify Mousetrap": Spicetify.Mousetrap,
             "Spicetify Player": Spicetify.Player,
