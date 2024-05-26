@@ -4,9 +4,10 @@ const colorsCache: Cache[] = [];
 
 class WebAPI {
     static getToken() {
-        return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-            preferCached: true,
-        }).then((res: TokenType) => res.accessToken);
+        // return Spicetify.Platform.AuthorizationAPI._tokenProvider({
+        //     preferCached: true,
+        // }).then((res: TokenType) => res.accessToken);
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
     }
 
     static async getTrackInfo(id: string) {
