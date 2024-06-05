@@ -1,54 +1,38 @@
-import { Cache, Colors, TokenType } from "../types/fullscreen";
+import { Cache, Colors } from "../types/fullscreen";
 
 const colorsCache: Cache[] = [];
 
 class WebAPI {
-    static getToken() {
-        // return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-        //     preferCached: true,
-        // }).then((res: TokenType) => res.accessToken);
-        return Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
-    }
-
     static async getTrackInfo(id: string) {
-        return fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-            headers: {
-                Authorization: `Bearer ${await WebAPI.getToken()}`,
-            },
-        }).then((res) => res.json());
+        return await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/tracks/${id}`);
     }
 
     static async getAlbumInfo(id: string) {
-        return fetch(`https://api.spotify.com/v1/albums/${id}`, {
-            headers: {
-                Authorization: `Bearer ${await WebAPI.getToken()}`,
-            },
-        }).then((res) => res.json());
+        return await Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/albums/${id}`);
     }
 
     static async getPlaylistInfo(uri: string) {
-        return Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`);
+        return await Spicetify.CosmosAsync.get(`sp://core-playlist/v1/playlist/${uri}`);
     }
 
     static async getArtistInfo(id: string) {
-        return fetch(
-            `https://api-partner.spotify.com/pathfinder/v1/query?operationName=queryArtistOverview&variables=%7B%22uri%22%3A%22spotify%3Aartist%3A${id}%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22d66221ea13998b2f81883c5187d174c8646e4041d67f5b1e103bc262d447e3a0%22%7D%7D`,
-            {
-                headers: {
-                    Authorization: `Bearer ${await WebAPI.getToken()}`,
-                },
-            },
-        )
-            .then((res) => res.json())
-            .then((res) => res.data.artist);
+        const queryArtistOverview = {
+			name: "queryArtistOverview",
+			operation: "query",
+			sha256Hash: "35648a112beb1794e39ab931365f6ae4a8d45e65396d641eeda94e4003d41497",
+			value: null
+		};
+
+        const overview = await Spicetify.GraphQL.Request(queryArtistOverview, {
+			uri: id,
+			locale: Spicetify.Locale.getLocale(),
+			includePrerelease: false
+		});
+        return overview?.data?.artistUnion;
     }
 
     static async searchArt(name: string) {
-        return fetch(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`, {
-            headers: {
-                Authorization: `Bearer ${await WebAPI.getToken()}`,
-            },
-        }).then((res) => res.json());
+        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`);
     }
 
     static async colorExtractor(uri: string) {
