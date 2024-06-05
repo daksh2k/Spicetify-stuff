@@ -17,22 +17,24 @@ class WebAPI {
 
     static async getArtistInfo(id: string) {
         const queryArtistOverview = {
-			name: "queryArtistOverview",
-			operation: "query",
-			sha256Hash: "35648a112beb1794e39ab931365f6ae4a8d45e65396d641eeda94e4003d41497",
-			value: null
-		};
+            name: "queryArtistOverview",
+            operation: "query",
+            sha256Hash: "35648a112beb1794e39ab931365f6ae4a8d45e65396d641eeda94e4003d41497",
+            value: null,
+        };
 
         const overview = await Spicetify.GraphQL.Request(queryArtistOverview, {
-			uri: id,
-			locale: Spicetify.Locale.getLocale(),
-			includePrerelease: false
-		});
+            uri: id,
+            locale: Spicetify.Locale.getLocale(),
+            includePrerelease: false,
+        });
         return overview?.data?.artistUnion;
     }
 
     static async searchArt(name: string) {
-        return Spicetify.CosmosAsync.get(`https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`);
+        return await Spicetify.CosmosAsync.get(
+            `https://api.spotify.com/v1/search?q="${name}"&type=artist&limit=2`,
+        );
     }
 
     static async colorExtractor(uri: string) {
