@@ -4,10 +4,7 @@ export class WebApi {
      * @returns
      */
     static getToken() {
-        // return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-        //     preferCached: true,
-        // }).then((res) => res.accessToken);
-        return Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
+        return Spicetify.Platform.AuthorizationAPI._state.token.accessToken;
     }
     /**
      * Get track metadata from Spotify web API
