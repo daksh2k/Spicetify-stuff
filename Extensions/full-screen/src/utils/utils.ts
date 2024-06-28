@@ -1,10 +1,16 @@
 import ICONS from "../constants";
-import { TOP_BAR_SELECTOR, EXTRA_BAR_SELECTOR } from "../constants/selectors";
+import {
+    TOP_BAR_SELECTOR,
+    EXTRA_BAR_SELECTOR,
+    ORIGINAL_QUEUE_BUTTON,
+    RIGH_PANEL,
+} from "../constants/selectors";
 import WebAPI from "../services/web-api";
 import CFM from "./config";
 import { Settings } from "../types/fullscreen";
 
 let prevUriObj: Spicetify.URI;
+let wasQueuePanelEnabled: boolean | null = null;
 
 class Utils {
     static allNotExist() {
@@ -332,6 +338,52 @@ class Utils {
             }
         }
         return { ctxIcon, ctxSource, ctxName };
+    }
+
+    static toggleQueuePanel(myQueueButton: HTMLElement | null, enabled: boolean) {
+        const originalQueueButton = document.querySelector(
+            ORIGINAL_QUEUE_BUTTON,
+        ) as HTMLElement | null;
+        const rightPanel = document.querySelector(RIGH_PANEL) as HTMLElement | null;
+        if (enabled) {
+            setTimeout(() => {
+                if (!originalQueueButton?.classList.contains("main-genericButton-buttonActive")) {
+                    originalQueueButton?.click();
+                    wasQueuePanelEnabled = false;
+                } else {
+                    wasQueuePanelEnabled = true;
+                }
+                setTimeout(() => {
+                    rightPanel?.classList.add("fsd-queue-panel");
+                    setTimeout(() => {
+                        rightPanel?.classList.add("fsd-transform-animation");
+                    }, 100);
+                }, 300);
+            }, 600);
+        } else {
+            if (wasQueuePanelEnabled != null && !wasQueuePanelEnabled) {
+                originalQueueButton?.click();
+            }
+            rightPanel?.style.setProperty("--queue-panel-x", "1000px");
+            wasQueuePanelEnabled = null;
+            myQueueButton?.classList.remove("button-active", "dot-after");
+            rightPanel?.classList.remove("fsd-queue-panel", "fsd-transform-animation");
+            document.body.classList.remove("fsd-queue-panel-active");
+        }
+    }
+
+    static toggleQueue(queueButton: HTMLElement | null) {
+        const rightPanel = document.querySelector(RIGH_PANEL) as HTMLElement | null;
+
+        if (document.body.classList.contains("fsd-queue-panel-active")) {
+            rightPanel?.style.setProperty("--queue-panel-x", "1000px");
+            queueButton?.classList.remove("button-active", "dot-after");
+            document.body.classList.remove("fsd-queue-panel-active");
+        } else {
+            rightPanel?.style.setProperty("--queue-panel-x", "0px");
+            queueButton?.classList.add("button-active", "dot-after");
+            document.body.classList.add("fsd-queue-panel-active");
+        }
     }
 }
 

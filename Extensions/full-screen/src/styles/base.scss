@@ -368,6 +368,9 @@
     .fsd-background-fade {
         transition: background-image var(--fs-transition) linear;
     }
+    #fsd-lyrics {
+        display: none;
+    }
 }
 
 body.fsd-activated #full-screen-display {
@@ -379,6 +382,30 @@ body.fsd-activated #full-screen-display {
 .fsd-activated .Root__now-playing-bar {
     visibility: hidden;
     display: none;
+}
+.fsd-activated .Root__top-container {
+    overflow-x: hidden;
+}
+.fsd-activated .fsd-transform-animation {
+    transition: transform 0.4s ease-in-out;
+}
+.fsd-activated .fsd-queue-panel {
+    --queue-panel-x: 1000px;
+    z-index: 101;
+    transform: translateX(var(--queue-panel-x));
+    .main-buddyFeed-actions.main-buddyFeed-closeContainer,
+    .icNf66tgG3uxDMbCCIaN.XOSSUjLDKk9RRmiX_UWa {
+        display: none;
+    }
+    .XOawmCGZcQx4cesyNfVO {
+        width: 500px !important;
+    }
+    .main-buddyFeed-container,
+    .ffFwfKcPDbmAPLXzxzKq {
+        background: transparent !important;
+        backdrop-filter: blur(10px) brightness(0.7);
+        // width: 500px !important;
+    }
 }
 .fsd-activated .Root__main-view-overlay {
     z-index: 1000;
