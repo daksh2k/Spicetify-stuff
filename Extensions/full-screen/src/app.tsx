@@ -21,6 +21,7 @@ import { Config, Settings } from "./types/fullscreen";
 import WebAPI from "./services/web-api";
 import showWhatsNew from "./services/whats-new";
 import { getHtmlContent } from "./services/html-creator";
+import { initMoustrapRecord } from "./services/mousetrap-record";
 
 import SeekableProgressBar from "./ui/components/ProgressBar/ProgressBar";
 import SeekableVolumeBar from "./ui/components/VolumeBar/VolumeBar";
@@ -47,6 +48,7 @@ async function main() {
 
     // Start from here
     showWhatsNew();
+    initMoustrapRecord(Spicetify.Mousetrap);
 
     if (CFM.getGlobal("activationTypes") !== "btns") {
         if (CFM.getGlobal("keyActivation") !== "def") Spicetify.Mousetrap.bind("t", openwithTV);
@@ -259,6 +261,12 @@ async function main() {
         }
     }
 
+    function recordSequence() {
+        Spicetify.Mousetrap.record(function (sequence) {
+            // sequence is an array like ['ctrl+k', 'c']
+            console.log("You pressed: " + sequence.join(" "));
+        });
+    }
     // Set the timeout to show upnext or hide when song ends
     let upnextTimer: NodeJS.Timeout,
         upNextShown = false;

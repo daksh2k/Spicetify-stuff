@@ -782,6 +782,7 @@ declare namespace Spicetify {
 	 * so new extension should use this library instead.
 	 */
 	const Mousetrap: {
+		record(arg0: (sequence: any) => void): unknown;
         bind: (
             keys: string | string[],
             callback: (event: KeyboardEvent, combo: string) => void,
