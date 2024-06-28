@@ -136,6 +136,7 @@ async function main() {
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         Spicetify.Player.removeEventListener("onplaypause", updatePlayerControls);
         Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
+        document.removeEventListener("fullscreenchange", fullScreenListener);
         Spicetify.Platform.PlayerAPI._events.removeListener("update", updateExtraControls);
         heartObserver.disconnect();
 
@@ -853,6 +854,17 @@ async function main() {
         if (playerControlsTimer) clearTimeout(playerControlsTimer);
     }
 
+    function fullScreenListener() {
+        if (
+            document.fullscreenElement === null &&
+            CFM.get("enableFullscreen") &&
+            Utils.isModeActivated()
+        ) {
+            console.log("Deactivating Full Screen");
+            deactivate();
+        }
+    }
+
     let origLoc: string;
     const heartObserver = new MutationObserver(updateHeart);
 
@@ -927,6 +939,7 @@ async function main() {
             window.dispatchEvent(new Event("fad-request"));
         }
         Spicetify.Mousetrap.bind("f11", fsToggle);
+        document.addEventListener("fullscreenchange", fullScreenListener);
         Spicetify.Mousetrap.bind("esc", deactivate);
         if (CFM.get("lyricsDisplay")) {
             Spicetify.Mousetrap.bind("l", toggleLyrics);
@@ -978,6 +991,7 @@ async function main() {
             }
             window.dispatchEvent(new Event("fad-request"));
         }
+        document.removeEventListener("fullscreenchange", fullScreenListener);
 
         Spicetify.Mousetrap.unbind("f11");
         Spicetify.Mousetrap.unbind("esc");
