@@ -1,26 +1,33 @@
 name: Bug report
-description: Report errors or unexpected behavior
+description: Report errors or unexpected behaviour
 title: "[Bug]: "
 labels: [bug]
 body:
   - type: checkboxes
     attributes:
-      label: 🔍 Have you checked that you are using an auto updating method or latest version of the extension?
-      description: Please update the extensions from this repo or choose auto updating method for resolving common issues.
+      label: 🔍 Have you ensured you are using the latest versions of Spotify, Spicetify, and the extension?
+      description: Please update Spotify, Spicetify, and the extensions from this repo or use the auto-update method to resolve common issues.
       options:
-        - label: I have checked that I am on the latest version.
+        - label: I have confirmed that I am using the latest versions.
           required: true
   - type: checkboxes
     attributes:
-      label: 🔍 Is there already an issue for your problem?
-      description: Please make sure you are not creating an already submitted <a href="https://github.com/daksh2k/Spicetify-stuff/issues?q=is%3Aissue">Issue</a>. Check closed issues as well, because your issue may have already been fixed.
+      label: 🔍 Have you checked for an existing issue?
+      description: Ensure your issue is not already reported by checking the <a href="https://github.com/daksh2k/Spicetify-stuff/issues?q=is%3Aissue">existing issues</a>. Check both open and closed issues, as your problem may have been resolved already.
       options:
-        - label: I have checked older issues, open and closed
+        - label: I have checked existing issues, both open and closed.
           required: true
+  - type: checkboxes
+    attributes:
+      label: 🔍 Have you reviewed pinned issues?
+      options:
+        - label: I have reviewed the pinned issues.
+          required: true
+
   - type: dropdown
     attributes:
-      label: Choose the extension for bug report.
-      description: Choose the relevant extension from the dropdown.
+      label: Select the relevant extension for this bug report.
+      description: Choose the extension related to the issue from the dropdown.
       options:
           - Save Playlists
           - Full Screen Mode
@@ -32,9 +39,10 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: ℹ Environment / Computer Info
-      description: Please provide the details of the system Spicetify is running on. Copy the info by going to about Spotify.
+      label: ℹ System Information
+      description: Provide details of the system running Spicetify. You can copy this info from Spotify's About section.
       placeholder: |
+        Example:
         Spotify for macOS (Intel) 1.2.18.999.g9b38fc27
         Spicetify v2.22.2
         Extensions: keyboardShortcutMy.js, fullScreen.js, hidePodcasts.js, autoSkipWrapper.js, playNextWrapper.js, volumePercentageWrapper.js, savePlaylistsWrapper.js, css-editor.js, queuePanel.js, CoverAmbience.js, QueueTime.js, adblock.js
@@ -44,13 +52,13 @@ body:
       required: true
   - type: textarea
     attributes:
-      label: 📝 Description
-      description: List steps to reproduce the error and details on what happens and what you expected to happen.
+      label: 📝 Bug Description
+      description: Describe the steps to reproduce the error, what happens, and what you expected to happen.
     validations:
       required: true
   - type: textarea
     attributes:
       label: 📸 Screenshots
-      description: Place any screenshots of the issue here if needed
+      description: Attach any screenshots of the issue, if applicable.
     validations:
       required: false
