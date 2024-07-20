@@ -1,14 +1,29 @@
 const changelog = `## General 
+  - Add queue in sidebar, enable it from settings now!!
+  - use esc key to exit the full screen experience
+  - re-enable dynamic colors theme and backgrounds
+  - compatibility with latest spotify and spicetify 
+  ## New Keyboard Shortcuts
+| Key            | Purpose                                   |
+|----------------|-------------------------------------------|
+| <kbd>Q</kbd>   | Toggle Sidebar Queue Panel (when enabled) |
+| <kbd>C</kbd>   | Toggle Settings popup                     |
+| <kbd>L</kbd>   | Toggle Lyrics (when enabled)              |
+| <kbd>ESC</kbd> | Exit full screen app                      |
+| <kbd>F</kbd>   | Toggle Default Mode (exit if active)      |
+| <kbd>T</kbd>   | Toggle TV Mode (exit of active)           |
+  `;
+
+export const VersionedChangelog = {
+    "2.7.0": changelog,
+    "2.6.0": `## General 
   - **Info** -: dynamic color theme and backgrounds is not working anymore in new Spotify
   - fix classnames library error(use own version)
   - fix wrong artist order when showing multiple artists
   - add brazilian translations (thanks to [@vinizent](https://github.com/vinizent))
   - add chinese traditional translations (thanks to [@york9675](https://github.com/york9675))
 ### P.S - update your spicetify if you are facing issues with lyrics
-  `;
-
-export const VersionedChangelog = {
-    "2.6.0": changelog,
+  `,
     "2.5.0": `## General 
   - add new settings options for progress bar and controls to only show on mousemove
   - auto hide lyrics is more repsonsive now (should react faster)
