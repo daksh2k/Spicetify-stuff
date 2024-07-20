@@ -124,7 +124,9 @@ async function main() {
 
     function render() {
         container.classList.toggle("lyrics-active", Boolean(CFM.get("lyricsDisplay")));
-        Utils.toggleQueuePanel(queue, false);
+        if (CFM.get("sidebarQueue")) {
+            Utils.toggleQueuePanel(queue, false);
+        }
         container.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
@@ -232,7 +234,6 @@ async function main() {
             heart = container.querySelector("#fsd-heart")!;
             shuffle = container.querySelector("#fsd-shuffle")!;
             repeat = container.querySelector("#fsd-repeat")!;
-            queue = container.querySelector("#fsd-queue")!;
 
             heart.onclick = () => {
                 Utils.fadeAnimation(heart);
@@ -247,16 +248,18 @@ async function main() {
                 Spicetify.Player.toggleRepeat();
             };
 
-            queue.onclick = () => toggleQueue();
-
             if (CFM.get("invertColors") === "auto") {
                 invertButton = container.querySelector("#fsd-invert")!;
                 invertButton.onclick = toggleInvert;
             }
-            if (CFM.get("lyricsDisplay")) {
+            if (CFM.get("lyricsDisplay") && !CFM.get("sidebarQueue")) {
                 lyrics = container.querySelector("#fsd-lyrics")!;
-                // lyrics.onclick = () => toggleLyrics();
-                lyrics.onclick = () => recordSequence();
+                lyrics.onclick = () => toggleLyrics();
+                // lyrics.onclick = () => recordSequence();
+            }
+            if (CFM.get("sidebarQueue")) {
+                queue = container.querySelector("#fsd-queue")!;
+                queue.onclick = () => toggleQueue();
             }
         }
     }
@@ -868,7 +871,6 @@ async function main() {
             CFM.get("enableFullscreen") &&
             Utils.isModeActivated()
         ) {
-            console.log("Deactivating Full Screen");
             deactivate();
         }
     }
@@ -877,7 +879,9 @@ async function main() {
     const heartObserver = new MutationObserver(updateHeart);
 
     async function activate() {
-        Utils.toggleQueuePanel(queue, true);
+        if (CFM.get("sidebarQueue")) {
+            Utils.toggleQueuePanel(queue, true);
+        }
         document.body.classList.add(...CLASSES_TO_ADD);
         if (CFM.get("enableFullscreen")) await Utils.fullScreenOn()?.catch((err) => {});
         else await Utils.fullScreenOff()?.catch((err) => {});
@@ -957,11 +961,15 @@ async function main() {
             if (popup) popup.remove();
             else openConfig();
         });
-        Spicetify.Mousetrap.bind("q", toggleQueue);
+        if (CFM.get("sidebarQueue")) {
+            Spicetify.Mousetrap.bind("q", toggleQueue);
+        }
     }
 
     async function deactivate() {
-        Utils.toggleQueuePanel(queue, false);
+        if (CFM.get("sidebarQueue")) {
+            Utils.toggleQueuePanel(queue, false);
+        }
         modifyIsAnimationRunning(false);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         handleMouseMoveDeactivation();
@@ -1259,6 +1267,7 @@ async function main() {
                 },
                 translations[LOCALE].settings.keyActivation.description,
             ),
+
             headerText(translations[LOCALE].settings.lyricsHeader),
             createToggle(
                 translations[LOCALE].settings.lyrics,
@@ -1349,6 +1358,12 @@ async function main() {
                 ? createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen")
                 : "",
             headerText(translations[LOCALE].settings.extraHeader),
+            createToggle(
+                translations[LOCALE].settings.sidebarQueue,
+                "sidebarQueue",
+                (value: boolean) => saveOption("sidebarQueue", value),
+                translations[LOCALE].settings.sidebarQueueDescription.join("<br>"),
+            ),
             createOptions(
                 translations[LOCALE].settings.extraControls,
                 {

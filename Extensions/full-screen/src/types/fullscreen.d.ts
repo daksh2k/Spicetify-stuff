@@ -48,6 +48,7 @@ export type Settings = {
     backgroundBrightness: number;
     showRemainingTime: boolean;
     verticalMonitorSupport: boolean;
+    sidebarQueue: boolean;
 };
 
 export type Cache = {

@@ -109,7 +109,7 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
                             }</svg>
                        </button>
                        ${
-                           CFM.get("lyricsDisplay")
+                           CFM.get("lyricsDisplay") && !CFM.get("sidebarQueue")
                                ? `<button id="fsd-lyrics" class="fs-button ${
                                      areLyricsForceHidden ? "" : "button-active"
                                  }">
@@ -117,11 +117,13 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
                     </button>`
                                : ""
                        }
-                       <button class="fs-button" id="fsd-queue">
-                       <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${
-                           Spicetify.SVGIcons["queue"]
-                       }</svg>
-                  </button>
+                      ${
+                          CFM.get("sidebarQueue")
+                              ? `<button class="fs-button" id="fsd-queue">
+                       <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">${Spicetify.SVGIcons["queue"]}</svg>
+                  </button>`
+                              : ""
+                      }
                     </div>`
                         : ""
                 }

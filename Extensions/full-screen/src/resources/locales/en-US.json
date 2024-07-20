@@ -102,6 +102,11 @@
             "animatedArt": "Animated Album Art (Experimental)",
             "artist": "Artist artwork"
         },
+        "sidebarQueue": "Enable Queue in Sidebar (replaces the lyrics button)",
+        "sidebarQueueDescription": [
+            "Toggle the queue in the sidebar with <kbd>Q</kbd> or the button in the extra bar.",
+            "Make sure to enable the setting in Experimental features. Check [this.](https://github.com/daksh2k/Spicetify-stuff/issues/167#issuecomment-2199480598) "
+        ],
         "extraControls": "Extra Controls",
         "upnextDisplay": "Upnext Display",
         "contextDisplay": {
