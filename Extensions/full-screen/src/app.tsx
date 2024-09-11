@@ -15,7 +15,13 @@ import {
 import { headerText, getSettingCard, createAdjust, getAboutSection } from "./utils/setting";
 
 import translations from "./resources/strings";
-import ICONS, { DEFAULTS, CLASSES_TO_ADD, EXTRA_BAR_SELECTOR, TOP_BAR_SELECTOR } from "./constants";
+import ICONS, {
+    DEFAULTS,
+    CLASSES_TO_ADD,
+    EXTRA_BAR_SELECTOR,
+    TOP_BAR_SELECTOR,
+    TOP_BAR_SELECTOR_GLOBAL_NAVBAR,
+} from "./constants";
 import { Config, Settings } from "./types/fullscreen";
 
 import WebAPI from "./services/web-api";
@@ -1634,19 +1640,32 @@ async function main() {
         if (CFM.getGlobal("buttonActivation") !== "def") {
             // Add TV Mode Button on top bar
             const tvButton = document.createElement("button");
-            tvButton.classList.add(
-                "button",
-                "tm-button",
-                "main-topBar-button",
-                "InvalidDropTarget",
-            );
+
             tvButton.innerHTML = ICONS.TV_MODE;
             tvButton.id = "TV-button";
             tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
 
             tvButton.onclick = openwithTV;
+            if (document.querySelector(TOP_BAR_SELECTOR)) {
+                tvButton.classList.add(
+                    "button",
+                    "tm-button",
+                    "main-topBar-button",
+                    "InvalidDropTarget",
+                );
+                document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
+            } else {
+                tvButton.classList.add(
+                    "tm-button",
+                    "Button-small-small-buttonTertiary-condensedAll-isUsingKeyboard-useBrowserDefaultFocusStyle",
+                    "encore-text-body-small-bold",
+                    "main-globalNav-buddyFeed",
+                    "Button-sc-1dqy6lx-0",
+                );
+                document.querySelector(TOP_BAR_SELECTOR_GLOBAL_NAVBAR)?.prepend(tvButton);
+            }
 
-            document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
+            // document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
             tvButton.oncontextmenu = (evt) => {
                 evt.preventDefault();
                 CFM.setMode("tv");

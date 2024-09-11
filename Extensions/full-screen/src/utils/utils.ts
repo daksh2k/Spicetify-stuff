@@ -1,6 +1,7 @@
 import ICONS from "../constants";
 import {
     TOP_BAR_SELECTOR,
+    TOP_BAR_SELECTOR_GLOBAL_NAVBAR,
     EXTRA_BAR_SELECTOR,
     ORIGINAL_QUEUE_BUTTON,
     RIGH_PANEL,
@@ -15,11 +16,13 @@ let wasQueuePanelEnabled: boolean | null = null;
 class Utils {
     static allNotExist() {
         const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0];
-        const topBar = document.querySelector(TOP_BAR_SELECTOR);
+        const topBar =
+            document.querySelector(TOP_BAR_SELECTOR) ||
+            document.querySelector(TOP_BAR_SELECTOR_GLOBAL_NAVBAR);
 
         const entriesToVerify = {
-            // "Top Bar Component": topBar,
-            // "Extra Bar Component": extraBar,
+            "Top Bar Component": topBar,
+            "Extra Bar Component": extraBar,
             "Spicetify CosmosAsync": Spicetify.CosmosAsync,
             "Spicetify Mousetrap": Spicetify.Mousetrap,
             "Spicetify Player": Spicetify.Player,
