@@ -331,7 +331,7 @@ async function main() {
         deactivate();
         setTimeout(() => {
             Spicetify.Platform.History.push(formattedUri);
-        }, 500);
+        }, 100);
     }
 
     async function updateInfo() {
@@ -555,7 +555,7 @@ async function main() {
             "lyrics-unavailable",
             !(evt.detail.available && (evt.detail?.synced?.length ?? 5) > 1),
         );
-        if (CFM.get("extraControls") !== "never") {
+        if (CFM.get("extraControls") !== "never" && !CFM.get("sidebarQueue")) {
             lyrics.classList.toggle("hidden", container.classList.contains("lyrics-unavailable"));
         }
     }

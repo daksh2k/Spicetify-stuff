@@ -5,10 +5,12 @@ import classNames from "classnames";
 import { SeekbarProps } from "../../../types/fullscreen";
 
 const SeekableVolumeBar = ({ state }: { state: string }) => {
+    const DEFAULT_VOLUME = -100;
+
     const [curVolume, setVolume] = React.useState<number>(
         Spicetify.Platform?.PlaybackAPI?._isAvailable
             ? Math.round(Spicetify.Player.getVolume() * 100)
-            : -100,
+            : DEFAULT_VOLUME,
     );
 
     const [changingProgress, setChangingProgress] = React.useState<SeekbarProps>({
@@ -18,12 +20,12 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
 
     const [visibility, setVisibility] = React.useState(true);
 
-    const progSlider = React.useRef(null) as React.MutableRefObject<HTMLDivElement | null>;
+    const progSlider = React.useRef<HTMLDivElement>(null);
 
-    const volumeTimer = React.useRef(null) as React.MutableRefObject<NodeJS.Timeout | null>;
+    const volumeTimer = React.useRef<NodeJS.Timeout | null>(null);
 
     const onMouseDown = (evt: MouseEvent) => {
-        if (evt.button == 0) {
+        if (evt.button === 0) {
             const sliderHeight = progSlider.current?.getBoundingClientRect().height ?? 250;
             const newData = {
                 isChanging: true,
@@ -40,6 +42,10 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
         }
     };
 
+    const debouncedVolume = debounce((newPercentage: number) => {
+        Spicetify.Player.setVolume(newPercentage / 100);
+    }, 20);
+
     const onMouseMove = (evt: MouseEvent) => {
         if (changingProgress.isChanging && changingProgress.data) {
             const moveY = changingProgress.data.beginClient - evt.clientY;
@@ -50,11 +56,7 @@ const SeekableVolumeBar = ({ state }: { state: string }) => {
             );
             const newPercentage = Math.round((newPosY / sliderHeight) * 100);
             setVolume(newPercentage);
-            const debouncedVolume = debounce(
-                () => Spicetify.Player.setVolume(newPercentage / 100),
-                20,
-            );
-            debouncedVolume();
+            debouncedVolume(newPercentage);
             setChangingProgress({
                 isChanging: true,
                 data: { ...changingProgress.data, positionCoord: newPosY },

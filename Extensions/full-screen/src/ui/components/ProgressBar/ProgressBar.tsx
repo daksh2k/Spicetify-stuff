@@ -117,6 +117,8 @@ const SeekableProgressBar = ({ state }: { state: string }) => {
         // console.log("Progress Effect called");
         if (state === "mousemove") {
             hideProgressBar();
+        } else {
+            setVisibility(true);
         }
         const updateInterval = setInterval(updateProgress, 500);
 
