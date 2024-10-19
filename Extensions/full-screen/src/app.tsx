@@ -1658,6 +1658,7 @@ async function main() {
                 tvButton.classList.add(
                     "tm-button",
                     "Button-small-small-buttonTertiary-condensedAll-isUsingKeyboard-useBrowserDefaultFocusStyle",
+                    "Button-buttonTertiary-small-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
                     "encore-text-body-small-bold",
                     "main-globalNav-buddyFeed",
                     "Button-sc-1dqy6lx-0",
