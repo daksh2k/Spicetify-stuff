@@ -102,6 +102,11 @@
             "animatedArt": "Seni Album Bergerak (Eksperimental)",
             "artist": "Seni Artis"
         },
+        "sidebarQueue": "Aktifkan Antrian di Bilah Samping (menggantikan tombol lirik)",
+        "sidebarQueueDescription": [
+            "Alihkan antrean di bilah sisi dengan <kbd>Q</kbd> atau tombol di bilah ekstra.",
+            "Pastikan mengaktifkan pengaturan dalam fitur Experimental. Lihat [ini] (https://github.com/daksh2k/Spicetify-stuff/issues/167#issuecomment-2199480598)"
+        ],
         "extraControls": "Kontrol Tambahan",
         "upnextDisplay": "Tampilan Selanjutnya",
         "contextDisplay": {
