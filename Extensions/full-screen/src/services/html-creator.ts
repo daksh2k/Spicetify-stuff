@@ -143,5 +143,10 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
             }
     </div>
     ${!CFM.getGlobal("tvMode") ? `<div id="fsd-progress-parent"></div>` : ""}
-</div>`;
+</div>
+${
+    CFM.get("showCurrentTime")
+        ? `<div id="fsd-time-display"></div>`
+        : ""
+}`;
 };

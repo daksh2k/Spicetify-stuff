@@ -123,7 +123,8 @@ async function main() {
         repeat: HTMLElement,
         queue: HTMLElement | null,
         invertButton: HTMLElement,
-        lyrics: HTMLElement;
+        lyrics: HTMLElement,
+        timeDisplay: HTMLElement;
 
     const coverImg = new Image();
     const backgroundImg = new Image();
@@ -267,6 +268,12 @@ async function main() {
                 queue = container.querySelector("#fsd-queue")!;
                 queue.onclick = () => toggleQueue();
             }
+        }
+
+        if (CFM.get("showCurrentTime")) {
+            timeDisplay = container.querySelector("#fsd-time-display")!;
+            updateTimeDisplay();
+            setInterval(updateTimeDisplay, 1000);
         }
     }
 
@@ -1363,6 +1370,7 @@ async function main() {
             document.fullscreenEnabled
                 ? createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen")
                 : "",
+            createToggle(translations[LOCALE].settings.showCurrentTime, "showCurrentTime"),
             headerText(translations[LOCALE].settings.extraHeader),
             createToggle(
                 translations[LOCALE].settings.sidebarQueue,
@@ -1692,6 +1700,14 @@ async function main() {
         default:
             break;
     }
+}
+
+function updateTimeDisplay() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const seconds = now.getSeconds().toString().padStart(2, "0");
+    timeDisplay.innerText = `${hours}:${minutes}:${seconds}`;
 }
 
 export default main;
