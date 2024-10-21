@@ -126,6 +126,7 @@
             "never": "Never",
             "smart": "Smart"
         },
+        "showCurrentTime": "Show Current Time",
 
         "appearanceHeader": "Advanced/Appearance",
         "appearanceSubHeader": "*(Only change if you know what you are doing!)*",
