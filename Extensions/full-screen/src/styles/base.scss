@@ -398,10 +398,10 @@ body.fsd-activated #full-screen-display {
         width: 500px !important;
     }
     .main-buddyFeed-container,
-    .ffFwfKcPDbmAPLXzxzKq {
+    .ffFwfKcPDbmAPLXzxzKq,
+    .ffFwfKcPDbmAPLXzxzKq::before {
         background: transparent !important;
         backdrop-filter: blur(10px) brightness(0.7);
-        // width: 500px !important;
     }
 }
 .fsd-activated .Root__main-view-overlay {
