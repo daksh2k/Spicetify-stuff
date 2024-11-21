@@ -30,9 +30,7 @@
     }
 
     function getToken() {
-        return Spicetify.Platform.AuthorizationAPI._tokenProvider({
-            preferCached: true,
-        }).then((res) => res.accessToken);
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
     }
 
     const fetchAlbum = async (uri) => {
@@ -49,7 +47,7 @@
     const fetchAlbumFromWebApi = async (url) => {
         const res = await fetch(url, {
             headers: {
-                Authorization: `Bearer ${await getToken()}`,
+                Authorization: `Bearer ${getToken()}`,
             },
         });
         const albumDetails = await res.json();
