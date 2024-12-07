@@ -34,7 +34,7 @@ export const DEFAULTS: Config = {
         backgroundBrightness: 0.4,
         showRemainingTime: false,
         verticalMonitorSupport: false,
-        sidebarQueue: false,
+        sidebarQueue: true,
     },
     def: {
         lyricsDisplay: true,
@@ -69,7 +69,7 @@ export const DEFAULTS: Config = {
         backgroundBrightness: 0.7,
         showRemainingTime: false,
         verticalMonitorSupport: true,
-        sidebarQueue: false,
+        sidebarQueue: true,
     },
     tvMode: false,
     locale: "en-US",

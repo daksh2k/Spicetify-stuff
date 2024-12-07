@@ -130,9 +130,9 @@ async function main() {
 
     function render() {
         container.classList.toggle("lyrics-active", Boolean(CFM.get("lyricsDisplay")));
-        if (CFM.get("sidebarQueue")) {
-            Utils.toggleQueuePanel(queue, false);
-        }
+        // if (CFM.get("sidebarQueue")) {
+        Utils.toggleQueuePanel(queue, false);
+        // }
         container.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
@@ -169,7 +169,6 @@ async function main() {
         style.innerHTML = `
         #full-screen-display {
             --lyrics-alignment: ${CFM.get("lyricsAlignment")};
-            --lyrics-animation-tempo: ${CFM.get("animationTempo")}s;
             --icons-display: ${CFM.get("icons") ? "inline-block" : "none"};
             --fs-transition: ${CFM.get("backAnimationTime")}s;
        }
@@ -258,15 +257,15 @@ async function main() {
                 invertButton = container.querySelector("#fsd-invert")!;
                 invertButton.onclick = toggleInvert;
             }
-            if (CFM.get("lyricsDisplay") && !CFM.get("sidebarQueue")) {
-                lyrics = container.querySelector("#fsd-lyrics")!;
-                lyrics.onclick = () => toggleLyrics();
-                // lyrics.onclick = () => recordSequence();
-            }
-            if (CFM.get("sidebarQueue")) {
-                queue = container.querySelector("#fsd-queue")!;
-                queue.onclick = () => toggleQueue();
-            }
+            // if (CFM.get("lyricsDisplay") && !CFM.get("sidebarQueue")) {
+            //     lyrics = container.querySelector("#fsd-lyrics")!;
+            //     lyrics.onclick = () => toggleLyrics();
+            // lyrics.onclick = () => recordSequence();
+            // }
+            // if (CFM.get("sidebarQueue")) {
+            queue = container.querySelector("#fsd-queue")!;
+            queue.onclick = () => toggleQueue();
+            // }
         }
     }
 
@@ -348,22 +347,19 @@ async function main() {
 
         // prepare artist
         let artistData: string[][];
-        if (CFM.get("showAllArtists")) {
-            const artistNameList = Object.keys(meta!)
-                .filter((key) => key.startsWith("artist_name"))
-                .sort() as Array<keyof typeof meta>;
+        // if (CFM.get("showAllArtists")) {
+        const artistNameList = Object.keys(meta!)
+            .filter((key) => key.startsWith("artist_name"))
+            .sort() as Array<keyof typeof meta>;
 
-            const artistUriList = Object.keys(meta!)
-                .filter((key) => key.startsWith("artist_uri"))
-                .sort() as Array<keyof typeof meta>;
+        const artistUriList = Object.keys(meta!)
+            .filter((key) => key.startsWith("artist_uri"))
+            .sort() as Array<keyof typeof meta>;
 
-            artistData = artistNameList.map((key, index) => [
-                meta![key],
-                meta![artistUriList[index]],
-            ]);
-        } else {
-            artistData = [[meta?.artist_name, meta?.artist_uri]];
-        }
+        artistData = artistNameList.map((key, index) => [meta![key], meta![artistUriList[index]]]);
+        // } else {
+        //     artistData = [[meta?.artist_name, meta?.artist_uri]];
+        // }
 
         // prepare album
         let albumText: string,
@@ -555,9 +551,9 @@ async function main() {
             "lyrics-unavailable",
             !(evt.detail.available && (evt.detail?.synced?.length ?? 5) > 1),
         );
-        if (CFM.get("extraControls") !== "never" && !CFM.get("sidebarQueue")) {
-            lyrics.classList.toggle("hidden", container.classList.contains("lyrics-unavailable"));
-        }
+        // if (CFM.get("extraControls") !== "never" && !CFM.get("sidebarQueue")) {
+        //     lyrics.classList.toggle("hidden", container.classList.contains("lyrics-unavailable"));
+        // }
     }
 
     function autoHideLyrics() {
@@ -664,33 +660,44 @@ async function main() {
             upNextShown = true;
             let animTime;
             if (fsd_second_span.offsetWidth > fsd_next_tit_art.offsetWidth - 2) {
-                switch (CFM.get("upNextAnim")) {
-                    case "mq":
-                        fsd_first_span.style.paddingRight = "80px";
-                        animTime = 5000 * (fsd_first_span.offsetWidth / 400);
-                        fsd_myUp.style.setProperty(
-                            "--translate_width_fsd",
-                            `-${fsd_first_span.offsetWidth + 3.5}px`,
-                        );
-                        fsd_next_tit_art_inner.style.animation =
-                            "fsd_cssmarquee " + animTime + "ms linear 800ms infinite";
-                        break;
-                    case "sp":
-                    default:
-                        fsd_first_span.style.paddingRight = "0px";
-                        fsd_second_span.innerText = "";
-                        animTime =
-                            (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
-                        // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
-                        fsd_myUp.style.setProperty(
-                            "--translate_width_fsd",
-                            `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
-                        );
-                        fsd_next_tit_art_inner.style.animation = `fsd_translate ${
-                            animTime > 1500 ? animTime : 1500
-                        }ms linear 800ms infinite`;
-                        break;
-                }
+                fsd_first_span.style.paddingRight = "0px";
+                fsd_second_span.innerText = "";
+                animTime = (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
+                // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
+                fsd_myUp.style.setProperty(
+                    "--translate_width_fsd",
+                    `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
+                );
+                fsd_next_tit_art_inner.style.animation = `fsd_translate ${
+                    animTime > 1500 ? animTime : 1500
+                }ms linear 800ms infinite`;
+                // switch (CFM.get("upNextAnim")) {
+                //     case "mq":
+                //         fsd_first_span.style.paddingRight = "80px";
+                //         animTime = 5000 * (fsd_first_span.offsetWidth / 400);
+                //         fsd_myUp.style.setProperty(
+                //             "--translate_width_fsd",
+                //             `-${fsd_first_span.offsetWidth + 3.5}px`,
+                //         );
+                //         fsd_next_tit_art_inner.style.animation =
+                //             "fsd_cssmarquee " + animTime + "ms linear 800ms infinite";
+                //         break;
+                //     case "sp":
+                //     default:
+                //         fsd_first_span.style.paddingRight = "0px";
+                //         fsd_second_span.innerText = "";
+                //         animTime =
+                //             (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
+                //         // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
+                //         fsd_myUp.style.setProperty(
+                //             "--translate_width_fsd",
+                //             `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
+                //         );
+                //         fsd_next_tit_art_inner.style.animation = `fsd_translate ${
+                //             animTime > 1500 ? animTime : 1500
+                //         }ms linear 800ms infinite`;
+                //         break;
+                // }
             } else {
                 fsd_first_span.style.paddingRight = "0px";
                 fsd_next_tit_art_inner.style.animation = "none";
@@ -885,9 +892,9 @@ async function main() {
     const heartObserver = new MutationObserver(updateHeart);
 
     async function activate() {
-        if (CFM.get("sidebarQueue")) {
-            Utils.toggleQueuePanel(queue, true);
-        }
+        // if (CFM.get("sidebarQueue")) {
+        Utils.toggleQueuePanel(queue, true);
+        // }
         document.body.classList.add(...CLASSES_TO_ADD);
         if (CFM.get("enableFullscreen")) await Utils.fullScreenOn()?.catch((err) => {});
         else await Utils.fullScreenOff()?.catch((err) => {});
@@ -918,11 +925,11 @@ async function main() {
                 container.querySelector("#fsd-volume-parent"),
             );
         }
-        if (CFM.get("enableFade")) {
-            cover.classList.add("fsd-background-fade");
-        } else {
-            cover.classList.remove("fsd-background-fade");
-        }
+        // if (CFM.get("enableFade")) {
+        cover.classList.add("fsd-background-fade");
+        // } else {
+        //     cover.classList.remove("fsd-background-fade");
+        // }
         if (CFM.get("icons")) {
             updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             Spicetify.Player.addEventListener("onplaypause", updatePlayingIcon);
@@ -967,15 +974,15 @@ async function main() {
             if (popup) popup.remove();
             else openConfig();
         });
-        if (CFM.get("sidebarQueue")) {
-            Spicetify.Mousetrap.bind("q", toggleQueue);
-        }
+        // if (CFM.get("sidebarQueue")) {
+        Spicetify.Mousetrap.bind("q", toggleQueue);
+        // }
     }
 
     async function deactivate() {
-        if (CFM.get("sidebarQueue")) {
-            Utils.toggleQueuePanel(queue, false);
-        }
+        // if (CFM.get("sidebarQueue")) {
+        Utils.toggleQueuePanel(queue, false);
+        // }
         modifyIsAnimationRunning(false);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         handleMouseMoveDeactivation();
@@ -1204,30 +1211,6 @@ async function main() {
                     openConfig();
                 },
             ),
-            createToggle(
-                translations[LOCALE].settings.fsHideOriginal,
-                "fsHideOriginal",
-                (value) => {
-                    saveGlobalOption("fsHideOriginal", value);
-                    location.reload();
-                },
-                translations[LOCALE].settings.fsHideOriginalDescription,
-            ),
-            createOptions(
-                translations[LOCALE].settings.autoLaunch.setting,
-                {
-                    never: translations[LOCALE].settings.autoLaunch.never,
-                    default: translations[LOCALE].settings.autoLaunch.default,
-                    tvmode: translations[LOCALE].settings.autoLaunch.tvmode,
-                    lastused: translations[LOCALE].settings.autoLaunch.lastused,
-                },
-                CFM.getGlobal("autoLaunch") as Config["autoLaunch"],
-                "autoLaunch",
-                (value: string) => {
-                    saveGlobalOption("autoLaunch", value);
-                },
-                translations[LOCALE].settings.autoLaunch.description,
-            ),
             createOptions(
                 translations[LOCALE].settings.activationTypes.setting,
                 {
@@ -1296,20 +1279,20 @@ async function main() {
                 "lyricsAlignment",
                 (value: string) => saveOption("lyricsAlignment", value),
             ),
-            createAdjust(
-                translations[LOCALE].settings.lyricsAnimationTempo,
-                "animationTempo",
-                "s",
-                CFM.get("animationTempo") as Settings["animationTempo"],
-                0.1,
-                0,
-                1,
-                (state) => {
-                    CFM.set("animationTempo", Number(state));
-                    render();
-                    if (Utils.isModeActivated()) activate();
-                },
-            ),
+            // createAdjust(
+            //     translations[LOCALE].settings.lyricsAnimationTempo,
+            //     "animationTempo",
+            //     "s",
+            //     CFM.get("animationTempo") as Settings["animationTempo"],
+            //     0.1,
+            //     0,
+            //     1,
+            //     (state) => {
+            //         CFM.set("animationTempo", Number(state));
+            //         render();
+            //         if (Utils.isModeActivated()) activate();
+            //     },
+            // ),
             headerText(translations[LOCALE].settings.generalHeader),
             createOptions(
                 translations[LOCALE].settings.progressBar,
@@ -1357,19 +1340,19 @@ async function main() {
                 (value: string) => saveOption("showAlbum", value),
             ),
             createToggle(translations[LOCALE].settings.icons, "icons"),
-            createToggle(translations[LOCALE].settings.showAllArtists, "showAllArtists"),
+            // createToggle(translations[LOCALE].settings.showAllArtists, "showAllArtists"),
             createToggle(translations[LOCALE].settings.trimTitle, "trimTitle"),
-            createToggle(translations[LOCALE].settings.songChangeAnimation, "enableFade"),
+            // createToggle(translations[LOCALE].settings.songChangeAnimation, "enableFade"),
             document.fullscreenEnabled
                 ? createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen")
                 : "",
             headerText(translations[LOCALE].settings.extraHeader),
-            createToggle(
-                translations[LOCALE].settings.sidebarQueue,
-                "sidebarQueue",
-                (value: boolean) => saveOption("sidebarQueue", value),
-                translations[LOCALE].settings.sidebarQueueDescription.join("<br>"),
-            ),
+            // createToggle(
+            //     translations[LOCALE].settings.sidebarQueue,
+            //     "sidebarQueue",
+            //     (value: boolean) => saveOption("sidebarQueue", value),
+            //     translations[LOCALE].settings.sidebarQueueDescription.join("<br>"),
+            // ),
             createOptions(
                 translations[LOCALE].settings.extraControls,
                 {
@@ -1574,16 +1557,6 @@ async function main() {
                 translations[LOCALE].settings.verticalMonitorSupportDescription,
             ),
             createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
-            createOptions(
-                translations[LOCALE].settings.upnextScroll.setting,
-                {
-                    mq: translations[LOCALE].settings.upnextScroll.mq,
-                    sp: translations[LOCALE].settings.upnextScroll.sp,
-                },
-                CFM.get("upNextAnim") as Settings["upNextAnim"],
-                "upNextAnim",
-                (value: string) => saveOption("upNextAnim", value),
-            ),
             createAdjust(
                 translations[LOCALE].settings.upnextTime,
                 "upnextTimeToShow",
@@ -1597,6 +1570,40 @@ async function main() {
                     updateUpNextShow();
                 },
             ),
+            createToggle(
+                translations[LOCALE].settings.fsHideOriginal,
+                "fsHideOriginal",
+                (value) => {
+                    saveGlobalOption("fsHideOriginal", value);
+                    location.reload();
+                },
+                translations[LOCALE].settings.fsHideOriginalDescription,
+            ),
+            createOptions(
+                translations[LOCALE].settings.autoLaunch.setting,
+                {
+                    never: translations[LOCALE].settings.autoLaunch.never,
+                    default: translations[LOCALE].settings.autoLaunch.default,
+                    tvmode: translations[LOCALE].settings.autoLaunch.tvmode,
+                    lastused: translations[LOCALE].settings.autoLaunch.lastused,
+                },
+                CFM.getGlobal("autoLaunch") as Config["autoLaunch"],
+                "autoLaunch",
+                (value: string) => {
+                    saveGlobalOption("autoLaunch", value);
+                },
+                translations[LOCALE].settings.autoLaunch.description,
+            ),
+            // createOptions(
+            //     translations[LOCALE].settings.upnextScroll.setting,
+            //     {
+            //         mq: translations[LOCALE].settings.upnextScroll.mq,
+            //         sp: translations[LOCALE].settings.upnextScroll.sp,
+            //     },
+            //     CFM.get("upNextAnim") as Settings["upNextAnim"],
+            //     "upNextAnim",
+            //     (value: string) => saveOption("upNextAnim", value),
+            // ),
             headerText(translations[LOCALE].settings.aboutHeader),
             getAboutSection(),
             getSettingBottomHeader(),

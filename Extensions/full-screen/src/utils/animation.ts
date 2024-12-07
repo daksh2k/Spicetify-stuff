@@ -23,7 +23,7 @@ export function animateCanvas(
     const sizeX = vals.width + blur * 4;
     const sizeY = vals.height + blur * 4;
 
-    if (!CFM.get("enableFade") || fromResize) {
+    if (fromResize) {
         ctx.globalAlpha = 1;
         ctx.drawImage(nextImg, x, y, sizeX, sizeY);
         return;
@@ -64,7 +64,7 @@ export async function animateColor(nextColor: string, back: HTMLCanvasElement, f
 
     const ctx = back.getContext("2d") as CanvasRenderingContext2D;
 
-    if (!CFM.get("enableFade") || fromConfig) {
+    if (fromConfig) {
         ctx.globalAlpha = 1;
         ctx.fillStyle = nextColor;
         ctx.fillRect(0, 0, width, height);
