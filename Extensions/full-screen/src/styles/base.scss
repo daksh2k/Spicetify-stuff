@@ -262,7 +262,7 @@
             --lyrics-color-inactive: var(--tertiary-color) !important;
             --lyrics-highlight-background: rgba(var(--contrast-color), 0.7) !important;
             --lyrics-align-text: var(--lyrics-alignment) !important;
-            --animation-tempo: var(--lyrics-animation-tempo) !important;
+            --animation-tempo: 0.2s !important;
             height: 85vh !important;
         }
         .lyrics-config-button {
