@@ -169,10 +169,22 @@ async function main() {
         style.innerHTML = `
         #full-screen-display {
             --lyrics-alignment: ${CFM.get("lyricsAlignment")};
+            --right-margin-lyrics: ${getRightMarginLyrics()};
             --icons-display: ${CFM.get("icons") ? "inline-block" : "none"};
             --fs-transition: ${CFM.get("backAnimationTime")}s;
        }
        `;
+
+        function getRightMarginLyrics() {
+            switch (CFM.get("lyricsAlignment")) {
+                case "left":
+                    return "50px";
+                case "center":
+                    return "0px";
+                case "right":
+                    return "-50px";
+            }
+        }
 
         container.innerHTML = getHtmlContent(container.classList.contains("lyrics-hide-force"));
 

@@ -254,7 +254,7 @@
     #fad-lyrics-plus-container {
         transition: transform var(--transition-duration) var(--transition-function);
         position: absolute;
-        right: -50px;
+        right: var(--right-margin-lyrics);
         width: 50%;
         top: 7.5vh;
         .lyrics-lyricsContainer-LyricsContainer {
