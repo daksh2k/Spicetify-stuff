@@ -138,6 +138,11 @@ async function main() {
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
                 window.innerWidth < window.innerHeight,
         );
+        document.body.classList.toggle(
+            "vertical-mode",
+            (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
+                window.innerWidth < window.innerHeight,
+        );
         container.setAttribute("data-locale", LOCALE);
         container.setAttribute("mode", CFM.getMode());
         if (!CFM.get("lyricsDisplay") || CFM.get("extraControls") === "never")
@@ -588,6 +593,12 @@ async function main() {
         if (CFM.get("upnextDisplay")) updateUpNext();
         updateBackground(Spicetify.Player.data.item?.metadata, true);
         container.classList.toggle(
+            "vertical-mode",
+            (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
+                window.innerWidth < window.innerHeight,
+        );
+
+        document.body.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
                 window.innerWidth < window.innerHeight,
@@ -1438,11 +1449,11 @@ async function main() {
             createAdjust(
                 translations[LOCALE].settings.animationSpeed,
                 "animationSpeed",
-                "%",
+                "",
                 (CFM.get("animationSpeed") as Settings["animationSpeed"]) * 100,
-                5,
-                5,
-                150,
+                2,
+                2,
+                40,
                 (state) => {
                     CFM.set("animationSpeed", Number(state) / 100);
                     modifyRotationSpeed(Number(state) / 100);
