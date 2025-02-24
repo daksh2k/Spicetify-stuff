@@ -383,7 +383,9 @@ body.fsd-activated #full-screen-display {
         display: none;
     }
     .Root__top-container {
-        overflow-x: hidden;
+        will-change: auto !important;
+        transform: none !important;
+        overflow-x: hidden !important;
     }
     .fsd-transform-animation {
         transition: transform 0.4s ease-in-out;
