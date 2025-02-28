@@ -35,6 +35,7 @@ export const DEFAULTS: Config = {
         showRemainingTime: false,
         verticalMonitorSupport: false,
         sidebarQueue: true,
+        overviewCardPinned: false,
     },
     def: {
         lyricsDisplay: true,
@@ -70,6 +71,7 @@ export const DEFAULTS: Config = {
         showRemainingTime: false,
         verticalMonitorSupport: true,
         sidebarQueue: true,
+        overviewCardPinned: false,
     },
     tvMode: false,
     locale: "en-US",

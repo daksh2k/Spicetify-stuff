@@ -49,6 +49,7 @@ export type Settings = {
     showRemainingTime: boolean;
     verticalMonitorSupport: boolean;
     sidebarQueue: boolean;
+    overviewCardPinned: boolean;
 };
 
 export type Cache = {

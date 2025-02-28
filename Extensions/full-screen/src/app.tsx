@@ -31,6 +31,7 @@ import { initMoustrapRecord } from "./services/mousetrap-record";
 
 import SeekableProgressBar from "./ui/components/ProgressBar/ProgressBar";
 import SeekableVolumeBar from "./ui/components/VolumeBar/VolumeBar";
+import OverviewCard from "./ui/components/OverviewPopup/OverviewCard";
 
 import { settingsStyles } from "./styles/settings";
 import "./styles/base.scss";
@@ -298,15 +299,6 @@ async function main() {
 
     function toggleLyrics() {
         container.classList.toggle("lyrics-hide-force");
-        if (lyrics) {
-            Utils.fadeAnimation(lyrics);
-            lyrics.classList.toggle("button-active");
-            lyrics.innerHTML =
-                container.classList.contains("lyrics-unavailable") ||
-                container.classList.contains("lyrics-hide-force")
-                    ? ICONS.LYRICS_ACTIVE
-                    : ICONS.LYRICS_INACTIVE;
-        }
     }
 
     function toggleQueue() {
@@ -965,6 +957,15 @@ async function main() {
                 container.querySelector("#fsd-progress-parent"),
             );
         }
+        ReactDOM.render(
+            <OverviewCard
+                onExit={deactivate}
+                onToggle={() => {
+                    CFM.getGlobal("tvMode") ? openwithDef() : openwithTV();
+                }}
+            />,
+            container.querySelector("#fsd-overview-card-parent"),
+        );
         if (CFM.get("playerControls") !== "never") {
             updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             Spicetify.Player.addEventListener("onplaypause", updatePlayerControls);
@@ -1017,6 +1018,7 @@ async function main() {
         }
         ReactDOM.unmountComponentAtNode(container.querySelector("#fsd-volume-parent")!);
         ReactDOM.unmountComponentAtNode(container.querySelector("#fsd-progress-parent")!);
+        ReactDOM.unmountComponentAtNode(container.querySelector("#fsd-overview-card-parent")!);
         if (CFM.get("icons")) {
             Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
         }

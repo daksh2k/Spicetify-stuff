@@ -388,6 +388,11 @@ class Utils {
             document.body.classList.add("fsd-queue-panel-active");
         }
     }
+
+    static getTimeFormatted() {
+        const now = new Date();
+        return now.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
+    }
 }
 
 export default Utils;
