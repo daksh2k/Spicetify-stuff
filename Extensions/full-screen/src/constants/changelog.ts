@@ -1,4 +1,10 @@
 const changelog = `## General 
+  - Add overview card with time display (move your mouse to top side of the screen to see it)
+  `;
+
+export const VersionedChangelog = {
+    "2.8.0": changelog,
+    "2.7.0": `## General 
   - Add queue in sidebar, enable it from settings now!!
   - use esc key to exit the full screen experience
   - re-enable dynamic colors theme and backgrounds
@@ -12,10 +18,7 @@ const changelog = `## General
 | <kbd>ESC</kbd> | Exit full screen app                      |
 | <kbd>F</kbd>   | Toggle Default Mode (exit if active)      |
 | <kbd>T</kbd>   | Toggle TV Mode (exit of active)           |
-  `;
-
-export const VersionedChangelog = {
-    "2.7.0": changelog,
+  `,
     "2.6.0": `## General 
   - **Info** -: dynamic color theme and backgrounds is not working anymore in new Spotify
   - fix classnames library error(use own version)
