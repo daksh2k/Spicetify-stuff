@@ -391,7 +391,11 @@ class Utils {
 
     static getTimeFormatted() {
         const now = new Date();
-        return now.toLocaleString("en-US", { hour: "numeric", minute: "numeric", hour12: true });
+        return now.toLocaleString(navigator.language, {
+            hour: "numeric",
+            minute: "numeric",
+            hour12: undefined,
+        });
     }
 }
 
