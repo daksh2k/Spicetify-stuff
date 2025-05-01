@@ -19,6 +19,7 @@ export type Settings = {
     playerControls: "never" | "mousemove" | "always";
     trimTitle: boolean;
     trimTitleUpNext: boolean;
+    trimAlbum: boolean;
     showAlbum: "never" | "always" | "date";
     showAllArtists: boolean;
     icons: boolean;

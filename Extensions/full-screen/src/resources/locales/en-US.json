@@ -78,6 +78,7 @@
         "playerControls": "Player Controls",
         "trimTitle": "Trim Title",
         "trimTitleUpNext": "Trim Title(Up Next)",
+        "trimAlbum": "Trim Album",
         "showAlbum": {
             "setting": "Show Album",
             "never": "Never",

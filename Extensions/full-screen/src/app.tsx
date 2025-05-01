@@ -342,6 +342,9 @@ async function main() {
         }, 100);
     }
 
+    /**
+     * Update song details like title, artists, album etc.
+     */
     async function updateInfo() {
         const meta = Spicetify.Player.data.item?.metadata;
 
@@ -375,6 +378,9 @@ async function main() {
             updatedAlbum = false;
         if (CFM.get("showAlbum") !== "never") {
             albumText = meta?.album_title || "";
+            if (CFM.get("trimAlbum")) {
+                albumText = Utils.trimTitle(albumText);
+            }
             const albumURI = meta?.album_uri;
             if (albumURI?.startsWith("spotify:album:") && CFM.get("showAlbum") === "date") {
                 Utils.getAlbumReleaseDate(albumURI, LOCALE).then((releaseDate) => {
@@ -1582,6 +1588,7 @@ async function main() {
                 translations[LOCALE].settings.verticalMonitorSupportDescription,
             ),
             createToggle(translations[LOCALE].settings.trimTitleUpNext, "trimTitleUpNext"),
+            createToggle(translations[LOCALE].settings.trimAlbum, "trimAlbum"),
             createAdjust(
                 translations[LOCALE].settings.upnextTime,
                 "upnextTimeToShow",
