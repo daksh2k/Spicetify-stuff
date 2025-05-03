@@ -59,12 +59,20 @@ const SKIPS = {
                 meta.name.toLowerCase().includes(value)
             ),
     },
-
     skipLiked: {
         menuTitle: "Liked Songs",
         check: (apiMeta, localMeta) => {
             if (localMeta !== null) {
                 return localMeta.metadata["collection.in_collection"] === "true";
+            }
+            return false;
+        },
+    },
+    skipNotLiked: {
+        menuTitle: "Not Liked Songs",
+        check: (apiMeta, localMeta) => {
+            if (localMeta !== null) {
+                return localMeta.metadata["collection.in_collection"] !== "true";
             }
             return false;
         },
