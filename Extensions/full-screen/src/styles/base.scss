@@ -407,6 +407,7 @@ body.fsd-activated #full-screen-display {
         .ffFwfKcPDbmAPLXzxzKq::before {
             background: transparent !important;
             backdrop-filter: blur(10px) brightness(0.7);
+            border-radius: 10px;
         }
     }
     &.vertical-mode {
