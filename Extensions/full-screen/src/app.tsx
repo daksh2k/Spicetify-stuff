@@ -4,6 +4,7 @@ import ReactDOM from "react-dom";
 import React from "react";
 
 import Utils from "./utils/utils";
+import ColorExtractor from "./utils/colors";
 import CFM from "./utils/config";
 import {
     animateCanvas,
@@ -518,7 +519,7 @@ async function main() {
                         ? "0,0,0"
                         : "255,255,255";
                 } else {
-                    [mainColor, contrastColor] = await Utils.getMainColor(imageURL);
+                    [mainColor, contrastColor] = await ColorExtractor.getMainColor(imageURL);
                 }
                 container.style.setProperty("--main-color", mainColor);
                 container.style.setProperty("--contrast-color", contrastColor);

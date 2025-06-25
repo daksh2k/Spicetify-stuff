@@ -7,8 +7,6 @@ import {
     RIGH_PANEL,
 } from "../constants/selectors";
 import WebAPI from "../services/web-api";
-import CFM from "./config";
-import { Settings } from "../types/fullscreen";
 
 let prevUriObj: Spicetify.URI;
 let wasQueuePanelEnabled: boolean | null = null;
@@ -181,46 +179,6 @@ class Utils {
             languages[lang] = translations[lang].langName;
         }
         return languages;
-    }
-
-    static async getMainColor(imageURL: string) {
-        let imageProminentColor,
-            thresholdValue = 160;
-        const imageColors = await WebAPI.colorExtractor(imageURL).catch((err) => console.warn(err));
-
-        if (
-            CFM.get("backgroundChoice") === "album_art" ||
-            CFM.get("backgroundChoice") === "artist_art"
-        ) {
-            if (!imageColors?.PROMINENT) imageProminentColor = "0,0,0";
-            else imageProminentColor = Utils.hexToRgb(imageColors.PROMINENT);
-            thresholdValue =
-                260 - (CFM.get("backgroundBrightness") as Settings["backgroundBrightness"]) * 100;
-        } else if (CFM.get("backgroundChoice") === "dynamic_color") {
-            if (
-                !imageColors ||
-                !imageColors[CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]]
-            )
-                imageProminentColor = Utils.hexToRgb("#444444");
-            else
-                imageProminentColor = Utils.hexToRgb(
-                    imageColors[CFM.get("coloredBackChoice") as Settings["coloredBackChoice"]],
-                );
-        } else if (CFM.get("backgroundChoice") === "static_color") {
-            imageProminentColor = Utils.hexToRgb(
-                CFM.get("staticBackChoice") as Settings["staticBackChoice"],
-            );
-        }
-        const isLightBG =
-            Number(imageProminentColor?.split(",")[0]) * 0.299 +
-                Number(imageProminentColor?.split(",")[1]) * 0.587 +
-                Number(imageProminentColor?.split(",")[2]) * 0.114 >
-            thresholdValue;
-        const mainColor =
-            isLightBG && Number(CFM.get("backgroundBrightness")) > 0.3 ? "0,0,0" : "255,255,255";
-        const contrastColor =
-            isLightBG && Number(CFM.get("backgroundBrightness")) > 0.3 ? "255,255,255" : "0,0,0";
-        return [mainColor, contrastColor];
     }
 
     // Translation strings
