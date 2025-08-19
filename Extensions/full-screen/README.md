@@ -26,6 +26,28 @@ spicetify config custom_apps lyrics-plus
 spicetify apply
 ```
 
+## Keyboard Shortcuts
+
+Built-in shortcuts for playback can be used. For example, <kbd>Space</kbd> to play/pause song. See [here](https://support.spotify.com/article/keyboard-shortcuts/) for the complete list.
+
+Below are the extra keyboard shortcuts you can use.
+
+### Global
+
+| Key | Action |
+| :-: | :-- |
+| <kbd>F</kbd> | Toggle full screen |
+| <kbd>T</kbd> | Toggle full screen (TV mode) |
+
+### Only within full screen
+
+| Key | Action |
+| :-: | :-- |
+| <kbd>C</kbd> | Toggle config |
+| <kbd>L</kbd> | Toggle lyrics (requires `lyrics-plus`) |
+| <kbd>Q</kbd> | Toggle queue |
+| <kbd>ESC</kbd> | Leave full screen |
+
 ## Screenshots
 
 <img align="center" width="712" height="auto" src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjFlOWI1MmEzMDdhNjI5YTY5OWY3YzhlMDJiNGE2OTA4MzMzMDkwZSZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/EIuHnuq1XIDg4Tt2hx/giphy.gif"><hr>
