@@ -1403,7 +1403,6 @@ async function main() {
                 "extraControls",
                 (value: string) => saveOption("extraControls", value),
             ),
-            createToggle(translations[LOCALE].settings.upnextDisplay, "upnextDisplay"),
             createOptions(
                 translations[LOCALE].settings.upnextDisplay,
                 {
