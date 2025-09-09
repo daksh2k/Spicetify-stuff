@@ -954,11 +954,6 @@ async function main() {
                 container.querySelector("#fsd-volume-parent"),
             );
         }
-        // if (CFM.get("enableFade")) {
-        cover.classList.add("fsd-background-fade");
-        // } else {
-        //     cover.classList.remove("fsd-background-fade");
-        // }
         if (CFM.get("icons")) {
             updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             Spicetify.Player.addEventListener("onplaypause", updatePlayingIcon);

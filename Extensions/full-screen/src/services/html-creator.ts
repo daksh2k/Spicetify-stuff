@@ -30,7 +30,7 @@ export const getHtmlContent = (areLyricsForceHidden: boolean) => {
         </div>
     </div>
     <div id="fsd_next_art">
-        <div id="fsd_next_art_image"></div>
+        <div id="fsd_next_art_image" class="fsd-background-fade"></div>
     </div>
 </div>`
          : ""
@@ -41,7 +41,7 @@ export const getHtmlContent = (areLyricsForceHidden: boolean) => {
 ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
 <div id="fsd-foreground">
     <div id="fsd-art">
-        <div id="fsd-art-image">
+        <div id="fsd-art-image" class="fsd-background-fade">
             <div id="fsd-art-inner"></div>
         </div>
     </div>
