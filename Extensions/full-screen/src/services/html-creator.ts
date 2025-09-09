@@ -17,7 +17,7 @@ export const getHtmlContent = (areLyricsForceHidden: boolean) => {
           : ""
   }
  ${
-     CFM.get("upnextDisplay")
+     CFM.get("upnextDisplay") !== "never"
          ? `
 <div id="fsd-upnext-container">
       <div id="fsd_next_art">

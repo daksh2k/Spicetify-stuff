@@ -210,7 +210,7 @@ async function main() {
             ctx_source = container.querySelector("#fsd-ctx-source")!;
             ctx_name = container.querySelector("#fsd-ctx-name")!;
         }
-        if (CFM.get("upnextDisplay")) {
+        if (CFM.get("upnextDisplay") !== "never") {
             fsd_myUp = container.querySelector("#fsd-upnext-container")!;
             fsd_myUp.onclick = Spicetify.Player.next;
             fsd_nextCover = container.querySelector("#fsd_next_art_image")!;
@@ -310,29 +310,34 @@ async function main() {
     }
 
     function updateUpNextShow() {
-        setTimeout(() => {
-            const timetogo = Utils.getShowTime(
-                CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"],
-            );
-            if (upnextTimer) {
-                clearTimeout(upnextTimer);
-            }
-            if (timetogo < 10) {
-                if (!upNextShown || fsd_myUp.style.transform !== "translateX(0px)") {
-                    updateUpNext();
+        if (CFM.get("upnextDisplay") === "smart") {
+            setTimeout(() => {
+                const timetogo = Utils.getShowTime(
+                    CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"],
+                );
+                if (upnextTimer) {
+                    clearTimeout(upnextTimer);
                 }
-                upNextShown = true;
-            } else {
-                fsd_myUp.style.transform = "translateX(600px)";
-                upNextShown = false;
-                if (Spicetify.Player.isPlaying()) {
-                    upnextTimer = setTimeout(() => {
+                if (timetogo < 10) {
+                    if (!upNextShown || fsd_myUp.style.transform !== "translateX(0px)") {
                         updateUpNext();
-                        upNextShown = true;
-                    }, timetogo);
+                    }
+                    upNextShown = true;
+                } else {
+                    fsd_myUp.style.transform = "translateX(600px)";
+                    upNextShown = false;
+                    if (Spicetify.Player.isPlaying()) {
+                        upnextTimer = setTimeout(() => {
+                            updateUpNext();
+                            upNextShown = true;
+                        }, timetogo);
+                    }
                 }
-            }
-        }, 100);
+            }, 100);
+        } else if (CFM.get("upnextDisplay") === "always" && !upNextShown) {
+            updateUpNext();
+            upNextShown = true;
+        }
     }
 
     function handleNavigation(navigateUri: string) {
@@ -589,7 +594,7 @@ async function main() {
     }
 
     function resizeEvents() {
-        if (CFM.get("upnextDisplay")) updateUpNext();
+        if (CFM.get("upnextDisplay") !== "never") updateUpNext();
         updateBackground(Spicetify.Player.data.item?.metadata, true);
         container.classList.toggle(
             "vertical-mode",
@@ -672,66 +677,68 @@ async function main() {
     }
 
     async function updateUpNext() {
-        if (
-            Spicetify.Player.data.duration - Spicetify.Player.getProgress() <=
-                (CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"]) * 1000 + 50 &&
-            Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata?.title
-        ) {
-            await updateUpNextInfo();
-            fsd_myUp.style.transform = "translateX(0px)";
-            upNextShown = true;
-            let animTime;
-            if (fsd_second_span.offsetWidth > fsd_next_tit_art.offsetWidth - 2) {
-                fsd_first_span.style.paddingRight = "0px";
-                fsd_second_span.innerText = "";
-                animTime = (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
-                // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
-                fsd_myUp.style.setProperty(
-                    "--translate_width_fsd",
-                    `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
-                );
-                fsd_next_tit_art_inner.style.animation = `fsd_translate ${
-                    animTime > 1500 ? animTime : 1500
-                }ms linear 800ms infinite`;
-                // switch (CFM.get("upNextAnim")) {
-                //     case "mq":
-                //         fsd_first_span.style.paddingRight = "80px";
-                //         animTime = 5000 * (fsd_first_span.offsetWidth / 400);
-                //         fsd_myUp.style.setProperty(
-                //             "--translate_width_fsd",
-                //             `-${fsd_first_span.offsetWidth + 3.5}px`,
-                //         );
-                //         fsd_next_tit_art_inner.style.animation =
-                //             "fsd_cssmarquee " + animTime + "ms linear 800ms infinite";
-                //         break;
-                //     case "sp":
-                //     default:
-                //         fsd_first_span.style.paddingRight = "0px";
-                //         fsd_second_span.innerText = "";
-                //         animTime =
-                //             (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.05;
-                //         // animTime= 3000*(fsd_first_span.offsetWidth/fsd_next_tit_art.offsetWidth)
-                //         fsd_myUp.style.setProperty(
-                //             "--translate_width_fsd",
-                //             `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
-                //         );
-                //         fsd_next_tit_art_inner.style.animation = `fsd_translate ${
-                //             animTime > 1500 ? animTime : 1500
-                //         }ms linear 800ms infinite`;
-                //         break;
-                // }
-            } else {
-                fsd_first_span.style.paddingRight = "0px";
-                fsd_next_tit_art_inner.style.animation = "none";
-                fsd_second_span.innerText = "";
+        const nextTrack = Spicetify.Queue?.nextTracks[0]?.contextTrack?.metadata;
+        const upnextDisplay = CFM.get("upnextDisplay");
+
+        let shouldShow = false;
+        if (nextTrack?.title) {
+            if (upnextDisplay === "always") {
+                shouldShow = true;
+            } else if (upnextDisplay === "smart") {
+                const timeToShow =
+                    (CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"]) * 1000 + 50;
+                const remainingTime =
+                    Spicetify.Player.data.duration - Spicetify.Player.getProgress();
+                shouldShow = remainingTime <= timeToShow;
             }
-        } else {
-            upNextShown = false;
-            fsd_myUp.style.transform = "translateX(600px)";
-            fsd_first_span.style.paddingRight = "0px";
-            fsd_next_tit_art_inner.style.animation = "none";
-            fsd_second_span.innerText = "";
         }
+
+        if (shouldShow) {
+            await updateUpNextInfo();
+            showUpNext();
+        } else {
+            hideUpNext();
+        }
+    }
+
+    function showUpNext() {
+        fsd_myUp.style.transform = "translateX(0px)";
+        upNextShown = true;
+
+        if (fsd_second_span.offsetWidth > fsd_next_tit_art.offsetWidth - 2) {
+            setupScrollingAnimation();
+        } else {
+            resetUpNextAnimation();
+        }
+    }
+
+    function hideUpNext() {
+        upNextShown = false;
+        fsd_myUp.style.transform = "translateX(600px)";
+        resetUpNextAnimation();
+    }
+
+    function setupScrollingAnimation() {
+        fsd_first_span.style.paddingRight = "0px";
+        fsd_second_span.innerText = "";
+
+        const animTime = Math.max(
+            (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.035,
+            1500,
+        );
+
+        fsd_myUp.style.setProperty(
+            "--translate_width_fsd",
+            `-${fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth + 5}px`,
+        );
+
+        fsd_next_tit_art_inner.style.animation = `fsd_translate ${animTime}ms linear 800ms infinite`;
+    }
+
+    function resetUpNextAnimation() {
+        fsd_first_span.style.paddingRight = "0px";
+        fsd_next_tit_art_inner.style.animation = "none";
+        fsd_second_span.innerText = "";
     }
 
     function updatePlayingIcon(evt: any) {
@@ -936,7 +943,7 @@ async function main() {
         container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = deactivate;
         back.oncontextmenu = openConfig;
         back.ondblclick = deactivate;
-        if (CFM.get("upnextDisplay")) {
+        if (CFM.get("upnextDisplay") !== "never") {
             updateUpNextShow();
             Spicetify.Platform.PlayerAPI._events.addListener("queue_update", updateUpNext);
             Spicetify.Platform.PlayerAPI._events.addListener("update", updateUpNextShow);
@@ -1018,7 +1025,7 @@ async function main() {
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         handleMouseMoveDeactivation();
         window.removeEventListener("resize", resizeEvents);
-        if (CFM.get("upnextDisplay")) {
+        if (CFM.get("upnextDisplay") !== "never") {
             upNextShown = false;
             Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", updateUpNext);
             Spicetify.Platform.PlayerAPI._events.removeListener("update", updateUpNextShow);
@@ -1397,6 +1404,17 @@ async function main() {
                 (value: string) => saveOption("extraControls", value),
             ),
             createToggle(translations[LOCALE].settings.upnextDisplay, "upnextDisplay"),
+            createOptions(
+                translations[LOCALE].settings.upnextDisplay,
+                {
+                    always: translations[LOCALE].settings.volumeDisplay.always,
+                    never: translations[LOCALE].settings.volumeDisplay.never,
+                    smart: translations[LOCALE].settings.volumeDisplay.smart,
+                },
+                CFM.get("upnextDisplay") as Settings["upnextDisplay"],
+                "upnextDisplay",
+                (value: string) => saveOption("upnextDisplay", value),
+            ),
             createOptions(
                 translations[LOCALE].settings.contextDisplay.setting,
                 {

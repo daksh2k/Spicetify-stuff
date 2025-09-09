@@ -33,7 +33,7 @@ export type Settings = {
         | "artist_art"
         | "animated_album";
     extraControls: "never" | "mousemove" | "always";
-    upnextDisplay: boolean;
+    upnextDisplay: "always" | "never" | "smart";
     contextDisplay: "never" | "mousemove" | "always";
     volumeDisplay: "always" | "never" | "smart";
     themedButtons: boolean;
