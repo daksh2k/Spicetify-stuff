@@ -724,7 +724,7 @@ async function main() {
 
         const animTime = Math.max(
             (fsd_first_span.offsetWidth - fsd_next_tit_art.offsetWidth - 2) / 0.035,
-            1500,
+            1700,
         );
 
         fsd_myUp.style.setProperty(

@@ -20,18 +20,19 @@ export const getHtmlContent = (areLyricsForceHidden: boolean) => {
      CFM.get("upnextDisplay") !== "never"
          ? `
 <div id="fsd-upnext-container">
-      <div id="fsd_next_art">
-        <div id="fsd_next_art_image"></div>
-       </div>
-      <div id="fsd_next_details">
+    <div id="fsd_next_details">
         <div id="fsd_up_next_text"></div>
         <div id="fsd_next_tit_art">
-        <div id="fsd_next_tit_art_inner">
-        <span id="fsd_first_span"></span>
-        <span id="fsd_second_span"></span>
-        </div></div>
-      </div>
-    </div>`
+            <div id="fsd_next_tit_art_inner">
+                <span id="fsd_first_span"></span>
+                <span id="fsd_second_span"></span>
+            </div>
+        </div>
+    </div>
+    <div id="fsd_next_art">
+        <div id="fsd_next_art_image"></div>
+    </div>
+</div>`
          : ""
  }
 <div id="fsd-volume-parent"></div>

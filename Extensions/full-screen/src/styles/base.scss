@@ -187,20 +187,20 @@
     }
     #fsd-upnext-container {
         float: right;
-        width: 472px;
+        width: 600px;
         height: 102px;
-        max-width: 45%;
+        max-width: 40%;
         position: fixed;
-        top: 45px;
-        right: 60px;
+        top: 40px;
+        right: 20px;
         display: flex;
-        border: 1px solid rgba(130, 130, 130, 0.7);
+        // border: 1px solid rgba(130, 130, 130, 0.7);
         border-radius: 10px;
-        background-color: rgba(20, 20, 20, 1);
+        // background-color: rgba(20, 20, 20, 1);
         flex-direction: row;
-        text-align: left;
+        text-align: right;
         z-index: 50;
-        transition: transform 0.8s ease-in-out;
+        transition: transform 0.75s ease-in-out;
         transform: translateX(600px);
     }
     #fsd_next_art_image {
@@ -208,10 +208,10 @@
         background-position: center;
         width: 100px;
         height: 100px;
-        border-radius: 9px 0 0 9px;
+        border-radius: 15px;
     }
     #fsd_next_details {
-        padding-left: 18px;
+        padding-right: 18px;
         padding-top: 17px;
         line-height: initial;
         width: calc(100% - 115px);
