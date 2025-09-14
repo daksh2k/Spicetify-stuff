@@ -66,7 +66,7 @@ ${CFM.get("lyricsDisplay") ? `<div id="fad-lyrics-plus-container"></div>` : ""}
             <div id="fsd-status" class="${
                 CFM.get("playerControls") !== "never" ||
                 CFM.get("extraControls") !== "never" ||
-                CFM.get("progressBarDisplay")
+                CFM.get("progressBarDisplay") !== "never"
                     ? "active"
                     : ""
             }">

@@ -635,7 +635,7 @@ async function main() {
         }
     }
 
-    function updateUpNextInfo() {
+    async function updateUpNextInfo() {
         fsd_up_next_text.innerText = translations[LOCALE].upnext.toUpperCase();
         let metadata: Spicetify.Metadata = {};
         const queue_metadata = Spicetify.Queue.nextTracks[0];
@@ -663,17 +663,29 @@ async function main() {
             next_artist = translations[LOCALE].unknownArtist;
         }
         const next_image = metadata.image_xlarge_url;
+        const upnextImage = new Image();
         if (next_image) {
-            fsd_nextCover.style.backgroundImage = `url("${next_image}")`;
+            upnextImage.src = next_image;
         } else {
-            if (metadata.image_url)
-                fsd_nextCover.style.backgroundImage = `url("${metadata.image_url}")`;
+            if (metadata.image_url) upnextImage.src = metadata.image_url;
             else {
-                fsd_nextCover.style.backgroundImage = `url("${ICONS.OFFLINE_SVG}")`;
+                upnextImage.src = ICONS.OFFLINE_SVG;
             }
         }
-        fsd_first_span.innerText = songName + "  •  " + next_artist;
-        fsd_second_span.innerText = songName + "  •  " + next_artist;
+        return new Promise<void>((resolve) => {
+            upnextImage.onload = () => {
+                fsd_nextCover.style.backgroundImage = `url("${upnextImage.src}")`;
+                fsd_first_span.innerText = songName + "  •  " + next_artist;
+                fsd_second_span.innerText = songName + "  •  " + next_artist;
+                resolve();
+            };
+            upnextImage.onerror = () => {
+                fsd_nextCover.style.backgroundImage = `url("${ICONS.OFFLINE_SVG}")`;
+                fsd_first_span.innerText = songName + "  •  " + next_artist;
+                fsd_second_span.innerText = songName + "  •  " + next_artist;
+                resolve();
+            };
+        });
     }
 
     async function updateUpNext() {
@@ -704,7 +716,6 @@ async function main() {
     function showUpNext() {
         fsd_myUp.style.transform = "translateX(0px)";
         upNextShown = true;
-
         if (fsd_second_span.offsetWidth > fsd_next_tit_art.offsetWidth - 2) {
             setupScrollingAnimation();
         } else {
