@@ -127,7 +127,10 @@
             "never": "Never",
             "smart": "Smart"
         },
-
+        "overviewDisplay": {
+            "setting": "Overview Display",
+            "description": "Show a brief overview card with time and control actions"
+        },
         "appearanceHeader": "Advanced/Appearance",
         "appearanceSubHeader": "*(Only change if you know what you are doing!)*",
         "backgroundHeader": "Background Modifications",

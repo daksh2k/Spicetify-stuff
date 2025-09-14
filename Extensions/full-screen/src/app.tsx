@@ -977,15 +977,17 @@ async function main() {
                 container.querySelector("#fsd-progress-parent"),
             );
         }
-        ReactDOM.render(
-            <OverviewCard
-                onExit={deactivate}
-                onToggle={() => {
-                    CFM.getGlobal("tvMode") ? openwithDef() : openwithTV();
-                }}
-            />,
-            container.querySelector("#fsd-overview-card-parent"),
-        );
+        if (CFM.get("overviewDisplay")) {
+            ReactDOM.render(
+                <OverviewCard
+                    onExit={deactivate}
+                    onToggle={() => {
+                        CFM.getGlobal("tvMode") ? openwithDef() : openwithTV();
+                    }}
+                />,
+                container.querySelector("#fsd-overview-card-parent"),
+            );
+        }
         if (CFM.get("playerControls") !== "never") {
             updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
             Spicetify.Player.addEventListener("onplaypause", updatePlayerControls);
@@ -1430,6 +1432,28 @@ async function main() {
                 CFM.get("contextDisplay") as Settings["contextDisplay"],
                 "contextDisplay",
                 (value: string) => saveOption("contextDisplay", value),
+            ),
+            createToggle(
+                translations[LOCALE].settings.overviewDisplay.setting,
+                "overviewDisplay",
+                (value: boolean) => {
+                    CFM.set("overviewDisplay", value);
+                    if (value) {
+                        ReactDOM.render(
+                            <OverviewCard
+                                onExit={deactivate}
+                                onToggle={() => {
+                                    CFM.getGlobal("tvMode") ? openwithDef() : openwithTV();
+                                }}
+                            />,
+                            container.querySelector("#fsd-overview-card-parent"),
+                        );
+                    } else {
+                        ReactDOM.unmountComponentAtNode(
+                            container.querySelector("#fsd-overview-card-parent")!,
+                        );
+                    }
+                },
             ),
             createOptions(
                 translations[LOCALE].settings.volumeDisplay.setting,
