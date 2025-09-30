@@ -16,13 +16,8 @@ import {
 import { headerText, getSettingCard, createAdjust, getAboutSection } from "./utils/setting";
 
 import translations from "./resources/strings";
-import ICONS, {
-    DEFAULTS,
-    CLASSES_TO_ADD,
-    EXTRA_BAR_SELECTOR,
-    TOP_BAR_SELECTOR,
-    TOP_BAR_SELECTOR_GLOBAL_NAVBAR,
-} from "./constants";
+import ICONS, { DEFAULTS, CLASSES_TO_ADD } from "./constants";
+import HtmlSelectors from "./utils/selectors";
 import { Config, Settings } from "./types/fullscreen";
 
 import WebAPI from "./services/web-api";
@@ -1697,7 +1692,7 @@ async function main() {
         });
     }
 
-    const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0] as HTMLElement;
+    const extraBar = HtmlSelectors.getExtraBarSelector() as HTMLElement;
     if (CFM.getGlobal("fsHideOriginal")) {
         if (
             (extraBar.lastChild as HTMLElement).classList.contains("control-button") ||
@@ -1709,8 +1704,8 @@ async function main() {
         if (CFM.getGlobal("buttonActivation") !== "tv") {
             // Add Full Screen Button on bottom bar
             const defButton = document.createElement("button");
-            defButton.classList.add("button", "fsd-button", "control-button", "InvalidDropTarget");
-            defButton.id = "fs-button";
+            defButton.classList.add("button");
+            defButton.id = "fullscreen-default-button";
             defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
 
             defButton.innerHTML = ICONS.FULLSCREEN;
@@ -1729,30 +1724,21 @@ async function main() {
             const tvButton = document.createElement("button");
 
             tvButton.innerHTML = ICONS.TV_MODE;
-            tvButton.id = "TV-button";
+            tvButton.id = "fullscreen-tv-button";
             tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
 
             tvButton.onclick = openwithTV;
-            if (document.querySelector(TOP_BAR_SELECTOR)) {
-                tvButton.classList.add(
-                    "button",
-                    "tm-button",
-                    "main-topBar-button",
-                    "InvalidDropTarget",
-                );
-                document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
-            } else {
-                tvButton.classList.add(
-                    "tm-button",
-                    "Button-buttonTertiary-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
-                    "Button-small-small-buttonTertiary-condensedAll-isUsingKeyboard-useBrowserDefaultFocusStyle",
-                    "Button-buttonTertiary-small-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
-                    "encore-text-body-small-bold",
-                    "main-globalNav-buddyFeed",
-                    "Button-sc-1dqy6lx-0",
-                );
-                document.querySelector(TOP_BAR_SELECTOR_GLOBAL_NAVBAR)?.prepend(tvButton);
-            }
+
+            tvButton.classList.add(
+                "tm-button",
+                "Button-buttonTertiary-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
+                "Button-small-small-buttonTertiary-condensedAll-isUsingKeyboard-useBrowserDefaultFocusStyle",
+                "Button-buttonTertiary-small-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
+                "encore-text-body-small-bold",
+                "main-globalNav-buddyFeed",
+                "Button-sc-1dqy6lx-0",
+            );
+            HtmlSelectors.getTopBarSelector()?.prepend(tvButton);
 
             // document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
             tvButton.oncontextmenu = (evt) => {

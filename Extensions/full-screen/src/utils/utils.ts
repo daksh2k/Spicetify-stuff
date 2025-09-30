@@ -1,11 +1,5 @@
 import ICONS from "../constants";
-import {
-    TOP_BAR_SELECTOR,
-    TOP_BAR_SELECTOR_GLOBAL_NAVBAR,
-    EXTRA_BAR_SELECTOR,
-    ORIGINAL_QUEUE_BUTTON,
-    RIGH_PANEL,
-} from "../constants/selectors";
+import HtmlSelectors from "./selectors";
 import WebAPI from "../services/web-api";
 
 let prevUriObj: Spicetify.URI;
@@ -13,14 +7,12 @@ let wasQueuePanelEnabled: boolean | null = null;
 
 class Utils {
     static allNotExist() {
-        const extraBar = document.querySelector(EXTRA_BAR_SELECTOR)?.childNodes[0];
-        const topBar =
-            document.querySelector(TOP_BAR_SELECTOR) ||
-            document.querySelector(TOP_BAR_SELECTOR_GLOBAL_NAVBAR);
+        const extraBar = HtmlSelectors.getExtraBarSelector();
+        const topBar = HtmlSelectors.getTopBarSelector();
 
         const entriesToVerify = {
-            // "Top Bar Component": topBar,
-            // "Extra Bar Component": extraBar,
+            "Top Bar Component": topBar,
+            "Extra Bar Component": extraBar,
             "Spicetify CosmosAsync": Spicetify.CosmosAsync,
             "Spicetify Mousetrap": Spicetify.Mousetrap,
             "Spicetify Player": Spicetify.Player,
@@ -302,10 +294,8 @@ class Utils {
     }
 
     static toggleQueuePanel(myQueueButton: HTMLElement | null, enabled: boolean) {
-        const originalQueueButton = document.querySelector(
-            ORIGINAL_QUEUE_BUTTON,
-        ) as HTMLElement | null;
-        const rightPanel = document.querySelector(RIGH_PANEL) as HTMLElement | null;
+        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
+        const rightPanel = HtmlSelectors.getRightPanel();
         if (enabled) {
             setTimeout(() => {
                 if (!originalQueueButton?.classList.contains("main-genericButton-buttonActive")) {
@@ -334,7 +324,7 @@ class Utils {
     }
 
     static toggleQueue(queueButton: HTMLElement | null) {
-        const rightPanel = document.querySelector(RIGH_PANEL) as HTMLElement | null;
+        const rightPanel = HtmlSelectors.getRightPanel();
 
         if (document.body.classList.contains("fsd-queue-panel-active")) {
             rightPanel?.style.setProperty("--queue-panel-x", "1000px");
