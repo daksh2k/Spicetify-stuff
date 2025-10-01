@@ -1,5 +1,8 @@
 class HtmlSelectors {
-    private static readonly EXTRA_BAR_SELECTORS = [".main-nowPlayingBar-right"];
+    private static readonly EXTRA_BAR_SELECTORS = [
+        ".main-nowPlayingBar-right",
+        ".Y6soMMBElF7EQDbJv8Xb",
+    ];
     private static readonly TOP_BAR_SELECTORS = [
         ".vRrKblnUUQV5eMbvUdv8>.CuBx12mEGmMQ1XAXHZCs",
         ".main-topBar-topbarContentRight>.main-actionButtons",
