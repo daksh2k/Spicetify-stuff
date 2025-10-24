@@ -78,6 +78,7 @@
         "playerControls": "Kontrol Pemutar",
         "trimTitle": "Potong Judul",
         "trimTitleUpNext": "Potong Judul (Selanjutnya)",
+        "trimAlbum": "Potong Album",
         "showAlbum": {
             "setting": "Tampilkan Album",
             "never": "Tidak Pernah",
@@ -126,7 +127,10 @@
             "never": "Tidak Pernah",
             "smart": "Cerdas"
         },
-    
+        "overviewDisplay": {
+            "setting": "Tampilan Rinkasan",
+            "description": "Tampilkan kartu ringkasan singkat dengan waktu dan tindakan kontrol"
+        },
         "appearanceHeader": "Lanjutan/Penampilan",
         "appearanceSubHeader": "*(Ubah hanya jika Anda tahu apa yang Anda lakukan!)*",
         "backgroundHeader": "Modifikasi Latar Belakang",
