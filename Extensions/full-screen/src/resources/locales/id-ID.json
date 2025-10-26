@@ -128,7 +128,7 @@
             "smart": "Cerdas"
         },
         "overviewDisplay": {
-            "setting": "Tampilan Rinkasan",
+            "setting": "Tampilan Ringkasan",
             "description": "Tampilkan kartu ringkasan singkat dengan waktu dan tindakan kontrol"
         },
         "appearanceHeader": "Lanjutan/Penampilan",
