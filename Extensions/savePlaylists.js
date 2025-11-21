@@ -57,9 +57,7 @@
      * @param playlistUri the uri of the newly created playlist
      */
     async function updatePlaylistImage(encodedImg, playlistUri) {
-        let accessToken = await Spicetify.Platform.AuthorizationAPI._tokenProvider({
-            preferCached: true,
-        }).then((res) => res.accessToken);
+        let accessToken = Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
         const URL = `https://api.spotify.com/v1/playlists/${playlistUri}/images`;
 
         await fetch(URL, {
