@@ -1,4 +1,5 @@
 import { Cache, Colors, TokenType } from "../types/fullscreen";
+import Utils from "../utils/utils";
 
 const colorsCache: Cache[] = [];
 
@@ -48,7 +49,7 @@ class WebAPI {
         }).then((res) => res.json());
     }
 
-    static async colorExtractor(uri: string) {
+    static async colorExtractorLegacy(uri: string) {
         const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
         if (presentInCache.length > 0) return presentInCache[0].colors;
         const body = await Spicetify.CosmosAsync.get(
@@ -59,6 +60,23 @@ class WebAPI {
             for (const color of body.entries[0].color_swatches) {
                 list[color.preset] = `#${color.color.toString(16).padStart(6, "0")}`;
             }
+            if (colorsCache.length > 20) colorsCache.shift();
+            colorsCache.push({ uri, colors: list });
+            return list;
+        }
+        throw "No colors returned.";
+    }
+
+    static async colorExtractor(uri: string) {
+        const presentInCache = colorsCache.filter((obj) => obj.uri === uri);
+        if (presentInCache.length > 0) return presentInCache[0].colors;
+        const body = await Spicetify.extractColorPreset(uri);
+        if (body && body.length) {
+            const colorMap = body[0];
+            const list: Colors = {};
+            if (colorMap.isFallback) throw "No colors returned.";
+            list["VIBRANT"] = Utils.rgbToHex(colorMap.colorLight.rgb);
+            list["DARK_VIBRANT"] = Utils.rgbToHex(colorMap.colorDark.rgb);
             if (colorsCache.length > 20) colorsCache.shift();
             colorsCache.push({ uri, colors: list });
             return list;

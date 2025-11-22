@@ -87,7 +87,6 @@ class Utils {
 
     // converting rgb to hex
     static rgbToHex(color: { r: number; g: number; b: number }): string {
-        console.log(color);
         return (
             "#" +
             ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b)
@@ -137,7 +136,7 @@ class Utils {
     static async getNextColor(colorChoice: string) {
         let nextColor = "#444444";
         const imageColors = await WebAPI.colorExtractor(
-            Spicetify.Player.data.item?.uri ?? "",
+            Spicetify.Player.data.item?.metadata.image_xlarge_url ?? "",
         ).catch((err) => console.warn(err));
         if (imageColors && imageColors[colorChoice]) nextColor = imageColors[colorChoice];
         return nextColor;

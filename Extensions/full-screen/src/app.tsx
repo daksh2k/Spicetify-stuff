@@ -449,19 +449,19 @@ async function main() {
                     CFM.get("coloredBackChoice") as Settings["coloredBackChoice"],
                 );
                 updateMainColor(
-                    Spicetify.Player.data.item?.uri,
+                    Spicetify.Player.data.item?.metadata.image_xlarge_url,
                     meta as Partial<Record<string, string>>,
                 );
-                updateThemeColor(Spicetify.Player.data.item?.uri);
+                updateThemeColor(Spicetify.Player.data.item?.metadata.image_xlarge_url);
                 animateColor(nextColor, back);
                 break;
             }
             case "static_color":
                 updateMainColor(
-                    Spicetify.Player.data.item?.uri,
+                    Spicetify.Player.data.item?.metadata.image_xlarge_url,
                     meta as Partial<Record<string, string>>,
                 );
-                updateThemeColor(Spicetify.Player.data.item?.uri);
+                updateThemeColor(Spicetify.Player.data.item?.metadata.image_xlarge_url);
                 animateColor(CFM.get("staticBackChoice") as Settings["staticBackChoice"], back);
                 break;
             case "artist_art":
@@ -478,10 +478,10 @@ async function main() {
                 backgroundImg.src = meta?.image_xlarge_url as string;
                 backgroundImg.onload = () => {
                     updateMainColor(
-                        Spicetify.Player.data.item?.uri,
+                        Spicetify.Player.data.item?.metadata.image_xlarge_url,
                         meta as Partial<Record<string, string>>,
                     );
-                    updateThemeColor(Spicetify.Player.data.item?.uri);
+                    updateThemeColor(Spicetify.Player.data.item?.metadata?.image_xlarge_url);
                     animatedRotatedCanvas(back, backgroundImg);
                 };
 
@@ -492,10 +492,10 @@ async function main() {
                 backgroundImg.src = meta?.image_xlarge_url as string;
                 backgroundImg.onload = () => {
                     updateMainColor(
-                        Spicetify.Player.data.item?.uri,
+                        Spicetify.Player.data.item?.metadata.image_xlarge_url,
                         meta as Partial<Record<string, string>>,
                     );
-                    updateThemeColor(Spicetify.Player.data.item?.uri);
+                    updateThemeColor(Spicetify.Player.data.item?.metadata?.image_xlarge_url);
                     animateCanvas(previousImg, backgroundImg, back, fromResize);
                 };
                 break;
@@ -1553,7 +1553,7 @@ async function main() {
                         Utils.overlayBack();
                         animateColor(value, back, true);
                         updateMainColor(
-                            Spicetify.Player.data.item?.uri,
+                            Spicetify.Player.data.item?.metadata.image_xlarge_url,
                             Spicetify.Player.data.item?.metadata,
                         );
                         if (overlayTimout) clearTimeout(overlayTimout);
