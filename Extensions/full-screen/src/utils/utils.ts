@@ -85,6 +85,18 @@ class Utils {
             : null;
     }
 
+    // converting rgb to hex
+    static rgbToHex(color: { r: number; g: number; b: number }): string {
+        console.log(color);
+        return (
+            "#" +
+            ((1 << 24) + (color.r << 16) + (color.g << 8) + color.b)
+                .toString(16)
+                .slice(1)
+                .toUpperCase()
+        );
+    }
+
     static trimTitle(title: string) {
         const trimmedTitle = title
             .replace(/\(.+?\)/g, "")
