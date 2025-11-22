@@ -7,7 +7,7 @@ const SKIPS = {
             return (
                 ["acoustic", "stripped", "unplugged"].some((value) =>
                     meta.name.toLowerCase().includes(value),
-                ) || meta?.features?.acousticness > 0.85
+                ) || meta?.features?.acousticness > 0.9
             );
         },
         callback: async (meta) => {
@@ -47,7 +47,7 @@ const SKIPS = {
         check: (meta) => {
             return (
                 meta.name.toLowerCase().includes("instrumental") ||
-                meta?.features?.instrumentalness > 0.4
+                meta?.features?.instrumentalness > 0.6
             );
         },
         callback: async (meta) => {
