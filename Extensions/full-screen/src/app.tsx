@@ -690,13 +690,15 @@ async function main() {
         let shouldShow = false;
         if (nextTrack?.title) {
             if (upnextDisplay === "always") {
-                shouldShow = true;
+                shouldShow = Spicetify.Platform?.PlayerAPI?._state?.repeat !== 2;
             } else if (upnextDisplay === "smart") {
                 const timeToShow =
                     (CFM.get("upnextTimeToShow") as Settings["upnextTimeToShow"]) * 1000 + 50;
                 const remainingTime =
                     Spicetify.Player.data.duration - Spicetify.Player.getProgress();
-                shouldShow = remainingTime <= timeToShow;
+                shouldShow =
+                    remainingTime <= timeToShow &&
+                    Spicetify.Platform?.PlayerAPI?._state?.repeat !== 2;
             }
         }
 
@@ -776,7 +778,10 @@ async function main() {
         data = data?.data ?? Spicetify.Player.data;
         updateHeart();
         if (prevControlData?.shuffle !== data?.shuffle) Utils.fadeAnimation(shuffle);
-        if (prevControlData?.repeat !== data?.repeat) Utils.fadeAnimation(repeat);
+        if (prevControlData?.repeat !== data?.repeat) {
+            Utils.fadeAnimation(repeat);
+            updateUpNext();
+        }
         prevControlData = {
             shuffle: data?.shuffle,
             repeat: data?.repeat,
