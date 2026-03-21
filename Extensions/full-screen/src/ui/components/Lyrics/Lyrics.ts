@@ -18,7 +18,7 @@ export class Lyrics {
             this.handleLyricsUpdate({ detail: { isLoading: true, available: false } });
             setTimeout(() => this.autoHideLyrics(), 100);
         } else {
-            if (lyricsContainer.innerText == "(• _ • )") {
+            if (lyricsContainer.innerText == "(• _ • )" || lyricsContainer.innerText == "♪ Instrumental ♪") {
                 this.handleLyricsUpdate({ detail: { isLoading: false, available: false } });
             } else {
                 this.handleLyricsUpdate({ detail: { isLoading: false, available: true } });
