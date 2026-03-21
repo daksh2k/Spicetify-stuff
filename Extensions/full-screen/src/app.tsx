@@ -587,11 +587,11 @@ async function main() {
 
     const extraBar = HtmlSelectors.getExtraBarSelector() as HTMLElement;
     if (CFM.getGlobal("fsHideOriginal")) {
-        if (
-            (extraBar.lastChild as HTMLElement).classList.contains("control-button") ||
-            (extraBar.lastChild as HTMLElement)?.title == "Full screen"
-        )
-            extraBar?.lastChild?.remove();
+        (extraBar.childNodes as NodeList)?.forEach((child: HTMLElement) => {
+            if ((child as HTMLElement)?.getAttribute("data-testid") === "fullscreen-mode-button") {
+                child?.remove();
+            }
+        });
     }
     if (CFM.getGlobal("activationTypes") != "keys") {
         if (CFM.getGlobal("buttonActivation") !== "tv") {
