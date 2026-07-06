@@ -24,8 +24,24 @@
     ).register();
 
     /**
+     * Get the current Spotify access token
+     */
+    function getAccessToken() {
+        return Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
+    }
+
+    /**
+     * Decode HTML entities in a string (e.g. &#x2F; → /)
+     */
+    function decodeHtml(str) {
+        const txt = document.createElement("textarea");
+        txt.innerHTML = str;
+        return txt.value;
+    }
+
+    /**
      * Convert image from a URL to base64 format
-     * @param src The src URL of the image to encode ot base64
+     * @param src The src URL of the image to encode to base64
      * @param outputFormat The output format of the image as supported by Canvas API
      */
     function encodeImgFromUrl(src, outputFormat = "image/jpeg") {
@@ -51,25 +67,26 @@
             image.src = src;
         });
     }
+
     /**
      * Update the image of the new playlist created with the original playlist.
      * @param encodedImg base64 encoded jpeg image
-     * @param playlistUri the uri of the newly created playlist
+     * @param playlistId the id of the newly created playlist
      */
-    async function updatePlaylistImage(encodedImg, playlistUri) {
-        let accessToken = Spicetify.Platform.AuthorizationAPI._tokenProvider._token.accessToken;
-        const URL = `https://api.spotify.com/v1/playlists/${playlistUri}/images`;
+    async function updatePlaylistImage(encodedImg, playlistId) {
+        const URL = `https://api.spotify.com/v1/playlists/${playlistId}/images`;
 
         await fetch(URL, {
             method: "PUT",
             body: encodedImg,
             headers: {
-                Authorization: "Bearer " + accessToken,
+                Authorization: "Bearer " + getAccessToken(),
                 Accept: "application/json",
                 "Content-Type": "image/jpeg",
             },
         });
     }
+
     // Only add context menu option to Playlists
     function uriPlaylist(uris) {
         if (uris.length > 1) {
@@ -98,17 +115,70 @@
     }
 
     /**
-     * Fetch the required metadata and tracks of the playlist
+     * Fetch playlist metadata and all track URIs using Spicetify's internal
+     * Platform API. This never hits the public Spotify Web API so it is not
+     * subject to 429 rate limiting.
+     * Falls back to CosmosAsync sp:// if PlaylistAPI is unavailable.
      */
     async function fetchPlaylist(uri) {
         Spicetify.showNotification("Fetching Playlist....");
+
+        // ── Preferred: Platform.PlaylistAPI (Spicetify ≥ 2.x) ──────────────
+        if (Spicetify.Platform?.PlaylistAPI) {
+            const [meta, contents] = await Promise.all([
+                Spicetify.Platform.PlaylistAPI.getMetadata(uri),
+                fetchAllContents(uri),
+            ]);
+
+            console.log("[SavePlaylist] meta:", meta, "contents sample:", contents[0]);
+
+            return {
+                uris: contents
+                    .filter((item) => item?.type !== "local" && item?.uri)
+                    .map((item) => item.uri),
+                data: {
+                    name: meta.name,
+                    owner: { name: meta.owner?.name ?? "Unknown" },
+                    description: meta.description ?? "",
+                    picture: meta.images?.[0]?.url ?? "",
+                    lastModification: null,
+                },
+            };
+        }
+
+        // ── Fallback: original sp:// Cosmos endpoint ─────────────────────────
         const playlistMeta = await Spicetify.CosmosAsync.get(
             `sp://core-playlist/v1/playlist/${uri}`,
         );
-        return { uris: playlistMeta.items.map((track) => track.link), data: playlistMeta.playlist };
+        return {
+            uris: playlistMeta.items.map((track) => track.link),
+            data: playlistMeta.playlist,
+        };
     }
 
-    // Create a new playlist
+    /**
+     * Page through PlaylistAPI.getContents until all tracks are collected.
+     * The API returns at most 100 items per call.
+     */
+    async function fetchAllContents(uri) {
+        const PAGE = 100;
+        let offset = 0;
+        const all = [];
+
+        while (true) {
+            const page = await Spicetify.Platform.PlaylistAPI.getContents(uri, {
+                limit: PAGE,
+                offset,
+            });
+            const items = page?.items ?? [];
+            all.push(...items);
+            if (items.length < PAGE) break;  // last page
+            offset += PAGE;
+        }
+        return all;
+    }
+
+    // Create a new playlist and populate it with tracks
     async function createPlaylist(meta) {
         Spicetify.showNotification("Creating new Playlist....");
         let playlistDate = meta.data.lastModification
@@ -119,34 +189,67 @@
         const playlistDateFormatted = playlistDate
             .toLocaleDateString(LOCALE, OPTIONS)
             .replaceAll(" ", "-");
-        const playlistName = `Copy- ${meta.data.name} (${playlistDateFormatted})`;
+        const playlistName = `${meta.data.name} (${playlistDateFormatted})`;
 
-        const newPlaylist = await Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
-            operation: "create",
-            name: playlistName,
-            playlist: true,
-            public: false,
-            uris: meta.uris,
-        });
+        // ── Create empty playlist ────────────────────────────────────────────
+        let newPlaylistUri;
+        if (Spicetify.Platform?.RootlistAPI) {
+            const result = await Spicetify.Platform.RootlistAPI.createPlaylist(
+                playlistName,
+                { after: "end" },
+            );
+            console.log("[SavePlaylist] createPlaylist result:", result);
+            // result may be a URI string or an object with a uri property
+            newPlaylistUri = typeof result === "string" ? result : result?.uri ?? result;
+        } else {
+            // Legacy fallback
+            const legacy = await Spicetify.CosmosAsync.post("sp://core-playlist/v1/rootlist", {
+                operation: "create",
+                name: playlistName,
+                playlist: true,
+                public: false,
+                uris: [],
+            });
+            newPlaylistUri = legacy.uri;
+        }
+
+        if (!newPlaylistUri) throw new Error("Failed to get URI for new playlist");
+        const newPlaylistId = newPlaylistUri.split(":")[2];
+        Spicetify.showNotification(`${playlistName} created, adding tracks...`);
+
+        // ── Add tracks in chunks of 100 (API/Platform limit per call) ────────
+        const CHUNK = 100;
+        for (let i = 0; i < meta.uris.length; i += CHUNK) {
+            const chunk = meta.uris.slice(i, i + CHUNK);
+            if (Spicetify.Platform?.PlaylistAPI) {
+                await Spicetify.Platform.PlaylistAPI.add(newPlaylistUri, chunk, { after: "end" });
+            } else {
+                await Spicetify.CosmosAsync.post(
+                    `https://api.spotify.com/v1/playlists/${newPlaylistId}/tracks`,
+                    { uris: chunk },
+                );
+            }
+        }
         Spicetify.showNotification(`${playlistName} created successfully!`);
 
+        // ── Update description and image (one-off Web API calls, not bulk) ───
         setTimeout(() => {
-            Spicetify.CosmosAsync.put(
-                `https://api.spotify.com/v1/playlists/${newPlaylist.uri.split(":")[2]}`,
-                {
-                    description: `Copy of ${meta.data.name} by ${meta.data.owner.name}. ${meta.data.description}`,
-                },
-            ).then(() => Spicetify.showNotification("Description updated successfully!"));
+            if (meta.data.description) {
+                Spicetify.Platform.PlaylistAPI.setAttributes(newPlaylistUri, {
+                    name: playlistName,
+                    description: decodeHtml(meta.data.description),
+                })
+                .then(() => Spicetify.showNotification("Description updated successfully!"))
+                .catch((err) => console.error("Description Update Error:", err));
+            }
+
             if (/^spotify:image:\w{40}$|^https:\/\/.*$/.test(meta.data.picture)) {
                 const imageUrl = meta.data.picture.startsWith("https://")
                     ? meta.data.picture
                     : "https://i.scdn.co/image/" + meta.data.picture.split(":")[2];
                 encodeImgFromUrl(imageUrl)
                     .then((encodedImg) => {
-                        updatePlaylistImage(
-                            encodedImg.split("base64,")[1],
-                            newPlaylist.uri.split(":")[2],
-                        )
+                        updatePlaylistImage(encodedImg.split("base64,")[1], newPlaylistId)
                             .then(() => Spicetify.showNotification("Image updated successfully!"))
                             .catch((err) => console.error("Image Update Error: ", err));
                     })
