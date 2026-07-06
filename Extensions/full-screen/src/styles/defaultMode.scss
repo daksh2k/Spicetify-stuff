@@ -1,4 +1,5 @@
 #full-screen-display[mode="def"] {
+    --fsd-album-size-mult: 1;
     &,
     &.lyrics-unavailable,
     &.lyrics-hide-force {
@@ -160,9 +161,71 @@
         text-align: center;
     }
     #fsd-art {
-        width: calc(100vh - 300px);
-        max-width: var(--fsd-art-max-width);
-        min-width: 300px;
+        width: calc((100vh - 300px) * var(--fsd-album-size-mult, 1));
+        max-width: calc(var(--fsd-art-max-width) * var(--fsd-album-size-mult, 1));
+        min-width: calc(300px * var(--fsd-album-size-mult, 1));
+    }
+
+    /* Auto scale: viewport-based size with margins (.album-art-auto-scale on #full-screen-display).
+       Inner floors use 300px so the smallest cover matches classic 1× `min-width: calc(300px * mult)`. */
+    &.album-art-auto-scale {
+        #fsd-art {
+            width: min(
+                max(300px, calc(100vh - 452px)),
+                max(300px, calc(50vw - 128px)),
+                max(300px, 65vmin)
+            );
+            max-width: none;
+            min-width: 300px;
+        }
+
+        &.lyrics-active:not(.lyrics-unavailable):not(.lyrics-hide-force) #fsd-art {
+            width: min(
+                max(300px, calc(100vh - 492px)),
+                max(300px, calc(50vw - 104px)),
+                max(300px, 63vmin)
+            );
+            max-width: none;
+            min-width: 300px;
+        }
+
+        &.vertical-mode.lyrics-active #fsd-foreground #fsd-art {
+            width: min(
+                max(300px, calc(50vh - 192px)),
+                max(300px, calc(100vw - 104px)),
+                max(300px, 62vmin)
+            );
+            max-width: none;
+            min-width: 300px;
+        }
+
+        &.vertical-mode.lyrics-active.lyrics-unavailable #fsd-foreground #fsd-art,
+        &.vertical-mode.lyrics-active.lyrics-hide-force #fsd-foreground #fsd-art {
+            width: min(
+                max(300px, calc(100vh - 492px)),
+                max(300px, calc(100vw - 104px)),
+                max(300px, 63vmin)
+            );
+            max-width: none;
+            min-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            #fsd-art {
+                width: min(
+                    max(300px, calc(100vh - 392px)),
+                    max(300px, calc(50vw - 84px)),
+                    max(300px, 63vmin)
+                );
+            }
+            &.lyrics-active:not(.lyrics-unavailable):not(.lyrics-hide-force) #fsd-art {
+                width: min(
+                    max(300px, calc(100vh - 412px)),
+                    max(300px, calc(50vw - 80px)),
+                    max(300px, 62vmin)
+                );
+            }
+        }
     }
 
     #fsd-title {

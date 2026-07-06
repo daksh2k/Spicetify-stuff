@@ -331,6 +331,16 @@
         transition: all var(--transition-duration) var(--transition-function);
     }
 
+    /* Omnidirectional shadow (0 offset); on wrapper so overflow:hidden on same box does not clip it. */
+    #fsd-art {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.07),
+            0 0 22px rgba(0, 0, 0, 0.45),
+            0 0 52px rgba(0, 0, 0, 0.28);
+    }
+
     #fsd-art-image {
         position: relative;
         width: 100%;
@@ -347,7 +357,7 @@
         width: 94%;
         height: 94%;
         z-index: -1;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 0 18px rgba(0, 0, 0, 0.4) !important;
         transform: translateZ(0);
     }
 

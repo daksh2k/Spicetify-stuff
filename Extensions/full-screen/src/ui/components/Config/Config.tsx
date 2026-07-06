@@ -117,8 +117,8 @@ export class ConfigManager {
         const settingCard = getSettingCard(
             `<select>
                 ${Object.keys(options)
-                .map((item) => `<option value="${item}" dir="auto">${options[item]}</option>`)
-                .join("\n")}
+                    .map((item) => `<option value="${item}" dir="auto">${options[item]}</option>`)
+                    .join("\n")}
             </select>`,
             title,
             key,
@@ -332,6 +332,27 @@ export class ConfigManager {
             document.fullscreenEnabled
                 ? this.createToggle(translations[LOCALE].settings.fullscreen, "enableFullscreen")
                 : "",
+            this.createOptions(
+                translations[LOCALE].settings.albumArtSizing.setting,
+                {
+                    classic: translations[LOCALE].settings.albumArtSizing.classic,
+                    scale125: translations[LOCALE].settings.albumArtSizing.scale125,
+                    scale15: translations[LOCALE].settings.albumArtSizing.scale15,
+                    scale175: translations[LOCALE].settings.albumArtSizing.scale175,
+                    scale2: translations[LOCALE].settings.albumArtSizing.scale2,
+                    scale25: translations[LOCALE].settings.albumArtSizing.scale25,
+                    auto: translations[LOCALE].settings.albumArtSizing.auto,
+                },
+                CFM.getGlobal("defaultModeAlbumArtSizing") as Config["defaultModeAlbumArtSizing"],
+                "defaultModeAlbumArtSizing",
+                (value: string) => {
+                    this.saveGlobalOption(
+                        "defaultModeAlbumArtSizing",
+                        value as Config["defaultModeAlbumArtSizing"],
+                    );
+                },
+                translations[LOCALE].settings.albumArtSizing.description,
+            ),
             headerText(translations[LOCALE].settings.extraHeader),
             this.createOptions(
                 translations[LOCALE].settings.extraControls,

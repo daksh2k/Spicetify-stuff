@@ -84,4 +84,5 @@ export const DEFAULTS: Config = {
     activationTypes: "both",
     buttonActivation: "both",
     keyActivation: "both",
+    defaultModeAlbumArtSizing: "classic",
 };

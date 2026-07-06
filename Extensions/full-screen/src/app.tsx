@@ -34,6 +34,17 @@ import "./styles/tvMode.scss";
 import "./styles/defaultMode.scss";
 import "./styles/settings.scss";
 
+/** Multiplier on 1× (classic) album-art width/max/min; unused for Auto layout. */
+const DEFAULT_MODE_CLASSIC_ALBUM_MULT: Partial<
+    Record<Config["defaultModeAlbumArtSizing"], number>
+> = {
+    scale125: 1.25,
+    scale15: 1.5,
+    scale175: 1.75,
+    scale2: 2,
+    scale25: 2.5,
+};
+
 async function main() {
     let INIT_RETRIES = 0;
     let entriesNotPresent = Utils.allNotExist();
@@ -94,6 +105,14 @@ async function main() {
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
             window.innerWidth < window.innerHeight,
         );
+        const albumSizing = CFM.getGlobal("defaultModeAlbumArtSizing") as Config["defaultModeAlbumArtSizing"];
+        DOM.container.classList.toggle("album-art-auto-scale", albumSizing === "auto");
+        const classicMult = DEFAULT_MODE_CLASSIC_ALBUM_MULT[albumSizing];
+        if (classicMult != null) {
+            DOM.container.style.setProperty("--fsd-album-size-mult", String(classicMult));
+        } else {
+            DOM.container.style.removeProperty("--fsd-album-size-mult");
+        }
         document.body.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&

@@ -8,6 +8,15 @@ export type Config = {
     activationTypes: "both" | "btns" | "keys";
     buttonActivation: "both" | "tv" | "def";
     keyActivation: "both" | "tv" | "def";
+    /** Default full screen only (not TV). `classic` = 1× base layout; `scale*` = same rules × 1.25…2.5. */
+    defaultModeAlbumArtSizing:
+        | "classic"
+        | "auto"
+        | "scale125"
+        | "scale15"
+        | "scale175"
+        | "scale2"
+        | "scale25";
 };
 
 export type Settings = {

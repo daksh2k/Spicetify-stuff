@@ -10,6 +10,25 @@ function getConfig(DEFAULTS: Config): Config {
         const parsed = JSON.parse(localStorage.getItem("full-screen-config") ?? "{}");
         if (Boolean(parsed) && typeof parsed === "object") {
             defaultsDeep(parsed, DEFAULTS);
+            const def = parsed.def as Record<string, unknown> | undefined;
+            const legacyAlbum = def?.albumArtSizing;
+            if (
+                def &&
+                typeof legacyAlbum === "string" &&
+                [
+                    "classic",
+                    "auto",
+                    "scale125",
+                    "scale15",
+                    "scale175",
+                    "scale2",
+                    "scale25",
+                ].includes(legacyAlbum)
+            ) {
+                (parsed as unknown as Config).defaultModeAlbumArtSizing =
+                    legacyAlbum as Config["defaultModeAlbumArtSizing"];
+                delete def.albumArtSizing;
+            }
             localStorage.setItem("full-screen-config", JSON.stringify(parsed));
             return parsed;
         }
