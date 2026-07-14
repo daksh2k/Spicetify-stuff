@@ -4,8 +4,10 @@ class HtmlSelectors {
         ".Y6soMMBElF7EQDbJv8Xb",
     ];
     private static readonly TOP_BAR_SELECTORS = [
-        ".vRrKblnUUQV5eMbvUdv8>.CuBx12mEGmMQ1XAXHZCs",
+        ".main-globalNav-navRight",
         ".main-topBar-topbarContentRight>.main-actionButtons",
+        ".main-topBar-topbarContentRight",
+        ".vRrKblnUUQV5eMbvUdv8>.CuBx12mEGmMQ1XAXHZCs",
         ".main-topBar-historyButtons",
     ];
     private static readonly ORIGINAL_QUEUE_BUTTON_SELECTORS = [

@@ -436,13 +436,23 @@ body {
         background: transparent;
         outline: none;
         border: none;
-        width: 40px;
-        height: 40px;
+        width: 32px;
+        height: 32px;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transform: translateZ(0);
+        will-change: transform;
 
         &:hover {
-            transform: scale(1.08);
+            transform: scale(1.08) translateZ(0);
             color: var(--spice-text);
+        }
+
+        svg {
+            width: 16px;
+            height: 16px;
         }
     }
 }
@@ -450,11 +460,18 @@ body {
 .fsd-activated {
 
     .Root__top-bar,
+    .main-topBar-container,
+    .globalNav,
+    .main-globalNav,
+    .main-topBar-topbarContentRight,
     .Root__nav-bar,
     .Root__main-view,
     .Root__now-playing-bar {
-        visibility: hidden;
-        display: none;
+        visibility: hidden !important;
+        display: none !important;
+        opacity: 0 !important;
+        transition: none !important;
+        pointer-events: none !important;
     }
 
     .Root__top-container {
