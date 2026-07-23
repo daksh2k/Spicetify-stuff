@@ -449,11 +449,6 @@ body {
             transform: scale(1.08) translateZ(0);
             color: var(--spice-text);
         }
-
-        svg {
-            width: 16px;
-            height: 16px;
-        }
     }
 }
 
@@ -498,7 +493,8 @@ body {
 
         .XOawmCGZcQx4cesyNfVO,
         .oXO9_yYs6JyOwkBn8E4a,
-        .zjCIcN96KsMfWwRo {
+        .zjCIcN96KsMfWwRo,
+        .main-nowPlayingView-container {
             width: 500px !important;
         }
 
@@ -512,7 +508,9 @@ body {
         .UrfDp0_mKGL9hkfh9g_R.SKjhjAC5p3CW1UI5UiMg,
         .UrfDp0_mKGL9hkfh9g_R.SKjhjAC5p3CW1UI5UiMg::before,
         .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1,
-        .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1::before {
+        .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1::before,
+        .ZWDHceKsZZA3lvFT:before,
+        .ZWDHceKsZZA3lvFT {
             background: transparent !important;
             backdrop-filter: blur(10px) brightness(0.7);
             border-radius: 10px;
@@ -523,7 +521,8 @@ body {
 
         .XOawmCGZcQx4cesyNfVO,
         .oXO9_yYs6JyOwkBn8E4a,
-        .zjCIcN96KsMfWwRo {
+        .zjCIcN96KsMfWwRo,
+        .main-nowPlayingView-container{
             width: 280px !important;
         }
     }
