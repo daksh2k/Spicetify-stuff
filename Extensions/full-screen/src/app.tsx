@@ -622,6 +622,7 @@ async function main() {
             tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
 
             tvButton.onclick = openwithTV;
+            tvButton.style.WebkitAppRegion = "no-drag";
 
             tvButton.classList.add(
                 "Button-buttonTertiary-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
