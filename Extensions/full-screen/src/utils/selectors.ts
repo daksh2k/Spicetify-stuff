@@ -4,6 +4,7 @@ class HtmlSelectors {
         ".Y6soMMBElF7EQDbJv8Xb",
     ];
     private static readonly TOP_BAR_SELECTORS = [
+        ".main-globalNav-contentRight .main-actionButtons .main-actionButtons",
         ".main-globalNav-contentRight .main-actionButtons",
         ".main-globalNav-contentRight",
         ".main-globalNav-navRight",

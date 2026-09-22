@@ -72,6 +72,16 @@ test('Spotify 1.3 uses the existing action group so native spacing is shared', t
     assert.equal(s.document.querySelector('.main-globalNav-contentRight > #fullscreen-tv-button'), null);
 });
 
+test('nested bell/friends group owns spacing instead of the outer profile group', t => {
+    const s = setup(t, '<div class="main-globalNav-contentRight"><div class="main-actionButtons"><div class="main-actionButtons" id="native-icons" style="padding-left:8px;gap:8px"><button id="bell"></button><button id="friends"></button></div><button data-testid="user-widget-link"></button></div></div>');
+    s.mount();
+    const group = s.document.getElementById('native-icons');
+    assert.equal(group.firstElementChild.id, 'fullscreen-tv-button');
+    assert.equal(group.children[1].id, 'bell');
+    assert.equal(group.children[2].id, 'friends');
+    assert.equal(s.document.querySelectorAll('#fullscreen-tv-button').length, 1);
+});
+
 test('unknown class names use the profile test ID', t => {
     const s = setup(t, '<div id="renamed"><button data-testid="user-widget-link"></button></div>');
     s.mount();

@@ -29,13 +29,13 @@ body #fullscreen-tv-button.fsd-activation-button {
     height: 32px;
     padding: 8px;
     border-radius: 50%;
-    background: var(--spice-card, var(--background-tinted-base, rgba(127, 127, 127, 0.18)));
+    background: transparent;
     color: var(--spice-subtext, var(--text-subdued, #b3b3b3));
     line-height: 0;
 
     svg { flex: 0 0 16px; width: 16px; height: 16px; }
     &:hover {
-        background: var(--spice-highlight, var(--background-tinted-highlight, rgba(127, 127, 127, 0.3)));
+        background: transparent;
         color: var(--spice-text, var(--text-base, #fff));
     }
 }
