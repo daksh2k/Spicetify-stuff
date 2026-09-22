@@ -523,7 +523,10 @@ body {
         pointer-events: none !important;
     }
 
-    &.fsd-queue-panel-active .Root__right-sidebar.fsd-queue-panel {
+    &.fsd-queue-panel-active .Root__right-sidebar.fsd-queue-panel,
+    &.fsd-queue-panel-active aside.fsd-queue-panel,
+    &.fsd-queue-panel-active .main-nowPlayingView-container.fsd-queue-panel,
+    &.fsd-queue-panel-active .fsd-queue-panel {
         visibility: visible !important;
         display: block !important;
         opacity: 1 !important;
@@ -542,8 +545,15 @@ body {
     }
 
     .fsd-queue-panel {
+        position: fixed !important;
+        top: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        height: 100vh !important;
+        width: 450px !important;
+        max-width: 90vw !important;
         --queue-panel-x: 1000px;
-        z-index: 10001;
+        z-index: 10001 !important;
         transform: translateX(var(--queue-panel-x));
 
         .main-buddyFeed-actions.main-buddyFeed-closeContainer,

@@ -378,41 +378,60 @@ class Utils {
         const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
         const rightPanel = HtmlSelectors.getRightPanel();
         if (enabled) {
-            queueOpenTimer = setTimeout(() => {
-                if (!originalQueueButton?.classList.contains("main-genericButton-buttonActive")) {
-                    originalQueueButton?.click();
-                    wasQueuePanelEnabled = false;
-                } else {
-                    wasQueuePanelEnabled = true;
-                }
-                queuePanelTimer = setTimeout(() => {
-                    rightPanel?.classList.add("fsd-queue-panel");
-                    queueAnimationTimer = setTimeout(() => {
-                        rightPanel?.classList.add("fsd-transform-animation");
-                    }, 100);
-                }, 300);
-            }, 600);
+            this.toggleQueue(myQueueButton);
         } else {
             if (wasQueuePanelEnabled != null && !wasQueuePanelEnabled) {
                 originalQueueButton?.click();
             }
-            rightPanel?.style.setProperty("--queue-panel-x", "1000px");
+            if (rightPanel) {
+                rightPanel.style.setProperty("--queue-panel-x", "1000px");
+                rightPanel.classList.remove("fsd-queue-panel", "fsd-transform-animation");
+            }
             wasQueuePanelEnabled = null;
             myQueueButton?.classList.remove("button-active", "dot-after");
-            rightPanel?.classList.remove("fsd-queue-panel", "fsd-transform-animation");
             document.body.classList.remove("fsd-queue-panel-active");
         }
     }
 
     static toggleQueue(queueButton: HTMLElement | null) {
+        cancelQueuedPanelWork();
         const rightPanel = HtmlSelectors.getRightPanel();
+        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
 
         if (document.body.classList.contains("fsd-queue-panel-active")) {
-            rightPanel?.style.setProperty("--queue-panel-x", "1000px");
+            if (rightPanel) {
+                rightPanel.style.setProperty("--queue-panel-x", "1000px");
+                setTimeout(() => {
+                    rightPanel.classList.remove("fsd-queue-panel", "fsd-transform-animation");
+                }, 400);
+            }
             queueButton?.classList.remove("button-active", "dot-after");
             document.body.classList.remove("fsd-queue-panel-active");
+
+            if (wasQueuePanelEnabled === false) {
+                originalQueueButton?.click();
+            }
+            wasQueuePanelEnabled = null;
         } else {
-            rightPanel?.style.setProperty("--queue-panel-x", "0px");
+            const isOriginalActive =
+                originalQueueButton?.classList.contains("main-genericButton-buttonActive") ||
+                originalQueueButton?.getAttribute("aria-expanded") === "true" ||
+                originalQueueButton?.getAttribute("aria-checked") === "true";
+
+            if (!isOriginalActive) {
+                originalQueueButton?.click();
+                wasQueuePanelEnabled = false;
+            } else {
+                wasQueuePanelEnabled = true;
+            }
+
+            if (rightPanel) {
+                rightPanel.classList.add("fsd-queue-panel");
+                rightPanel.classList.add("fsd-transform-animation");
+                requestAnimationFrame(() => {
+                    rightPanel.style.setProperty("--queue-panel-x", "0px");
+                });
+            }
             queueButton?.classList.add("button-active", "dot-after");
             document.body.classList.add("fsd-queue-panel-active");
         }

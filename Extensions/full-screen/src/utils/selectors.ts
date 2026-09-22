@@ -15,13 +15,27 @@ class HtmlSelectors {
     ];
     private static readonly ORIGINAL_QUEUE_BUTTON_SELECTORS = [
         '[data-testid="control-button-queue"]',
+        '[data-testid="queue-button"]',
         'button.control-button--queue',
         'button[aria-label*="Queue" i]',
         'button[aria-label*="Warteschlange" i]',
+        'button[aria-label*="Cola" i]',
+        'button[aria-label*="Fila" i]',
+        'button[aria-label*="Kø" i]',
+        'button[aria-label*="Kö" i]',
+        'button[aria-label*="File d\'attente" i]',
+        '.main-nowPlayingBar-right button[data-testid*="queue" i]',
         "div.Y6soMMBElF7EQDbJv8Xb > div > div > button",
         "div.main-nowPlayingBar-right > div > div > button",
     ];
-    private static readonly RIGHT_PANEL_SELECTORS = [".Root__right-sidebar"];
+    private static readonly RIGHT_PANEL_SELECTORS = [
+        ".Root__right-sidebar",
+        "aside.main-nowPlayingView-container",
+        "aside.Root__right-sidebar",
+        '[data-testid="right-sidebar"]',
+        "aside[aria-label]",
+        "aside",
+    ];
 
     static getTopBarSelector(): HTMLElement | null {
         for (const selector of this.TOP_BAR_SELECTORS) {

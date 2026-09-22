@@ -457,6 +457,15 @@ async function main() {
         }
     }
 
+    function contextMenuHandler(e: MouseEvent) {
+        const dialog = document.querySelector("dialog.fs-popup-modal");
+        if (dialog && (dialog.contains(e.target as Node) || e.composedPath?.().includes(dialog))) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        ConfigManager.openConfig(e);
+    }
+
     function fullScreenListener() {
         if (exitingFullscreen) return;
         if (document.fullscreenElement === null) {
@@ -510,16 +519,11 @@ async function main() {
                 deactivate();
             };
 
-            const handleContextMenu = (e: MouseEvent) => {
-                e.preventDefault();
-                ConfigManager.openConfig(e);
-            };
-
-            DOM.container.oncontextmenu = handleContextMenu;
+            DOM.container.oncontextmenu = contextMenuHandler;
             DOM.container.ondblclick = handleBackgroundDblClick;
-            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = handleContextMenu;
+            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = contextMenuHandler;
             DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = handleBackgroundDblClick;
-            DOM.back.oncontextmenu = handleContextMenu;
+            DOM.back.oncontextmenu = contextMenuHandler;
             DOM.back.ondblclick = handleBackgroundDblClick;
             if (CFM.get("upnextDisplay") !== "never") {
                 UpNext.updateUpNextShow();
@@ -577,6 +581,7 @@ async function main() {
             }
             document.addEventListener("fullscreenchange", fullScreenListener);
             window.addEventListener("keydown", escKeyHandler, true);
+            window.addEventListener("contextmenu", contextMenuHandler, true);
             Spicetify.Mousetrap.bind("esc", deactivate);
             if (CFM.get("lyricsDisplay")) {
                 Spicetify.Mousetrap.bind("l", Lyrics.toggleLyrics);
@@ -607,6 +612,7 @@ async function main() {
 
         // 2. Remove listeners
         window.removeEventListener("keydown", escKeyHandler, true);
+        window.removeEventListener("contextmenu", contextMenuHandler, true);
         document.removeEventListener("fullscreenchange", fullScreenListener);
         window.removeEventListener("resize", resizeEvents);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
