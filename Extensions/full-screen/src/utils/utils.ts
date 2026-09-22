@@ -46,7 +46,9 @@ class Utils {
     }
 
     static fullScreenOn() {
-        if (!document.fullscreenElement) return document.documentElement.requestFullscreen();
+        if (!document.fullscreenElement) {
+            return document.documentElement.requestFullscreen({ navigationUI: "hide" } as FullscreenOptions);
+        }
     }
 
     static fullScreenOff() {

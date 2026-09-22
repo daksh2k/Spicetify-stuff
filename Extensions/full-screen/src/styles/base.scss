@@ -52,6 +52,15 @@
     #fsd-status:hover .fsd-controls,
     #fsd-status:hover .extra-controls,
     #fsd-status:hover #fsd-progress-container,
+    #fsd-status:hover ~ #fsd-progress-parent #fsd-progress-container,
+    #fsd-progress-parent:hover #fsd-progress-container,
+    #fsd-progress-parent:hover ~ #fsd-status .fsd-controls,
+    #fsd-progress-parent:hover ~ #fsd-status .extra-controls,
+    #fsd-foreground:has(#fsd-status:hover) #fsd-progress-container,
+    #fsd-foreground:has(#fsd-progress-parent:hover) .fsd-controls,
+    #fsd-foreground:has(#fsd-progress-parent:hover) .extra-controls,
+    #fsd-foreground:has(#fsd-progress-container:hover) .fsd-controls,
+    #fsd-foreground:has(#fsd-progress-container:hover) .extra-controls,
     .fsd-controls:hover,
     .extra-controls:hover,
     .fs-button:hover,
@@ -414,12 +423,9 @@
         padding: 3px 5px 0 5px;
         cursor: pointer;
         position: relative;
-        transition:
-            all 0.3s var(--transition-function),
-            transform 0.1s var(--transition-function);
+        transition: all 0.3s var(--transition-function);
 
         &:hover {
-            transform: scale(1.2);
             filter: saturate(1.5) contrast(1.5) !important;
             background: var(--theme-hover-color);
         }

@@ -93,7 +93,13 @@ export class ExtraControls {
         elements.forEach((element) => (element.style.opacity = "1"));
         this.extraControlsTimer = setTimeout(() => {
             const status = DOM.container.querySelector("#fsd-status");
-            if (status?.matches(":hover")) return;
+            const progParent = DOM.container.querySelector("#fsd-progress-parent");
+            const progContainer = DOM.container.querySelector("#fsd-progress-container");
+            if (
+                status?.matches(":hover") ||
+                progParent?.matches(":hover") ||
+                progContainer?.matches(":hover")
+            ) return;
             for (const el of Array.from(elements)) {
                 if (el.matches(":hover")) return;
             }

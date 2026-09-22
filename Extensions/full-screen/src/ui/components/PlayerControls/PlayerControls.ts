@@ -23,7 +23,16 @@ export class PlayerControls {
         if (!element) return;
         element.style.opacity = "1";
         this.playerControlsTimer = setTimeout(() => {
-            if (element.matches(":hover") || element.closest("#fsd-status")?.matches(":hover")) {
+            const status = DOM.container.querySelector("#fsd-status");
+            const progParent = DOM.container.querySelector("#fsd-progress-parent");
+            const progContainer = DOM.container.querySelector("#fsd-progress-container");
+            if (
+                element.matches(":hover") ||
+                element.closest("#fsd-status")?.matches(":hover") ||
+                status?.matches(":hover") ||
+                progParent?.matches(":hover") ||
+                progContainer?.matches(":hover")
+            ) {
                 return;
             }
             element.style.opacity = "0";

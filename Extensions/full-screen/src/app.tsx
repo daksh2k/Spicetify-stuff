@@ -377,7 +377,8 @@ async function main() {
         DOM.container.style.cursor = "default";
         curTimer = setTimeout(() => {
             const statusEl = DOM.container.querySelector("#fsd-status");
-            if (statusEl?.matches(":hover")) return;
+            const progParent = DOM.container.querySelector("#fsd-progress-parent");
+            if (statusEl?.matches(":hover") || progParent?.matches(":hover")) return;
             DOM.container.style.cursor = "none";
         }, 2000);
     }
@@ -402,6 +403,10 @@ async function main() {
         statusEl?.addEventListener("mouseenter", onStatusEnter);
         statusEl?.addEventListener("mouseleave", onStatusLeave);
 
+        const progParentEl = DOM.container.querySelector<HTMLElement>("#fsd-progress-parent");
+        progParentEl?.addEventListener("mouseenter", onStatusEnter);
+        progParentEl?.addEventListener("mouseleave", onStatusLeave);
+
         if (CFM.get("contextDisplay") === "mousemove") {
             DOM.container.addEventListener("mousemove", Context.hideContext.bind(Context));
             Context.hideContext();
@@ -425,6 +430,10 @@ async function main() {
         const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
         statusEl?.removeEventListener("mouseenter", onStatusEnter);
         statusEl?.removeEventListener("mouseleave", onStatusLeave);
+
+        const progParentEl = DOM.container.querySelector<HTMLElement>("#fsd-progress-parent");
+        progParentEl?.removeEventListener("mouseenter", onStatusEnter);
+        progParentEl?.removeEventListener("mouseleave", onStatusLeave);
 
         if (curTimer) clearTimeout(curTimer);
         if (Context.ctxTimer) clearTimeout(Context.ctxTimer);
