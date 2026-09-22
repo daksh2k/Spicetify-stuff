@@ -14,6 +14,10 @@ class HtmlSelectors {
         ".main-topBar-historyButtons",
     ];
     private static readonly ORIGINAL_QUEUE_BUTTON_SELECTORS = [
+        '[data-testid="control-button-queue"]',
+        'button.control-button--queue',
+        'button[aria-label*="Queue" i]',
+        'button[aria-label*="Warteschlange" i]',
         "div.Y6soMMBElF7EQDbJv8Xb > div > div > button",
         "div.main-nowPlayingBar-right > div > div > button",
     ];

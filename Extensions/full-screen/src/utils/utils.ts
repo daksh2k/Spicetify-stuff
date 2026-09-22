@@ -5,6 +5,19 @@ import WebAPI from "../services/web-api";
 let prevUriObj: Spicetify.URI;
 let wasQueuePanelEnabled: boolean | null = null;
 
+let queueOpenTimer: ReturnType<typeof setTimeout> | undefined;
+let queuePanelTimer: ReturnType<typeof setTimeout> | undefined;
+let queueAnimationTimer: ReturnType<typeof setTimeout> | undefined;
+
+function cancelQueuedPanelWork() {
+    if (queueOpenTimer) clearTimeout(queueOpenTimer);
+    if (queuePanelTimer) clearTimeout(queuePanelTimer);
+    if (queueAnimationTimer) clearTimeout(queueAnimationTimer);
+    queueOpenTimer = undefined;
+    queuePanelTimer = undefined;
+    queueAnimationTimer = undefined;
+}
+
 class Utils {
     static allNotExist() {
         const entriesToVerify = {
@@ -38,6 +51,10 @@ class Utils {
 
     static fullScreenOff() {
         if (document.fullscreenElement) return document.exitFullscreen();
+    }
+
+    static cancelQueuedPanelWork() {
+        cancelQueuedPanelWork();
     }
 
     /**
@@ -307,19 +324,20 @@ class Utils {
     }
 
     static toggleQueuePanel(myQueueButton: HTMLElement | null, enabled: boolean) {
+        cancelQueuedPanelWork();
         const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
         const rightPanel = HtmlSelectors.getRightPanel();
         if (enabled) {
-            setTimeout(() => {
+            queueOpenTimer = setTimeout(() => {
                 if (!originalQueueButton?.classList.contains("main-genericButton-buttonActive")) {
                     originalQueueButton?.click();
                     wasQueuePanelEnabled = false;
                 } else {
                     wasQueuePanelEnabled = true;
                 }
-                setTimeout(() => {
+                queuePanelTimer = setTimeout(() => {
                     rightPanel?.classList.add("fsd-queue-panel");
-                    setTimeout(() => {
+                    queueAnimationTimer = setTimeout(() => {
                         rightPanel?.classList.add("fsd-transform-animation");
                     }, 100);
                 }, 300);

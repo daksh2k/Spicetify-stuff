@@ -37,7 +37,7 @@ function setup(t, html = '') {
 }
 const settle = () => new Promise(resolve => setTimeout(resolve, 330));
 
-test('uses Spotify tooltip styling for hover and focus, and cleans up the instance', async t => {
+test('uses compact tooltip markup without legacy context-menu sizing and cleans up the instance', async t => {
     const s = setup(t);
     const calls = [];
     let hidden = 0, destroyed = 0;
@@ -50,9 +50,15 @@ test('uses Spotify tooltip styling for hover and focus, and cleans up the instan
     const cleanup = s.mount({ default: undefined });
     const button = s.document.querySelector('#fullscreen-tv-button');
     assert.equal(calls.length, 1);
-    assert.equal(calls[0].props.render, renderer);
+    assert.notEqual(calls[0].props.render, renderer);
+    const rendered = calls[0].props.render({ props: { content: 'TV mode' } });
+    assert.equal(rendered.popper.querySelector('#context-menu'), null);
+    assert.equal(rendered.popper.querySelector('[role="tooltip"]').textContent, 'TV mode');
+    assert.equal(rendered.popper.querySelector('[role="tooltip"]').className, 'fsd-activation-tooltip');
     assert.equal(calls[0].props.content, 'TV mode');
     assert.equal(calls[0].props.placement, 'bottom');
+    assert.equal(calls[0].props.offset[1], 8);
+    assert.equal(calls[0].props.delay[0], 200);
     assert.equal(calls[0].props.trigger, 'mouseenter focus');
     assert.equal(button.hasAttribute('title'), false);
     button.click();

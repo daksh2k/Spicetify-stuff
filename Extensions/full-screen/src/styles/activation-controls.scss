@@ -54,4 +54,29 @@ body #fullscreen-tv-button.fsd-activation-button {
 }
 
 .fsd-activated #fullscreen-activation-dock,
-.fsd-native-fullscreen-hidden { display: none !important; }
+.fsd-native-fullscreen-hidden,
+body.fsd-hide-original [data-testid="fullscreen-mode-button"] { display: none !important; }
+
+// Match Spotify's current hover labels without the old context-menu layout rules.
+.fsd-activation-tooltip {
+    background: var(--spice-card, var(--background-elevated-base, #282828));
+    color: var(--spice-text, var(--text-base, #fff));
+    border-radius: 4px;
+    padding: 4px 8px;
+    max-width: 50ch;
+    font-size: 14px !important;
+    font-weight: 400;
+    line-height: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    box-shadow: 0 16px 24px #0000004d, 0 6px 8px #0003;
+    animation: fsd-tooltip-enter 0.2s ease-in-out;
+}
+
+@keyframes fsd-tooltip-enter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

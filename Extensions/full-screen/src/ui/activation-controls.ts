@@ -13,6 +13,20 @@ export interface ActivationControlsOptions {
     hideOriginal: boolean;
 }
 
+/** Keep tooltip markup independent of the legacy context-menu ID and its sizing rules. */
+function renderActivationTooltip(instance: { props: { content: string } }) {
+    const popper = document.createElement("div");
+    const label = document.createElement("div");
+    label.className = "fsd-activation-tooltip";
+    label.setAttribute("role", "tooltip");
+    label.textContent = instance.props.content;
+    popper.append(label);
+    return {
+        popper,
+        onUpdate: (_previous: unknown, next: { content: string }) => { label.textContent = next.content; },
+    };
+}
+
 /** Own the controls; Spotify only supplies optional places to put them. */
 export function mountActivationControls(options: ActivationControlsOptions): () => void {
     const buttons = new Map<"tv" | "default", HTMLButtonElement>();
@@ -61,10 +75,14 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
                 if (mode === "tv") target.prepend(button);
                 else target.append(button);
             }
-            if (!tooltips.has(button) && !failedTooltips.has(button) && Spicetify.Tippy && Spicetify.TippyProps) {
+            if (!tooltips.has(button) && !failedTooltips.has(button) && Spicetify.Tippy) {
                 try {
                     const tooltip = Spicetify.Tippy(button, {
-                        ...Spicetify.TippyProps,
+                        render: renderActivationTooltip,
+                        animation: false,
+                        delay: [200, 0],
+                        duration: [0, 0],
+                        offset: [0, 8],
                         content: options[mode]!.label,
                         placement: mode === "tv" ? "bottom" : "top",
                         trigger: "mouseenter focus",
@@ -85,6 +103,7 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
         } else dock.remove();
 
         if (options.hideOriginal) {
+            document.body.classList.add("fsd-hide-original");
             for (const element of Array.from(document.querySelectorAll<HTMLElement>('[data-testid="fullscreen-mode-button"]'))) {
                 element.classList.add("fsd-native-fullscreen-hidden");
                 hiddenOriginals.add(element);
@@ -95,6 +114,8 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
                     hiddenOriginals.delete(element);
                 }
             }
+        } else {
+            document.body.classList.remove("fsd-hide-original");
         }
         observer.observe(document.body, { childList: true, subtree: true });
     }
@@ -112,6 +133,7 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
         observer.disconnect();
         clearTimeout(timer);
         window.removeEventListener("resize", schedule);
+        document.body.classList.remove("fsd-hide-original");
         for (const tooltip of tooltips.values()) tooltip.destroy();
         tooltips.clear();
         for (const button of buttons.values()) button.remove();

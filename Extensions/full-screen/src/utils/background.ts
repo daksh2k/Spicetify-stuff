@@ -14,7 +14,11 @@ import {
 import { ExtraControls } from "../ui/components/ExtraControls/ExtraControls";
 
 export class Background {
+    private static updateId = 0;
+
     static async updateBackground(meta: Partial<Record<string, unknown>>, fromResize = false) {
+        const updateId = ++this.updateId;
+        const isCurrent = () => updateId === this.updateId;
         const previousImg = DOM.backgroundImg.cloneNode() as HTMLImageElement;
 
         const settingValue = CFM.get("backgroundChoice") as Settings["backgroundChoice"];
@@ -27,6 +31,7 @@ export class Background {
                 const nextColor = await Utils.getNextColor(
                     CFM.get("coloredBackChoice") as Settings["coloredBackChoice"],
                 );
+                if (!isCurrent()) return;
                 this.updateMainColor(
                     Spicetify.Player.data.item?.metadata.image_xlarge_url,
                     meta as Partial<Record<string, string>>,
@@ -44,18 +49,32 @@ export class Background {
                 animateColor(CFM.get("staticBackChoice") as Settings["staticBackChoice"], DOM.back);
                 break;
             case "artist_art":
-                DOM.backgroundImg.src = await Utils.getImageAndLoad(
+                {
+                    const imageUrl = await Utils.getImageAndLoad(
                     meta as Partial<Record<string, string>>,
-                );
-                this.updateMainColor(DOM.backgroundImg.src, meta as Partial<Record<string, string>>);
-                this.updateThemeColor(DOM.backgroundImg.src);
-                DOM.backgroundImg.onload = () => {
-                    animateCanvas(previousImg, DOM.backgroundImg, DOM.back, fromResize);
-                };
+                    );
+                    if (!isCurrent()) return;
+                    let painted = false;
+                    const paint = () => {
+                        if (painted || !isCurrent()) return;
+                        painted = true;
+                        DOM.backgroundImg.onload = null;
+                        this.updateMainColor(imageUrl, meta as Partial<Record<string, string>>);
+                        this.updateThemeColor(imageUrl);
+                        animateCanvas(previousImg, DOM.backgroundImg, DOM.back, fromResize);
+                    };
+                    DOM.backgroundImg.onload = paint;
+                    DOM.backgroundImg.src = imageUrl;
+                    if (DOM.backgroundImg.complete && DOM.backgroundImg.naturalWidth) paint();
+                }
                 break;
             case "animated_album": {
-                DOM.backgroundImg.src = meta?.image_xlarge_url as string;
-                DOM.backgroundImg.onload = () => {
+                const imageUrl = meta?.image_xlarge_url as string;
+                let painted = false;
+                const paint = () => {
+                    if (painted || !isCurrent()) return;
+                    painted = true;
+                    DOM.backgroundImg.onload = null;
                     this.updateMainColor(
                         Spicetify.Player.data.item?.metadata.image_xlarge_url,
                         meta as Partial<Record<string, string>>,
@@ -63,13 +82,20 @@ export class Background {
                     this.updateThemeColor(Spicetify.Player.data.item?.metadata?.image_xlarge_url);
                     animatedRotatedCanvas(DOM.back, DOM.backgroundImg);
                 };
+                DOM.backgroundImg.onload = paint;
+                DOM.backgroundImg.src = imageUrl;
+                if (DOM.backgroundImg.complete && DOM.backgroundImg.naturalWidth) paint();
 
                 break;
             }
             case "album_art":
-            default:
-                DOM.backgroundImg.src = meta?.image_xlarge_url as string;
-                DOM.backgroundImg.onload = () => {
+            default: {
+                const imageUrl = meta?.image_xlarge_url as string;
+                let painted = false;
+                const paint = () => {
+                    if (painted || !isCurrent()) return;
+                    painted = true;
+                    DOM.backgroundImg.onload = null;
                     this.updateMainColor(
                         Spicetify.Player.data.item?.metadata.image_xlarge_url,
                         meta as Partial<Record<string, string>>,
@@ -77,7 +103,11 @@ export class Background {
                     this.updateThemeColor(Spicetify.Player.data.item?.metadata?.image_xlarge_url);
                     animateCanvas(previousImg, DOM.backgroundImg, DOM.back, fromResize);
                 };
+                DOM.backgroundImg.onload = paint;
+                DOM.backgroundImg.src = imageUrl;
+                if (DOM.backgroundImg.complete && DOM.backgroundImg.naturalWidth) paint();
                 break;
+            }
         }
     }
 
