@@ -18,21 +18,48 @@ interface TrackInfo {
 }
 
 function parseQueueItem(item: any, isQueuedDefault = false): TrackInfo {
-    const meta = item?.contextTrack?.metadata || item?.metadata || {};
+    if (!item) {
+        return {
+            uri: "",
+            uid: Math.random().toString(),
+            title: "Unknown Track",
+            artist: "Unknown Artist",
+            album: "",
+            artwork: "",
+            duration: "",
+            isQueued: false,
+        };
+    }
+
+    const meta =
+        (item?.contextTrack?.metadata && typeof item.contextTrack.metadata === "object"
+            ? item.contextTrack.metadata
+            : null) ||
+        (item?.metadata && typeof item.metadata === "object" ? item.metadata : null) ||
+        {};
+
     const uri = item?.contextTrack?.uri || item?.uri || "";
     const uid = item?.contextTrack?.uid || item?.uid || uri || Math.random().toString();
     const title = meta.title || item?.name || "Unknown Track";
 
-    const artistKeys = Object.keys(meta).filter((k) => k.startsWith("artist_name")).sort();
-    const artist =
-        artistKeys.length > 0
-            ? artistKeys.map((k) => meta[k]).join(", ")
-            : meta.artist_name || item?.artists?.[0]?.name || "";
+    let artist = "";
+    if (meta && typeof meta === "object") {
+        const artistKeys = Object.keys(meta).filter((k) => k.startsWith("artist_name")).sort();
+        if (artistKeys.length > 0) {
+            artist = artistKeys.map((k) => meta[k]).join(", ");
+        } else if (meta.artist_name) {
+            artist = meta.artist_name;
+        }
+    }
+    if (!artist && item?.artists && Array.isArray(item.artists)) {
+        artist = item.artists.map((a: any) => a?.name || "").filter(Boolean).join(", ");
+    }
+    if (!artist) artist = "Unknown Artist";
 
     const album = meta.album_title || item?.album?.name || "";
 
     let artwork = meta.image_xlarge_url || meta.image_large_url || meta.image_url || "";
-    if (artwork.startsWith("spotify:image:")) {
+    if (typeof artwork === "string" && artwork.startsWith("spotify:image:")) {
         artwork = "https://i.scdn.co/image/" + artwork.replace("spotify:image:", "");
     }
     if (!artwork && meta.image_small_url) {
@@ -45,14 +72,18 @@ function parseQueueItem(item: any, isQueuedDefault = false): TrackInfo {
         ? Number(item.duration)
         : 0;
     let duration = "";
-    if (durationMs > 0) {
-        if (Spicetify.Player?.formatTime) {
-            duration = Spicetify.Player.formatTime(durationMs);
-        } else {
-            const s = Math.floor(durationMs / 1000);
-            const m = Math.floor(s / 60);
-            const sec = s % 60;
-            duration = `${m}:${sec < 10 ? "0" : ""}${sec}`;
+    if (durationMs > 0 && !isNaN(durationMs)) {
+        try {
+            if (Spicetify.Player?.formatTime) {
+                duration = Spicetify.Player.formatTime(durationMs);
+            } else {
+                const s = Math.floor(durationMs / 1000);
+                const m = Math.floor(s / 60);
+                const sec = s % 60;
+                duration = `${m}:${sec < 10 ? "0" : ""}${sec}`;
+            }
+        } catch {
+            duration = "";
         }
     }
 
@@ -88,9 +119,12 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
             }
 
             const rawNext = Spicetify.Queue?.nextTracks || [];
-            // Cap at 60 items for performance and smoothness
-            const parsed = rawNext.slice(0, 60).map((t: any) => parseQueueItem(t));
-            setNextTracks(parsed);
+            if (Array.isArray(rawNext)) {
+                const parsed = rawNext.slice(0, 60).map((t: any) => parseQueueItem(t));
+                setNextTracks(parsed);
+            } else {
+                setNextTracks([]);
+            }
         } catch (e) {
             console.warn("Error fetching queue:", e);
         }
@@ -188,7 +222,7 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                 onClick={onClose}
                 onDoubleClick={(e) => e.stopPropagation()}
             />
-            <aside
+            <div
                 id="fsd-queue-drawer"
                 className="fsd-queue-drawer"
                 onClick={(e) => e.stopPropagation()}
@@ -340,7 +374,7 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                         )}
                     </div>
                 </div>
-            </aside>
+            </div>
         </div>
     );
 };

@@ -256,6 +256,10 @@ async function main() {
     }
 
     function toggleQueue() {
+        const queueParent = DOM.container.querySelector("#fsd-queue-parent");
+        if (queueParent && !queueParent.hasChildNodes()) {
+            ReactDOM.render(<QueueDrawer onClose={toggleQueue} />, queueParent);
+        }
         Utils.toggleQueue(DOM.queue);
         if (DOM.queue) {
             Utils.fadeAnimation(DOM.queue);

@@ -514,7 +514,7 @@ body {
     .Root__main-view,
     .Root__now-playing-bar,
     .Root__right-sidebar,
-    aside,
+    aside:not(#fsd-queue-drawer),
     .main-nowPlayingView-container {
         visibility: hidden !important;
         display: none !important;
