@@ -4,6 +4,8 @@ class HtmlSelectors {
         ".Y6soMMBElF7EQDbJv8Xb",
     ];
     private static readonly TOP_BAR_SELECTORS = [
+        ".main-globalNav-contentRight .main-actionButtons",
+        ".main-globalNav-contentRight",
         ".main-globalNav-navRight",
         ".main-topBar-topbarContentRight>.main-actionButtons",
         ".main-topBar-topbarContentRight",
@@ -21,15 +23,16 @@ class HtmlSelectors {
             const element = document.querySelector(selector);
             if (element) return element as HTMLElement;
         }
-        return null;
+        // Spotify's test IDs survive class-name hashing and work before CSS maps update.
+        return document.querySelector<HTMLElement>('[data-testid="user-widget-link"]')?.parentElement ?? null;
     }
 
     static getExtraBarSelector(): HTMLElement | null {
         for (const selector of this.EXTRA_BAR_SELECTORS) {
-            const element = document.querySelector(selector)?.childNodes[0];
+            const element = document.querySelector(selector)?.firstElementChild;
             if (element) return element as HTMLElement;
         }
-        return null;
+        return document.querySelector<HTMLElement>('[data-testid="fullscreen-mode-button"]')?.parentElement ?? null;
     }
     static getOriginalQueueButton(): HTMLElement | null {
         for (const selector of this.ORIGINAL_QUEUE_BUTTON_SELECTORS) {

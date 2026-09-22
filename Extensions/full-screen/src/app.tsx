@@ -9,7 +9,7 @@ import { modifyIsAnimationRunning } from "./utils/animation";
 
 import translations from "./resources/strings";
 import ICONS, { CLASSES_TO_ADD } from "./constants";
-import HtmlSelectors from "./utils/selectors";
+import { mountActivationControls } from "./ui/activation-controls";
 import { Config, Settings } from "./types/fullscreen";
 
 import showWhatsNew from "./services/whats-new";
@@ -33,6 +33,7 @@ import "./styles/base.scss";
 import "./styles/tvMode.scss";
 import "./styles/defaultMode.scss";
 import "./styles/settings.scss";
+import "./styles/activation-controls.scss";
 
 async function main() {
     let INIT_RETRIES = 0;
@@ -474,7 +475,7 @@ async function main() {
             });
             Spicetify.Platform.PlayerAPI._events.addListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
         }
-        document.querySelector(".Root__top-container")?.append(DOM.style, DOM.container);
+        (document.querySelector(".Root__top-container") ?? document.body).append(DOM.style, DOM.container);
         if (CFM.get("lyricsDisplay")) {
             window.addEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
             origLoc = Spicetify.Platform.History.location.pathname;
@@ -585,64 +586,23 @@ async function main() {
         Background.updateMainColor.bind(Background)
     );
 
-    const extraBar = HtmlSelectors.getExtraBarSelector() as HTMLElement;
-    if (CFM.getGlobal("fsHideOriginal") && extraBar) {
-        extraBar.childNodes.forEach((child: Node) => {
-            const el = child as HTMLElement;
-            if (el.nodeType === Node.ELEMENT_NODE && el.getAttribute("data-testid") === "fullscreen-mode-button") {
-                el.remove();
-            }
-        });
-    }
-    if (CFM.getGlobal("activationTypes") != "keys") {
-        if (CFM.getGlobal("buttonActivation") !== "tv") {
-            // Add Full Screen Button on bottom bar
-            const defButton = document.createElement("button");
-            defButton.classList.add("button");
-            defButton.id = "fullscreen-default-button";
-            defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
-
-            defButton.innerHTML = ICONS.FULLSCREEN;
-            defButton.onclick = openwithDef;
-
-            defButton.oncontextmenu = (evt) => {
-                evt.preventDefault();
-                CFM.setMode("def");
-                ConfigManager.openConfig();
-            };
-            (extraBar as HTMLElement)?.append(defButton);
-        }
-
-        if (CFM.getGlobal("buttonActivation") !== "def") {
-            // Add TV Mode Button on top bar
-            const tvButton = document.createElement("button");
-
-            tvButton.innerHTML = ICONS.TV_MODE;
-            tvButton.id = "fullscreen-tv-button";
-            tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
-
-            tvButton.onclick = openwithTV;
-            tvButton.style.WebkitAppRegion = "no-drag";
-
-            tvButton.classList.add(
-                "Button-buttonTertiary-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
-                "Button-small-small-buttonTertiary-condensedAll-isUsingKeyboard-useBrowserDefaultFocusStyle",
-                "Button-buttonTertiary-small-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
-                "encore-text-body-small-bold",
-                "main-globalNav-buddyFeed",
-                "Button-sc-1dqy6lx-0",
-                "main-topBar-buddyFeed"
-            );
-            HtmlSelectors.getTopBarSelector()?.prepend(tvButton);
-
-            // document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
-            tvButton.oncontextmenu = (evt) => {
-                evt.preventDefault();
-                CFM.setMode("tv");
-                ConfigManager.openConfig();
-            };
-        }
-    }
+    const showButtons = CFM.getGlobal("activationTypes") !== "keys";
+    const cleanupControls = mountActivationControls({
+        hideOriginal: Boolean(CFM.getGlobal("fsHideOriginal")),
+        tv: showButtons && CFM.getGlobal("buttonActivation") !== "def" ? {
+            label: translations[LOCALE].tvBtnDesc,
+            icon: ICONS.TV_MODE,
+            activate: openwithTV,
+            configure: () => { CFM.setMode("tv"); ConfigManager.openConfig(); },
+        } : undefined,
+        default: showButtons && CFM.getGlobal("buttonActivation") !== "tv" ? {
+            label: translations[LOCALE].fullscreenBtnDesc,
+            icon: ICONS.FULLSCREEN,
+            activate: openwithDef,
+            configure: () => { CFM.setMode("def"); ConfigManager.openConfig(); },
+        } : undefined,
+    });
+    window.addEventListener("pagehide", cleanupControls, { once: true });
 
     render();
 

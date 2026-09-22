@@ -1,0 +1,57 @@
+// These controls must remain clickable and legible without Spotify's button classes.
+body .fsd-activation-button {
+    -webkit-app-region: no-drag;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--spice-subtext, var(--text-subdued, #b3b3b3));
+    cursor: pointer;
+    pointer-events: auto;
+    touch-action: manipulation;
+
+    svg { display: block; width: 16px; height: 16px; fill: currentColor; pointer-events: none; }
+    &:hover { background: rgba(127, 127, 127, 0.25); color: var(--spice-text, #fff); }
+    &:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+}
+
+body #fullscreen-tv-button.fsd-activation-button {
+    align-self: center;
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    border-radius: 50%;
+    background: var(--spice-card, var(--background-tinted-base, rgba(127, 127, 127, 0.18)));
+    color: var(--spice-subtext, var(--text-subdued, #b3b3b3));
+    line-height: 0;
+
+    svg { flex: 0 0 16px; width: 16px; height: 16px; }
+    &:hover {
+        background: var(--spice-highlight, var(--background-tinted-highlight, rgba(127, 127, 127, 0.3)));
+        color: var(--spice-text, var(--text-base, #fff));
+    }
+}
+
+#fullscreen-activation-dock {
+    position: fixed;
+    top: 76px;
+    right: 24px;
+    z-index: 90;
+    display: flex;
+    padding: 4px;
+    border: 1px solid rgba(127, 127, 127, 0.5);
+    border-radius: 24px;
+    background: var(--spice-main, #181818);
+    -webkit-app-region: no-drag;
+}
+
+.fsd-activated #fullscreen-activation-dock,
+.fsd-native-fullscreen-hidden { display: none !important; }

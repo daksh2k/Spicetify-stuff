@@ -7,12 +7,9 @@ let wasQueuePanelEnabled: boolean | null = null;
 
 class Utils {
     static allNotExist() {
-        const extraBar = HtmlSelectors.getExtraBarSelector();
-        const topBar = HtmlSelectors.getTopBarSelector();
-
         const entriesToVerify = {
-            "Top Bar Component": topBar,
-            "Extra Bar Component": extraBar,
+            // Toolbars are optional mounting points, not prerequisites for the player.
+            "Document Body": document.body,
             "Spicetify CosmosAsync": Spicetify.CosmosAsync,
             "Spicetify Mousetrap": Spicetify.Mousetrap,
             "Spicetify Player": Spicetify.Player,
