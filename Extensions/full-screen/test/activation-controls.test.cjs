@@ -37,6 +37,53 @@ function setup(t, html = '') {
 }
 const settle = () => new Promise(resolve => setTimeout(resolve, 330));
 
+test('uses Spotify tooltip styling for hover and focus, and cleans up the instance', async t => {
+    const s = setup(t);
+    const calls = [];
+    let hidden = 0, destroyed = 0;
+    const renderer = () => {};
+    s.api.TippyProps = { render: renderer, delay: [200, 0] };
+    s.api.Tippy = (button, props) => {
+        calls.push({ button, props });
+        return { hide: () => hidden++, destroy: () => destroyed++ };
+    };
+    const cleanup = s.mount({ default: undefined });
+    const button = s.document.querySelector('#fullscreen-tv-button');
+    assert.equal(calls.length, 1);
+    assert.equal(calls[0].props.render, renderer);
+    assert.equal(calls[0].props.content, 'TV mode');
+    assert.equal(calls[0].props.placement, 'bottom');
+    assert.equal(calls[0].props.trigger, 'mouseenter focus');
+    assert.equal(button.hasAttribute('title'), false);
+    button.click();
+    assert.equal(hidden, 1);
+    s.document.body.insertAdjacentHTML('beforeend', '<div class="main-globalNav-contentRight"></div>');
+    await settle();
+    assert.equal(calls.length, 1);
+    cleanup();
+    assert.equal(destroyed, 1);
+});
+
+test('missing tooltip API retains the title fallback and working activation', t => {
+    const s = setup(t);
+    s.mount({ default: undefined });
+    const button = s.document.querySelector('#fullscreen-tv-button');
+    assert.equal(button.title, 'TV mode');
+    button.click();
+    assert.deepEqual(s.counts(), [1, 0]);
+});
+
+test('a failed tooltip API cannot prevent the buttons from working', t => {
+    const s = setup(t);
+    s.api.TippyProps = {};
+    s.api.Tippy = () => { throw new Error('Changed tooltip API'); };
+    s.mount({ default: undefined });
+    const button = s.document.querySelector('#fullscreen-tv-button');
+    assert.equal(button.title, 'TV mode');
+    button.click();
+    assert.deepEqual(s.counts(), [1, 0]);
+});
+
 test('missing toolbars do not block startup or keyboard activation', t => {
     const s = setup(t);
     assert.equal(s.utils().allNotExist().length, 0);

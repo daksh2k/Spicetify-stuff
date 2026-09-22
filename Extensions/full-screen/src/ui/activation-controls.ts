@@ -20,6 +20,8 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
     dock.id = "fullscreen-activation-dock";
     dock.setAttribute("role", "group");
     const hiddenOriginals = new Set<HTMLElement>();
+    const tooltips = new Map<HTMLButtonElement, { hide: () => void; destroy: () => void }>();
+    const failedTooltips = new Set<HTMLButtonElement>();
     let timer: ReturnType<typeof setTimeout> | undefined;
     let disposed = false;
 
@@ -34,9 +36,13 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
         button.setAttribute("aria-label", config.label);
         button.innerHTML = config.icon;
         button.setAttribute("style", "-webkit-app-region: no-drag;");
-        button.onclick = config.activate;
+        button.onclick = () => {
+            tooltips.get(button)?.hide();
+            config.activate();
+        };
         button.oncontextmenu = (event) => {
             event.preventDefault();
+            tooltips.get(button)?.hide();
             config.configure();
         };
         buttons.set(mode, button);
@@ -54,6 +60,24 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
             if (button.parentElement !== target) {
                 if (mode === "tv") target.prepend(button);
                 else target.append(button);
+            }
+            if (!tooltips.has(button) && !failedTooltips.has(button) && Spicetify.Tippy && Spicetify.TippyProps) {
+                try {
+                    const tooltip = Spicetify.Tippy(button, {
+                        ...Spicetify.TippyProps,
+                        content: options[mode]!.label,
+                        placement: mode === "tv" ? "bottom" : "top",
+                        trigger: "mouseenter focus",
+                        allowHTML: false,
+                        appendTo: () => document.body,
+                    });
+                    tooltips.set(button, tooltip);
+                    // Avoid showing the browser's title tooltip on top of Spotify's.
+                    button.removeAttribute("title");
+                } catch {
+                    // A changed tooltip API must not break activation; keep the title fallback.
+                    failedTooltips.add(button);
+                }
             }
         }
         if (dock.childElementCount) {
@@ -88,6 +112,8 @@ export function mountActivationControls(options: ActivationControlsOptions): () 
         observer.disconnect();
         clearTimeout(timer);
         window.removeEventListener("resize", schedule);
+        for (const tooltip of tooltips.values()) tooltip.destroy();
+        tooltips.clear();
         for (const button of buttons.values()) button.remove();
         dock.remove();
         for (const element of hiddenOriginals) element.classList.remove("fsd-native-fullscreen-hidden");

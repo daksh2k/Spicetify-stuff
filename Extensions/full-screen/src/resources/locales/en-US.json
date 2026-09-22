@@ -171,6 +171,6 @@
         "configReset": "Reset Config",
         "reload": "Reload Client"
     },
-    "tvBtnDesc": "TV Mode Display",
+    "tvBtnDesc": "TV Mode",
     "fullscreenBtnDesc": "Full Screen"
 }
