@@ -23,7 +23,8 @@ export class PlayerControls {
         if (!element) return;
         element.style.opacity = "1";
         this.playerControlsTimer = setTimeout(() => {
-            if (element.matches(":hover") || element.closest("#fsd-status")?.matches(":hover")) {
+            const progParent = DOM.container.querySelector("#fsd-progress-parent");
+            if (element.matches(":hover") || element.closest("#fsd-status")?.matches(":hover") || progParent?.matches(":hover")) {
                 return;
             }
             element.style.opacity = "0";

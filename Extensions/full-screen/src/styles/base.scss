@@ -51,11 +51,14 @@
     #fsd-status:hover,
     #fsd-status:hover .fsd-controls,
     #fsd-status:hover .extra-controls,
-    #fsd-status:hover #fsd-progress-container,
+    #fsd-status:hover ~ #fsd-progress-parent #fsd-progress-container,
+    #fsd-progress-parent:hover ~ #fsd-status .fsd-controls,
+    #fsd-progress-parent:hover ~ #fsd-status .extra-controls,
+    #fsd-progress-parent:hover #fsd-progress-container,
+    #fsd-progress-container:hover,
     .fsd-controls:hover,
     .extra-controls:hover,
-    .fs-button:hover,
-    #fsd-progress-container:hover {
+    .fs-button:hover {
         opacity: 1 !important;
     }
 
@@ -409,25 +412,42 @@
     .fs-button {
         background: transparent;
         border: 0;
-        border-radius: 8px;
+        border-radius: 50%;
         color: var(--primary-color);
-        padding: 3px 5px 0 5px;
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
         cursor: pointer;
         position: relative;
-        transition:
-            all 0.3s var(--transition-function),
-            transform 0.1s var(--transition-function);
+        transform: scale(1);
+        transition: transform 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+
+        svg {
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+        }
 
         &:hover {
-            transform: scale(1.2);
-            filter: saturate(1.5) contrast(1.5) !important;
-            background: var(--theme-hover-color);
+            transform: scale(1.08);
+            background: var(--theme-hover-color, rgba(255, 255, 255, 0.12));
+        }
+
+        &:active {
+            transform: scale(0.92);
         }
 
         &.button-active {
-            background: var(--theme-background-color) !important;
-            filter: saturate(1.5) contrast(1.5) !important;
+            background: var(--theme-background-color, rgba(255, 255, 255, 0.2)) !important;
         }
+    }
+
+    #fsd-play.fs-button {
+        width: 42px;
+        height: 42px;
     }
 
     #fsd-foreground svg {
