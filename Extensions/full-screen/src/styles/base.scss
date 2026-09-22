@@ -509,6 +509,7 @@ body {
     .main-topBar-container,
     .globalNav,
     .main-globalNav,
+    .Root__globalNav,
     .main-topBar-topbarContentRight,
     .Root__nav-bar,
     .Root__main-view,
@@ -523,11 +524,22 @@ body {
         pointer-events: none !important;
     }
 
+    // When the queue panel is open, lift #main and .Root__top-container
+    // above the fullscreen overlay so the right sidebar can paint on top.
     &.fsd-queue-panel-active {
+        #main,
+        .Root,
+        .Root__top-container {
+            background: transparent !important;
+            pointer-events: none !important;
+            z-index: 10001 !important;
+        }
+
         .Root__right-sidebar,
         .Root__right-sidebar.fsd-queue-panel {
             visibility: visible !important;
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
             opacity: 1 !important;
             pointer-events: auto !important;
             position: fixed !important;
@@ -538,9 +550,9 @@ body {
             width: 440px !important;
             max-width: 90vw !important;
             z-index: 10001 !important;
-            background: rgba(18, 18, 18, 0.88) !important;
-            backdrop-filter: blur(28px) brightness(0.75) !important;
-            -webkit-backdrop-filter: blur(28px) brightness(0.75) !important;
+            background: rgba(18, 18, 18, 0.92) !important;
+            backdrop-filter: blur(28px) brightness(0.8) !important;
+            -webkit-backdrop-filter: blur(28px) brightness(0.8) !important;
             box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6) !important;
             border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
             transform: translateX(0) !important;
@@ -548,25 +560,32 @@ body {
             overflow: hidden !important;
         }
 
-        .Root__right-sidebar aside,
+        // Override Spotify's peek/overlay/peekContent collapse structure.
+        // These containers use flex + position:absolute + transform to hide
+        // by default; we need to force them to fill the sidebar.
+        .Root__right-sidebar .Root__right-sidebar-peek,
+        .Root__right-sidebar .Root__right-sidebar-overlayWrapper,
+        .Root__right-sidebar .Root__right-sidebar-peekContent,
         .Root__right-sidebar .main-nowPlayingView-container,
-        .Root__right-sidebar #Desktop_PanelContainer_Id,
-        .Root__right-sidebar [data-testid="right-sidebar"] {
-            visibility: visible !important;
+        .Root__right-sidebar aside {
             display: flex !important;
             flex-direction: column !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            min-height: 0 !important;
+            flex: 1 1 100% !important;
+            background: transparent !important;
+            position: relative !important;
+            overflow: hidden !important;
+            visibility: visible !important;
             opacity: 1 !important;
             pointer-events: auto !important;
-            height: 100% !important;
-            width: 100% !important;
-            max-width: 100% !important;
-            background: transparent !important;
-            position: static !important;
+            transform: none !important;
         }
 
         .Root__right-sidebar * {
             visibility: visible !important;
-            pointer-events: auto !important;
         }
 
         .Root__right-sidebar .main-buddyFeed-actions.main-buddyFeed-closeContainer {
