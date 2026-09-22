@@ -57,6 +57,54 @@ class Utils {
         cancelQueuedPanelWork();
     }
 
+    static isInteractiveTarget(element: Element | null): boolean {
+        if (!element) return false;
+        const selector = [
+            "button",
+            "a",
+            "input",
+            "select",
+            "textarea",
+            '[role="button"]',
+            '[role="link"]',
+            '[role="slider"]',
+            '[role="progressbar"]',
+            '[role="menuitem"]',
+            '[role="checkbox"]',
+            '[role="switch"]',
+            '[role="tab"]',
+            "[tabindex]",
+            "[uri]",
+            "[data-clickable]",
+            ".fs-button",
+            ".control-button",
+            ".fsd-controls",
+            ".fsd-controls-center",
+            ".fsd-controls-left",
+            ".fsd-controls-right",
+            "#fsd-player-controls",
+            "#fsd-volume-parent",
+            "#fsd-progress-parent",
+            "#fsd-extra-controls",
+            "#fsd-upnext-container",
+            "#fsd-overview-card-parent",
+            ".fsd-song-meta span",
+            ".lyrics-item",
+            "#fad-lyrics-plus-container",
+        ].join(", ");
+
+        if (element.closest?.(selector)) return true;
+
+        try {
+            if (typeof window !== "undefined" && window.getComputedStyle) {
+                const style = window.getComputedStyle(element);
+                if (style && style.cursor === "pointer") return true;
+            }
+        } catch (_) {}
+
+        return false;
+    }
+
     /**
      * Add fade animation on button click
      * @param element The element to add fade animation

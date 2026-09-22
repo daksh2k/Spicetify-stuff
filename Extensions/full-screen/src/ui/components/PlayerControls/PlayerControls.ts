@@ -19,8 +19,14 @@ export class PlayerControls {
         if (this.playerControlsTimer) {
             clearTimeout(this.playerControlsTimer);
         }
-        const element = DOM.container.querySelector(".fsd-controls-center")! as HTMLElement;
+        const element = DOM.container.querySelector(".fsd-controls-center") as HTMLElement | null;
+        if (!element) return;
         element.style.opacity = "1";
-        this.playerControlsTimer = setTimeout(() => (element.style.opacity = "0"), 3000);
+        this.playerControlsTimer = setTimeout(() => {
+            if (element.matches(":hover") || element.closest("#fsd-status")?.matches(":hover")) {
+                return;
+            }
+            element.style.opacity = "0";
+        }, 3000);
     }
 }

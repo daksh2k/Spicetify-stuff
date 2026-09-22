@@ -69,6 +69,10 @@ const SeekableProgressBar = ({ state }: { state: string }) => {
         }
         setVisibility(true);
         progressTimer.current = setTimeout(() => {
+            const container = document.getElementById("fsd-progress-container");
+            if (container?.matches(":hover") || container?.closest("#fsd-status")?.matches(":hover")) {
+                return;
+            }
             setVisibility(false);
         }, timeout);
     };
@@ -133,7 +137,16 @@ const SeekableProgressBar = ({ state }: { state: string }) => {
     }, [changingProgress, state]);
 
     return (
-        <div id="fsd-progress-container" style={{ opacity: visibility ? 1 : 0 }}>
+        <div
+            id="fsd-progress-container"
+            style={{ opacity: visibility ? 1 : 0 }}
+            onMouseEnter={() => {
+                if (progressTimer.current) clearTimeout(progressTimer.current);
+                setVisibility(true);
+            }}
+            onMouseLeave={() => {
+                if (state === "mousemove") hideProgressBar();
+            }}>
             <div className="progress-number" id="fsd-elapsed">
                 {Spicetify.Player.formatTime(curProgress)}
             </div>

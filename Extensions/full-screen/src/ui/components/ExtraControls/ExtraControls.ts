@@ -92,6 +92,11 @@ export class ExtraControls {
         const elements = DOM.container.querySelectorAll(".extra-controls") as NodeListOf<HTMLElement>;
         elements.forEach((element) => (element.style.opacity = "1"));
         this.extraControlsTimer = setTimeout(() => {
+            const status = DOM.container.querySelector("#fsd-status");
+            if (status?.matches(":hover")) return;
+            for (const el of Array.from(elements)) {
+                if (el.matches(":hover")) return;
+            }
             elements.forEach((element) => (element.style.opacity = "0"));
         }, 3000);
     }

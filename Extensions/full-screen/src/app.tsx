@@ -239,6 +239,13 @@ async function main() {
             DOM.queue.onclick = () => toggleQueue();
         }
 
+        // Stop double-click propagation on interactive controls so rapid clicks (e.g. skipping tracks) never trigger fullscreen exit
+        DOM.container.querySelectorAll<HTMLElement>(
+            '.fs-button, .control-button, #fsd-upnext-container, .fsd-song-meta span, #fsd-volume-parent, #fsd-progress-parent'
+        ).forEach((el) => {
+            el.ondblclick = (e) => e.stopPropagation();
+        });
+
         // The lyrics-plus portal must be refreshed only after its new target exists.
         // Routing to /lyrics-plus here tears down Spotify's current page and leaves a
         // visible loading state when the display closes.
@@ -368,12 +375,33 @@ async function main() {
             clearTimeout(curTimer);
         }
         DOM.container.style.cursor = "default";
-        curTimer = setTimeout(() => (DOM.container.style.cursor = "none"), 2000);
+        curTimer = setTimeout(() => {
+            const statusEl = DOM.container.querySelector("#fsd-status");
+            if (statusEl?.matches(":hover")) return;
+            DOM.container.style.cursor = "none";
+        }, 2000);
+    }
+
+    function onStatusEnter() {
+        if (PlayerControls.playerControlsTimer) clearTimeout(PlayerControls.playerControlsTimer);
+        if (ExtraControls.extraControlsTimer) clearTimeout(ExtraControls.extraControlsTimer);
+        const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
+        statusEl?.querySelectorAll<HTMLElement>(".fsd-controls, .extra-controls").forEach((c) => (c.style.opacity = "1"));
+    }
+
+    function onStatusLeave() {
+        if (CFM.get("playerControls") === "mousemove") PlayerControls.hidePlayerControls();
+        if (CFM.get("extraControls") === "mousemove") ExtraControls.hideExtraControls();
     }
 
     function handleMouseMoveActivation() {
         DOM.container.addEventListener("mousemove", hideCursor);
         hideCursor();
+
+        const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
+        statusEl?.addEventListener("mouseenter", onStatusEnter);
+        statusEl?.addEventListener("mouseleave", onStatusLeave);
+
         if (CFM.get("contextDisplay") === "mousemove") {
             DOM.container.addEventListener("mousemove", Context.hideContext.bind(Context));
             Context.hideContext();
@@ -393,6 +421,10 @@ async function main() {
         DOM.container.removeEventListener("mousemove", Context.hideContext.bind(Context));
         DOM.container.removeEventListener("mousemove", ExtraControls.hideExtraControls.bind(ExtraControls));
         DOM.container.removeEventListener("mousemove", PlayerControls.hidePlayerControls.bind(PlayerControls));
+
+        const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
+        statusEl?.removeEventListener("mouseenter", onStatusEnter);
+        statusEl?.removeEventListener("mouseleave", onStatusLeave);
 
         if (curTimer) clearTimeout(curTimer);
         if (Context.ctxTimer) clearTimeout(Context.ctxTimer);
@@ -464,10 +496,22 @@ async function main() {
 
             Spicetify.Player.addEventListener("songchange", updateInfo);
             handleMouseMoveActivation();
-            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = ConfigManager.openConfig.bind(ConfigManager);
-            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = deactivate;
-            DOM.back.oncontextmenu = ConfigManager.openConfig.bind(ConfigManager);
-            DOM.back.ondblclick = deactivate;
+            const handleBackgroundDblClick = (e: MouseEvent) => {
+                if (Utils.isInteractiveTarget(e.target as Element | null)) return;
+                deactivate();
+            };
+
+            const handleContextMenu = (e: MouseEvent) => {
+                if (Utils.isInteractiveTarget(e.target as Element | null)) return;
+                ConfigManager.openConfig();
+            };
+
+            DOM.container.oncontextmenu = handleContextMenu;
+            DOM.container.ondblclick = handleBackgroundDblClick;
+            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = handleContextMenu;
+            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = handleBackgroundDblClick;
+            DOM.back.oncontextmenu = handleContextMenu;
+            DOM.back.ondblclick = handleBackgroundDblClick;
             if (CFM.get("upnextDisplay") !== "never") {
                 UpNext.updateUpNextShow();
                 Spicetify.Platform.PlayerAPI._events.addListener("queue_update", UpNext.updateUpNext.bind(UpNext));

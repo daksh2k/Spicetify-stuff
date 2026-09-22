@@ -48,6 +48,23 @@
         background: transparent !important;
     }
 
+    #fsd-status:hover,
+    #fsd-status:hover .fsd-controls,
+    #fsd-status:hover .extra-controls,
+    #fsd-status:hover #fsd-progress-container,
+    .fsd-controls:hover,
+    .extra-controls:hover,
+    .fs-button:hover,
+    #fsd-progress-container:hover {
+        opacity: 1 !important;
+    }
+
+    .fsd-controls,
+    .extra-controls,
+    #fsd-progress-container {
+        transition: opacity 0.3s ease-in-out;
+    }
+
     /*
     .unavailable::after{
         content: "";
