@@ -19,6 +19,7 @@ import { initMoustrapRecord } from "./services/mousetrap-record";
 import SeekableProgressBar from "./ui/components/ProgressBar/ProgressBar";
 import SeekableVolumeBar from "./ui/components/VolumeBar/VolumeBar";
 import OverviewCard from "./ui/components/OverviewPopup/OverviewCard";
+import QueueDrawer from "./ui/components/Queue/QueueDrawer";
 
 import { DOM } from "./ui/elements";
 import { ConfigManager } from "./ui/components/Config/Config";
@@ -241,7 +242,7 @@ async function main() {
 
         // Stop double-click propagation on interactive controls so rapid clicks (e.g. skipping tracks) never trigger fullscreen exit
         DOM.container.querySelectorAll<HTMLElement>(
-            '.fs-button, .control-button, #fsd-upnext-container, .fsd-song-meta span, #fsd-volume-parent, #fsd-progress-parent'
+            '.fs-button, .control-button, #fsd-upnext-container, .fsd-song-meta span, #fsd-volume-parent, #fsd-progress-parent, #fsd-queue-parent'
         ).forEach((el) => {
             el.ondblclick = (e) => e.stopPropagation();
         });
@@ -453,6 +454,12 @@ async function main() {
 
     function escKeyHandler(e: KeyboardEvent) {
         if (e.key === "Escape" || e.code === "Escape") {
+            if (document.body.classList.contains("fsd-queue-panel-active")) {
+                toggleQueue();
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
             deactivate();
         }
     }
@@ -559,6 +566,13 @@ async function main() {
                     DOM.container.querySelector("#fsd-overview-card-parent"),
                 );
             }
+            const queueParent = DOM.container.querySelector("#fsd-queue-parent");
+            if (queueParent) {
+                ReactDOM.render(
+                    <QueueDrawer onClose={toggleQueue} />,
+                    queueParent,
+                );
+            }
             if (CFM.get("playerControls") !== "never") {
                 PlayerControls.updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
                 Spicetify.Player.addEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
@@ -582,7 +596,13 @@ async function main() {
             document.addEventListener("fullscreenchange", fullScreenListener);
             window.addEventListener("keydown", escKeyHandler, true);
             window.addEventListener("contextmenu", contextMenuHandler, true);
-            Spicetify.Mousetrap.bind("esc", deactivate);
+            Spicetify.Mousetrap.bind("esc", () => {
+                if (document.body.classList.contains("fsd-queue-panel-active")) {
+                    toggleQueue();
+                    return;
+                }
+                deactivate();
+            });
             if (CFM.get("lyricsDisplay")) {
                 Spicetify.Mousetrap.bind("l", Lyrics.toggleLyrics);
             }
@@ -649,6 +669,8 @@ async function main() {
             if (progParent) ReactDOM.unmountComponentAtNode(progParent);
             const cardParent = DOM.container.querySelector("#fsd-overview-card-parent");
             if (cardParent) ReactDOM.unmountComponentAtNode(cardParent);
+            const queueParent = DOM.container.querySelector("#fsd-queue-parent");
+            if (queueParent) ReactDOM.unmountComponentAtNode(queueParent);
 
             if (CFM.get("icons")) {
                 Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);

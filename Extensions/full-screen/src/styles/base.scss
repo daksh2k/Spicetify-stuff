@@ -523,80 +523,10 @@ body {
         pointer-events: none !important;
     }
 
-    &.fsd-queue-panel-active .Root__right-sidebar.fsd-queue-panel,
-    &.fsd-queue-panel-active aside.fsd-queue-panel,
-    &.fsd-queue-panel-active .main-nowPlayingView-container.fsd-queue-panel,
-    &.fsd-queue-panel-active .fsd-queue-panel {
-        visibility: visible !important;
-        display: block !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        z-index: 10001 !important;
-    }
-
     .Root__top-container {
         will-change: auto !important;
         transform: none !important;
         overflow-x: hidden !important;
-    }
-
-    .fsd-transform-animation {
-        transition: transform 0.4s ease-in-out;
-    }
-
-    .fsd-queue-panel {
-        position: fixed !important;
-        top: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        height: 100vh !important;
-        width: 450px !important;
-        max-width: 90vw !important;
-        --queue-panel-x: 1000px;
-        z-index: 10001 !important;
-        transform: translateX(var(--queue-panel-x));
-
-        .main-buddyFeed-actions.main-buddyFeed-closeContainer,
-        .icNf66tgG3uxDMbCCIaN.XOSSUjLDKk9RRmiX_UWa,
-        .liw6Y_iPu2DJRwk10x9d.FLyfurPaIDAlwjsF3mLf,
-        .main-nowPlayingView-headerButtonContainer.SR7K4r2ugBwBspFK {
-            display: none;
-        }
-
-        .XOawmCGZcQx4cesyNfVO,
-        .oXO9_yYs6JyOwkBn8E4a,
-        .zjCIcN96KsMfWwRo,
-        .main-nowPlayingView-container {
-            width: 500px !important;
-        }
-
-        .eWU4JoxyECcwnSf_ {
-            background: transparent !important;
-        }
-
-        .main-buddyFeed-container,
-        .ffFwfKcPDbmAPLXzxzKq,
-        .ffFwfKcPDbmAPLXzxzKq::before,
-        .UrfDp0_mKGL9hkfh9g_R.SKjhjAC5p3CW1UI5UiMg,
-        .UrfDp0_mKGL9hkfh9g_R.SKjhjAC5p3CW1UI5UiMg::before,
-        .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1,
-        .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1::before,
-        .ZWDHceKsZZA3lvFT:before,
-        .ZWDHceKsZZA3lvFT {
-            background: transparent !important;
-            backdrop-filter: blur(10px) brightness(0.7);
-            border-radius: 10px;
-        }
-    }
-
-    &.vertical-mode {
-
-        .XOawmCGZcQx4cesyNfVO,
-        .oXO9_yYs6JyOwkBn8E4a,
-        .zjCIcN96KsMfWwRo,
-        .main-nowPlayingView-container{
-            width: 280px !important;
-        }
     }
 
     .Root__main-view-overlay {

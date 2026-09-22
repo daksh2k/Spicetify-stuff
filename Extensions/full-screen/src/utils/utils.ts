@@ -90,6 +90,12 @@ class Utils {
             "#fsd-extra-controls",
             "#fsd-upnext-container",
             "#fsd-overview-card-parent",
+            "#fsd-queue-parent",
+            "#fsd-queue-parent *",
+            "#fsd-queue-drawer",
+            "#fsd-queue-drawer *",
+            ".fsd-queue-item",
+            ".fsd-queue-item *",
             ".fsd-song-meta span",
             ".lyrics-item",
             "#fad-lyrics-plus-container",
@@ -375,65 +381,31 @@ class Utils {
 
     static toggleQueuePanel(myQueueButton: HTMLElement | null, enabled: boolean) {
         cancelQueuedPanelWork();
-        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
-        const rightPanel = HtmlSelectors.getRightPanel();
         if (enabled) {
-            this.toggleQueue(myQueueButton);
+            if (!document.body.classList.contains("fsd-queue-panel-active")) {
+                this.toggleQueue(myQueueButton);
+            }
         } else {
-            if (wasQueuePanelEnabled != null && !wasQueuePanelEnabled) {
-                originalQueueButton?.click();
+            if (document.body.classList.contains("fsd-queue-panel-active")) {
+                this.toggleQueue(myQueueButton);
             }
-            if (rightPanel) {
-                rightPanel.style.setProperty("--queue-panel-x", "1000px");
-                rightPanel.classList.remove("fsd-queue-panel", "fsd-transform-animation");
-            }
-            wasQueuePanelEnabled = null;
-            myQueueButton?.classList.remove("button-active", "dot-after");
-            document.body.classList.remove("fsd-queue-panel-active");
         }
     }
 
     static toggleQueue(queueButton: HTMLElement | null) {
         cancelQueuedPanelWork();
-        const rightPanel = HtmlSelectors.getRightPanel();
-        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
-
         if (document.body.classList.contains("fsd-queue-panel-active")) {
-            if (rightPanel) {
-                rightPanel.style.setProperty("--queue-panel-x", "1000px");
-                setTimeout(() => {
-                    rightPanel.classList.remove("fsd-queue-panel", "fsd-transform-animation");
-                }, 400);
-            }
             queueButton?.classList.remove("button-active", "dot-after");
             document.body.classList.remove("fsd-queue-panel-active");
-
-            if (wasQueuePanelEnabled === false) {
-                originalQueueButton?.click();
-            }
-            wasQueuePanelEnabled = null;
+            window.dispatchEvent(
+                new CustomEvent("fsd-queue-visibility", { detail: { open: false } })
+            );
         } else {
-            const isOriginalActive =
-                originalQueueButton?.classList.contains("main-genericButton-buttonActive") ||
-                originalQueueButton?.getAttribute("aria-expanded") === "true" ||
-                originalQueueButton?.getAttribute("aria-checked") === "true";
-
-            if (!isOriginalActive) {
-                originalQueueButton?.click();
-                wasQueuePanelEnabled = false;
-            } else {
-                wasQueuePanelEnabled = true;
-            }
-
-            if (rightPanel) {
-                rightPanel.classList.add("fsd-queue-panel");
-                rightPanel.classList.add("fsd-transform-animation");
-                requestAnimationFrame(() => {
-                    rightPanel.style.setProperty("--queue-panel-x", "0px");
-                });
-            }
             queueButton?.classList.add("button-active", "dot-after");
             document.body.classList.add("fsd-queue-panel-active");
+            window.dispatchEvent(
+                new CustomEvent("fsd-queue-visibility", { detail: { open: true } })
+            );
         }
     }
 

@@ -1,0 +1,342 @@
+.fsd-queue-root {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10001;
+    pointer-events: none;
+    overflow: hidden;
+
+    .fsd-queue-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+    }
+
+    .fsd-queue-drawer {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 440px;
+        max-width: 90vw;
+        height: 100vh;
+        background: rgba(18, 18, 18, 0.88);
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        border-left: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: -12px 0 40px rgba(0, 0, 0, 0.7);
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+        color: #ffffff;
+        user-select: none;
+        box-sizing: border-box;
+    }
+
+    &.fsd-queue-open {
+        pointer-events: auto;
+
+        .fsd-queue-backdrop {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .fsd-queue-drawer {
+            transform: translateX(0);
+            pointer-events: auto;
+        }
+    }
+}
+
+.fsd-queue-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 24px 16px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
+
+    .fsd-queue-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .fsd-queue-header-icon {
+            color: #1ed760;
+        }
+
+        .fsd-queue-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #ffffff;
+        }
+
+        .fsd-queue-count {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-left: 4px;
+        }
+    }
+
+    .fsd-queue-header-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        .fsd-queue-clear-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.16);
+                color: #ffffff;
+                transform: scale(1.03);
+            }
+        }
+
+        .fsd-queue-close-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.2);
+                color: #ffffff;
+                transform: scale(1.06);
+            }
+
+            &:active {
+                transform: scale(0.96);
+            }
+        }
+    }
+}
+
+.fsd-queue-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px 16px 32px 16px;
+    box-sizing: border-box;
+
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.35);
+    }
+}
+
+.fsd-queue-section {
+    margin-bottom: 24px;
+
+    .fsd-queue-section-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: rgba(255, 255, 255, 0.5);
+        margin: 0 8px 10px 8px;
+    }
+}
+
+.fsd-queue-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+    box-sizing: border-box;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.08);
+
+        .fsd-queue-index {
+            display: none;
+        }
+
+        .fsd-queue-play-icon {
+            display: block;
+        }
+    }
+
+    &:active {
+        background: rgba(255, 255, 255, 0.14);
+        transform: scale(0.99);
+    }
+
+    &.fsd-queue-current-item {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        cursor: default;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: none;
+        }
+    }
+
+    .fsd-queue-index-col {
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+
+        .fsd-queue-index {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .fsd-queue-play-icon {
+            display: none;
+            color: #1ed760;
+            margin: 0 auto;
+        }
+    }
+
+    .fsd-queue-art-container {
+        position: relative;
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        border-radius: 6px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
+
+        .fsd-queue-art {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .fsd-queue-playing-wave {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+            padding-bottom: 8px;
+
+            .fsd-wave-bar {
+                width: 3px;
+                background: #1ed760;
+                border-radius: 1px;
+                animation: fsdWave 1s ease-in-out infinite alternate;
+
+                &:nth-child(1) { height: 16px; animation-delay: 0.1s; }
+                &:nth-child(2) { height: 22px; animation-delay: 0.3s; }
+                &:nth-child(3) { height: 14px; animation-delay: 0.2s; }
+            }
+        }
+    }
+
+    .fsd-queue-info {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+
+        .fsd-queue-item-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+
+            .fsd-queue-item-title {
+                color: #ffffff;
+                font-size: 14px;
+                font-weight: 500;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                &.current-title {
+                    color: #1ed760;
+                    font-weight: 600;
+                }
+            }
+
+            .fsd-queue-badge {
+                font-size: 10px;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 1px 5px;
+                border-radius: 3px;
+                background: rgba(30, 215, 96, 0.15);
+                color: #1ed760;
+                flex-shrink: 0;
+            }
+        }
+
+        .fsd-queue-item-artist {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .fsd-queue-duration {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.45);
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+    }
+}
+
+.fsd-queue-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px 16px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    text-align: center;
+
+    svg {
+        opacity: 0.5;
+    }
+}
+
+@keyframes fsdWave {
+    0% { height: 4px; }
+    100% { height: 18px; }
+}
