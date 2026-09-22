@@ -423,9 +423,15 @@
         padding: 3px 5px 0 5px;
         cursor: pointer;
         position: relative;
-        transition: all 0.3s var(--transition-function);
+        transform: translateZ(0);
+        will-change: transform;
+        transition:
+            transform 0.15s ease-out,
+            background 0.2s ease,
+            filter 0.2s ease;
 
         &:hover {
+            transform: scale(1.08) translateZ(0);
             filter: saturate(1.5) contrast(1.5) !important;
             background: var(--theme-hover-color);
         }
