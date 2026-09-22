@@ -511,8 +511,8 @@ async function main() {
             };
 
             const handleContextMenu = (e: MouseEvent) => {
-                if (Utils.isInteractiveTarget(e.target as Element | null)) return;
-                ConfigManager.openConfig();
+                e.preventDefault();
+                ConfigManager.openConfig(e);
             };
 
             DOM.container.oncontextmenu = handleContextMenu;
