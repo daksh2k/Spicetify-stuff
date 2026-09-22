@@ -5,14 +5,24 @@ import WebAPI from "../services/web-api";
 let prevUriObj: Spicetify.URI;
 let wasQueuePanelEnabled: boolean | null = null;
 
+let queueOpenTimer: ReturnType<typeof setTimeout> | undefined;
+let queuePanelTimer: ReturnType<typeof setTimeout> | undefined;
+let queueAnimationTimer: ReturnType<typeof setTimeout> | undefined;
+
+function cancelQueuedPanelWork() {
+    if (queueOpenTimer) clearTimeout(queueOpenTimer);
+    if (queuePanelTimer) clearTimeout(queuePanelTimer);
+    if (queueAnimationTimer) clearTimeout(queueAnimationTimer);
+    queueOpenTimer = undefined;
+    queuePanelTimer = undefined;
+    queueAnimationTimer = undefined;
+}
+
 class Utils {
     static allNotExist() {
-        const extraBar = HtmlSelectors.getExtraBarSelector();
-        const topBar = HtmlSelectors.getTopBarSelector();
-
         const entriesToVerify = {
-            "Top Bar Component": topBar,
-            "Extra Bar Component": extraBar,
+            // Toolbars are optional mounting points, not prerequisites for the player.
+            "Document Body": document.body,
             "Spicetify CosmosAsync": Spicetify.CosmosAsync,
             "Spicetify Mousetrap": Spicetify.Mousetrap,
             "Spicetify Player": Spicetify.Player,
@@ -36,11 +46,71 @@ class Utils {
     }
 
     static fullScreenOn() {
-        if (!document.fullscreenElement) return document.documentElement.requestFullscreen();
+        if (!document.fullscreenElement) {
+            return document.documentElement.requestFullscreen({ navigationUI: "hide" } as FullscreenOptions);
+        }
     }
 
     static fullScreenOff() {
         if (document.fullscreenElement) return document.exitFullscreen();
+    }
+
+    static cancelQueuedPanelWork() {
+        cancelQueuedPanelWork();
+    }
+
+    static isInteractiveTarget(element: Element | null): boolean {
+        if (!element) return false;
+        const selector = [
+            "button",
+            "a",
+            "input",
+            "select",
+            "textarea",
+            '[role="button"]',
+            '[role="link"]',
+            '[role="slider"]',
+            '[role="progressbar"]',
+            '[role="menuitem"]',
+            '[role="checkbox"]',
+            '[role="switch"]',
+            '[role="tab"]',
+            "[tabindex]",
+            "[uri]",
+            "[data-clickable]",
+            ".fs-button",
+            ".control-button",
+            ".fsd-controls",
+            ".fsd-controls-center",
+            ".fsd-controls-left",
+            ".fsd-controls-right",
+            "#fsd-player-controls",
+            "#fsd-volume-parent",
+            "#fsd-progress-parent",
+            "#fsd-extra-controls",
+            "#fsd-upnext-container",
+            "#fsd-overview-card-parent",
+            "#fsd-queue-parent",
+            "#fsd-queue-parent *",
+            "#fsd-queue-drawer",
+            "#fsd-queue-drawer *",
+            ".fsd-queue-item",
+            ".fsd-queue-item *",
+            ".fsd-song-meta span",
+            ".lyrics-item",
+            "#fad-lyrics-plus-container",
+        ].join(", ");
+
+        if (element.closest?.(selector)) return true;
+
+        try {
+            if (typeof window !== "undefined" && window.getComputedStyle) {
+                const style = window.getComputedStyle(element);
+                if (style && style.cursor === "pointer") return true;
+            }
+        } catch (_) {}
+
+        return false;
     }
 
     /**
@@ -310,46 +380,77 @@ class Utils {
     }
 
     static toggleQueuePanel(myQueueButton: HTMLElement | null, enabled: boolean) {
-        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
+        cancelQueuedPanelWork();
         const rightPanel = HtmlSelectors.getRightPanel();
+        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
+
         if (enabled) {
-            setTimeout(() => {
-                if (!originalQueueButton?.classList.contains("main-genericButton-buttonActive")) {
-                    originalQueueButton?.click();
-                    wasQueuePanelEnabled = false;
-                } else {
-                    wasQueuePanelEnabled = true;
-                }
-                setTimeout(() => {
-                    rightPanel?.classList.add("fsd-queue-panel");
-                    setTimeout(() => {
-                        rightPanel?.classList.add("fsd-transform-animation");
-                    }, 100);
-                }, 300);
-            }, 600);
-        } else {
-            if (wasQueuePanelEnabled != null && !wasQueuePanelEnabled) {
-                originalQueueButton?.click();
+            if (!document.body.classList.contains("fsd-queue-panel-active")) {
+                this.toggleQueue(myQueueButton);
             }
-            rightPanel?.style.setProperty("--queue-panel-x", "1000px");
-            wasQueuePanelEnabled = null;
-            myQueueButton?.classList.remove("button-active", "dot-after");
-            rightPanel?.classList.remove("fsd-queue-panel", "fsd-transform-animation");
-            document.body.classList.remove("fsd-queue-panel-active");
+        } else {
+            if (document.body.classList.contains("fsd-queue-panel-active")) {
+                document.body.classList.remove("fsd-queue-panel-active");
+                myQueueButton?.classList.remove("button-active", "dot-after");
+                if (rightPanel) {
+                    rightPanel.classList.remove("fsd-queue-panel", "fsd-queue-panel-closing");
+                    rightPanel.style.transform = "";
+                }
+                if (wasQueuePanelEnabled === false && originalQueueButton) {
+                    if (HtmlSelectors.isQueueButtonActive(originalQueueButton)) {
+                        originalQueueButton.click();
+                    }
+                }
+                wasQueuePanelEnabled = null;
+            }
         }
     }
 
     static toggleQueue(queueButton: HTMLElement | null) {
+        cancelQueuedPanelWork();
         const rightPanel = HtmlSelectors.getRightPanel();
+        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
 
         if (document.body.classList.contains("fsd-queue-panel-active")) {
-            rightPanel?.style.setProperty("--queue-panel-x", "1000px");
             queueButton?.classList.remove("button-active", "dot-after");
-            document.body.classList.remove("fsd-queue-panel-active");
+            if (rightPanel) {
+                rightPanel.classList.add("fsd-queue-panel-closing");
+                queueAnimationTimer = setTimeout(() => {
+                    document.body.classList.remove("fsd-queue-panel-active");
+                    rightPanel.classList.remove("fsd-queue-panel", "fsd-queue-panel-closing");
+                    rightPanel.style.transform = "";
+                }, 250);
+            } else {
+                document.body.classList.remove("fsd-queue-panel-active");
+            }
+
+            if (wasQueuePanelEnabled === false && originalQueueButton) {
+                if (HtmlSelectors.isQueueButtonActive(originalQueueButton)) {
+                    originalQueueButton.click();
+                }
+            }
+            wasQueuePanelEnabled = null;
         } else {
-            rightPanel?.style.setProperty("--queue-panel-x", "0px");
-            queueButton?.classList.add("button-active", "dot-after");
+            const isNativeActive = HtmlSelectors.isQueueButtonActive(originalQueueButton);
+            wasQueuePanelEnabled = isNativeActive;
+
+            if (!isNativeActive && originalQueueButton) {
+                originalQueueButton.click();
+            }
+
             document.body.classList.add("fsd-queue-panel-active");
+            queueButton?.classList.add("button-active", "dot-after");
+
+            if (rightPanel) {
+                rightPanel.classList.remove("fsd-queue-panel-closing");
+                rightPanel.classList.add("fsd-queue-panel");
+                rightPanel.style.transform = "translateX(100%)";
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        rightPanel.style.transform = "translateX(0px)";
+                    });
+                });
+            }
         }
     }
 

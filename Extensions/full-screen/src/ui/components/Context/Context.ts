@@ -36,7 +36,11 @@ export class Context {
         if (this.ctxTimer) {
             clearTimeout(this.ctxTimer);
         }
+        if (!DOM.ctx_container) return;
         DOM.ctx_container.style.opacity = "1";
-        this.ctxTimer = setTimeout(() => (DOM.ctx_container.style.opacity = "0"), 3000);
+        this.ctxTimer = setTimeout(() => {
+            if (DOM.ctx_container?.matches(":hover")) return;
+            DOM.ctx_container.style.opacity = "0";
+        }, 3000);
     }
 }

@@ -5,7 +5,8 @@
     "scripts": {
         "build": "spicetify-creator",
         "build-local": "spicetify-creator --out=dist --minify",
-        "watch": "spicetify-creator --watch"
+        "watch": "spicetify-creator --watch",
+        "test": "node --test test/*.test.cjs"
     },
     "license": "MIT",
     "devDependencies": {

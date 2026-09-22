@@ -5,11 +5,11 @@ import React from "react";
 
 import Utils from "./utils/utils";
 import CFM from "./utils/config";
-import { modifyIsAnimationRunning } from "./utils/animation";
+import { modifyIsAnimationRunning, animateCanvas } from "./utils/animation";
 
 import translations from "./resources/strings";
 import ICONS, { CLASSES_TO_ADD } from "./constants";
-import HtmlSelectors from "./utils/selectors";
+import { mountActivationControls } from "./ui/activation-controls";
 import { Config, Settings } from "./types/fullscreen";
 
 import showWhatsNew from "./services/whats-new";
@@ -19,6 +19,7 @@ import { initMoustrapRecord } from "./services/mousetrap-record";
 import SeekableProgressBar from "./ui/components/ProgressBar/ProgressBar";
 import SeekableVolumeBar from "./ui/components/VolumeBar/VolumeBar";
 import OverviewCard from "./ui/components/OverviewPopup/OverviewCard";
+import HtmlSelectors from "./utils/selectors";
 
 import { DOM } from "./ui/elements";
 import { ConfigManager } from "./ui/components/Config/Config";
@@ -33,6 +34,7 @@ import "./styles/base.scss";
 import "./styles/tvMode.scss";
 import "./styles/defaultMode.scss";
 import "./styles/settings.scss";
+import "./styles/activation-controls.scss";
 
 async function main() {
     let INIT_RETRIES = 0;
@@ -59,6 +61,7 @@ async function main() {
     }
 
     function openwithTV() {
+        if (enteringFullscreen || exitingFullscreen) return;
         if (!Utils.isModeActivated() || !CFM.getGlobal("tvMode") || CFM.getMode() !== "tv") {
             if (!CFM.getGlobal("tvMode") || CFM.getMode() !== "tv") {
                 CFM.setGlobal("tvMode", true);
@@ -70,6 +73,7 @@ async function main() {
     }
 
     function openwithDef() {
+        if (enteringFullscreen || exitingFullscreen) return;
         if (!Utils.isModeActivated() || CFM.getGlobal("tvMode") || CFM.getMode() === "tv") {
             if (CFM.getGlobal("tvMode") || CFM.getMode() === "tv") {
                 CFM.setGlobal("tvMode", false);
@@ -107,7 +111,6 @@ async function main() {
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         Spicetify.Player.removeEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
         Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
-        document.removeEventListener("fullscreenchange", fullScreenListener);
         Spicetify.Platform.PlayerAPI._events.removeListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
 
         // Disconnect heart observer if it exists (handled in ExtraControls but we might need a reference here or move it completely)
@@ -126,10 +129,6 @@ async function main() {
 
         modifyIsAnimationRunning(false);
 
-        if (origLoc !== "/lyrics-plus" && Utils.isModeActivated()) {
-            Utils.revertPathHistory(origLoc);
-        }
-        window.dispatchEvent(new Event("fad-request"));
         window.removeEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
 
         handleMouseMoveDeactivation();
@@ -240,6 +239,20 @@ async function main() {
             DOM.queue = DOM.container.querySelector("#fsd-queue")!;
             DOM.queue.onclick = () => toggleQueue();
         }
+
+        // Stop double-click propagation on interactive controls so rapid clicks (e.g. skipping tracks) never trigger fullscreen exit
+        DOM.container.querySelectorAll<HTMLElement>(
+            '.fs-button, .control-button, #fsd-upnext-container, .fsd-song-meta span, #fsd-volume-parent, #fsd-progress-parent'
+        ).forEach((el) => {
+            el.ondblclick = (e) => e.stopPropagation();
+        });
+
+        // The lyrics-plus portal must be refreshed only after its new target exists.
+        // Routing to /lyrics-plus here tears down Spotify's current page and leaves a
+        // visible loading state when the display closes.
+        if (Utils.isModeActivated() && CFM.get("lyricsDisplay")) {
+            requestAnimationFrame(() => window.dispatchEvent(new Event("fad-request")));
+        }
     }
 
     function toggleQueue() {
@@ -262,6 +275,7 @@ async function main() {
      */
     async function updateInfo() {
         const meta = Spicetify.Player.data.item?.metadata;
+        if (!meta) return;
 
         if (CFM.get("contextDisplay") !== "never")
             Context.updateContext().catch((err) => console.error("Error getting context: ", err));
@@ -285,7 +299,7 @@ async function main() {
         artistData = artistNameList.map((key, index) => [meta![key], meta![artistUriList[index]]]);
 
         // prepare album
-        let albumText: string,
+        let albumText = "",
             updatedAlbum = false;
         if (CFM.get("showAlbum") !== "never") {
             albumText = meta?.album_title || "";
@@ -303,12 +317,9 @@ async function main() {
 
         Background.updateBackground(meta!);
 
-        // prepare cover image
-        DOM.coverImg.src = meta?.image_xlarge_url;
-
-        // update all the things on cover load
-        DOM.coverImg.onload = () => {
-            DOM.cover.style.backgroundImage = `url("${DOM.coverImg.src}")`;
+        // Populate text immediately; artwork loading must not delay the whole view.
+        {
+            DOM.cover.style.backgroundImage = `url("${meta.image_xlarge_url}")`;
             DOM.title.innerText = songName || "";
             DOM.title.setAttribute("uri", Spicetify.Player.data?.item?.uri || "");
 
@@ -320,7 +331,7 @@ async function main() {
             DOM.artist.querySelectorAll("span").forEach((span) => {
                 span.onclick = () => {
                     handleNavigation(span.getAttribute("uri")!);
-                };
+                }
             });
 
             if (DOM.album) {
@@ -336,7 +347,10 @@ async function main() {
                     Lyrics.autoHideLyrics();
                 }
             }
-        };
+        }
+
+        DOM.coverImg.onload = () => { DOM.cover.style.backgroundImage = `url("${DOM.coverImg.src}")`; };
+        DOM.coverImg.src = meta.image_xlarge_url;
 
         // Placeholder
         DOM.coverImg.onerror = () => {
@@ -362,12 +376,38 @@ async function main() {
             clearTimeout(curTimer);
         }
         DOM.container.style.cursor = "default";
-        curTimer = setTimeout(() => (DOM.container.style.cursor = "none"), 2000);
+        curTimer = setTimeout(() => {
+            const statusEl = DOM.container.querySelector("#fsd-status");
+            const progParent = DOM.container.querySelector("#fsd-progress-parent");
+            if (statusEl?.matches(":hover") || progParent?.matches(":hover")) return;
+            DOM.container.style.cursor = "none";
+        }, 2000);
+    }
+
+    function onStatusEnter() {
+        if (PlayerControls.playerControlsTimer) clearTimeout(PlayerControls.playerControlsTimer);
+        if (ExtraControls.extraControlsTimer) clearTimeout(ExtraControls.extraControlsTimer);
+        const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
+        statusEl?.querySelectorAll<HTMLElement>(".fsd-controls, .extra-controls").forEach((c) => (c.style.opacity = "1"));
+    }
+
+    function onStatusLeave() {
+        if (CFM.get("playerControls") === "mousemove") PlayerControls.hidePlayerControls();
+        if (CFM.get("extraControls") === "mousemove") ExtraControls.hideExtraControls();
     }
 
     function handleMouseMoveActivation() {
         DOM.container.addEventListener("mousemove", hideCursor);
         hideCursor();
+
+        const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
+        statusEl?.addEventListener("mouseenter", onStatusEnter);
+        statusEl?.addEventListener("mouseleave", onStatusLeave);
+
+        const progParentEl = DOM.container.querySelector<HTMLElement>("#fsd-progress-parent");
+        progParentEl?.addEventListener("mouseenter", onStatusEnter);
+        progParentEl?.addEventListener("mouseleave", onStatusLeave);
+
         if (CFM.get("contextDisplay") === "mousemove") {
             DOM.container.addEventListener("mousemove", Context.hideContext.bind(Context));
             Context.hideContext();
@@ -388,179 +428,304 @@ async function main() {
         DOM.container.removeEventListener("mousemove", ExtraControls.hideExtraControls.bind(ExtraControls));
         DOM.container.removeEventListener("mousemove", PlayerControls.hidePlayerControls.bind(PlayerControls));
 
+        const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
+        statusEl?.removeEventListener("mouseenter", onStatusEnter);
+        statusEl?.removeEventListener("mouseleave", onStatusLeave);
+
+        const progParentEl = DOM.container.querySelector<HTMLElement>("#fsd-progress-parent");
+        progParentEl?.removeEventListener("mouseenter", onStatusEnter);
+        progParentEl?.removeEventListener("mouseleave", onStatusLeave);
+
         if (curTimer) clearTimeout(curTimer);
         if (Context.ctxTimer) clearTimeout(Context.ctxTimer);
         if (ExtraControls.extraControlsTimer) clearTimeout(ExtraControls.extraControlsTimer);
         if (PlayerControls.playerControlsTimer) clearTimeout(PlayerControls.playerControlsTimer);
     }
 
-    function fullScreenListener() {
-        if (
-            document.fullscreenElement === null &&
-            CFM.get("enableFullscreen") &&
-            Utils.isModeActivated()
-        ) {
+    function waitForFrames(count = 1): Promise<void> {
+        return new Promise((resolve) => {
+            const next = () => {
+                if (--count === 0) resolve();
+                else requestAnimationFrame(next);
+            };
+            requestAnimationFrame(next);
+        });
+    }
+
+    function escKeyHandler(e: KeyboardEvent) {
+        if (e.key === "Escape" || e.code === "Escape") {
+            if (document.body.classList.contains("fsd-queue-panel-active")) {
+                toggleQueue();
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
             deactivate();
+        }
+    }
+
+    function contextMenuHandler(e: MouseEvent) {
+        const target = e.target as HTMLElement | null;
+        const rightPanel = HtmlSelectors.getRightPanel();
+        if (rightPanel && (rightPanel.contains(target) || e.composedPath?.().includes(rightPanel))) return;
+        if (target?.closest("#context-menu, [data-tippy-root]")) return;
+
+        const dialog = document.querySelector("dialog.fs-popup-modal");
+        if (dialog && (dialog.contains(e.target as Node) || e.composedPath?.().includes(dialog))) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        ConfigManager.openConfig(e);
+    }
+
+    function handleDocumentClick(e: MouseEvent) {
+        if (!document.body.classList.contains("fsd-queue-panel-active")) return;
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const rightPanel = HtmlSelectors.getRightPanel();
+        if (rightPanel && (rightPanel.contains(target) || e.composedPath?.().includes(rightPanel))) {
+            if (target.closest('[data-testid="PanelHeader_CloseButton"]') || target.closest('button[aria-label*="Close" i]')) {
+                toggleQueue();
+            }
+            return;
+        }
+        if (DOM.queue?.contains(target) || e.composedPath?.().includes(DOM.queue)) return;
+        if (target.closest("#context-menu, [data-tippy-root]")) return;
+        toggleQueue();
+    }
+
+    function fullScreenListener() {
+        if (exitingFullscreen) return;
+        if (document.fullscreenElement === null) {
+            if (Utils.isModeActivated()) {
+                deactivate();
+            }
+        } else if (document.fullscreenElement !== null && Utils.isModeActivated()) {
+            resizeEvents();
         }
     }
 
     let origLoc: string;
     const heartObserver = new MutationObserver(ExtraControls.updateHeart.bind(ExtraControls));
 
+    let enteringFullscreen = false;
+    let exitingFullscreen = false;
+
     async function activate() {
-        Utils.toggleQueuePanel(DOM.queue, true);
-        document.body.classList.add(...CLASSES_TO_ADD);
-        if (CFM.get("enableFullscreen")) await Utils.fullScreenOn()?.catch((err) => { });
-        else await Utils.fullScreenOff()?.catch((err) => { });
-        setTimeout(() => {
+        if (enteringFullscreen || exitingFullscreen) return;
+        enteringFullscreen = true;
+
+        try {
+            // Dismiss any open Spotify tooltips or context menus
+            document.querySelectorAll(".tippy-popper, #context-menu, [data-tippy-root]").forEach((el) => el.remove());
+
+            // 1. Mount overlay and activate classes immediately so TV mode shows right away
+            document.body.append(DOM.style, DOM.container);
+            document.body.classList.add(...CLASSES_TO_ADD);
+
+            // 2. Trigger native fullscreen simultaneously so TV mode is what expands into fullscreen
+            if (CFM.get("enableFullscreen") && !document.fullscreenElement) {
+                Utils.fullScreenOn()?.catch((err) => {
+                    console.warn("Fullscreen request failed, staying in-window.", err);
+                });
+            }
+
             updateInfo();
+            paintReadyBackground();
             window.addEventListener("resize", resizeEvents);
-            resizeEvents();
+
             DOM.container.querySelectorAll(".fsd-song-meta span").forEach((span) => {
                 (span as HTMLElement).onclick = (evt: any) => {
                     handleNavigation(evt.target?.getAttribute("uri") ?? "");
                 };
             });
-        }, 200);
-        Spicetify.Player.addEventListener("songchange", updateInfo);
-        handleMouseMoveActivation();
-        DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = ConfigManager.openConfig.bind(ConfigManager);
-        DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = deactivate;
-        DOM.back.oncontextmenu = ConfigManager.openConfig.bind(ConfigManager);
-        DOM.back.ondblclick = deactivate;
-        if (CFM.get("upnextDisplay") !== "never") {
-            UpNext.updateUpNextShow();
-            Spicetify.Platform.PlayerAPI._events.addListener("queue_update", UpNext.updateUpNext.bind(UpNext));
-            Spicetify.Platform.PlayerAPI._events.addListener("update", UpNext.updateUpNextShow.bind(UpNext));
-        }
-        if (CFM.get("volumeDisplay") !== "never") {
-            ReactDOM.render(
-                <SeekableVolumeBar state={CFM.get("volumeDisplay") as Settings["volumeDisplay"]} />,
-                DOM.container.querySelector("#fsd-volume-parent"),
-            );
-        }
-        if (CFM.get("icons")) {
-            updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
-            Spicetify.Player.addEventListener("onplaypause", updatePlayingIcon);
-        }
-        if (CFM.get("progressBarDisplay") !== "never") {
-            ReactDOM.render(
-                <SeekableProgressBar
-                    state={CFM.get("progressBarDisplay") as Settings["progressBarDisplay"]}
-                />,
-                DOM.container.querySelector("#fsd-progress-parent"),
-            );
-        }
-        if (CFM.get("overviewDisplay")) {
-            ReactDOM.render(
-                <OverviewCard
-                    onExit={deactivate}
-                    onToggle={() => {
-                        CFM.getGlobal("tvMode") ? openwithDef() : openwithTV();
-                    }}
-                />,
-                DOM.container.querySelector("#fsd-overview-card-parent"),
-            );
-        }
-        if (CFM.get("playerControls") !== "never") {
-            PlayerControls.updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
-            Spicetify.Player.addEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
-        }
-        if (CFM.get("extraControls") !== "never") {
-            ExtraControls.updateExtraControls(null);
-            Utils.addObserver(heartObserver, ".control-button-heart", {
-                attributes: true,
-                attributeFilter: ["aria-checked"],
-            });
-            Spicetify.Platform.PlayerAPI._events.addListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
-        }
-        document.querySelector(".Root__top-container")?.append(DOM.style, DOM.container);
-        if (CFM.get("lyricsDisplay")) {
-            window.addEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
-            origLoc = Spicetify.Platform.History.location.pathname;
-            if (origLoc !== "/lyrics-plus") {
-                Spicetify.Platform.History.push("/lyrics-plus");
+
+            Spicetify.Player.addEventListener("songchange", updateInfo);
+            handleMouseMoveActivation();
+            const handleBackgroundDblClick = (e: MouseEvent) => {
+                if (Utils.isInteractiveTarget(e.target as Element | null)) return;
+                deactivate();
+            };
+
+            DOM.container.oncontextmenu = contextMenuHandler;
+            DOM.container.ondblclick = handleBackgroundDblClick;
+            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.oncontextmenu = contextMenuHandler;
+            DOM.container.querySelector<HTMLElement>("#fsd-foreground")!.ondblclick = handleBackgroundDblClick;
+            DOM.back.oncontextmenu = contextMenuHandler;
+            DOM.back.ondblclick = handleBackgroundDblClick;
+            if (CFM.get("upnextDisplay") !== "never") {
+                UpNext.updateUpNextShow();
+                Spicetify.Platform.PlayerAPI._events.addListener("queue_update", UpNext.updateUpNext.bind(UpNext));
+                Spicetify.Platform.PlayerAPI._events.addListener("update", UpNext.updateUpNextShow.bind(UpNext));
             }
-            window.dispatchEvent(new Event("fad-request"));
+            if (CFM.get("volumeDisplay") !== "never") {
+                ReactDOM.render(
+                    <SeekableVolumeBar state={CFM.get("volumeDisplay") as Settings["volumeDisplay"]} />,
+                    DOM.container.querySelector("#fsd-volume-parent"),
+                );
+            }
+            if (CFM.get("icons")) {
+                updatePlayingIcon({ data: { is_paused: !Spicetify.Player.isPlaying() } });
+                Spicetify.Player.addEventListener("onplaypause", updatePlayingIcon);
+            }
+            if (CFM.get("progressBarDisplay") !== "never") {
+                ReactDOM.render(
+                    <SeekableProgressBar
+                        state={CFM.get("progressBarDisplay") as Settings["progressBarDisplay"]}
+                    />,
+                    DOM.container.querySelector("#fsd-progress-parent"),
+                );
+            }
+            if (CFM.get("overviewDisplay")) {
+                ReactDOM.render(
+                    <OverviewCard
+                        onExit={deactivate}
+                        onToggle={() => {
+                            CFM.getGlobal("tvMode") ? openwithDef() : openwithTV();
+                        }}
+                    />,
+                    DOM.container.querySelector("#fsd-overview-card-parent"),
+                );
+            }
+            if (CFM.get("playerControls") !== "never") {
+                PlayerControls.updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
+                Spicetify.Player.addEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
+            }
+            if (CFM.get("extraControls") !== "never") {
+                ExtraControls.updateExtraControls(null);
+                Utils.addObserver(heartObserver, ".control-button-heart", {
+                    attributes: true,
+                    attributeFilter: ["aria-checked"],
+                });
+                Spicetify.Platform.PlayerAPI._events.addListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
+            }
+            if (CFM.get("lyricsDisplay")) {
+                window.addEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
+                origLoc = Spicetify.Platform.History.location.pathname;
+                if (origLoc !== "/lyrics-plus") {
+                    Spicetify.Platform.History.push("/lyrics-plus");
+                }
+                requestAnimationFrame(() => window.dispatchEvent(new Event("fad-request")));
+            }
+            document.addEventListener("fullscreenchange", fullScreenListener);
+            document.addEventListener("click", handleDocumentClick, true);
+            window.addEventListener("keydown", escKeyHandler, true);
+            window.addEventListener("contextmenu", contextMenuHandler, true);
+            Spicetify.Mousetrap.bind("esc", () => {
+                if (document.body.classList.contains("fsd-queue-panel-active")) {
+                    toggleQueue();
+                    return;
+                }
+                deactivate();
+            });
+            if (CFM.get("lyricsDisplay")) {
+                Spicetify.Mousetrap.bind("l", Lyrics.toggleLyrics);
+            }
+            Spicetify.Mousetrap.bind("c", () => {
+                const popup = document.querySelector("dialog.fs-popup-modal");
+                if (popup) (popup as HTMLDialogElement).close();
+                else ConfigManager.openConfig();
+            });
+            Spicetify.Mousetrap.bind("q", toggleQueue);
+
+            resizeEvents();
+        } finally {
+            enteringFullscreen = false;
         }
-        Spicetify.Mousetrap.bind("f11", fsToggle);
-        document.addEventListener("fullscreenchange", fullScreenListener);
-        Spicetify.Mousetrap.bind("esc", deactivate);
-        if (CFM.get("lyricsDisplay")) {
-            Spicetify.Mousetrap.bind("l", Lyrics.toggleLyrics);
-        }
-        Spicetify.Mousetrap.bind("c", () => {
-            const popup = document.querySelector("dialog.fs-popup-modal");
-            if (popup) (popup as HTMLDialogElement).close();
-            else ConfigManager.openConfig();
-        });
-        Spicetify.Mousetrap.bind("q", toggleQueue);
     }
 
     async function deactivate() {
-        Utils.toggleQueuePanel(DOM.queue, false);
-        modifyIsAnimationRunning(false);
-        Spicetify.Player.removeEventListener("songchange", updateInfo);
-        handleMouseMoveDeactivation();
-        window.removeEventListener("resize", resizeEvents);
-        if (CFM.get("upnextDisplay") !== "never") {
-            UpNext.upNextShown = false;
-            Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", UpNext.updateUpNext.bind(UpNext));
-            Spicetify.Platform.PlayerAPI._events.removeListener("update", UpNext.updateUpNextShow.bind(UpNext));
-        }
-        ReactDOM.unmountComponentAtNode(DOM.container.querySelector("#fsd-volume-parent")!);
-        ReactDOM.unmountComponentAtNode(DOM.container.querySelector("#fsd-progress-parent")!);
-        ReactDOM.unmountComponentAtNode(DOM.container.querySelector("#fsd-overview-card-parent")!);
-        if (CFM.get("icons")) {
-            Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
-        }
-        if (CFM.get("playerControls") !== "never") {
-            Spicetify.Player.removeEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
-        }
-        if (CFM.get("extraControls") !== "never") {
-            heartObserver.disconnect();
-            Spicetify.Platform.PlayerAPI._events.removeListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
-        }
+        if (exitingFullscreen) return;
+        exitingFullscreen = true;
+
+        // 1. Immediately remove overlay and classes from view
         document.body.classList.remove(...CLASSES_TO_ADD);
-        UpNext.upNextShown = false;
-        if (CFM.get("enableFullscreen")) {
-            await Utils.fullScreenOff()?.catch((err) => { });
-        }
-        const popup = document.querySelector("dialog.fs-popup-modal");
-        if (popup) (popup as HTMLDialogElement).close();
         DOM.style.remove();
         DOM.container.remove();
-        if (CFM.get("lyricsDisplay")) {
-            window.removeEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
-            if (origLoc !== "/lyrics-plus") {
-                Utils.revertPathHistory(origLoc);
-            }
-            window.dispatchEvent(new Event("fad-request"));
-        }
-        document.removeEventListener("fullscreenchange", fullScreenListener);
+        delete DOM.back.dataset.fsdPainted;
+        Utils.cancelQueuedPanelWork();
 
-        Spicetify.Mousetrap.unbind("f11");
+        // 2. Remove listeners
+        window.removeEventListener("keydown", escKeyHandler, true);
+        window.removeEventListener("contextmenu", contextMenuHandler, true);
+        document.removeEventListener("fullscreenchange", fullScreenListener);
+        document.removeEventListener("click", handleDocumentClick, true);
+        window.removeEventListener("resize", resizeEvents);
+        Spicetify.Player.removeEventListener("songchange", updateInfo);
+        handleMouseMoveDeactivation();
+        modifyIsAnimationRunning(false);
+
+        // 3. Unbind keys
         Spicetify.Mousetrap.unbind("esc");
         Spicetify.Mousetrap.unbind("l");
         Spicetify.Mousetrap.unbind("c");
         Spicetify.Mousetrap.unbind("q");
+
+        // 4. Clean up tooltips
+        document.querySelectorAll(".tippy-popper, #context-menu, [data-tippy-root]").forEach((el) => el.remove());
+
+        // 5. Exit native fullscreen if active
+        try {
+            if (document.fullscreenElement) await Utils.fullScreenOff();
+        } catch (error) {
+            console.warn("Unable to leave native fullscreen.", error);
+        }
+
+        // 6. Safe cleanup of subcomponents
+        try {
+            Utils.toggleQueuePanel(DOM.queue, false);
+            if (CFM.get("upnextDisplay") !== "never") {
+                UpNext.upNextShown = false;
+                Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", UpNext.updateUpNext.bind(UpNext));
+                Spicetify.Platform.PlayerAPI._events.removeListener("update", UpNext.updateUpNextShow.bind(UpNext));
+            }
+            const volParent = DOM.container.querySelector("#fsd-volume-parent");
+            if (volParent) ReactDOM.unmountComponentAtNode(volParent);
+            const progParent = DOM.container.querySelector("#fsd-progress-parent");
+            if (progParent) ReactDOM.unmountComponentAtNode(progParent);
+            const cardParent = DOM.container.querySelector("#fsd-overview-card-parent");
+            if (cardParent) ReactDOM.unmountComponentAtNode(cardParent);
+
+            if (CFM.get("icons")) {
+                Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
+            }
+            if (CFM.get("playerControls") !== "never") {
+                Spicetify.Player.removeEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
+            }
+            if (CFM.get("extraControls") !== "never") {
+                heartObserver.disconnect();
+                Spicetify.Platform.PlayerAPI._events.removeListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
+            }
+
+            const popup = document.querySelector("dialog.fs-popup-modal");
+            if (popup) (popup as HTMLDialogElement).close();
+
+            if (CFM.get("lyricsDisplay")) {
+                window.removeEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
+                if (origLoc && origLoc !== "/lyrics-plus") {
+                    Utils.revertPathHistory(origLoc);
+                }
+                window.dispatchEvent(new Event("fad-request"));
+            }
+        } catch (e) {
+            console.error("Cleanup error in deactivate:", e);
+        } finally {
+            exitingFullscreen = false;
+        }
     }
 
-    function fsToggle() {
-        if (CFM.get("enableFullscreen")) {
-            CFM.set("enableFullscreen", false);
-            render();
-            activate();
-        } else {
-            CFM.set("enableFullscreen", true);
-            render();
-            activate();
+    function paintReadyBackground() {
+        // Reuse a decoded image so resizing never clears the canvas while fetching artwork.
+        const image = DOM.backgroundImg.naturalWidth ? DOM.backgroundImg : DOM.coverImg;
+        if (image.complete && image.naturalWidth &&
+            !["static_color", "dynamic_color"].includes(String(CFM.get("backgroundChoice")))) {
+            animateCanvas(image, image, DOM.back, true);
         }
     }
 
     function resizeEvents() {
+        paintReadyBackground();
         if (CFM.get("upnextDisplay") !== "never") UpNext.updateUpNext();
-        Background.updateBackground(Spicetify.Player.data.item?.metadata, true);
         DOM.container.classList.toggle(
             "vertical-mode",
             (CFM.get("verticalMonitorSupport") as Settings["verticalMonitorSupport"]) &&
@@ -585,64 +750,25 @@ async function main() {
         Background.updateMainColor.bind(Background)
     );
 
-    const extraBar = HtmlSelectors.getExtraBarSelector() as HTMLElement;
-    if (CFM.getGlobal("fsHideOriginal") && extraBar) {
-        extraBar.childNodes.forEach((child: Node) => {
-            const el = child as HTMLElement;
-            if (el.nodeType === Node.ELEMENT_NODE && el.getAttribute("data-testid") === "fullscreen-mode-button") {
-                el.remove();
-            }
-        });
-    }
-    if (CFM.getGlobal("activationTypes") != "keys") {
-        if (CFM.getGlobal("buttonActivation") !== "tv") {
-            // Add Full Screen Button on bottom bar
-            const defButton = document.createElement("button");
-            defButton.classList.add("button");
-            defButton.id = "fullscreen-default-button";
-            defButton.setAttribute("title", translations[LOCALE].fullscreenBtnDesc);
-
-            defButton.innerHTML = ICONS.FULLSCREEN;
-            defButton.onclick = openwithDef;
-
-            defButton.oncontextmenu = (evt) => {
-                evt.preventDefault();
-                CFM.setMode("def");
-                ConfigManager.openConfig();
-            };
-            (extraBar as HTMLElement)?.append(defButton);
-        }
-
-        if (CFM.getGlobal("buttonActivation") !== "def") {
-            // Add TV Mode Button on top bar
-            const tvButton = document.createElement("button");
-
-            tvButton.innerHTML = ICONS.TV_MODE;
-            tvButton.id = "fullscreen-tv-button";
-            tvButton.setAttribute("title", translations[LOCALE].tvBtnDesc);
-
-            tvButton.onclick = openwithTV;
-            tvButton.style.WebkitAppRegion = "no-drag";
-
-            tvButton.classList.add(
-                "Button-buttonTertiary-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
-                "Button-small-small-buttonTertiary-condensedAll-isUsingKeyboard-useBrowserDefaultFocusStyle",
-                "Button-buttonTertiary-small-small-isUsingKeyboard-useBrowserDefaultFocusStyle-condensedAll",
-                "encore-text-body-small-bold",
-                "main-globalNav-buddyFeed",
-                "Button-sc-1dqy6lx-0",
-                "main-topBar-buddyFeed"
-            );
-            HtmlSelectors.getTopBarSelector()?.prepend(tvButton);
-
-            // document.querySelector(TOP_BAR_SELECTOR)?.append(tvButton);
-            tvButton.oncontextmenu = (evt) => {
-                evt.preventDefault();
-                CFM.setMode("tv");
-                ConfigManager.openConfig();
-            };
-        }
-    }
+    const showButtons = CFM.getGlobal("activationTypes") !== "keys";
+    const cleanupControls = mountActivationControls({
+        // CSS rule on body.fsd-hide-original hides Spotify's stock button instantly,
+        // so there is no delayed JS reconciliation flash on startup.
+        hideOriginal: Boolean(CFM.getGlobal("fsHideOriginal")),
+        tv: showButtons && CFM.getGlobal("buttonActivation") !== "def" ? {
+            label: translations[LOCALE].tvBtnDesc,
+            icon: ICONS.TV_MODE,
+            activate: openwithTV,
+            configure: () => { CFM.setMode("tv"); ConfigManager.openConfig(); },
+        } : undefined,
+        default: showButtons && CFM.getGlobal("buttonActivation") !== "tv" ? {
+            label: translations[LOCALE].fullscreenBtnDesc,
+            icon: ICONS.FULLSCREEN,
+            activate: openwithDef,
+            configure: () => { CFM.setMode("def"); ConfigManager.openConfig(); },
+        } : undefined,
+    });
+    window.addEventListener("pagehide", cleanupControls, { once: true });
 
     render();
 

@@ -2,6 +2,15 @@
 Fancy artwork and track status display with a plethora of customizations.
 
 ## Usage
+
+The TV button normally appears in Spotify's top bar. If a Spotify update changes that
+bar, it falls back to the player controls. If neither toolbar is available, a small
+floating control appears near the upper-right corner. Controls automatically return
+to their usual locations when the toolbars become available again.
+
+Keyboard activation remains available when toolbar layouts change, subject to your
+activation settings. Spotify or Spicetify API changes can still require an extension
+update.
 <br>
 
 1. **Default Mode:** Clicking the Fullscreen icon on bottom right (Next to the volume bar) or by pressing <kbd>F</kbd> keyboard shortcut.

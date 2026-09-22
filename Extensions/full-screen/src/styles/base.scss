@@ -1,12 +1,16 @@
 #full-screen-display {
     display: none;
-    z-index: 100;
-    position: fixed;
-    width: 100%;
-    height: 100%;
+    z-index: 10000;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 100vw !important;
+    min-height: 100vh !important;
     cursor: default;
-    left: 0;
-    top: 0;
     --transition-duration: 0.8s;
     --transition-function: ease-in-out;
     --main-color: 255, 255, 255;
@@ -42,6 +46,32 @@
         pointer-events: none !important;
         opacity: 0.5 !important;
         background: transparent !important;
+    }
+
+    #fsd-status:hover,
+    #fsd-status:hover .fsd-controls,
+    #fsd-status:hover .extra-controls,
+    #fsd-status:hover #fsd-progress-container,
+    #fsd-status:hover ~ #fsd-progress-parent #fsd-progress-container,
+    #fsd-progress-parent:hover #fsd-progress-container,
+    #fsd-progress-parent:hover ~ #fsd-status .fsd-controls,
+    #fsd-progress-parent:hover ~ #fsd-status .extra-controls,
+    #fsd-foreground:has(#fsd-status:hover) #fsd-progress-container,
+    #fsd-foreground:has(#fsd-progress-parent:hover) .fsd-controls,
+    #fsd-foreground:has(#fsd-progress-parent:hover) .extra-controls,
+    #fsd-foreground:has(#fsd-progress-container:hover) .fsd-controls,
+    #fsd-foreground:has(#fsd-progress-container:hover) .extra-controls,
+    .fsd-controls:hover,
+    .extra-controls:hover,
+    .fs-button:hover,
+    #fsd-progress-container:hover {
+        opacity: 1 !important;
+    }
+
+    .fsd-controls,
+    .extra-controls,
+    #fsd-progress-container {
+        transition: opacity 0.3s ease-in-out;
     }
 
     /*
@@ -370,10 +400,12 @@
 
     #fsd-background {
         position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
         overflow: hidden;
         z-index: -2;
     }
@@ -391,12 +423,15 @@
         padding: 3px 5px 0 5px;
         cursor: pointer;
         position: relative;
+        transform: translateZ(0);
+        will-change: transform;
         transition:
-            all 0.3s var(--transition-function),
-            transform 0.1s var(--transition-function);
+            transform 0.15s ease-out,
+            background 0.2s ease,
+            filter 0.2s ease;
 
         &:hover {
-            transform: scale(1.2);
+            transform: scale(1.08) translateZ(0);
             filter: saturate(1.5) contrast(1.5) !important;
             background: var(--theme-hover-color);
         }
@@ -424,6 +459,22 @@
     .fsd-background-fade {
         transition: background-image var(--fs-transition) linear;
     }
+}
+
+html.spotify__container--is-desktop body.fsd-activated,
+body.fsd-activated {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 100vw !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
 }
 
 body {
@@ -458,15 +509,106 @@ body {
     .main-topBar-container,
     .globalNav,
     .main-globalNav,
+    .Root__globalNav,
     .main-topBar-topbarContentRight,
     .Root__nav-bar,
     .Root__main-view,
-    .Root__now-playing-bar {
+    .Root__now-playing-bar,
+    .Root__right-sidebar,
+    aside,
+    .main-nowPlayingView-container {
         visibility: hidden !important;
         display: none !important;
         opacity: 0 !important;
         transition: none !important;
         pointer-events: none !important;
+    }
+
+    // When the queue panel is open, lift #main and .Root__top-container
+    // above the fullscreen overlay so the right sidebar can paint on top.
+    &.fsd-queue-panel-active {
+        #main,
+        .Root,
+        .Root__top-container {
+            background: transparent !important;
+            pointer-events: none !important;
+            z-index: 10001 !important;
+        }
+
+        .Root__right-sidebar,
+        .Root__right-sidebar.fsd-queue-panel {
+            visibility: visible !important;
+            display: flex !important;
+            flex-direction: column !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            position: fixed !important;
+            top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            height: 100vh !important;
+            width: 440px !important;
+            max-width: 90vw !important;
+            z-index: 10001 !important;
+            background: rgba(18, 18, 18, 0.92) !important;
+            backdrop-filter: blur(28px) brightness(0.8) !important;
+            -webkit-backdrop-filter: blur(28px) brightness(0.8) !important;
+            box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6) !important;
+            border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+            // transform is driven by JS for slide-in/out animation
+            transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1) !important;
+            overflow: hidden !important;
+        }
+
+        // Slide-out animation — needs to be inside fsd-queue-panel-active
+        // so it can override the parent sidebar rules.
+        .Root__right-sidebar.fsd-queue-panel-closing {
+            transform: translateX(100%) !important;
+            transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1) !important;
+        }
+
+        // Override Spotify's peek/overlay/peekContent collapse structure.
+        // These containers use flex + position:absolute + transform to hide
+        // by default; we need to force them to fill the sidebar.
+        .Root__right-sidebar .Root__right-sidebar-peek,
+        .Root__right-sidebar .Root__right-sidebar-overlayWrapper,
+        .Root__right-sidebar .Root__right-sidebar-peekContent,
+        .Root__right-sidebar .main-nowPlayingView-container,
+        .Root__right-sidebar aside {
+            display: flex !important;
+            flex-direction: column !important;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            min-height: 0 !important;
+            flex: 1 1 100% !important;
+            background: transparent !important;
+            position: relative !important;
+            overflow: hidden !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: none !important;
+        }
+
+        .Root__right-sidebar * {
+            visibility: visible !important;
+        }
+
+        .Root__right-sidebar .main-buddyFeed-actions.main-buddyFeed-closeContainer {
+            display: none !important;
+        }
+    }
+
+    &.vertical-mode.fsd-queue-panel-active .Root__right-sidebar {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        height: 60vh !important;
+        top: auto !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        border-left: none !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
     .Root__top-container {
@@ -475,59 +617,12 @@ body {
         overflow-x: hidden !important;
     }
 
-    .fsd-transform-animation {
-        transition: transform 0.4s ease-in-out;
-    }
-
-    .fsd-queue-panel {
-        --queue-panel-x: 1000px;
-        z-index: 101;
-        transform: translateX(var(--queue-panel-x));
-
-        .main-buddyFeed-actions.main-buddyFeed-closeContainer,
-        .icNf66tgG3uxDMbCCIaN.XOSSUjLDKk9RRmiX_UWa,
-        .liw6Y_iPu2DJRwk10x9d.FLyfurPaIDAlwjsF3mLf,
-        .main-nowPlayingView-headerButtonContainer.SR7K4r2ugBwBspFK {
-            display: none;
-        }
-
-        .XOawmCGZcQx4cesyNfVO,
-        .oXO9_yYs6JyOwkBn8E4a,
-        .zjCIcN96KsMfWwRo,
-        .main-nowPlayingView-container {
-            width: 500px !important;
-        }
-
-        .eWU4JoxyECcwnSf_ {
-            background: transparent !important;
-        }
-
-        .main-buddyFeed-container,
-        .ffFwfKcPDbmAPLXzxzKq,
-        .ffFwfKcPDbmAPLXzxzKq::before,
-        .UrfDp0_mKGL9hkfh9g_R.SKjhjAC5p3CW1UI5UiMg,
-        .UrfDp0_mKGL9hkfh9g_R.SKjhjAC5p3CW1UI5UiMg::before,
-        .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1,
-        .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1::before,
-        .ZWDHceKsZZA3lvFT:before,
-        .ZWDHceKsZZA3lvFT {
-            background: transparent !important;
-            backdrop-filter: blur(10px) brightness(0.7);
-            border-radius: 10px;
-        }
-    }
-
-    &.vertical-mode {
-
-        .XOawmCGZcQx4cesyNfVO,
-        .oXO9_yYs6JyOwkBn8E4a,
-        .zjCIcN96KsMfWwRo,
-        .main-nowPlayingView-container{
-            width: 280px !important;
-        }
-    }
-
     .Root__main-view-overlay {
         z-index: 1000;
+    }
+
+    #context-menu,
+    [data-tippy-root] {
+        z-index: 10005 !important;
     }
 }

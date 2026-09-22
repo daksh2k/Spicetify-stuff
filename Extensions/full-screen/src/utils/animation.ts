@@ -1,12 +1,25 @@
 import { Settings } from "../types/fullscreen";
 import CFM from "./config";
 
+// Cancel any in-flight crossfade or color animation before starting a new one.
+// This prevents overlapping rAF loops from stacking and burning CPU.
+let activeCanvasAnimId: number | null = null;
+
+function cancelActiveCanvasAnim() {
+    if (activeCanvasAnimId !== null) {
+        cancelAnimationFrame(activeCanvasAnimId);
+        activeCanvasAnimId = null;
+    }
+}
+
 export function animateCanvas(
     prevImg: HTMLImageElement,
     nextImg: HTMLImageElement,
     back: HTMLCanvasElement,
     fromResize = false,
 ) {
+    cancelActiveCanvasAnim();
+
     const configTransitionTime = CFM.get("backAnimationTime") as Settings["backAnimationTime"];
     const { innerWidth: width, innerHeight: height } = window;
     back.width = width;
@@ -23,7 +36,12 @@ export function animateCanvas(
     const sizeX = vals.width + blur * 4;
     const sizeY = vals.height + blur * 4;
 
-    if (fromResize) {
+    const firstPaint = !back.dataset.fsdPainted;
+    back.dataset.fsdPainted = "true";
+
+    // Instant paint: first frame, resize, same image, or no transition time configured.
+    if (firstPaint || fromResize || !prevImg.complete || !prevImg.naturalWidth
+        || configTransitionTime <= 0) {
         ctx.globalAlpha = 1;
         ctx.drawImage(nextImg, x, y, sizeX, sizeY);
         return;
@@ -48,15 +66,19 @@ export function animateCanvas(
         }
         if (elapsed < configTransitionTime * 1000) {
             prevTimeStamp = timestamp;
-            !done && requestAnimationFrame(animate);
+            if (!done) activeCanvasAnimId = requestAnimationFrame(animate);
+        } else {
+            activeCanvasAnimId = null;
         }
     };
 
-    requestAnimationFrame(animate);
+    activeCanvasAnimId = requestAnimationFrame(animate);
 }
 
 let prevColor = "#000000";
 export async function animateColor(nextColor: string, back: HTMLCanvasElement, fromConfig = false) {
+    cancelActiveCanvasAnim();
+
     const configTransitionTime = CFM.get("backAnimationTime") as Settings["backAnimationTime"];
     const { innerWidth: width, innerHeight: height } = window;
     back.width = width;
@@ -64,10 +86,13 @@ export async function animateColor(nextColor: string, back: HTMLCanvasElement, f
 
     const ctx = back.getContext("2d") as CanvasRenderingContext2D;
 
-    if (fromConfig) {
+    const firstPaint = !back.dataset.fsdPainted;
+    back.dataset.fsdPainted = "true";
+    if (firstPaint || fromConfig || configTransitionTime <= 0 || prevColor === nextColor) {
         ctx.globalAlpha = 1;
         ctx.fillStyle = nextColor;
         ctx.fillRect(0, 0, width, height);
+        prevColor = nextColor;
         return;
     }
 
@@ -90,13 +115,14 @@ export async function animateColor(nextColor: string, back: HTMLCanvasElement, f
         }
         if (elapsed < configTransitionTime * 1000) {
             previousTimeStamp = timestamp;
-            !done && requestAnimationFrame(animate);
+            if (!done) activeCanvasAnimId = requestAnimationFrame(animate);
         } else {
             prevColor = nextColor;
+            activeCanvasAnimId = null;
         }
     };
 
-    requestAnimationFrame(animate);
+    activeCanvasAnimId = requestAnimationFrame(animate);
 }
 
 let isAnimationRunning = false;
