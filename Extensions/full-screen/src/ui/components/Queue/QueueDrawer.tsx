@@ -38,8 +38,8 @@ function parseQueueItem(item: any, isQueuedDefault = false): TrackInfo {
         (item?.metadata && typeof item.metadata === "object" ? item.metadata : null) ||
         {};
 
-    const uri = item?.contextTrack?.uri || item?.uri || "";
-    const uid = item?.contextTrack?.uid || item?.uid || uri || Math.random().toString();
+    const uri = item?.uri || item?.contextTrack?.uri || "";
+    const uid = item?.uid || item?.contextTrack?.uid || uri || Math.random().toString();
     const title = meta.title || item?.name || "Unknown Track";
 
     let artist = "";
@@ -106,8 +106,12 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
     const [isOpen, setIsOpen] = React.useState<boolean>(() =>
         document.body.classList.contains("fsd-queue-panel-active")
     );
+    const [isPlaying, setIsPlaying] = React.useState<boolean>(() =>
+        Boolean(Spicetify.Player?.isPlaying?.())
+    );
     const [currentTrack, setCurrentTrack] = React.useState<TrackInfo | null>(null);
     const [nextTracks, setNextTracks] = React.useState<TrackInfo[]>([]);
+    const [draggedIdx, setDraggedIdx] = React.useState<number | null>(null);
 
     const fetchQueue = React.useCallback(() => {
         try {
@@ -125,6 +129,8 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
             } else {
                 setNextTracks([]);
             }
+
+            setIsPlaying(Boolean(Spicetify.Player?.isPlaying?.()));
         } catch (e) {
             console.warn("Error fetching queue:", e);
         }
@@ -163,33 +169,149 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
 
         const handleQueueUpdate = () => fetchQueue();
         const handleSongChange = () => fetchQueue();
+        const handlePlayPause = () => {
+            setIsPlaying(Boolean(Spicetify.Player?.isPlaying?.()));
+            fetchQueue();
+        };
 
         Spicetify.Platform?.PlayerAPI?._events?.addListener("queue_update", handleQueueUpdate);
         Spicetify.Player?.addEventListener("songchange", handleSongChange);
-        Spicetify.Player?.addEventListener("onplaypause", handleQueueUpdate);
+        Spicetify.Player?.addEventListener("onplaypause", handlePlayPause);
 
         return () => {
             observer.disconnect();
             window.removeEventListener("fsd-queue-visibility", handleVisibility);
             Spicetify.Platform?.PlayerAPI?._events?.removeListener("queue_update", handleQueueUpdate);
             Spicetify.Player?.removeEventListener("songchange", handleSongChange);
-            Spicetify.Player?.removeEventListener("onplaypause", handleQueueUpdate);
+            Spicetify.Player?.removeEventListener("onplaypause", handlePlayPause);
         };
     }, [fetchQueue]);
 
-    const handlePlayTrack = (track: TrackInfo, idx: number) => {
+    const handleTogglePlay = (e: React.MouseEvent) => {
+        e.stopPropagation();
         try {
-            if (idx === 0) {
+            Spicetify.Player?.togglePlay?.();
+            setIsPlaying((prev) => !prev);
+        } catch (e) {
+            console.error("Toggle play failed:", e);
+        }
+    };
+
+    const handlePlayTrack = async (track: TrackInfo, idx: number, e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
+        try {
+            if (Spicetify.Platform?.PlayerAPI?.skipTo) {
+                await Spicetify.Platform.PlayerAPI.skipTo({
+                    uri: track.uri,
+                    uid: track.uid || undefined,
+                });
+            } else if (Spicetify.Player.data?.context?.uri && Spicetify.Platform?.PlayerAPI?.play) {
+                await Spicetify.Platform.PlayerAPI.play(
+                    { uri: Spicetify.Player.data.context.uri },
+                    {},
+                    { skipTo: { uri: track.uri, uid: track.uid || undefined } }
+                );
+            } else if (idx === 0) {
                 Spicetify.Player?.next?.();
             } else if (track.uri) {
                 if (Spicetify.Player?.playUri) {
-                    Spicetify.Player.playUri(track.uri);
+                    await Spicetify.Player.playUri(track.uri);
                 } else if (Spicetify.Platform?.PlayerAPI?.play) {
-                    Spicetify.Platform.PlayerAPI.play({ uri: track.uri });
+                    await Spicetify.Platform.PlayerAPI.play({ uri: track.uri });
                 }
             }
+            setTimeout(fetchQueue, 250);
         } catch (e) {
             console.error("Failed to play track:", e);
+        }
+    };
+
+    const handleRemoveTrack = async (track: TrackInfo, e: React.MouseEvent) => {
+        e.stopPropagation();
+        try {
+            if (Spicetify.Platform?.PlayerAPI?.removeFromQueue) {
+                await Spicetify.Platform.PlayerAPI.removeFromQueue([
+                    { uri: track.uri, uid: track.uid || undefined },
+                ]);
+            } else if (Spicetify.removeFromQueue) {
+                Spicetify.removeFromQueue([{ uri: track.uri } as any]);
+            }
+            setTimeout(fetchQueue, 180);
+        } catch (e) {
+            console.warn("Could not remove track from queue:", e);
+        }
+    };
+
+    const handleMoveUp = async (track: TrackInfo, idx: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (idx <= 0) return;
+        const target = nextTracks[idx - 1];
+        if (!target) return;
+        try {
+            if (Spicetify.Platform?.PlayerAPI?.reorderQueue) {
+                await Spicetify.Platform.PlayerAPI.reorderQueue(
+                    [{ uid: track.uid, uri: track.uri }],
+                    { before: { uid: target.uid, uri: target.uri } }
+                );
+                setTimeout(fetchQueue, 180);
+            }
+        } catch (e) {
+            console.warn("Could not move track up:", e);
+        }
+    };
+
+    const handleMoveDown = async (track: TrackInfo, idx: number, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (idx >= nextTracks.length - 1) return;
+        const target = nextTracks[idx + 1];
+        if (!target) return;
+        try {
+            if (Spicetify.Platform?.PlayerAPI?.reorderQueue) {
+                await Spicetify.Platform.PlayerAPI.reorderQueue(
+                    [{ uid: track.uid, uri: track.uri }],
+                    { after: { uid: target.uid, uri: target.uri } }
+                );
+                setTimeout(fetchQueue, 180);
+            }
+        } catch (e) {
+            console.warn("Could not move track down:", e);
+        }
+    };
+
+    const handleDragStart = (e: React.DragEvent, idx: number) => {
+        e.dataTransfer.setData("text/plain", String(idx));
+        e.dataTransfer.effectAllowed = "move";
+        setDraggedIdx(idx);
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+    };
+
+    const handleDrop = async (e: React.DragEvent, targetIdx: number) => {
+        e.preventDefault();
+        const sourceIdx = draggedIdx ?? Number(e.dataTransfer.getData("text/plain"));
+        setDraggedIdx(null);
+        if (isNaN(sourceIdx) || sourceIdx === targetIdx || sourceIdx < 0 || sourceIdx >= nextTracks.length) return;
+
+        const sourceTrack = nextTracks[sourceIdx];
+        const targetTrack = nextTracks[targetIdx];
+        if (!sourceTrack || !targetTrack) return;
+
+        try {
+            if (Spicetify.Platform?.PlayerAPI?.reorderQueue) {
+                const position = sourceIdx < targetIdx
+                    ? { after: { uid: targetTrack.uid, uri: targetTrack.uri } }
+                    : { before: { uid: targetTrack.uid, uri: targetTrack.uri } };
+                await Spicetify.Platform.PlayerAPI.reorderQueue(
+                    [{ uid: sourceTrack.uid, uri: sourceTrack.uri }],
+                    position
+                );
+                setTimeout(fetchQueue, 180);
+            }
+        } catch (e) {
+            console.warn("Drag reorder failed:", e);
         }
     };
 
@@ -271,7 +393,11 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                     {currentTrack && (
                         <div className="fsd-queue-section fsd-queue-now-playing-section">
                             <div className="fsd-queue-section-label">NOW PLAYING</div>
-                            <div className="fsd-queue-item fsd-queue-current-item">
+                            <div
+                                className="fsd-queue-item fsd-queue-current-item"
+                                onClick={handleTogglePlay}
+                                title={isPlaying ? "Click to Pause" : "Click to Play"}
+                            >
                                 <div className="fsd-queue-art-container">
                                     <img
                                         className="fsd-queue-art"
@@ -282,10 +408,23 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                                         }}
                                         alt=""
                                     />
-                                    <div className="fsd-queue-playing-wave">
-                                        <span className="fsd-wave-bar" />
-                                        <span className="fsd-wave-bar" />
-                                        <span className="fsd-wave-bar" />
+                                    {isPlaying && (
+                                        <div className="fsd-queue-playing-wave">
+                                            <span className="fsd-wave-bar" />
+                                            <span className="fsd-wave-bar" />
+                                            <span className="fsd-wave-bar" />
+                                        </div>
+                                    )}
+                                    <div className="fsd-queue-art-overlay">
+                                        {isPlaying ? (
+                                            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                                                <path d="M3 2h3v12H3V2zm7 0h3v12h-3V2z" />
+                                            </svg>
+                                        ) : (
+                                            <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                                                <path d="M3 2l10 6-10 6V2z" />
+                                            </svg>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="fsd-queue-info">
@@ -296,6 +435,21 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                                         {currentTrack.artist || "Unknown Artist"}
                                     </div>
                                 </div>
+                                <button
+                                    className="fsd-queue-row-play-btn"
+                                    onClick={handleTogglePlay}
+                                    title={isPlaying ? "Pause" : "Play"}
+                                >
+                                    {isPlaying ? (
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M3 2h3v12H3V2zm7 0h3v12h-3V2z" />
+                                        </svg>
+                                    ) : (
+                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                            <path d="M3 2l10 6-10 6V2z" />
+                                        </svg>
+                                    )}
+                                </button>
                                 {currentTrack.duration && (
                                     <div className="fsd-queue-duration">
                                         {currentTrack.duration}
@@ -324,10 +478,18 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                                 {nextTracks.map((track, idx) => (
                                     <div
                                         key={track.uid || `${track.uri}-${idx}`}
-                                        className="fsd-queue-item"
-                                        onClick={() => handlePlayTrack(track, idx)}
+                                        className={`fsd-queue-item ${draggedIdx === idx ? "fsd-queue-dragging" : ""}`}
+                                        onClick={(e) => handlePlayTrack(track, idx, e)}
+                                        draggable={true}
+                                        onDragStart={(e) => handleDragStart(e, idx)}
+                                        onDragOver={handleDragOver}
+                                        onDrop={(e) => handleDrop(e, idx)}
                                     >
-                                        <div className="fsd-queue-index-col">
+                                        <div
+                                            className="fsd-queue-index-col"
+                                            onClick={(e) => handlePlayTrack(track, idx, e)}
+                                            title="Play track"
+                                        >
                                             <span className="fsd-queue-index">{idx + 1}</span>
                                             <svg
                                                 className="fsd-queue-play-icon"
@@ -339,7 +501,11 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                                                 <path d="M3 2l10 6-10 6V2z" />
                                             </svg>
                                         </div>
-                                        <div className="fsd-queue-art-container">
+                                        <div
+                                            className="fsd-queue-art-container"
+                                            onClick={(e) => handlePlayTrack(track, idx, e)}
+                                            title="Play track"
+                                        >
                                             <img
                                                 className="fsd-queue-art"
                                                 src={track.artwork || ICONS.OFFLINE_SVG}
@@ -349,6 +515,11 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                                                 }}
                                                 alt=""
                                             />
+                                            <div className="fsd-queue-art-overlay">
+                                                <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+                                                    <path d="M3 2l10 6-10 6V2z" />
+                                                </svg>
+                                            </div>
                                         </div>
                                         <div className="fsd-queue-info">
                                             <div className="fsd-queue-item-title-row">
@@ -362,6 +533,48 @@ export const QueueDrawer: React.FC<QueueDrawerProps> = ({ onClose }) => {
                                             <div className="fsd-queue-item-artist">
                                                 {track.artist || "Unknown Artist"}
                                             </div>
+                                        </div>
+                                        <div className="fsd-queue-item-actions" onClick={(e) => e.stopPropagation()}>
+                                            <button
+                                                className="fsd-queue-action-btn fsd-queue-play-action-btn"
+                                                title="Play this track"
+                                                onClick={(e) => handlePlayTrack(track, idx, e)}
+                                            >
+                                                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                                                    <path d="M3 2l10 6-10 6V2z" />
+                                                </svg>
+                                            </button>
+                                            {idx > 0 && (
+                                                <button
+                                                    className="fsd-queue-action-btn"
+                                                    title="Move up in queue"
+                                                    onClick={(e) => handleMoveUp(track, idx, e)}
+                                                >
+                                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                                                        <path d="M8 3.5l6 6-.707.707L8 4.914 2.707 10.207 2 9.5l6-6z" />
+                                                    </svg>
+                                                </button>
+                                            )}
+                                            {idx < nextTracks.length - 1 && (
+                                                <button
+                                                    className="fsd-queue-action-btn"
+                                                    title="Move down in queue"
+                                                    onClick={(e) => handleMoveDown(track, idx, e)}
+                                                >
+                                                    <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                                                        <path d="M8 12.5l-6-6 .707-.707L8 11.086l5.293-5.293.707.707-6 6z" />
+                                                    </svg>
+                                                </button>
+                                            )}
+                                            <button
+                                                className="fsd-queue-action-btn fsd-queue-remove-btn"
+                                                title="Remove from queue"
+                                                onClick={(e) => handleRemoveTrack(track, e)}
+                                            >
+                                                <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor">
+                                                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
+                                                </svg>
+                                            </button>
                                         </div>
                                         {track.duration && (
                                             <div className="fsd-queue-duration">

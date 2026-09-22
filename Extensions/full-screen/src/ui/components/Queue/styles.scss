@@ -216,6 +216,20 @@ body.fsd-queue-panel-active {
     transition: background 0.15s ease, transform 0.1s ease;
     box-sizing: border-box;
 
+    &[draggable="true"] {
+        user-select: none;
+
+        &:hover {
+            cursor: grab;
+        }
+    }
+
+    &.fsd-queue-dragging {
+        opacity: 0.4;
+        background: rgba(255, 255, 255, 0.15);
+        cursor: grabbing;
+    }
+
     &:hover {
         background: rgba(255, 255, 255, 0.08);
 
@@ -225,6 +239,20 @@ body.fsd-queue-panel-active {
 
         .fsd-queue-play-icon {
             display: block;
+        }
+
+        .fsd-queue-art-overlay {
+            opacity: 1;
+        }
+
+        .fsd-queue-item-actions {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .fsd-queue-row-play-btn {
+            opacity: 1;
+            pointer-events: auto;
         }
     }
 
@@ -236,11 +264,19 @@ body.fsd-queue-panel-active {
     &.fsd-queue-current-item {
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        cursor: default;
+        cursor: pointer;
 
         &:hover {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.10);
             transform: none;
+
+            .fsd-queue-art-overlay {
+                opacity: 1;
+            }
+
+            .fsd-queue-playing-wave {
+                opacity: 0;
+            }
         }
     }
 
@@ -277,6 +313,20 @@ body.fsd-queue-panel-active {
             display: block;
         }
 
+        .fsd-queue-art-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            pointer-events: none;
+            border-radius: 6px;
+        }
+
         .fsd-queue-playing-wave {
             position: absolute;
             inset: 0;
@@ -286,6 +336,7 @@ body.fsd-queue-panel-active {
             justify-content: center;
             gap: 2px;
             padding-bottom: 8px;
+            transition: opacity 0.18s ease;
 
             .fsd-wave-bar {
                 width: 3px;
@@ -346,6 +397,83 @@ body.fsd-queue-panel-active {
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+    }
+
+    .fsd-queue-row-play-btn {
+        background: rgba(255, 255, 255, 0.12);
+        border: none;
+        color: #ffffff;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: all 0.15s ease;
+        flex-shrink: 0;
+
+        &:hover {
+            background: #1ed760;
+            color: #000000;
+            transform: scale(1.08);
+            opacity: 1;
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+    }
+
+    .fsd-queue-item-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+        flex-shrink: 0;
+
+        .fsd-queue-action-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.75);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.15s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.22);
+                color: #ffffff;
+                transform: scale(1.1);
+            }
+
+            &:active {
+                transform: scale(0.92);
+            }
+
+            &.fsd-queue-play-action-btn {
+                color: #1ed760;
+
+                &:hover {
+                    background: #1ed760;
+                    color: #000000;
+                }
+            }
+
+            &.fsd-queue-remove-btn:hover {
+                background: rgba(235, 75, 75, 0.3);
+                border-color: rgba(235, 75, 75, 0.5);
+                color: #ff6b6b;
+            }
         }
     }
 
