@@ -555,9 +555,16 @@ body {
             -webkit-backdrop-filter: blur(28px) brightness(0.8) !important;
             box-shadow: -8px 0 32px rgba(0, 0, 0, 0.6) !important;
             border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
-            transform: translateX(0) !important;
+            // transform is driven by JS for slide-in/out animation
             transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1) !important;
             overflow: hidden !important;
+        }
+
+        // Slide-out animation — needs to be inside fsd-queue-panel-active
+        // so it can override the parent sidebar rules.
+        .Root__right-sidebar.fsd-queue-panel-closing {
+            transform: translateX(100%) !important;
+            transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1) !important;
         }
 
         // Override Spotify's peek/overlay/peekContent collapse structure.
@@ -591,11 +598,6 @@ body {
         .Root__right-sidebar .main-buddyFeed-actions.main-buddyFeed-closeContainer {
             display: none !important;
         }
-    }
-
-    .Root__right-sidebar.fsd-queue-panel-closing {
-        transform: translateX(100%) !important;
-        transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1) !important;
     }
 
     &.vertical-mode.fsd-queue-panel-active .Root__right-sidebar {
