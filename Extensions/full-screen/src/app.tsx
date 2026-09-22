@@ -19,7 +19,7 @@ import { initMoustrapRecord } from "./services/mousetrap-record";
 import SeekableProgressBar from "./ui/components/ProgressBar/ProgressBar";
 import SeekableVolumeBar from "./ui/components/VolumeBar/VolumeBar";
 import OverviewCard from "./ui/components/OverviewPopup/OverviewCard";
-import QueueDrawer from "./ui/components/Queue/QueueDrawer";
+import HtmlSelectors from "./utils/selectors";
 
 import { DOM } from "./ui/elements";
 import { ConfigManager } from "./ui/components/Config/Config";
@@ -242,7 +242,7 @@ async function main() {
 
         // Stop double-click propagation on interactive controls so rapid clicks (e.g. skipping tracks) never trigger fullscreen exit
         DOM.container.querySelectorAll<HTMLElement>(
-            '.fs-button, .control-button, #fsd-upnext-container, .fsd-song-meta span, #fsd-volume-parent, #fsd-progress-parent, #fsd-queue-parent'
+            '.fs-button, .control-button, #fsd-upnext-container, .fsd-song-meta span, #fsd-volume-parent, #fsd-progress-parent'
         ).forEach((el) => {
             el.ondblclick = (e) => e.stopPropagation();
         });
@@ -256,10 +256,6 @@ async function main() {
     }
 
     function toggleQueue() {
-        const queueParent = DOM.container.querySelector("#fsd-queue-parent");
-        if (queueParent && !queueParent.hasChildNodes()) {
-            ReactDOM.render(<QueueDrawer onClose={toggleQueue} />, queueParent);
-        }
         Utils.toggleQueue(DOM.queue);
         if (DOM.queue) {
             Utils.fadeAnimation(DOM.queue);
@@ -469,12 +465,33 @@ async function main() {
     }
 
     function contextMenuHandler(e: MouseEvent) {
+        const target = e.target as HTMLElement | null;
+        const rightPanel = HtmlSelectors.getRightPanel();
+        if (rightPanel && (rightPanel.contains(target) || e.composedPath?.().includes(rightPanel))) return;
+        if (target?.closest("#context-menu, [data-tippy-root]")) return;
+
         const dialog = document.querySelector("dialog.fs-popup-modal");
         if (dialog && (dialog.contains(e.target as Node) || e.composedPath?.().includes(dialog))) return;
 
         e.preventDefault();
         e.stopPropagation();
         ConfigManager.openConfig(e);
+    }
+
+    function handleDocumentClick(e: MouseEvent) {
+        if (!document.body.classList.contains("fsd-queue-panel-active")) return;
+        const target = e.target as HTMLElement | null;
+        if (!target) return;
+        const rightPanel = HtmlSelectors.getRightPanel();
+        if (rightPanel && (rightPanel.contains(target) || e.composedPath?.().includes(rightPanel))) {
+            if (target.closest('[data-testid="PanelHeader_CloseButton"]') || target.closest('button[aria-label*="Close" i]')) {
+                toggleQueue();
+            }
+            return;
+        }
+        if (DOM.queue?.contains(target) || e.composedPath?.().includes(DOM.queue)) return;
+        if (target.closest("#context-menu, [data-tippy-root]")) return;
+        toggleQueue();
     }
 
     function fullScreenListener() {
@@ -570,13 +587,6 @@ async function main() {
                     DOM.container.querySelector("#fsd-overview-card-parent"),
                 );
             }
-            const queueParent = DOM.container.querySelector("#fsd-queue-parent");
-            if (queueParent) {
-                ReactDOM.render(
-                    <QueueDrawer onClose={toggleQueue} />,
-                    queueParent,
-                );
-            }
             if (CFM.get("playerControls") !== "never") {
                 PlayerControls.updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
                 Spicetify.Player.addEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
@@ -598,6 +608,7 @@ async function main() {
                 requestAnimationFrame(() => window.dispatchEvent(new Event("fad-request")));
             }
             document.addEventListener("fullscreenchange", fullScreenListener);
+            document.addEventListener("click", handleDocumentClick, true);
             window.addEventListener("keydown", escKeyHandler, true);
             window.addEventListener("contextmenu", contextMenuHandler, true);
             Spicetify.Mousetrap.bind("esc", () => {
@@ -638,6 +649,7 @@ async function main() {
         window.removeEventListener("keydown", escKeyHandler, true);
         window.removeEventListener("contextmenu", contextMenuHandler, true);
         document.removeEventListener("fullscreenchange", fullScreenListener);
+        document.removeEventListener("click", handleDocumentClick, true);
         window.removeEventListener("resize", resizeEvents);
         Spicetify.Player.removeEventListener("songchange", updateInfo);
         handleMouseMoveDeactivation();
@@ -673,8 +685,6 @@ async function main() {
             if (progParent) ReactDOM.unmountComponentAtNode(progParent);
             const cardParent = DOM.container.querySelector("#fsd-overview-card-parent");
             if (cardParent) ReactDOM.unmountComponentAtNode(cardParent);
-            const queueParent = DOM.container.querySelector("#fsd-queue-parent");
-            if (queueParent) ReactDOM.unmountComponentAtNode(queueParent);
 
             if (CFM.get("icons")) {
                 Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);

@@ -381,31 +381,76 @@ class Utils {
 
     static toggleQueuePanel(myQueueButton: HTMLElement | null, enabled: boolean) {
         cancelQueuedPanelWork();
+        const rightPanel = HtmlSelectors.getRightPanel();
+        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
+
         if (enabled) {
             if (!document.body.classList.contains("fsd-queue-panel-active")) {
                 this.toggleQueue(myQueueButton);
             }
         } else {
             if (document.body.classList.contains("fsd-queue-panel-active")) {
-                this.toggleQueue(myQueueButton);
+                document.body.classList.remove("fsd-queue-panel-active");
+                myQueueButton?.classList.remove("button-active", "dot-after");
+                if (rightPanel) {
+                    rightPanel.classList.remove("fsd-queue-panel", "fsd-queue-panel-closing");
+                    rightPanel.style.transform = "";
+                }
+                if (wasQueuePanelEnabled === false && originalQueueButton) {
+                    if (HtmlSelectors.isQueueButtonActive(originalQueueButton)) {
+                        originalQueueButton.click();
+                    }
+                }
+                wasQueuePanelEnabled = null;
             }
         }
     }
 
     static toggleQueue(queueButton: HTMLElement | null) {
         cancelQueuedPanelWork();
+        const rightPanel = HtmlSelectors.getRightPanel();
+        const originalQueueButton = HtmlSelectors.getOriginalQueueButton();
+
         if (document.body.classList.contains("fsd-queue-panel-active")) {
             queueButton?.classList.remove("button-active", "dot-after");
-            document.body.classList.remove("fsd-queue-panel-active");
-            window.dispatchEvent(
-                new CustomEvent("fsd-queue-visibility", { detail: { open: false } })
-            );
+            if (rightPanel) {
+                rightPanel.classList.add("fsd-queue-panel-closing");
+                queueAnimationTimer = setTimeout(() => {
+                    document.body.classList.remove("fsd-queue-panel-active");
+                    rightPanel.classList.remove("fsd-queue-panel", "fsd-queue-panel-closing");
+                    rightPanel.style.transform = "";
+                }, 250);
+            } else {
+                document.body.classList.remove("fsd-queue-panel-active");
+            }
+
+            if (wasQueuePanelEnabled === false && originalQueueButton) {
+                if (HtmlSelectors.isQueueButtonActive(originalQueueButton)) {
+                    originalQueueButton.click();
+                }
+            }
+            wasQueuePanelEnabled = null;
         } else {
-            queueButton?.classList.add("button-active", "dot-after");
+            const isNativeActive = HtmlSelectors.isQueueButtonActive(originalQueueButton);
+            wasQueuePanelEnabled = isNativeActive;
+
+            if (!isNativeActive && originalQueueButton) {
+                originalQueueButton.click();
+            }
+
             document.body.classList.add("fsd-queue-panel-active");
-            window.dispatchEvent(
-                new CustomEvent("fsd-queue-visibility", { detail: { open: true } })
-            );
+            queueButton?.classList.add("button-active", "dot-after");
+
+            if (rightPanel) {
+                rightPanel.classList.remove("fsd-queue-panel-closing");
+                rightPanel.classList.add("fsd-queue-panel");
+                rightPanel.style.transform = "translateX(100%)";
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        rightPanel.style.transform = "translateX(0px)";
+                    });
+                });
+            }
         }
     }
 

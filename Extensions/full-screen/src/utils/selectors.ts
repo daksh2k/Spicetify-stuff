@@ -67,6 +67,16 @@ class HtmlSelectors {
         }
         return null;
     }
+    static isQueueButtonActive(button: HTMLElement | null): boolean {
+        if (!button) return false;
+        return (
+            button.getAttribute("data-active") === "true" ||
+            button.getAttribute("aria-pressed") === "true" ||
+            button.getAttribute("aria-checked") === "true" ||
+            button.classList.contains("main-genericButton-buttonActive") ||
+            button.classList.contains("button-active")
+        );
+    }
 }
 
 export default HtmlSelectors;
