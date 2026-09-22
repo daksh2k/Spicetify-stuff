@@ -70,13 +70,7 @@ const SeekableProgressBar = ({ state }: { state: string }) => {
         setVisibility(true);
         progressTimer.current = setTimeout(() => {
             const container = document.getElementById("fsd-progress-container");
-            const status = document.getElementById("fsd-status");
-            const progressParent = document.getElementById("fsd-progress-parent");
-            if (
-                container?.matches(":hover") ||
-                progressParent?.matches(":hover") ||
-                status?.matches(":hover")
-            ) {
+            if (container?.matches(":hover") || container?.closest("#fsd-status")?.matches(":hover")) {
                 return;
             }
             setVisibility(false);

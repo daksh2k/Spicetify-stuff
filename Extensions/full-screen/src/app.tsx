@@ -199,17 +199,17 @@ async function main() {
         if (CFM.get("playerControls") !== "never") {
             DOM.play = DOM.container.querySelector("#fsd-play")!;
             DOM.play.onclick = () => {
-                // native active scale handles click feedback
+                Utils.fadeAnimation(DOM.play);
                 Spicetify.Player.togglePlay();
             };
             DOM.nextControl = DOM.container.querySelector("#fsd-next")!;
             DOM.nextControl.onclick = () => {
-                // native active scale handles click feedback
+                Utils.fadeAnimation(DOM.nextControl, "fade-ri");
                 Spicetify.Player.next();
             };
             DOM.backControl = DOM.container.querySelector("#fsd-back")!;
             DOM.backControl.onclick = () => {
-                // native active scale handles click feedback
+                Utils.fadeAnimation(DOM.backControl, "fade-le");
                 Spicetify.Player.back();
             };
         }
@@ -219,15 +219,15 @@ async function main() {
             DOM.repeat = DOM.container.querySelector("#fsd-repeat")!;
 
             DOM.heart.onclick = () => {
-                // native active scale handles click feedback
+                Utils.fadeAnimation(DOM.heart);
                 Spicetify.Player.toggleHeart();
             };
             DOM.shuffle.onclick = () => {
-                // native active scale handles click feedback
+                Utils.fadeAnimation(DOM.shuffle);
                 Spicetify.Player.toggleShuffle();
             };
             DOM.repeat.onclick = () => {
-                // native active scale handles click feedback
+                Utils.fadeAnimation(DOM.repeat);
                 Spicetify.Player.toggleRepeat();
             };
 
@@ -399,11 +399,8 @@ async function main() {
         hideCursor();
 
         const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
-        statusEl?.addEventListener("mouseenter", onControlsEnter);
-        const progressParent = DOM.container.querySelector<HTMLElement>("#fsd-progress-parent");
-        progressParent?.addEventListener("mouseenter", onControlsEnter);
-        progressParent?.addEventListener("mouseleave", onControlsLeave);
-        statusEl?.addEventListener("mouseleave", onControlsLeave);
+        statusEl?.addEventListener("mouseenter", onStatusEnter);
+        statusEl?.addEventListener("mouseleave", onStatusLeave);
 
         if (CFM.get("contextDisplay") === "mousemove") {
             DOM.container.addEventListener("mousemove", Context.hideContext.bind(Context));
@@ -426,11 +423,8 @@ async function main() {
         DOM.container.removeEventListener("mousemove", PlayerControls.hidePlayerControls.bind(PlayerControls));
 
         const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
-        statusEl?.removeEventListener("mouseenter", onControlsEnter);
-        const progressParent = DOM.container.querySelector<HTMLElement>("#fsd-progress-parent");
-        progressParent?.removeEventListener("mouseenter", onControlsEnter);
-        progressParent?.removeEventListener("mouseleave", onControlsLeave);
-        statusEl?.removeEventListener("mouseleave", onControlsLeave);
+        statusEl?.removeEventListener("mouseenter", onStatusEnter);
+        statusEl?.removeEventListener("mouseleave", onStatusLeave);
 
         if (curTimer) clearTimeout(curTimer);
         if (Context.ctxTimer) clearTimeout(Context.ctxTimer);
