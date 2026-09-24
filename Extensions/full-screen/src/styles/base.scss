@@ -487,7 +487,8 @@ body {
         .main-buddyFeed-actions.main-buddyFeed-closeContainer,
         .icNf66tgG3uxDMbCCIaN.XOSSUjLDKk9RRmiX_UWa,
         .liw6Y_iPu2DJRwk10x9d.FLyfurPaIDAlwjsF3mLf,
-        .main-nowPlayingView-headerButtonContainer.SR7K4r2ugBwBspFK {
+        .main-nowPlayingView-headerButtonContainer.SR7K4r2ugBwBspFK,
+        #Desktop_PanelContainer_Id>div>div.main-nowPlayingView-headerContainer>div>span>div {
             display: none;
         }
 
@@ -510,7 +511,10 @@ body {
         .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1,
         .vDYkSjYiSm42esIK.Om8mTyZHUvkOhUr1::before,
         .ZWDHceKsZZA3lvFT:before,
-        .ZWDHceKsZZA3lvFT {
+        .ZWDHceKsZZA3lvFT,
+        .GQZWDj0xGPg_0Q25WEyf,
+        .GQZWDj0xGPg_0Q25WEyf:before,
+        .Root__right-sidebar-peek {
             background: transparent !important;
             backdrop-filter: blur(10px) brightness(0.7);
             border-radius: 10px;
@@ -522,7 +526,7 @@ body {
         .XOawmCGZcQx4cesyNfVO,
         .oXO9_yYs6JyOwkBn8E4a,
         .zjCIcN96KsMfWwRo,
-        .main-nowPlayingView-container{
+        .main-nowPlayingView-container {
             width: 280px !important;
         }
     }

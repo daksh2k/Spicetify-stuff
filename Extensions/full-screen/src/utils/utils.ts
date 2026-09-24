@@ -314,7 +314,7 @@ class Utils {
         const rightPanel = HtmlSelectors.getRightPanel();
         if (enabled) {
             setTimeout(() => {
-                if (!originalQueueButton?.classList.contains("main-genericButton-buttonActive")) {
+                if (originalQueueButton?.getAttribute("data-active")=="false") {
                     originalQueueButton?.click();
                     wasQueuePanelEnabled = false;
                 } else {

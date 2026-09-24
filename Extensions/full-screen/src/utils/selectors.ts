@@ -9,6 +9,8 @@ class HtmlSelectors {
         ".main-topBar-topbarContentRight",
         ".vRrKblnUUQV5eMbvUdv8>.CuBx12mEGmMQ1XAXHZCs",
         ".main-topBar-historyButtons",
+        ".XjaqJVmY9FrZPbQjWDjw.main-actionButtons"
+
     ];
     private static readonly ORIGINAL_QUEUE_BUTTON_SELECTORS = [
         "div.Y6soMMBElF7EQDbJv8Xb > div > div > button",
