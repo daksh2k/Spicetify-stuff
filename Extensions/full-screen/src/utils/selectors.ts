@@ -4,13 +4,13 @@ class HtmlSelectors {
         ".Y6soMMBElF7EQDbJv8Xb",
     ];
     private static readonly TOP_BAR_SELECTORS = [
+        ".main-globalNav-contentRight>.main-actionButtons",
+        ".main-globalNav-contentRight",
         ".main-globalNav-navRight",
         ".main-topBar-topbarContentRight>.main-actionButtons",
         ".main-topBar-topbarContentRight",
         ".vRrKblnUUQV5eMbvUdv8>.CuBx12mEGmMQ1XAXHZCs",
         ".main-topBar-historyButtons",
-        ".XjaqJVmY9FrZPbQjWDjw.main-actionButtons"
-
     ];
     private static readonly ORIGINAL_QUEUE_BUTTON_SELECTORS = [
         "div.Y6soMMBElF7EQDbJv8Xb > div > div > button",
