@@ -469,7 +469,8 @@ body {
         pointer-events: none !important;
     }
 
-    .Root__top-container {
+    .Root__top-container,
+    .Root > div:has(> #global-nav-bar) {
         will-change: auto !important;
         transform: none !important;
         overflow-x: hidden !important;

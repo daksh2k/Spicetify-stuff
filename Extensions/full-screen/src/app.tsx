@@ -474,7 +474,7 @@ async function main() {
             });
             Spicetify.Platform.PlayerAPI._events.addListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
         }
-        document.querySelector(".Root__top-container")?.append(DOM.style, DOM.container);
+        HtmlSelectors.getTopContainer()?.append(DOM.style, DOM.container);
         if (CFM.get("lyricsDisplay")) {
             window.addEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
             origLoc = Spicetify.Platform.History.location.pathname;
