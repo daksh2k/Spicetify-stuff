@@ -654,7 +654,7 @@ async function main() {
 
         try {
             // Dismiss any open Spotify tooltips or context menus
-            document.querySelectorAll(".tippy-popper, #context-menu, [data-tippy-root]").forEach((el) => el.remove());
+            Utils.dismissTooltips();
 
             // 1. Mount overlay and activate classes immediately so TV mode shows right away
             document.body.append(DOM.style, DOM.container);
@@ -801,7 +801,7 @@ async function main() {
         Spicetify.Mousetrap.unbind("q");
 
         // 4. Clean up tooltips
-        document.querySelectorAll(".tippy-popper, #context-menu, [data-tippy-root]").forEach((el) => el.remove());
+        Utils.dismissTooltips();
 
         // 5. Exit native fullscreen if active
         try {

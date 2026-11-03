@@ -141,3 +141,8 @@ test('play/pause updates survive an event with no data (Spotify 1.3.6)', () => {
   assert.match(app, /function updatePlayingIcon\(evt: any\) \{\s*if \(Utils\.isPausedEvent\(evt\)\) \{/);
   assert.doesNotMatch(app + controls, /evt\.data\.is_paused/);
 });
+
+test('entering and leaving fullscreen closes tooltips without tearing out their content', () => {
+  assert.equal((app.match(/Utils\.dismissTooltips\(\);/g) || []).length, 2);
+  assert.doesNotMatch(app, /#context-menu[^"]*"\)\.forEach\(\(el\) => el\.remove\(\)\)/);
+});

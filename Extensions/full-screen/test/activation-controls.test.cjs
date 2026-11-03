@@ -232,3 +232,18 @@ test('native fullscreen is reversibly hidden, including replacement controls', a
     await settle();
     assert.equal(s.document.querySelector('#fullscreen-tv-button'), null);
 });
+
+test('open tooltips close through tippy, so React can still unmount what it rendered in them', t => {
+    // Removing #context-menu (React's) from its tippy root left React failing to unmount it on the
+    // next render: "Something went wrong" replaced the page after leaving fullscreen with a tooltip up.
+    const s = setup(t, '<div data-tippy-root id="tippy-1"><div id="context-menu">Cache lyrics</div></div>'
+        + '<div data-tippy-root id="tippy-2"></div>');
+    const calls = [];
+    const root = s.document.getElementById('tippy-1');
+    root._tippy = { hide: () => calls.push('hide'), unmount: () => { calls.push('unmount'); root.remove(); } };
+    const menu = s.document.getElementById('context-menu');
+    s.utils().dismissTooltips();
+    assert.deepEqual(calls, ['hide', 'unmount']);
+    assert.equal(menu.parentNode, root, 'the content stays where React put it');
+    assert.equal(s.document.getElementById('tippy-2'), null, 'a root with no tippy instance is removed whole');
+});
