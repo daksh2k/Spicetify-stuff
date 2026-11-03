@@ -97,7 +97,9 @@ const HELD = "#fsd-status, #fsd-progress-parent";
 
 // A sheared box: its top-left corner is lifted by `lift` screen px and each px to the right is
 // lifted `shear` px more.
-type Shear = { shear: number; lift: number; size?: number; shift?: number };
+// `size` is the scale written to the element; for a button `base` is the curve's own scale before the
+// hover zoom (see placeCentred).
+type Shear = { shear: number; lift: number; size?: number; shift?: number; base?: number };
 // A box on the flat layout, in screen px, and the scale its ancestors draw it at.
 type Flat = { left: number; top: number; width: number; height: number; scale: number };
 // A piece moved as a whole: vertical offset and vertical scale about its transform origin.
@@ -115,6 +117,16 @@ let textObserver: MutationObserver | null = null;
 const sheared = new WeakMap<Element, Shear>();
 const moved = new WeakMap<Element, Move>();
 const written = new WeakMap<Element, string>();
+
+// Button hover zoom while the curve is on. A CSS `scale` sits on top of the curve's transform, so it
+// also scaled the curve's lift: the button moved up as it grew, and was measured bigger, which fed
+// back into the bend. The curve eases each button's zoom into its own matrix instead, about the
+// button's centre, so it grows in place (its hit area only grows) over the same 0.15s as with the
+// curve off.
+const HOVER_ZOOM = 1.08;
+const HOVER_MS = 50;
+const zooms = new WeakMap<Element, number>();
+let zoomStep = 1;
 
 export function setHudPerspectiveStrength(element: HTMLElement, value: number) {
     container = element;
@@ -170,6 +182,7 @@ function reset(element: HTMLElement) {
     sheared.delete(element);
     moved.delete(element);
     written.delete(element);
+    zooms.delete(element);
 }
 
 // How deep into the curve x is: 1 at the centre, 0 at the HUD's margins (and a little below 0
@@ -298,14 +311,29 @@ function centredFlat(button: HTMLElement): Flat | null {
     return { left: cx - width / 2, top: cy - height / 2, width, height, scale };
 }
 
-function placeCentred(button: HTMLElement, flat: Flat) {
-    const cx = flat.left + flat.width / 2;
-    const cy = flat.top + flat.height / 2;
-    const arm = armOf(button, cy);
-    const shear = arm * heightSlopeAt(cx);
-    const lift = liftAt(cx, arm);
-    const size = sizeAt(cx);
-    sheared.set(button, { shear, lift, size });
+// A held button (controls-held: the pointer is on its row) keeps its bend and only its zoom moves.
+function placeCentred(button: HTMLElement, flat: Flat, held = false) {
+    const target = button.matches(":hover") ? HOVER_ZOOM : 1;
+    const current = zooms.get(button) ?? 1;
+    const zoom = Math.abs(target - current) < 0.0005 ? target : current + (target - current) * zoomStep;
+    zooms.set(button, zoom);
+    const last = sheared.get(button);
+    let shear: number;
+    let lift: number;
+    let base: number;
+    if (held && last) {
+        ({ shear, lift } = last);
+        base = last.base ?? last.size ?? 1;
+    } else {
+        const cx = flat.left + flat.width / 2;
+        const cy = flat.top + flat.height / 2;
+        const arm = armOf(button, cy);
+        shear = arm * heightSlopeAt(cx);
+        lift = liftAt(cx, arm);
+        base = sizeAt(cx);
+    }
+    const size = base * zoom;
+    sheared.set(button, { shear, lift, size, base });
     const key = `${shear.toFixed(4)}|${lift.toFixed(1)}|${size.toFixed(3)}`;
     if (written.get(button) !== key) {
         written.set(button, key);
@@ -414,6 +442,7 @@ function tick(now: number) {
     lastTime = now;
     easeStep = 1 - Math.exp(-elapsed / EASE_MS);
     bend += (targetBend - bend) * easeStep;
+    zoomStep = 1 - Math.exp(-elapsed / HOVER_MS);
     if (Math.abs(targetBend - bend) < 0.0005) bend = targetBend;
     if (bend === 0 && targetBend === 0) {
         stop();
@@ -534,12 +563,13 @@ function tick(now: number) {
     if (bar && barFlat && onScreen(barFlat)) drawProgressCurve(bar, barFlat);
     for (const button of container.querySelectorAll<HTMLElement>(BUTTONS)) {
         const flat = centredFlat(button);
-        if (!flat || (held && button.closest(HELD))) continue;
-        if (!onScreen(flat)) {
+        if (!flat) continue;
+        const keep = held && Boolean(button.closest(HELD));
+        if (!keep && !onScreen(flat)) {
             if (sheared.has(button)) reset(button);
             continue;
         }
-        placeCentred(button, flat);
+        placeCentred(button, flat, keep);
     }
     frame = requestAnimationFrame(tick);
 }

@@ -61,6 +61,17 @@ async function main() {
     initMoustrapRecord(Spicetify.Mousetrap);
     DOM.init();
 
+    // Handlers bound once. removeEventListener only removes the exact function that was added, and
+    // every .bind() makes a new one, so the handlers added on each activation were never removed:
+    // they piled up with every open and close and kept running after fullscreen was closed.
+    const onPlayPause = PlayerControls.updatePlayerControls.bind(PlayerControls);
+    const onExtraUpdate = ExtraControls.updateExtraControls.bind(ExtraControls);
+    const onQueueUpdate = UpNext.updateUpNext.bind(UpNext);
+    const onUpNextShow = UpNext.updateUpNextShow.bind(UpNext);
+    const hideContextSoon = Context.hideContext.bind(Context);
+    const hideExtraSoon = ExtraControls.hideExtraControls.bind(ExtraControls);
+    const hidePlayerSoon = PlayerControls.hidePlayerControls.bind(PlayerControls);
+
     if (CFM.getGlobal("activationTypes") !== "btns") {
         if (CFM.getGlobal("keyActivation") !== "def") Spicetify.Mousetrap.bind("t", openwithTV);
         if (CFM.getGlobal("keyActivation") !== "tv") Spicetify.Mousetrap.bind("f", openwithDef);
@@ -123,9 +134,9 @@ async function main() {
             DOM.container.classList.remove("lyrics-hide-force");
 
         Spicetify.Player.removeEventListener("songchange", updateInfo);
-        Spicetify.Player.removeEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
+        Spicetify.Player.removeEventListener("onplaypause", onPlayPause);
         Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
-        Spicetify.Platform.PlayerAPI._events.removeListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
+        Spicetify.Platform.PlayerAPI._events.removeListener("update", onExtraUpdate);
 
         // Disconnect heart observer if it exists (handled in ExtraControls but we might need a reference here or move it completely)
         // ExtraControls handles its own observer logic if we move it there? 
@@ -136,8 +147,8 @@ async function main() {
         // Let's assume we handle it in activate/deactivate using ExtraControls methods if possible or just keep it here if it's simple.
         // But we moved updateHeart to ExtraControls.
 
-        Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", UpNext.updateUpNext.bind(UpNext));
-        Spicetify.Platform.PlayerAPI._events.removeListener("update", UpNext.updateUpNextShow.bind(UpNext));
+        Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", onQueueUpdate);
+        Spicetify.Platform.PlayerAPI._events.removeListener("update", onUpNextShow);
         window.removeEventListener("resize", resizeEvents);
         UpNext.upNextShown = false;
 
@@ -376,7 +387,7 @@ async function main() {
     }
 
     function updatePlayingIcon(evt: any) {
-        if (evt.data.is_paused || evt.data.isPaused) {
+        if (Utils.isPausedEvent(evt)) {
             DOM.pausedIcon.classList.remove("hidden");
             DOM.playingIcon.classList.add("hidden");
         } else {
@@ -531,15 +542,15 @@ async function main() {
         progParentEl?.addEventListener("mouseleave", onStatusLeave);
 
         if (CFM.get("contextDisplay") === "mousemove") {
-            DOM.container.addEventListener("mousemove", Context.hideContext.bind(Context));
+            DOM.container.addEventListener("mousemove", hideContextSoon);
             Context.hideContext();
         }
         if (CFM.get("extraControls") === "mousemove") {
-            DOM.container.addEventListener("mousemove", ExtraControls.hideExtraControls.bind(ExtraControls));
+            DOM.container.addEventListener("mousemove", hideExtraSoon);
             ExtraControls.hideExtraControls();
         }
         if (CFM.get("playerControls") === "mousemove") {
-            DOM.container.addEventListener("mousemove", PlayerControls.hidePlayerControls.bind(PlayerControls));
+            DOM.container.addEventListener("mousemove", hidePlayerSoon);
             PlayerControls.hidePlayerControls();
         }
     }
@@ -550,9 +561,9 @@ async function main() {
         controlsObserver.disconnect();
         DOM.container.classList.remove("controls-collapsed", "progress-collapsed");
         DOM.container.removeEventListener("mousemove", hideCursor);
-        DOM.container.removeEventListener("mousemove", Context.hideContext.bind(Context));
-        DOM.container.removeEventListener("mousemove", ExtraControls.hideExtraControls.bind(ExtraControls));
-        DOM.container.removeEventListener("mousemove", PlayerControls.hidePlayerControls.bind(PlayerControls));
+        DOM.container.removeEventListener("mousemove", hideContextSoon);
+        DOM.container.removeEventListener("mousemove", hideExtraSoon);
+        DOM.container.removeEventListener("mousemove", hidePlayerSoon);
 
         const statusEl = DOM.container.querySelector<HTMLElement>("#fsd-status");
         statusEl?.removeEventListener("mouseenter", onStatusEnter);
@@ -682,8 +693,8 @@ async function main() {
             DOM.back.ondblclick = handleBackgroundDblClick;
             if (CFM.get("upnextDisplay") !== "never") {
                 UpNext.updateUpNextShow();
-                Spicetify.Platform.PlayerAPI._events.addListener("queue_update", UpNext.updateUpNext.bind(UpNext));
-                Spicetify.Platform.PlayerAPI._events.addListener("update", UpNext.updateUpNextShow.bind(UpNext));
+                Spicetify.Platform.PlayerAPI._events.addListener("queue_update", onQueueUpdate);
+                Spicetify.Platform.PlayerAPI._events.addListener("update", onUpNextShow);
             }
             if (CFM.get("volumeDisplay") !== "never") {
                 ReactDOM.render(
@@ -717,7 +728,7 @@ async function main() {
             }
             if (CFM.get("playerControls") !== "never") {
                 PlayerControls.updatePlayerControls({ data: { is_paused: !Spicetify.Player.isPlaying() } });
-                Spicetify.Player.addEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
+                Spicetify.Player.addEventListener("onplaypause", onPlayPause);
             }
             if (CFM.get("extraControls") !== "never") {
                 ExtraControls.updateExtraControls(null);
@@ -725,7 +736,7 @@ async function main() {
                     attributes: true,
                     attributeFilter: ["aria-checked"],
                 });
-                Spicetify.Platform.PlayerAPI._events.addListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
+                Spicetify.Platform.PlayerAPI._events.addListener("update", onExtraUpdate);
             }
             if (CFM.get("lyricsDisplay")) {
                 window.addEventListener("lyrics-plus-update", Lyrics.handleLyricsUpdate);
@@ -804,8 +815,8 @@ async function main() {
             Utils.toggleQueuePanel(DOM.queue, false);
             if (CFM.get("upnextDisplay") !== "never") {
                 UpNext.upNextShown = false;
-                Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", UpNext.updateUpNext.bind(UpNext));
-                Spicetify.Platform.PlayerAPI._events.removeListener("update", UpNext.updateUpNextShow.bind(UpNext));
+                Spicetify.Platform.PlayerAPI._events.removeListener("queue_update", onQueueUpdate);
+                Spicetify.Platform.PlayerAPI._events.removeListener("update", onUpNextShow);
             }
             const volParent = DOM.container.querySelector("#fsd-volume-parent");
             if (volParent) ReactDOM.unmountComponentAtNode(volParent);
@@ -820,11 +831,11 @@ async function main() {
                 Spicetify.Player.removeEventListener("onplaypause", updatePlayingIcon);
             }
             if (CFM.get("playerControls") !== "never") {
-                Spicetify.Player.removeEventListener("onplaypause", PlayerControls.updatePlayerControls.bind(PlayerControls));
+                Spicetify.Player.removeEventListener("onplaypause", onPlayPause);
             }
             if (CFM.get("extraControls") !== "never") {
                 heartObserver.disconnect();
-                Spicetify.Platform.PlayerAPI._events.removeListener("update", ExtraControls.updateExtraControls.bind(ExtraControls));
+                Spicetify.Platform.PlayerAPI._events.removeListener("update", onExtraUpdate);
             }
 
             const popup = document.querySelector("dialog.fs-popup-modal");
@@ -877,7 +888,7 @@ async function main() {
         openwithDef,
         openwithTV,
         Background.updateBackground.bind(Background),
-        UpNext.updateUpNextShow.bind(UpNext),
+        onUpNextShow,
         Background.updateMainColor.bind(Background)
     );
 

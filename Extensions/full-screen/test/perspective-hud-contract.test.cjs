@@ -118,9 +118,23 @@ test('control buttons bend with the curve, hover backgrounds included', () => {
   assert.match(helper, /const BUTTONS = \[".fsd-controls button", ".extra-controls button", "#fad-lyrics-plus-container \.lyrics-config-button"\]/);
   assert.match(helper, /button\.style\.transform = `matrix\(\$\{size\.toFixed\(3\)\}, \$\{\(size \* shear\)\.toFixed\(4\)\}, 0, \$\{size\.toFixed\(3\)\}, 0, /);
   assert.doesNotMatch(helper, /const PIECES = \[\s*"\.fsd-controls button"/);
-  // Their hover zoom moves to `scale`, and their transform is not eased behind the curve.
-  assert.match(tvStyles, /\.fs-button,\s*\.lyrics-config-button \{\s*transform-origin: 50% 50%;\s*transition:\s*scale 0\.15s ease-out,/);
-  assert.match(tvStyles, /&:hover \{\s*scale: 1\.08;/);
+  // Their transform is not eased behind the curve, and the transition outranks the glow rule's.
+  assert.match(tvStyles, /\.fs-button,\s*\.lyrics-config-button,\s*#fsd-status button \{\s*transform-origin: 50% 50%;\s*transition:\s*background 0\.2s ease,\s*filter 0\.25s ease;/);
+});
+
+test('hovering a control grows it in place, smoothly, without moving it', () => {
+  // A CSS `scale` on top of the curve's transform also scaled the curve's lift, so the button moved
+  // up as it grew (and snapped, because the glow rule replaced its transition). The curve eases the
+  // zoom into the button's own matrix about its centre instead; a held button keeps its bend.
+  assert.doesNotMatch(tvStyles, /scale: 1\.08/);
+  assert.match(helper, /const HOVER_ZOOM = 1\.08;/);
+  assert.match(helper, /zoomStep = 1 - Math\.exp\(-elapsed \/ HOVER_MS\);/);
+  assert.match(helper, /const target = button\.matches\(":hover"\) \? HOVER_ZOOM : 1;/);
+  assert.match(helper, /if \(held && last\) \{\s*\(\{ shear, lift \} = last\);/);
+  assert.match(helper, /const size = base \* zoom;/);
+  assert.match(helper, /placeCentred\(button, flat, keep\);/);
+  // With the curve off, the zoom's transition survives the glow rule too.
+  assert.match(baseStyles, /filter: var\(--fsd-control-glow\);[\s\S]{0,200}transition:\s*filter 0\.25s ease,\s*transform 0\.15s ease-out,\s*background 0\.2s ease;/);
 });
 
 test('a panel bends at the middle of what it shows, not of its full-height box', () => {

@@ -183,6 +183,12 @@ class Utils {
      * @param element The element to add fade animation
      * @param animClass Fade animation type class
      */
+    // Spotify 1.3.6 can send onplaypause with `data: null`; the live player state is used then.
+    static isPausedEvent(evt: any): boolean {
+        const data = evt?.data;
+        return data ? Boolean(data.is_paused || data.isPaused) : !Spicetify.Player.isPlaying();
+    }
+
     static fadeAnimation(element: HTMLElement, animClass = "fade-do") {
         element.classList.remove(animClass);
         element.classList.add(animClass);

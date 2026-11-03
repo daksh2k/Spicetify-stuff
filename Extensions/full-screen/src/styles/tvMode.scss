@@ -372,19 +372,16 @@
         transform-origin: 0 0;
     }
 
-    // The curve writes these buttons' transform each frame (sheared about their centre), so their
-    // own hover zoom moves to `scale` and their transform is no longer eased.
+    // The curve writes these buttons' transform each frame (sheared about their centre) and eases
+    // their hover zoom into it (hud-perspective.ts placeCentred), so the transform is not transitioned
+    // here. #fsd-status is named so this outranks the glow rule's transition in base.scss.
     .fs-button,
-    .lyrics-config-button {
+    .lyrics-config-button,
+    #fsd-status button {
         transform-origin: 50% 50%;
         transition:
-            scale 0.15s ease-out,
             background 0.2s ease,
-            filter 0.2s ease;
-
-        &:hover {
-            scale: 1.08;
-        }
+            filter 0.25s ease;
     }
 
     // While the curve is on, synced lyrics fade word by word by where each word sits before the curve

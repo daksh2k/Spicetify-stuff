@@ -121,3 +121,23 @@ test('reaching hidden controls shows them first and holds them where they are sh
   assert.match(leave, /if \(revealing\(\)\) \{\s*hideAfterIdle\(\);\s*holdWhenSettled\(\);\s*return;\s*\}/);
   assert.ok(leave.indexOf('return;') < leave.indexOf('hidePlayerControlsNow'));
 });
+
+test('player and mouse handlers are bound once, so closing fullscreen removes them', () => {
+  // removeEventListener only removes the exact function added; a fresh .bind() at each call never matched,
+  // so handlers piled up with every open/close and kept running after fullscreen closed.
+  for (const name of ['onPlayPause', 'onExtraUpdate', 'onQueueUpdate', 'onUpNextShow', 'hideContextSoon', 'hideExtraSoon', 'hidePlayerSoon']) {
+    assert.match(app, new RegExp("const " + name + " = \\w+\\.\\w+\\.bind\\(\\w+\\);"));
+  }
+  assert.doesNotMatch(app, /(add|remove)(Event)?Listener\([^)]*\.bind\(/, 'no listener is added or removed with a fresh .bind()');
+  assert.match(app, /Spicetify\.Player\.addEventListener\("onplaypause", onPlayPause\);/);
+  assert.match(app, /Spicetify\.Player\.removeEventListener\("onplaypause", onPlayPause\);/);
+});
+
+test('play/pause updates survive an event with no data (Spotify 1.3.6)', () => {
+  const utils = read('utils', 'utils.ts');
+  const controls = read('ui', 'components', 'PlayerControls', 'PlayerControls.ts');
+  assert.match(utils, /static isPausedEvent\(evt: any\): boolean \{\s*const data = evt\?\.data;\s*return data \? Boolean\(data\.is_paused \|\| data\.isPaused\) : !Spicetify\.Player\.isPlaying\(\);/);
+  assert.match(controls, /if \(Utils\.isPausedEvent\(evt\)\) \{/);
+  assert.match(app, /function updatePlayingIcon\(evt: any\) \{\s*if \(Utils\.isPausedEvent\(evt\)\) \{/);
+  assert.doesNotMatch(app + controls, /evt\.data\.is_paused/);
+});

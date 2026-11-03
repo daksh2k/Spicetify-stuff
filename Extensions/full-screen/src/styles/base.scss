@@ -643,7 +643,12 @@
     #fsd-overview-pin-button,
     #fsd-overview-button-container button {
         filter: var(--fsd-control-glow);
-        transition: filter 0.25s ease;
+        // Also carries .fs-button's hover zoom and background, which this rule would otherwise
+        // replace (it outranks .fs-button), leaving the zoom to snap.
+        transition:
+            filter 0.25s ease,
+            transform 0.15s ease-out,
+            background 0.2s ease;
     }
 
     // The artwork glows in its own colours: a blurred copy of it sits behind it, like an ambient
